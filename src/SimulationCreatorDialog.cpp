@@ -58,7 +58,8 @@ void SimulationCreatorDialog<ParameterGroup>::onRestoreDefaultClicked() {
 
 template <class ParameterGroup>
 void SimulationCreatorDialog<ParameterGroup>::loadValuesFromSettings() {
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
 	
 	this->template get<NumberEdit>(P::Rho)->setValue(settings.value("rho", 1.225).toDouble());
@@ -75,7 +76,8 @@ void SimulationCreatorDialog<ParameterGroup>::loadValuesFromSettings() {
 
 template <class ParameterGroup>
 void SimulationCreatorDialog<ParameterGroup>::saveValuesToSettings() {
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
 
 	settings.setValue("rho", this->template get<NumberEdit>(P::Rho)->getValue());

@@ -3,8 +3,8 @@
 # -------------------------------------------------
 
 # switch here to build either for 32bit or 64bit
-#CONFIG += build32bit
-CONFIG += build64bit
+CONFIG += build32bit //Sara
+#CONFIG += build64bit //Sara
 
 # specify which Qt modules are needed.
 QT += core gui widgets opengl xml

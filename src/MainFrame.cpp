@@ -160,7 +160,8 @@ MainFrame::MainFrame (QWidget *parent, Qt::WindowFlags flags)
 	////////////end new code JW/////////
 	
 	if(LoadSettings()) {
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 		
 		m_RefGraph.LoadSettings(&settings);
 		
@@ -3141,8 +3142,9 @@ bool MainFrame::LoadSettings()
 	int SettingsFormat;
 	QSize size;
 	
-	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
-	
+    //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+
 	settings.beginGroup("MainFrame");
 	{
 		SettingsFormat = settings.value("SettingsFormat").toInt();
@@ -3817,9 +3819,11 @@ void MainFrame::OnResetSettings()
 	{
 		QMessageBox::warning(this,tr("Default Settings"), tr("The settings will be reset at the next session."));
 #ifdef Q_WS_MAC
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #else
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #endif
 		settings.clear();
 		m_LastDirName = QDir::homePath();
@@ -4543,9 +4547,11 @@ void MainFrame::SaveSettings()
 	
 	if(!m_bSaveSettings) return;
 #ifdef Q_WS_MAC
-	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #else
-	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #endif
 	settings.beginGroup("MainFrame");
 	{

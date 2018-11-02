@@ -23,7 +23,8 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
 	m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
 	m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
 
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
 						(settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quad).toInt()));
 
@@ -45,7 +46,8 @@ NoiseModule::~NoiseModule() {
 	delete m_graph[2];
 	delete m_graph[3];
 
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.setValue(QString("modules/NoiseModule/graphArrangement"), getGraphArrangement());
 }
 

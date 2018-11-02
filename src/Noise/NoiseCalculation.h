@@ -2,7 +2,6 @@
 #define NOISECALCULATION_H
 
 #include <QVector>
-#include <QtMath> //Sara
 
 class NoiseParameter;
 class NoiseOpPoint;

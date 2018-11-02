@@ -57,14 +57,16 @@ MultiDmsSimulationDock::MultiDmsSimulationDock(const QString &title, QMainWindow
 	connect(g_mainFrame, SIGNAL(unitsChanged()), this, SLOT(onUnitsChanged()));
 	onUnitsChanged();
 	
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	m_showSelectCheckBox->setChecked(settings.value("modules/MultiDmsDock/showSelect", true).toBool());
 	
 	addScrolledDock (Qt::RightDockWidgetArea, parent);	
 }
 
 MultiDmsSimulationDock::~MultiDmsSimulationDock() {
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.setValue("modules/MultiDmsDock/showSelect", m_showSelectCheckBox->isChecked());
 }
 

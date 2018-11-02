@@ -107,8 +107,8 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
 double NoiseCalculation::getDL() {
     //Dh, Low Freq. Directivity Factor
     if (m_parameter->lowFreq) {
-        return (2 * (pow(sin(qDegreesToRadians(m_parameter->directivityGreek)),2)) * (pow(sin(qDegreesToRadians(m_parameter->directivityPhi)),2))) /
-                pow((1+m_parameter->originalMach * cos(qDegreesToRadians(m_parameter->directivityGreek))),4); //Sara
+        return (2 * (pow(sin(m_parameter->directivityGreek),2)) * (pow(sin(m_parameter->directivityPhi),2))) /
+				pow((1+m_parameter->originalMach * cos(m_parameter->directivityGreek)),4);
     } else {
         return 1;
     }
@@ -116,13 +116,12 @@ double NoiseCalculation::getDL() {
 
 double NoiseCalculation::getDH() {
     //Dh, High Freq. Directivity Factor
-    if (m_parameter->lowFreq)
-    {return (2 * pow((sin((qDegreesToRadians(m_parameter->directivityGreek)/2))),2) * pow((sin(qDegreesToRadians(m_parameter->directivityPhi))),2)) /
-                    ((1+m_parameter->originalMach * cos(qDegreesToRadians(m_parameter->directivityGreek))) *
-                     (pow((1+(m_parameter->originalMach-m_EddyMachNumber) * cos(qDegreesToRadians(m_parameter->directivityPhi))),2))); //Sara
-     } else {
+    if (m_parameter->highFreq) {
+        return (2 * pow((sin((m_parameter->directivityGreek/2))),2) * pow((sin(m_parameter->directivityPhi)),2)) /
+				((1+m_parameter->originalMach * cos(m_parameter->directivityGreek)) *
+				 (pow((1+(m_parameter->originalMach-m_EddyMachNumber) * cos(m_parameter->directivityPhi)),2)));
+    } else {
         return 1;
-
     }
 }
 

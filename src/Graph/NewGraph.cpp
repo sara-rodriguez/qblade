@@ -320,7 +320,8 @@ void NewGraph::removeAllCurves() {
 }
 
 bool NewGraph::loadStylesFromSettings() {
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 
 	if (settings.contains(QString("graphs/" + m_nameInSettings + "/type"))) {
 		settings.beginGroup(QString("graphs/" + m_nameInSettings));
@@ -354,7 +355,8 @@ bool NewGraph::loadStylesFromSettings() {
 
 void NewGraph::saveStylesToSettings() {
 	if (m_nameInSettings != "__default") {  // do not save a default graph
-		QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 		
 		settings.beginGroup(QString("graphs/" + m_nameInSettings));
 
