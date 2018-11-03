@@ -138,6 +138,7 @@ void GraphDlg::FillVariableList()
 		m_pctrlXSel->addItem(tr("1/Cl^1/2"));
 		m_pctrlXSel->addItem(tr("Re"));
 		m_pctrlXSel->addItem(tr("XCp"));
+        m_pctrlXSel->addItem(tr("Ma"));//Sara
 
 		m_pctrlYSel->addItem(tr("Alpha"));
 		m_pctrlYSel->addItem(tr("Cl"));
@@ -154,6 +155,7 @@ void GraphDlg::FillVariableList()
 		m_pctrlYSel->addItem(tr("1/Cl^1/2"));
 		m_pctrlYSel->addItem(tr("Re"));
 		m_pctrlYSel->addItem(tr("XCp"));
+        m_pctrlYSel->addItem(tr("Ma")); //Sara
 	}
 	else if(m_iGraphType==61)
 	{
@@ -345,6 +347,7 @@ void GraphDlg::FillVariableList()
                 m_pctrlYSel->addItem(tr("Iterations"));
                 m_pctrlYSel->addItem(tr("Annulus averaged axial ind."));
                 m_pctrlYSel->addItem(tr("Annulus averaged tangential ind."));
+                m_pctrlYSel->addItem(tr("Mach number"));//Sara
 
 
                 m_pctrlXSel->addItem(tr("Axial induction factor"));					//14
@@ -372,7 +375,7 @@ void GraphDlg::FillVariableList()
                 m_pctrlXSel->addItem(tr("Iterations"));
                 m_pctrlXSel->addItem(tr("Annulus averaged axial ind."));
                 m_pctrlXSel->addItem(tr("Annulus averaged tangential ind."));
-
+                m_pctrlXSel->addItem(tr("Mach number"));//Sara
 
 
         }

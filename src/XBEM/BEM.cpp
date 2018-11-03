@@ -3792,6 +3792,12 @@ void * QBEM::GetBladeVariable(void *Data, int iVar)
 
                     pVar = &pBData->m_Fa_radial;
                     break;
+//Sara
+            case 23:
+
+                    pVar = &pBData->m_Mach;
+                    break;
+//Sara
             default:
 
                     pVar = &pBData->m_pos;
@@ -9264,7 +9270,7 @@ void QBEM::OnImportPolar(){
 
     for (int i=0;i<alphavalues.size();i++)
     {
-        pPolar->AddPoint(alphavalues.at(i), dragvalues.at(i), 0.0, liftvalues.at(i), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        pPolar->AddPoint(alphavalues.at(i), dragvalues.at(i), 0.0, liftvalues.at(i), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);//Sara 0.0
     }
 
     ConnectToAirfoilDialog *dialog = new ConnectToAirfoilDialog (pPolar);
@@ -13045,6 +13051,11 @@ void QBEM::SetRotorGraphTitles(Graph* pGraph)
         case 22:
 			pGraph->SetXTitle(tr("Fa_t"));
 			break;
+//Sara
+        case 23:
+            pGraph->SetXTitle(tr("Ma [-]"));
+            break;
+//Sara
 		default:
 			pGraph->SetXTitle(tr("pos [m]"));
 			break;
@@ -13168,6 +13179,11 @@ void QBEM::SetRotorGraphTitles(Graph* pGraph)
         case 22:
 			pGraph->SetYTitle(tr("Fa_t"));
 			break;
+//Sara
+        case 23:
+             pGraph->SetYTitle(tr("Ma [-]"));
+             break;
+//Sara
 		default:
 			pGraph->SetYTitle(tr("pos [m]"));
 			break;

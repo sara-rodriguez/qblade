@@ -3454,7 +3454,7 @@ void QXDirect::OnImportXFoilPolar()
 {
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
 	CPolar *pPolar = new CPolar;
-	double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom;
+    double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom, Ma;//Sara
 	QString FoilName, PathName, strong, str;
 
 	QByteArray textline;
@@ -3597,11 +3597,11 @@ void QXDirect::OnImportXFoilPolar()
 
 				if (res == 7)
 				{
-					pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);
-				}
-				else if(res == 9)
-				{
-					pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);
+                    pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);//Sara Ma
+                }
+                else if(res == 9)
+                {
+                    pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);//Sara ,Ma
 				}
 				else
 				{
@@ -6098,6 +6098,11 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 			break;
 		case 14:
 			pGraph->SetXTitle(tr("XCp"));
+            //Sara
+                case 15:
+                    pGraph->SetXTitle(tr("Ma"));
+                    break;
+            //Sara
 			break;
 		default:
 			pGraph->SetXTitle(tr("Alpha"));
@@ -6150,6 +6155,11 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 		case 14:
 			pGraph->SetYTitle(tr("XCp"));
 			break;
+//Sara
+    case 15:
+        pGraph->SetYTitle(tr("Ma"));
+        break;
+//Sara
 		default:
 			pGraph->SetYTitle(tr("Alpha"));
 			break;
