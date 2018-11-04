@@ -23,11 +23,21 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
 	m_exportNoise = new QAction("Export current Noise Simulation", this);
 	connect(m_exportNoise, SIGNAL(triggered()), this, SLOT(onExportNoise()));
 	addAction(m_exportNoise);
+    
+    //Sara
+    m_export3DNoise = new QAction("Export current 3D Noise Simulation", this);
+    connect(m_export3DNoise, SIGNAL(triggered()), this, SLOT(onExport3DNoise()));
+    addAction(m_export3DNoise);
+    //Sara
 }
 
 void NoiseMenu::onAboutToShow() {
 	const bool simulationAvailable = (m_module->getShownSimulation() != NULL);
 	m_exportNoise->setEnabled(simulationAvailable);
+    
+    //Sara
+        m_export3DNoise->setEnabled(simulationAvailable);
+    //Sara
 }
 
 void NoiseMenu::onExportNoise() {
@@ -48,6 +58,27 @@ void NoiseMenu::onExportNoise() {
 	}
 	file.close();
 }
+
+//Sara
+void NoiseMenu::onExport3DNoise() {
+    QString fileName = m_module->getShownSimulation()->getName() + "-3D.txt";
+    fileName.replace(' ', '_');
+    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export 3D Noise Simulation",
+                                            g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
+                                            "Text File (*.txt)");
+    if (!fileName.endsWith(".txt")) {
+        fileName.append(".txt");
+    }
+
+    QFile file (fileName);
+    g_mainFrame->m_ExportLastDirName = QFileInfo(file).absolutePath();
+    if (file.open(QIODevice::WriteOnly)) {
+        QTextStream fileStream (&file);
+        m_module->getShownSimulation()->export3DCalculation(fileStream);
+    }
+    file.close();
+}
+//Sara
 
 void NoiseMenu::onModelValidityHint() {
 	const QString message ("Airfoil TE noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "

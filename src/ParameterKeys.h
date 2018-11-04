@@ -30,9 +30,9 @@ struct Parameter {
 				  WindspeedDelta, TipLoss, VariableInduction, AnnualYield};
 	};
 	struct NoiseSimulation {
-		enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,
-				  DStarChordStation, DStarScalingFactor, EddyConvectionMach, DirectivityTheta, DirectivityPhi,
-				  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition};
+        enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,
+                  DStarChordStation, DStarScalingFactor, EddyConvectionMach, DirectivityTheta, DirectivityPhi,
+                  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition, slices}; //Sara
 	};
 };
 

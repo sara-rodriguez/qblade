@@ -24,7 +24,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 	  m_editedSimulation(presetSimulation),
 	  m_opPointViewWidget(NULL)
 {
-	setWindowTitle("2D Noise Simulation");	
+    setWindowTitle("Noise Simulation");	//Sara
 	
 	QTabWidget *tabWidget = new QTabWidget;
 	m_contentVBox->insertWidget(0, tabWidget);
@@ -121,7 +121,20 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 										   "Chord based Reynolds number (Rc):", 100000);
 							pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
 											   QStringList()<<"Fully turbulent"<<"Transition flow");
-						
+
+                            //Sara
+                            widget = new QWidget;
+                            tabWidget->addTab(widget, "3D Analysis");
+                            hBox = new QHBoxLayout;
+                            widget->setLayout(hBox);
+                            groupBox = new QGroupBox ("3D Simulation Parameters");
+                            hBox->addWidget(groupBox);
+                            pGrid = new ParameterGrid<P>(this);
+                            groupBox->setLayout(pGrid);
+                            pGrid->addEdit(P::slices, NumberEditType, new NumberEdit(),
+                                           "Number of Slices (min 13):", 10);
+                            //Sara
+                            
 	setUnitContainingLabels();
 	initView();			
 }

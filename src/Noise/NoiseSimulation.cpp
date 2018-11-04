@@ -163,6 +163,48 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
 	qDeleteAll(noiseOpPoints);	
 }
 
+//Sara
+void NoiseSimulation::export3DCalculation(QTextStream &stream) {
+    stream.setRealNumberNotation(QTextStream::FixedNotation);
+    stream.setRealNumberPrecision(5);
+
+    stream << "3D Noise prediction file export" << endl;
+    stream << endl;
+
+QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
+    for (int i = 0; i < noiseOpPoints.size(); ++i) {
+        stream << qSetFieldWidth(0);
+//        stream << "slice: " << noiseOpPoints[i]->getAlphaDegree() <<
+//        stream << "Re: " << noiseOpPoints[i]->getReynolds() << endl;
+//        stream << "Mach: " << m_calculation.OASPL()[i] << " dB" << endl;
+
+        stream << qSetFieldWidth(14) <<
+                  "slice" <<
+                  "chord"<<
+                  "Re" <<
+                  "Mach" <<
+                  endl;
+
+        // noiseOpPoints[i]->getReynolds()
+        for (int j = 1; j < (m_parameter.slices+1); ++j) { //slices ao invés de 13
+            if (j > m_parameter.slices*0.85){
+               x = log10(m_parameter.slices*0.85-(j-m_parameter.slices*0.85))/log10(m_parameter.slices*0.85);
+        }
+                     else {x = log10(j)/log10(m_parameter.slices*0.85);}
+//            log10(j)/log10(m_parameter.slices) << //chord position - l
+                        stream << j <<
+                        x <<
+                    m_parameter.chordBasedReynolds*(log10(j)/log10(m_parameter.slices))/0.3048  << // l*Re(for l=0.3048)/0.3048
+                      0.21/0.3048*log10(j)/log10(m_parameter.slices) << endl; // 0.21 (Mach for l=0.3048)/0.3048*l
+        }
+
+        stream << endl;
+        stream << endl;
+    }
+    qDeleteAll(noiseOpPoints);
+}
+//Sara
+
 void NoiseSimulation::setAnalyzedOpPoints(QVector<OpPoint *> newList) {
 	removeAllParents();
 	for (int i = 0; i < newList.size(); ++i) {
@@ -226,6 +268,13 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
 	case P::Transition:
 		if(set) m_parameter.transition = static_cast<NoiseParameter::TransitionType>(value.toInt());
 		else value = static_cast<int>(m_parameter.transition); break;
+
+        //Sara
+            case P::slices:
+                if(set) m_parameter.slices = value.toDouble();
+                if(m_parameter.slices<13) m_parameter.slices=13;
+                else value = m_parameter.slices; break;
+        //Sara
 	}
 
 	return (set ? QVariant() : value);

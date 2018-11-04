@@ -16,11 +16,12 @@ public:
 	
 private:
 	NoiseModule *m_module;
-    QAction *m_exportNoise, *m_modelValidityHint;
+    QAction *m_exportNoise, *m_modelValidityHint, *m_export3DNoise; //Sara
 	
 private slots:
 	void onAboutToShow ();
 	void onExportNoise ();
+    void onExport3DNoise (); //Sara
 	void onModelValidityHint ();
 };
 

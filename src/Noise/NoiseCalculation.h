@@ -121,6 +121,12 @@ private:
     double m_SplaAo;
     double m_ChordBasedReynolds;
 
+    //Sara
+    //3D
+    double m_slices;
+    double x;
+//Sara
+
     //For SPLs
     TwoDVector m_SPLsdB; //Store db of SPLs
     TwoDVector m_SPLsdBAW; //Store db of SPLs + A-Weighting

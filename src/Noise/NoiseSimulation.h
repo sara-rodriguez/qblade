@@ -25,6 +25,7 @@ public:
 	
 	void simulate();  // can throw NoiseException
 	void exportCalculation (QTextStream &stream);
+    void export3DCalculation (QTextStream &stream);//Sara
 	
 	void setAnalyzedOpPoints (QVector<OpPoint*> newList);
 	void setSelectFrom (NoiseParameter::OpPointSource select) { m_parameter.opPointSource = select; }
@@ -38,6 +39,14 @@ private:
 	
 	NoiseParameter m_parameter;
 	NoiseCalculation m_calculation;
+
+    //Sara
+    double m_DStarFinalS;
+    double m_DStarFinalP;
+    double originalMach;
+    double m_slices;
+    double x;
+    //Sara
 };
 
 #endif // NOISESIMULATION_H

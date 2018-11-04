@@ -13,7 +13,7 @@ class NoiseOpPoint
 {
 public:
 	NoiseOpPoint(OpPoint *opPoint);
-	NoiseOpPoint(double reynolds, double alpha);
+    NoiseOpPoint(double reynolds, double alpha);
 	
 	double getReynolds();
 	double getAlphaDegree();
@@ -26,7 +26,7 @@ public:
 	double getDstrAt(int x, int y);
 	
 private:
-	double m_reynolds, m_alpha;
+    double m_reynolds, m_alpha, m_slices, x; //Sara
 	OpPoint *m_opPoint;
 };
 

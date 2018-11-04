@@ -49,6 +49,9 @@ public:
 	double aoa;
 	double chordBasedReynolds;
 	TransitionType transition;
+    
+    //3D Sara
+    double slices;
 };
 
 #endif // NOISEPARAMETER_H
