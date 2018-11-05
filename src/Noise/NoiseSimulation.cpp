@@ -199,9 +199,17 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
         }
 
         stream << endl;
-        stream << endl;
+        stream << endl;    
     }
     qDeleteAll(noiseOpPoints);
+
+//teste
+
+    //&pBData->m_Reynolds
+
+    //&pBData->m_pos
+
+    //#include "XBEM/BEM.h"
 }
 //Sara
 

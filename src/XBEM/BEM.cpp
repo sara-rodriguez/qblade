@@ -9270,7 +9270,7 @@ void QBEM::OnImportPolar(){
 
     for (int i=0;i<alphavalues.size();i++)
     {
-        pPolar->AddPoint(alphavalues.at(i), dragvalues.at(i), 0.0, liftvalues.at(i), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);//Sara 0.0
+        pPolar->AddPoint(alphavalues.at(i), dragvalues.at(i), 0.0, liftvalues.at(i), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     }
 
     ConnectToAirfoilDialog *dialog = new ConnectToAirfoilDialog (pPolar);

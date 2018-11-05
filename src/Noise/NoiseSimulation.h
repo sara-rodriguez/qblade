@@ -6,6 +6,9 @@
 #include "../ParameterObject.h"
 #include "NoiseCalculation.h"
 #include "NoiseParameter.h"
+
+#include "../XBEM/BEM.h" //Sara
+
 template <class KeyType>
 class ParameterViewer;
 
