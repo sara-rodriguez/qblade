@@ -8,6 +8,7 @@
 #include "NoiseModule.h"
 #include "../ColorManager.h"
 #include "NoiseOpPoint.h"
+#include "../XBEM/BData.h" //Sara
 
 
 NoiseSimulation *NoiseSimulation::newBySerialize() {
@@ -205,11 +206,66 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
 //teste
 
-    //&pBData->m_Reynolds
+//as variveis que eu quero do BEM:
 
-    //&pBData->m_pos
+//    &pBData->m_Reynolds
+
+//    &pBData->m_pos
 
     //#include "XBEM/BEM.h"
+
+//    os pontos extraidos pelo grafico:
+
+//    for(i=0; i<m_oaCurves.size(); i++)
+//	{
+//		pCurve = GetCurve(i);
+//        if(pCurve && pCurve->n > 2)
+//		{
+//			maxpoints = qMax(maxpoints,pCurve->n);
+//			pCurve->GetTitle(strong);
+//            out << QString("  %1").arg(strong, 30);
+//		}
+//    }
+
+//    out<<"\n";
+
+//    for(i=0; i<m_oaCurves.size(); i++)
+//    {
+//        pCurve = GetCurve(i);
+//        if(pCurve && pCurve->n > 2)
+//        {
+//            maxpoints = qMax(maxpoints,pCurve->n);
+
+//            if(FileType==1)	out <<" "<<m_XTitle<<" "<< m_YTitle;
+//            else            out << m_XTitle<<";"<< m_YTitle << ";";
+
+//        }
+//	}
+//	out<<"\n"; //end of title line
+
+//	for(j=0; j<maxpoints; j++)
+//	{
+//		for(i=0; i<m_oaCurves.size(); i++)
+//		{
+//			pCurve = GetCurve(i);
+//            if(pCurve && j<pCurve->n && pCurve->n > 2)
+//			{
+//                if(FileType==1)	strong= QString(" %1 %2")
+//                                                .arg(pCurve->x[j],15,'e',5).arg(pCurve->y[j],15,'e',5);
+//                else            strong= QString(" %1; %2;")
+//                                                .arg(pCurve->x[j],15,'e',5).arg(pCurve->y[j],15,'e',5).replace(".",",");
+//			}
+//            else if(pCurve->n > 2)
+//			{
+//                if(FileType==1)	strong=QString().fill(' ', 32);
+//                else            strong= ";;";
+//            }
+//            if (pCurve->n > 2) out << strong;
+//		}
+//		out<<"\n"; //end of data line
+//	}
+//	out<<"\n"; //end of file
+
 }
 //Sara
 
