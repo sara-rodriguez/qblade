@@ -8,7 +8,8 @@
 #include "NoiseModule.h"
 #include "../ColorManager.h"
 #include "NoiseOpPoint.h"
-#include "../XBEM/BData.h" //Sara
+//#include "../XBEM/BData.h" //Sara
+#include "../XBEM/BEM.h"
 
 
 NoiseSimulation *NoiseSimulation::newBySerialize() {
@@ -203,6 +204,14 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
         stream << endl;    
     }
     qDeleteAll(noiseOpPoints);
+
+    //Acessa o módulo BEM através da referencia da janela principal
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+
+    //Acessa os dados armazenados após os calculos
+    int rey_size = pBEM->m_pBData->m_Reynolds.size();
+    int mpos_size = pBEM->m_pBData->m_pos.size();
+    int mach_size = pBEM->m_pBData->m_Mach.size();
 
 //teste
 
