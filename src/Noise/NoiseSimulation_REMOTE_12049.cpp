@@ -174,8 +174,6 @@ void NoiseSimulation::export3DCalculation(QTextStream &stream) {
     stream << endl;
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
-<<<<<<< HEAD
-=======
     for (int i = 0; i < noiseOpPoints.size(); ++i) {
         stream << qSetFieldWidth(0);
 //        stream << "slice: " << noiseOpPoints[i]->getAlphaDegree() <<
@@ -218,55 +216,64 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 //teste
 
 //as variveis que eu quero do BEM:
->>>>>>> d2bb31c16fb66679cc426b5a4c4393f7303ff957
 
-//Acessa o módulo BEM através da referencia da janela principal
-    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+//    &pBData->m_Reynolds
 
-//Acessa os dados armazenados após os calculos
-    int mpos_size = pBEM->m_pBData->m_pos.size();;
+//    &pBData->m_pos
 
-        stream << qSetFieldWidth(0);
+    //#include "XBEM/BEM.h"
 
-//        for (int j = 1; j < (m_parameter.slices+1); ++j) { //slices ao invés de 13
-//            if (j > m_parameter.slices*0.85){
-//               x = log10(m_parameter.slices*0.85-(j-m_parameter.slices*0.85))/log10(m_parameter.slices*0.85);
+//    os pontos extraidos pelo grafico:
+
+//    for(i=0; i<m_oaCurves.size(); i++)
+//	{
+//		pCurve = GetCurve(i);
+//        if(pCurve && pCurve->n > 2)
+//		{
+//			maxpoints = qMax(maxpoints,pCurve->n);
+//			pCurve->GetTitle(strong);
+//            out << QString("  %1").arg(strong, 30);
+//		}
+//    }
+
+//    out<<"\n";
+
+//    for(i=0; i<m_oaCurves.size(); i++)
+//    {
+//        pCurve = GetCurve(i);
+//        if(pCurve && pCurve->n > 2)
+//        {
+//            maxpoints = qMax(maxpoints,pCurve->n);
+
+//            if(FileType==1)	out <<" "<<m_XTitle<<" "<< m_YTitle;
+//            else            out << m_XTitle<<";"<< m_YTitle << ";";
+
 //        }
-//                     else {x = log10(j)/log10(m_parameter.slices*0.85);}
-//                        stream << j <<
-//                        x <<
-//                    m_parameter.chordBasedReynolds*(log10(j)/log10(m_parameter.slices))/0.3048  << // l*Re(for l=0.3048)/0.3048
-//                      0.21/0.3048*log10(j)/log10(m_parameter.slices) << endl; // 0.21 (Mach for l=0.3048)/0.3048*l
-//        }
+//	}
+//	out<<"\n"; //end of title line
 
-//for (int j = int(noiseOpPoints.size()/2-2); j < int(noiseOpPoints.size()/2+2); ++j) {
-
-    stream << qSetFieldWidth(13) <<
-              "slice" <<
-              "position" <<
-              "Re" <<
-              "Mach" <<
-              "Axial_IF" <<
-              endl;
-
-    for (int i = 0; i < mpos_size; ++i) {
-
-        stream << qSetFieldWidth(13) <<
-                  (i+1)<<
-                  QString::number(pBEM->m_pBData->m_pos.value(i), 'f', 2)<<
-                  QString::number(pBEM->m_pBData->m_Reynolds.value(i), 'f', 2)<<
-                  pBEM->m_pBData->m_Mach.value(i)<<
-                  pBEM->m_pBData->m_a_axial.value(i)<<
-                  endl;
-}
-    stream << ""<< endl;
-//}
-        stream << endl;        
-        stream << endl;
-
-    qDeleteAll(noiseOpPoints);
-
-//TODO
+//	for(j=0; j<maxpoints; j++)
+//	{
+//		for(i=0; i<m_oaCurves.size(); i++)
+//		{
+//			pCurve = GetCurve(i);
+//            if(pCurve && j<pCurve->n && pCurve->n > 2)
+//			{
+//                if(FileType==1)	strong= QString(" %1 %2")
+//                                                .arg(pCurve->x[j],15,'e',5).arg(pCurve->y[j],15,'e',5);
+//                else            strong= QString(" %1; %2;")
+//                                                .arg(pCurve->x[j],15,'e',5).arg(pCurve->y[j],15,'e',5).replace(".",",");
+//			}
+//            else if(pCurve->n > 2)
+//			{
+//                if(FileType==1)	strong=QString().fill(' ', 32);
+//                else            strong= ";;";
+//            }
+//            if (pCurve->n > 2) out << strong;
+//		}
+//		out<<"\n"; //end of data line
+//	}
+//	out<<"\n"; //end of file
 
 }
 //Sara

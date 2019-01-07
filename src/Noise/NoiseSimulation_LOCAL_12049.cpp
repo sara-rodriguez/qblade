@@ -174,51 +174,6 @@ void NoiseSimulation::export3DCalculation(QTextStream &stream) {
     stream << endl;
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
-<<<<<<< HEAD
-=======
-    for (int i = 0; i < noiseOpPoints.size(); ++i) {
-        stream << qSetFieldWidth(0);
-//        stream << "slice: " << noiseOpPoints[i]->getAlphaDegree() <<
-//        stream << "Re: " << noiseOpPoints[i]->getReynolds() << endl;
-//        stream << "Mach: " << m_calculation.OASPL()[i] << " dB" << endl;
-
-        stream << qSetFieldWidth(14) <<
-                  "slice" <<
-                  "chord"<<
-                  "Re" <<
-                  "Mach" <<
-                  endl;
-
-        // noiseOpPoints[i]->getReynolds()
-        for (int j = 1; j < (m_parameter.slices+1); ++j) { //slices ao invés de 13
-            if (j > m_parameter.slices*0.85){
-               x = log10(m_parameter.slices*0.85-(j-m_parameter.slices*0.85))/log10(m_parameter.slices*0.85);
-        }
-                     else {x = log10(j)/log10(m_parameter.slices*0.85);}
-//            log10(j)/log10(m_parameter.slices) << //chord position - l
-                        stream << j <<
-                        x <<
-                    m_parameter.chordBasedReynolds*(log10(j)/log10(m_parameter.slices))/0.3048  << // l*Re(for l=0.3048)/0.3048
-                      0.21/0.3048*log10(j)/log10(m_parameter.slices) << endl; // 0.21 (Mach for l=0.3048)/0.3048*l
-        }
-
-        stream << endl;
-        stream << endl;    
-    }
-    qDeleteAll(noiseOpPoints);
-
-    //Acessa o módulo BEM através da referencia da janela principal
-    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-
-    //Acessa os dados armazenados após os calculos
-    int rey_size = pBEM->m_pBData->m_Reynolds.size();
-    int mpos_size = pBEM->m_pBData->m_pos.size();
-    int mach_size = pBEM->m_pBData->m_Mach.size();
-
-//teste
-
-//as variveis que eu quero do BEM:
->>>>>>> d2bb31c16fb66679cc426b5a4c4393f7303ff957
 
 //Acessa o módulo BEM através da referencia da janela principal
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
