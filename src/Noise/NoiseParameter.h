@@ -51,7 +51,7 @@ public:
 	TransitionType transition;
     
     //3D Sara
-    double slices;
+    double sects;
 };
 
 #endif // NOISEPARAMETER_H

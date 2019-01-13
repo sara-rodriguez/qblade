@@ -174,101 +174,80 @@ void NoiseSimulation::export3DCalculation(QTextStream &stream) {
     stream << endl;
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
-<<<<<<< HEAD
-=======
-    for (int i = 0; i < noiseOpPoints.size(); ++i) {
-        stream << qSetFieldWidth(0);
-//        stream << "slice: " << noiseOpPoints[i]->getAlphaDegree() <<
-//        stream << "Re: " << noiseOpPoints[i]->getReynolds() << endl;
-//        stream << "Mach: " << m_calculation.OASPL()[i] << " dB" << endl;
-
-        stream << qSetFieldWidth(14) <<
-                  "slice" <<
-                  "chord"<<
-                  "Re" <<
-                  "Mach" <<
-                  endl;
-
-        // noiseOpPoints[i]->getReynolds()
-        for (int j = 1; j < (m_parameter.slices+1); ++j) { //slices ao invés de 13
-            if (j > m_parameter.slices*0.85){
-               x = log10(m_parameter.slices*0.85-(j-m_parameter.slices*0.85))/log10(m_parameter.slices*0.85);
-        }
-                     else {x = log10(j)/log10(m_parameter.slices*0.85);}
-//            log10(j)/log10(m_parameter.slices) << //chord position - l
-                        stream << j <<
-                        x <<
-                    m_parameter.chordBasedReynolds*(log10(j)/log10(m_parameter.slices))/0.3048  << // l*Re(for l=0.3048)/0.3048
-                      0.21/0.3048*log10(j)/log10(m_parameter.slices) << endl; // 0.21 (Mach for l=0.3048)/0.3048*l
-        }
-
-        stream << endl;
-        stream << endl;    
-    }
-    qDeleteAll(noiseOpPoints);
-
-    //Acessa o módulo BEM através da referencia da janela principal
-    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-
-    //Acessa os dados armazenados após os calculos
-    int rey_size = pBEM->m_pBData->m_Reynolds.size();
-    int mpos_size = pBEM->m_pBData->m_pos.size();
-    int mach_size = pBEM->m_pBData->m_Mach.size();
-
-//teste
-
-//as variveis que eu quero do BEM:
->>>>>>> d2bb31c16fb66679cc426b5a4c4393f7303ff957
 
 //Acessa o módulo BEM através da referencia da janela principal
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
 //Acessa os dados armazenados após os calculos
-    int mpos_size = pBEM->m_pBData->m_pos.size();;
+    int mpos_size = pBEM->m_pBData->m_pos.size(); //total number of segments
+    double finalradius = pBEM->m_pBData->m_pos.value(mpos_size-1);
+    double nom_tg_speed = pBEM->m_pBData->windspeed*pBEM->m_pBData->lambda_global;
+    double omega = nom_tg_speed/finalradius; //angular speed //todo
 
         stream << qSetFieldWidth(0);
 
-//        for (int j = 1; j < (m_parameter.slices+1); ++j) { //slices ao invés de 13
-//            if (j > m_parameter.slices*0.85){
-//               x = log10(m_parameter.slices*0.85-(j-m_parameter.slices*0.85))/log10(m_parameter.slices*0.85);
-//        }
-//                     else {x = log10(j)/log10(m_parameter.slices*0.85);}
-//                        stream << j <<
-//                        x <<
-//                    m_parameter.chordBasedReynolds*(log10(j)/log10(m_parameter.slices))/0.3048  << // l*Re(for l=0.3048)/0.3048
-//                      0.21/0.3048*log10(j)/log10(m_parameter.slices) << endl; // 0.21 (Mach for l=0.3048)/0.3048*l
-//        }
-
-//for (int j = int(noiseOpPoints.size()/2-2); j < int(noiseOpPoints.size()/2+2); ++j) {
-
-    stream << qSetFieldWidth(13) <<
-              "slice" <<
-              "position" <<
-              "Re" <<
-              "Mach" <<
-              "Axial_IF" <<
+    stream << qSetFieldWidth(14)  <<
+              "Sect"  << ";" <<
+              "Radius [m]"  << ";" <<
+              "r/R"  << ";" <<
+              "Blade Section" << ";" <<
+              "Chord [m]" << ";" <<
+              "Theta [deg]" << ";" <<
+              "Axial Ind. Fact. (a)"  << ";" <<
+              "Axial Velocity [m/s]" << ";" <<
+              "Tg. Ind. Fact. [a']"  << ";" <<
+              "Tg. Speed [m/s]" << ";" <<
+              "Res. Local Speed Calc [m/s]" << ";" <<
+              "Res. Local Speed BEM [m/s]" << ";" <<
+              "Re"  << ";" <<
+              "Mach"  << ";" <<
               endl;
 
-    for (int i = 0; i < mpos_size; ++i) {
 
-        stream << qSetFieldWidth(13) <<
-                  (i+1)<<
-                  QString::number(pBEM->m_pBData->m_pos.value(i), 'f', 2)<<
-                  QString::number(pBEM->m_pBData->m_Reynolds.value(i), 'f', 2)<<
-                  pBEM->m_pBData->m_Mach.value(i)<<
-                  pBEM->m_pBData->m_a_axial.value(i)<<
+    for (int i = 0; i < mpos_size; ++i) {
+        double axial_ind_fact = pBEM->m_pBData->m_a_axial.value(i);
+
+        stream <<
+                  (i+1) << ";" <<
+                  pBEM->m_pBData->m_pos.value(i) << ";" <<
+                  pBEM->m_pBData->m_pos.value(i)/finalradius << ";" <<
+                  "TODO" << ";" <<
+                  pBEM->m_pBData->m_c_local.value(i) << ";" <<
+                  pBEM->m_pBData->m_theta.value(i) << ";" <<
+                  pBEM->m_pBData->m_a_axial.value(i) << ";" <<
+                  pBEM->m_pBData->windspeed*(1-axial_ind_fact) << ";" <<
+                  pBEM->m_pBData->m_a_tangential.value(i) << ";" <<
+                  omega*pBEM->m_pBData->m_pos.value(i)*(1+pBEM->m_pBData->m_a_tangential.value(i)) << ";" <<//todo
+                  pBEM->m_pBData->m_Windspeed.value(i) << ";" <<
+                  sqrt(pow(pBEM->m_pBData->windspeed*(1-axial_ind_fact),2)+pow(omega*pBEM->m_pBData->m_pos.value(i)*(1+pBEM->m_pBData->m_a_tangential.value(i)),2)) << ";" <<
+                  pBEM->m_pBData->m_Reynolds.value(i) << ";" <<
+                  pBEM->m_pBData->m_Mach.value(i) << ";" <<
                   endl;
 }
-    stream << ""<< endl;
+    stream << endl;
 //}
         stream << endl;        
         stream << endl;
 
     qDeleteAll(noiseOpPoints);
 
-//TODO
+//teste
 
 }
+
+//extra to make the 3d graphics
+//        for (int j = 1; j < (m_parameter.sects+1); ++j) {
+//            if (j > m_parameter.sects*0.85){
+//               x = log10(m_parameter.sects*0.85-(j-m_parameter.sects*0.85))/log10(m_parameter.sects*0.85);
+//        }
+//                     else {x = log10(j)/log10(m_parameter.sects*0.85);}
+//                        stream << j <<
+//                        x <<
+//                    m_parameter.chordBasedReynolds*(log10(j)/log10(m_parameter.sects))/0.3048  << // l*Re(for l=0.3048)/0.3048
+//                      0.21/0.3048*log10(j)/log10(m_parameter.sects) << endl; // 0.21 (Mach for l=0.3048)/0.3048*l
+//        }
+
+//for (int j = int(noiseOpPoints.size()/2-2); j < int(noiseOpPoints.size()/2+2); ++j) {
 //Sara
 
 void NoiseSimulation::setAnalyzedOpPoints(QVector<OpPoint *> newList) {
@@ -336,10 +315,10 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
 		else value = static_cast<int>(m_parameter.transition); break;
 
         //Sara
-            case P::slices:
-                if(set) m_parameter.slices = value.toDouble();
-                if(m_parameter.slices<13) m_parameter.slices=13;
-                else value = m_parameter.slices; break;
+            case P::sects:
+                if(set) m_parameter.sects = value.toDouble();
+                if(m_parameter.sects<13) m_parameter.sects=13;
+                else value = m_parameter.sects; break;
         //Sara
 	}
 

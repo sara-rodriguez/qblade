@@ -47,7 +47,7 @@ private:
     double m_DStarFinalS;
     double m_DStarFinalP;
     double originalMach;
-    double m_slices;
+    double m_sects;
     double x;
 
     QList <double> m_pos;

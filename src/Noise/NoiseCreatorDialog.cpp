@@ -131,8 +131,8 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                             hBox->addWidget(groupBox);
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
-                            pGrid->addEdit(P::slices, NumberEditType, new NumberEdit(),
-                                           "Number of Slices (min 13):", 10);
+                            pGrid->addEdit(P::sects, NumberEditType, new NumberEdit(),
+                                           "Number of Segments (min 13):", 13);
                             //Sara
                             
 	setUnitContainingLabels();

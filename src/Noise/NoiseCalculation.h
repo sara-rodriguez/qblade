@@ -123,7 +123,7 @@ private:
 
     //Sara
     //3D
-    double m_slices;
+    double m_sects;
     double x;
 //Sara
 
