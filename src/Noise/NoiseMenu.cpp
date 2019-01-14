@@ -61,13 +61,13 @@ void NoiseMenu::onExportNoise() {
 
 //Sara
 void NoiseMenu::onExport3DNoise() {
-    QString fileName = m_module->getShownSimulation()->getName() + "-3D.txt";
+    QString fileName = m_module->getShownSimulation()->getName() + "-3D.csv";
     fileName.replace(' ', '_');
     fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export 3D Noise Simulation",
                                             g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
-                                            "Text File (*.txt)");
-    if (!fileName.endsWith(".txt")) {
-        fileName.append(".txt");
+                                            "Comma Separated Values (*.csv)");
+    if (!fileName.endsWith(".csv")) {
+        fileName.append(".csv");
     }
 
     QFile file (fileName);

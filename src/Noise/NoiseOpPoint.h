@@ -26,7 +26,7 @@ public:
 	double getDstrAt(int x, int y);
 	
 private:
-    double m_reynolds, m_alpha, m_slices, x; //Sara
+    double m_reynolds, m_alpha, m_sects, x; //Sara
 	OpPoint *m_opPoint;
 };
 
