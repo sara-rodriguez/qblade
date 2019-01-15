@@ -178,6 +178,23 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 //Acessa o módulo BEM através da referencia da janela principal
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
+//O m_pBEMData é a matriz, cada tip speed ratio é um elemento.
+//Você precisará iterar da seguinte forma:
+    foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+        for (int i = 0; i < bdata->m_pos.size(); ++i) {
+
+            //utilize o bdata dentro do loop em vez do pBEM->m_pBData para trabalhar com todos os tips
+            double axial_ind_fact = bdata->m_a_axial.value(i);
+            stream <<
+                      (i+1) << ";" <<
+                      bdata->m_pos.value(i) << ";";
+            //...
+        }
+    }
+
+
+
+
 //Acessa os dados armazenados após os calculos
     int mpos_size = pBEM->m_pBData->m_pos.size(); //total number of segments
     double finalradius = pBEM->m_pBData->m_pos.value(mpos_size-1);
