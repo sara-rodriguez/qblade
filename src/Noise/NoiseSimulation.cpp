@@ -175,35 +175,30 @@ void NoiseSimulation::export3DCalculation(QTextStream &stream) {
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
+SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+double z=lstart;
+double originalvelocity = m_parameter.originalVelocity;
+
 //Acessa o módulo BEM através da referencia da janela principal
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
 //O m_pBEMData é a matriz, cada tip speed ratio é um elemento.
 //Você precisará iterar da seguinte forma:
     foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-        for (int i = 0; i < bdata->m_pos.size(); ++i) {
 
-            //utilize o bdata dentro do loop em vez do pBEM->m_pBData para trabalhar com todos os tips
-            double axial_ind_fact = bdata->m_a_axial.value(i);
-            stream <<
-                      (i+1) << ";" <<
-                      bdata->m_pos.value(i) << ";";
-            //...
-        }
-    }
+    double rho = pBEM->dlg_rho;
+    double visc = pBEM->dlg_visc;
 
+    QString str= QString::number(z, 'f', 1);
 
-
-
-//Acessa os dados armazenados após os calculos
-    int mpos_size = pBEM->m_pBData->m_pos.size(); //total number of segments
-    double finalradius = pBEM->m_pBData->m_pos.value(mpos_size-1);
-    double nom_tg_speed = pBEM->m_pBData->windspeed*pBEM->m_pBData->lambda_global;
-    double omega = nom_tg_speed/finalradius; //angular speed //todo
-
-        stream << qSetFieldWidth(0);
+    stream << endl;
+    stream << "Tip Speed Ratio: " << str << endl;
+    stream << endl;
 
     stream << qSetFieldWidth(14)  <<
+
               "Sect"  << ";" <<
               "Radius [m]"  << ";" <<
               "r/R"  << ";" <<
@@ -217,40 +212,50 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
               "Res. Local Speed Calc [m/s]" << ";" <<
               "Res. Local Speed BEM [m/s]" << ";" <<
               "Re"  << ";" <<
+              "Re calc"  << ";" <<
               "Mach"  << ";" <<
-              endl;
+              "Mach calc"  << ";" << endl;
 
+        for (int i = 0; i < bdata->m_pos.size(); ++i) {
 
-    for (int i = 0; i < mpos_size; ++i) {
-        double axial_ind_fact = pBEM->m_pBData->m_a_axial.value(i);
+            //utilize o bdata dentro do loop em vez do pBEM->m_pBData para trabalhar com todos os tips
+            double axial_ind_fact = bdata->m_a_axial.value(i);
 
-        stream <<
-                  (i+1) << ";" <<
-                  pBEM->m_pBData->m_pos.value(i) << ";" <<
-                  pBEM->m_pBData->m_pos.value(i)/finalradius << ";" <<
-                  "TODO" << ";" <<
-                  pBEM->m_pBData->m_c_local.value(i) << ";" <<
-                  pBEM->m_pBData->m_theta.value(i) << ";" <<
-                  pBEM->m_pBData->m_a_axial.value(i) << ";" <<
-                  pBEM->m_pBData->windspeed*(1-axial_ind_fact) << ";" <<
-                  pBEM->m_pBData->m_a_tangential.value(i) << ";" <<
-                  omega*pBEM->m_pBData->m_pos.value(i)*(1+pBEM->m_pBData->m_a_tangential.value(i)) << ";" <<//todo
-                  pBEM->m_pBData->m_Windspeed.value(i) << ";" <<
-                  sqrt(pow(pBEM->m_pBData->windspeed*(1-axial_ind_fact),2)+pow(omega*pBEM->m_pBData->m_pos.value(i)*(1+pBEM->m_pBData->m_a_tangential.value(i)),2)) << ";" <<
-                  pBEM->m_pBData->m_Reynolds.value(i) << ";" <<
-                  pBEM->m_pBData->m_Mach.value(i) << ";" <<
-                  endl;
-}
-    stream << endl;
-//}
-        stream << endl;        
-        stream << endl;
+            int mpos_size = bdata->m_pos.size(); //total number of segments
+            double finalradius = bdata->m_pos.value(mpos_size-1);
+            double axial_velocity = originalvelocity*(1-axial_ind_fact);
+            double nom_tg_speed = bdata->windspeed*pBEM->m_pBData->lambda_global;
+            double omega = nom_tg_speed/finalradius;
+            double tangential_speed = omega*bdata->m_pos.value(i)*(1+bdata->m_a_tangential.value(i));
+            double resultant_local_speed = qSqrt(pow(axial_velocity,2)+pow(tangential_speed,2));
+            double chord = bdata->m_c_local.value(i);
 
-    qDeleteAll(noiseOpPoints);
+        stream << qSetFieldWidth(14)  <<
+                      (i+1) << ";" <<
+                      bdata->m_pos.value(i) << ";" <<
+                      bdata->m_pos.value(i)/finalradius << ";" <<
+                      "TODO" << ";" <<
+                      chord << ";" <<
+                      bdata->m_theta.value(i) << ";" <<
+                      axial_ind_fact << ";" <<
+                      axial_velocity << ";" <<
+                      bdata->m_a_tangential.value(i) << ";" <<
+                      tangential_speed << ";" <<
+                      m_Windspeed.value(i) << ";" <<
+                      resultant_local_speed << ";" <<
+                      bdata->m_Reynolds.value(i) << ";" <<
+                      rho*resultant_local_speed*chord/visc << ";" <<
+                      bdata->m_Mach.value(i) << ";" <<
+                      resultant_local_speed/sqrt(286.9*288.15*1.4) << ";" <<  endl;
+    }
+
+        qDeleteAll(noiseOpPoints);
+
+z=z+ldelta;
+        }
+    }
 
 //teste
-
-}
 
 //extra to make the 3d graphics
 //        for (int j = 1; j < (m_parameter.sects+1); ++j) {
