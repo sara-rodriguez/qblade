@@ -8,7 +8,6 @@
 #include "NoiseModule.h"
 #include "../ColorManager.h"
 #include "NoiseOpPoint.h"
-//#include "../XBEM/BData.h" //Sara
 #include "../XBEM/BEM.h"
 
 
@@ -179,17 +178,30 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
 double z=lstart;
-double originalvelocity = m_parameter.originalVelocity;
+double approaxing_wind_speed = m_parameter.originalVelocity;
 
-//Acessa o módulo BEM através da referencia da janela principal
+//nome da pa
+//QGroupBox* SimulationCreatorDialog<ParameterGroup>::constructParameterBox(QString defaultName)
+//SimulationCreatorDialog *pSimulationCreatorDialog = (SimulationCreatorDialog *) constructParameterBox->;
+//SimulationCreatorDialog->ParameterGroup->constructParameterBox->defaultName
+
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-
-//O m_pBEMData é a matriz, cada tip speed ratio é um elemento.
-//Você precisará iterar da seguinte forma:
     foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
 
+    int number_of_segments = bdata->m_pos.size();
     double rho = pBEM->dlg_rho;
-    double visc = pBEM->dlg_visc;
+    double dynamic_visc = pBEM->dlg_visc;
+    double cin_visc = dynamic_visc/rho;
+    double K_air = 1.4;
+    double R_air = 286.9;
+    double T_std_cond = 288.15;
+    double P_std_cond = 101300;
+    double lambda = pBEM->dlg_lambda;
+
+//    qDebug() << "tamanho de alpha: " << bdata->m_alpha.size();
+//    qDebug() << "tamanho de cl/cd: " << bdata->m_LD.size();
+//    qDebug() << "segmentos: " << number_of_segments;
+
 
     QString str= QString::number(z, 'f', 1);
 
@@ -197,12 +209,11 @@ double originalvelocity = m_parameter.originalVelocity;
     stream << "Tip Speed Ratio: " << str << endl;
     stream << endl;
 
-    stream << qSetFieldWidth(14)  <<
-
+    stream <<   qSetFieldWidth(14)  <<
               "Sect"  << ";" <<
               "Radius [m]"  << ";" <<
               "r/R"  << ";" <<
-              "Blade Section" << ";" <<
+//              "Blade Section" << ";" <<
               "Chord [m]" << ";" <<
               "Theta [deg]" << ";" <<
               "Axial Ind. Fact. (a)"  << ";" <<
@@ -211,42 +222,68 @@ double originalvelocity = m_parameter.originalVelocity;
               "Tg. Speed [m/s]" << ";" <<
               "Res. Local Speed Calc [m/s]" << ";" <<
               "Res. Local Speed BEM [m/s]" << ";" <<
-              "Re"  << ";" <<
+              "Re BEM"  << ";" <<
               "Re calc"  << ";" <<
-              "Mach"  << ";" <<
-              "Mach calc"  << ";" << endl;
+              "Mach BEM"  << ";" <<
+              "Mach calc"  << ";" <<
+              "(cl/cd) max"   << ";" <<
+              "cl"   << ";" <<
+              "cd"   << ";" <<
+              "(cl/cd) max angle"    <<";"   <<
+              "c/R  "<<";"   <<  endl;
 
-        for (int i = 0; i < bdata->m_pos.size(); ++i) {
 
-            //utilize o bdata dentro do loop em vez do pBEM->m_pBData para trabalhar com todos os tips
+        for (int i = 0; i < number_of_segments; ++i) {
             double axial_ind_fact = bdata->m_a_axial.value(i);
 
             int mpos_size = bdata->m_pos.size(); //total number of segments
             double finalradius = bdata->m_pos.value(mpos_size-1);
-            double axial_velocity = originalvelocity*(1-axial_ind_fact);
-            double nom_tg_speed = bdata->windspeed*pBEM->m_pBData->lambda_global;
+            double axial_velocity = approaxing_wind_speed*(1-axial_ind_fact);
+            double nom_tg_speed = bdata->windspeed*lambda;
             double omega = nom_tg_speed/finalradius;
+            double rotation = 60/(M_PI*100/nom_tg_speed);
+
             double tangential_speed = omega*bdata->m_pos.value(i)*(1+bdata->m_a_tangential.value(i));
             double resultant_local_speed = qSqrt(pow(axial_velocity,2)+pow(tangential_speed,2));
             double chord = bdata->m_c_local.value(i);
+            double Reynolds_calc = rho*resultant_local_speed*chord/dynamic_visc;
+            double Mach_calc = resultant_local_speed/sqrt(R_air*K_air*T_std_cond);
+            double alpha = bdata->m_alpha.value(i);
+            double cl_cd =  bdata->m_LD.value(i);
+            double r_R = bdata->m_pos.value(i)/finalradius;
+
+            double c_Rx = 0;
+            if (r_R <= 0.05) {c_Rx = 0.05500+0;}
+            if (r_R > 0.05 && r_R < 0.25) {c_Rx = (r_R-0.05)*(0.07500-0.05500)/(0.25-0.05)+0.05500;}
+            if (r_R <= 0.25 && r_R >= 0.25) {c_Rx = 0.07500;}
+            if (r_R > 0.25 && r_R < 1.00) {c_Rx = (r_R-0.25)*(0.02000-0.07500)/(1.00-0.25)+0.07500;}
+            if (r_R >= 1.00) {c_Rx = 0.02000;}
+
+            QString c_R= QString::number(c_Rx, 'f', 5);
 
         stream << qSetFieldWidth(14)  <<
                       (i+1) << ";" <<
                       bdata->m_pos.value(i) << ";" <<
-                      bdata->m_pos.value(i)/finalradius << ";" <<
-                      "TODO" << ";" <<
+                      r_R << ";" <<
+//                      "HOLD" << ";" << //defaultName
                       chord << ";" <<
                       bdata->m_theta.value(i) << ";" <<
                       axial_ind_fact << ";" <<
                       axial_velocity << ";" <<
                       bdata->m_a_tangential.value(i) << ";" <<
                       tangential_speed << ";" <<
-                      m_Windspeed.value(i) << ";" <<
                       resultant_local_speed << ";" <<
+                      bdata->m_Windspeed.value(i) << ";" <<
                       bdata->m_Reynolds.value(i) << ";" <<
-                      rho*resultant_local_speed*chord/visc << ";" <<
+                      Reynolds_calc << ";" <<
                       bdata->m_Mach.value(i) << ";" <<
-                      resultant_local_speed/sqrt(286.9*288.15*1.4) << ";" <<  endl;
+                      Mach_calc << ";" <<
+                      cl_cd << ";" <<
+                      bdata->m_CL.value(i) << ";" <<
+                      bdata->m_CD.value(i) << ";" <<
+                      alpha <<  ";" <<
+                      c_R  << ";" <<
+                  endl;
     }
 
         qDeleteAll(noiseOpPoints);

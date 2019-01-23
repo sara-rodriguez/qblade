@@ -88,7 +88,6 @@ void CPolar::serialize() {
 	g_serializer.readOrWriteDoubleList1D (&m_Cl32Cd);
 	g_serializer.readOrWriteDoubleList1D (&m_RtCl);
 	g_serializer.readOrWriteDoubleList1D (&m_Re);
-    //g_serializer.readOrWriteDoubleList1D (&m_Ma);//Sara 2
 }
 
 
@@ -163,8 +162,8 @@ void CPolar::ExportPolar(QTextStream &out, int FileType, bool bDataOnly)
 	}
 	else 
 	{
-        if(FileType==1) Header=QString(("  alpha     Re      CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge     XCp   \n"));//Sara 2 Ma
-        else            Header=QString(("alpha,Re,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n"));//Sara 2 ,Ma
+        if(FileType==1) Header=QString(("  alpha     Re      CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge     XCp   \n"));
+        else            Header=QString(("alpha,Re,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n"));
 		out << Header;
 		if(FileType==1)
 		{
@@ -220,7 +219,6 @@ void CPolar::ResetPolar()
     m_Cl32Cd.clear();
     m_Re.clear();
 	m_XCp.clear();
-   // m_Ma.clear();//Sara 2
 }
 
 CPolar *CPolar::newBySerialize() {
@@ -236,7 +234,7 @@ void CPolar::AddData(OpPoint *pOpPoint)
 	m_ACrit = pOpPoint->ACrit;
 	AddPoint(pOpPoint->Alpha, pOpPoint->Cd, pOpPoint->Cdp, pOpPoint->Cl, pOpPoint->Cm,
 			 pOpPoint->Xtr1, pOpPoint->Xtr2, pOpPoint->m_TEHMom, pOpPoint->Cpmn, pOpPoint->Reynolds,
-             pOpPoint->m_XCP);//Sara 2 ,pOpPoint->Mach
+             pOpPoint->m_XCP);
 }
 
 
@@ -249,12 +247,12 @@ void CPolar::AddData(void* ptrXFoil)
 	m_ACrit = pXFoil->acrit;
 
     AddPoint(alpha, pXFoil->cd, pXFoil->cdp, pXFoil->cl, pXFoil->cm, pXFoil->xoctr[1],
-             pXFoil->xoctr[2], pXFoil->hmom, pXFoil->cpmn, pXFoil->reinf1, pXFoil->xcp);//Sara 2 , pXFoil->minf1
+             pXFoil->xoctr[2], pXFoil->hmom, pXFoil->cpmn, pXFoil->reinf1, pXFoil->xcp);
 
 }
 
 void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, double Xtr1,
-                      double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp)//Sara 2 , double Mach
+                      double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp)
 {
 	int i;
 	bool bInserted = false;
@@ -285,16 +283,16 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                     if (Cl>=0.0) m_Cl32Cd[i] = pow(Cl, 1.5)/ Cd;
                     else         m_Cl32Cd[i] = -pow(-Cl, 1.5)/ Cd;
 
-                    if(m_PolarType==FIXEDSPEEDPOLAR) {m_Re[i] =  Reynolds;}//Sara
+                    if(m_PolarType==FIXEDSPEEDPOLAR) {m_Re[i] =  Reynolds;}
 					else if (m_PolarType==FIXEDLIFTPOLAR)
                     {
-                        if(Cl>0.0) {m_Re[i] =  Reynolds/ sqrt(Cl);}//Sara
-                        else {m_Re[i] = 0.0;}//Sara
+                        if(Cl>0.0) {m_Re[i] =  Reynolds/ sqrt(Cl);}
+                        else {m_Re[i] = 0.0;}
 					}
 					else if (m_PolarType==RUBBERCHORDPOLAR)
                     {
-                        if(Cl>0.0) {m_Re[i] =  Reynolds/(Cl);}//Sara  m_Ma[i] =  Mach/(Cl);
-                        else {m_Re[i] = 0.0;}//Sara
+                        if(Cl>0.0) {m_Re[i] =  Reynolds/(Cl);}
+                        else {m_Re[i] = 0.0;}
 					}
 
 
@@ -322,16 +320,16 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                     if (Cl>=0.0) m_Cl32Cd.insert(i,pow(Cl, 1.5)/ Cd);
                     else         m_Cl32Cd.insert(i,-pow(-Cl, 1.5)/ Cd);
 
-                    if(m_PolarType==FIXEDSPEEDPOLAR){m_Re.insert(i, Reynolds);}//Sara
+                    if(m_PolarType==FIXEDSPEEDPOLAR){m_Re.insert(i, Reynolds);}
 					else if (m_PolarType==FIXEDLIFTPOLAR)
                     {
-                        if(Cl>0) {m_Re.insert(i, Reynolds/sqrt(Cl));}//Sara
-                        else {m_Re[i] = 0.0;}//Sara
+                        if(Cl>0) {m_Re.insert(i, Reynolds/sqrt(Cl));}
+                        else {m_Re[i] = 0.0;}
                     }
 					else if (m_PolarType==RUBBERCHORDPOLAR)
                     {
-                        if(Cl>0.0){m_Re.insert(i, Reynolds/Cl);}//Sara
-                        else       {m_Re.insert(i, 0.0);}//Sara
+                        if(Cl>0.0){m_Re.insert(i, Reynolds/Cl);}
+                        else       {m_Re.insert(i, 0.0);}
                     }
 
                     bInserted = true;
@@ -361,7 +359,6 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                     if (Cl>=0.0) m_Cl32Cd[i] = pow(Cl, 1.5)/ Cd;
                     else         m_Cl32Cd[i] = -pow(-Cl, 1.5)/ Cd;
 					m_Re[i] =  Reynolds;
-                   // m_Ma[i] =  Mach;//Sara
 
 					bInserted = true;
 					break;
@@ -385,7 +382,6 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                     else         m_Cl32Cd.insert(i,-pow(-Cl, 1.5)/ Cd);
 
                     m_Re.insert(i, Reynolds);
-                    //m_Ma.insert(i, Mach);//Sara
 
                     bInserted = true;
                     break;
@@ -416,13 +412,13 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
 		if(m_PolarType==FIXEDSPEEDPOLAR || m_PolarType==FIXEDAOAPOLAR) m_Re.insert(size, Reynolds);
 		else if (m_PolarType==FIXEDLIFTPOLAR)
         {
-            if(Cl>0) {m_Re.insert(size, Reynolds/(double) sqrt(Cl));}//Sara  m_Ma.insert(size, Mach/(double) sqrt(Cl));
-            else     {m_Re.insert(size, 0.0);}//Sara m_Ma.insert(size, 0.0)
+            if(Cl>0) {m_Re.insert(size, Reynolds/(double) sqrt(Cl));}
+            else     {m_Re.insert(size, 0.0);}
         }
 		else if (m_PolarType==RUBBERCHORDPOLAR)
         {
-            if(Cl>0.0) {m_Re.insert(size, Reynolds/Cl);}//Sara m_Ma.insert(size, Mach/Cl);
-            else     {m_Re.insert(size, 0.0);}//Sara m_Ma.insert(size, 0.0);
+            if(Cl>0.0) {m_Re.insert(size, Reynolds/Cl);}
+            else     {m_Re.insert(size, 0.0);}
         }
     }
 }
@@ -452,7 +448,6 @@ void CPolar::Copy(CPolar *pPolar)
 		m_Cl32Cd.insert(i, pPolar->m_Cl32Cd[i]);
 		m_Re.insert(i,     pPolar->m_Re[i]);
 		m_XCp.insert(i,    pPolar->m_XCp[i]);
-        //m_Ma.insert(i,    pPolar->m_Ma[i]); //Sara
 	}
 }
 
@@ -678,7 +673,6 @@ void CPolar::Remove(int i)
 	m_Cl32Cd.removeAt(i);
 	m_Re.removeAt(i);
 	m_XCp.removeAt(i);
-   // m_Ma.removeAt(i);//Sara
 }
 
 void CPolar::GetAlphaLimits(double &amin, double &amax)

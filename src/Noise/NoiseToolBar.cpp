@@ -36,7 +36,7 @@ NoiseToolBar::NoiseToolBar(QMainWindow *parent, NoiseModule *module) {
 			m_simulationComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 			m_simulationComboBox->setMinimumWidth(170);
 			vBox->addWidget(m_simulationComboBox);
-	groupBox = new QGroupBox ("Operational Point");
+    groupBox = new QGroupBox ("Operational Point");
 	addWidget(groupBox);
 		vBox = new QVBoxLayout ();
 		groupBox->setLayout(vBox);

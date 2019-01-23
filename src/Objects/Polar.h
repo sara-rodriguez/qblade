@@ -56,7 +56,7 @@ public:
 	static QStringList prepareMissingObjectMessage();	
 
 	void AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
-                  double Xtr1, double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp);//Sara  double Mach
+                  double Xtr1, double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp);
 	void Copy(CPolar *pPolar);
 
 	void Remove(int i);
@@ -95,7 +95,6 @@ public:
 	QList <double> m_ClCd, m_Cl32Cd;
 	QList <double> m_RtCl;
 	QList <double> m_Re;//type 4 polars
-    QList <double> m_Ma;//Sara
 };
 
 #endif
