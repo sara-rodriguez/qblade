@@ -185,7 +185,7 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
 //SimulationCreatorDialog *pSimulationCreatorDialog = (SimulationCreatorDialog *) constructParameterBox->;
 //SimulationCreatorDialog->ParameterGroup->constructParameterBox->defaultName
 
-    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM; 
     foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
 
     int number_of_segments = bdata->m_pos.size();
@@ -197,6 +197,11 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
     double T_std_cond = 288.15;
     double P_std_cond = 101300;
     double lambda = pBEM->dlg_lambda;
+    int mpos_size = bdata->m_pos.size(); //total number of segments
+    double finalradius = bdata->m_pos.value(mpos_size-1);
+    double nom_tg_speed = bdata->windspeed*lambda;
+    double omega = nom_tg_speed/finalradius;
+    double rotation = 60/(M_PI*100/nom_tg_speed);
 
 //    qDebug() << "tamanho de alpha: " << bdata->m_alpha.size();
 //    qDebug() << "tamanho de cl/cd: " << bdata->m_LD.size();
@@ -205,7 +210,6 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
 
     QString str= QString::number(z, 'f', 1);
 
-    stream << endl;
     stream << "Tip Speed Ratio: " << str << endl;
     stream << endl;
 
@@ -230,18 +234,14 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
               "cl"   << ";" <<
               "cd"   << ";" <<
               "(cl/cd) max angle"    <<";"   <<
-              "c/R  "<<";"   <<  endl;
-
+              "c/R  "<<";"   <<
+              endl;
 
         for (int i = 0; i < number_of_segments; ++i) {
-            double axial_ind_fact = bdata->m_a_axial.value(i);
 
-            int mpos_size = bdata->m_pos.size(); //total number of segments
-            double finalradius = bdata->m_pos.value(mpos_size-1);
+            // definitions
+            double axial_ind_fact = bdata->m_a_axial.value(i);
             double axial_velocity = approaxing_wind_speed*(1-axial_ind_fact);
-            double nom_tg_speed = bdata->windspeed*lambda;
-            double omega = nom_tg_speed/finalradius;
-            double rotation = 60/(M_PI*100/nom_tg_speed);
 
             double tangential_speed = omega*bdata->m_pos.value(i)*(1+bdata->m_a_tangential.value(i));
             double resultant_local_speed = qSqrt(pow(axial_velocity,2)+pow(tangential_speed,2));
@@ -253,11 +253,15 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
             double r_R = bdata->m_pos.value(i)/finalradius;
 
             double c_Rx = 0;
-            if (r_R <= 0.05) {c_Rx = 0.05500+0;}
-            if (r_R > 0.05 && r_R < 0.25) {c_Rx = (r_R-0.05)*(0.07500-0.05500)/(0.25-0.05)+0.05500;}
-            if (r_R <= 0.25 && r_R >= 0.25) {c_Rx = 0.07500;}
-            if (r_R > 0.25 && r_R < 1.00) {c_Rx = (r_R-0.25)*(0.02000-0.07500)/(1.00-0.25)+0.07500;}
-            if (r_R >= 1.00) {c_Rx = 0.02000;}
+            double r_R0  =  0.05; double c_R0 = 0.05500;
+            double r_R1  =  0.25; double c_R1 = 0.07500;
+            double r_R2  =  1.00; double c_R2 = 0.02000;
+
+            if (r_R <= r_R0) {c_Rx = c_R0;}
+            if (r_R > r_R0 && r_R < r_R1) {c_Rx = (r_R-r_R0)*(c_R1-c_R0)/(0.25-r_R0)+c_R0;}
+            if (r_R <= r_R1 && r_R >= r_R1) {c_Rx = c_R1;}
+            if (r_R > r_R1 && r_R < r_R2) {c_Rx = (r_R-r_R1)*(c_R2-c_R1)/(r_R2-r_R1)+c_R1;}
+            if (r_R >= r_R2) {c_Rx = c_R2;}
 
             QString c_R= QString::number(c_Rx, 'f', 5);
 
@@ -282,15 +286,161 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
                       bdata->m_CL.value(i) << ";" <<
                       bdata->m_CD.value(i) << ";" <<
                       alpha <<  ";" <<
-                      c_R  << ";" <<
-                  endl;
-    }
-
-        qDeleteAll(noiseOpPoints);
-
-z=z+ldelta;
+                      c_R  << ";" << endl;
         }
-    }
+                z=z+ldelta;
+
+        //planilha oculta
+
+        //dados de entrada
+        int sectionu = 21;
+        double cl = 1.26;
+        double cd = 0.0126;
+        double ac = 0.2;
+        int lbrac = 6;
+
+        //definiçoes
+        int sectionx = (sectionu-1);
+        double wr=bdata->m_pos.value(sectionx)*omega;
+        double chordx = bdata->m_c_local.value(sectionx);
+        double radiusx = bdata->m_pos.value(sectionx);
+        double doubt_calc=(chordx*3/(2*M_PI*radiusx));
+
+        stream << endl;
+        stream << endl;
+        stream << "With Prandtl's Tip Loss Correction and Glauert Correction" << endl;
+        stream << "BEM Method. Hansen 2008 p. 50" << endl;
+        stream << endl;
+        stream << "Sect Defined:"   <<  (sectionx+1);
+        stream << endl;
+        stream << endl;
+
+        stream <<   qSetFieldWidth(14)  <<
+        "Sect"  << ";" <<
+        "a"  << ";" <<
+        "a (a>0.2)"  << ";" <<
+        "a'"  << ";" <<
+        "a var [%]"  << ";" <<
+        "a' var [%]"  << ";" <<
+        "(1-a)"  << ";" <<
+        "(1-a')"  << ";" <<
+        "V0"  << ";" <<
+        "Wr"  << ";" <<
+        "phi [deg]"  << ";" <<
+        "["  << ";" <<
+        "theta [deg]"  << ";" <<
+        "cl"  << ";" <<
+        "cd"  << ";" <<
+        "cn"  << ";" <<
+        "ct"  << ";" <<
+        "?"  << ";" <<
+        "f"  << ";" <<
+        "F"  << ";" <<
+        "K"  << ";" <<
+        endl;
+
+//definição de arrays
+double a_calc[number_of_segments+1];
+double a_corrected_calc[number_of_segments+1];
+double a_lin_calc[number_of_segments+1];
+double a_variation_calc[number_of_segments+1];
+double a_lin_variation_calc[number_of_segments+1];
+double phi_calc[number_of_segments+1];
+double F_calc[number_of_segments+1];
+double K_calc[number_of_segments+1];
+double ct_calc[number_of_segments+1];
+double one_a_calc[number_of_segments+1];
+double one_a_lin_calc[number_of_segments+1];
+double theta_calc[number_of_segments+1];
+double cl_calc[number_of_segments+1];
+double cn_calc[number_of_segments+1];
+double f_calc[number_of_segments+1];
+double Fma_calc[number_of_segments+1];
+
+       for (int i = -1; i < number_of_segments; ++i) {
+
+//equações
+if (i==-1){
+    a_calc[-1]=0;
+    a_corrected_calc[-1]=0;
+    a_lin_calc[-1]=0;
+    a_variation_calc[-1]=0;
+    a_lin_variation_calc[-1]=0;
+    phi_calc[-1]=(qRadiansToDegrees(qAtan((one_a_calc[-1]*(double)approaxing_wind_speed)/(one_a_lin_calc[-1]*(double)wr))));
+    F_calc[-1]=0;
+    K_calc[-1]=0;
+    one_a_calc[-1]=1;
+    one_a_lin_calc[-1]=1;
+    theta_calc[-1]=(phi_calc[-1]-lbrac);
+    cn_calc[-1]=(cl*qCos(qDegreesToRadians(phi_calc[-1]))+cd*(double)qSin(qDegreesToRadians(phi_calc[-1])));
+    ct_calc[-1]=(cl*qSin(qDegreesToRadians(phi_calc[-1]))-cd*(double)qCos(qDegreesToRadians(phi_calc[-1])));
+    f_calc[-1]=(3*(double)(50-radiusx)/(double)(2*radiusx*(double)qSin(qDegreesToRadians(phi_calc[-1]))));
+    Fma_calc[-1]=(2/M_PI*(1/(double)qCos(qExp(-f_calc[-1]))));
+    K_calc[-1]=(4*(double)Fma_calc[-1]*pow(qSin(qDegreesToRadians(phi_calc[-1])),2)/doubt_calc*cn_calc[-1]);
+}
+else{
+        a_lin_calc[i] = (1.f/((4.f*Fma_calc[i-1]*qSin(qDegreesToRadians(phi_calc[i-1]))*qCos(qDegreesToRadians(phi_calc[i-1]))/doubt_calc*ct_calc[i-1])-1.f));
+
+        a_calc[i] = (1/(double)(K_calc[i-1]+1));
+        a_corrected_calc[i] = (0.5*(2+K_calc[i-1]*(double)(1-2*ac)-qSqrt(pow((K_calc[i-1]*(1-2*ac)+2),2)+4*(double)(K_calc[i-1]*pow(ac,2)-1))));
+
+        if (i==0){a_variation_calc[i] = ((a_calc[i]-a_calc[i-1])*(double)100);} else {
+        a_variation_calc[i] = (((a_calc[i]-a_calc[i-1])/a_calc[i-1])*(double)100);}
+
+        if (i==0){a_lin_variation_calc[i] = ((a_lin_calc[i]-a_lin_calc[i-1])*100);} else {
+        a_lin_variation_calc[i] = (((a_lin_calc[i]-a_lin_calc[i-1])/(double)a_lin_calc[i-1])*100);}
+
+        if (a_calc[i]<ac){one_a_calc[i]=(1-a_calc[i]);} else {one_a_calc[i]=(1-a_corrected_calc[i]);}
+
+        one_a_lin_calc[i]=(1+a_lin_calc[i]);
+
+        phi_calc[i]=(qRadiansToDegrees(qAtan((one_a_calc[i]*approaxing_wind_speed)/(double)(one_a_lin_calc[i]*wr))));
+
+        theta_calc[i]=(phi_calc[i]-lbrac);
+
+        cn_calc[i] = (cl*qCos(qDegreesToRadians(phi_calc[i]))+cd*qSin(qDegreesToRadians(phi_calc[i])));
+
+        ct_calc[i] = (cl*qSin(qDegreesToRadians(phi_calc[i]))-cd*qCos(qDegreesToRadians(phi_calc[i])));
+
+        f_calc[i]=(3*(50-radiusx)/(double)(2*radiusx*qSin(qDegreesToRadians(phi_calc[i]))));
+
+        Fma_calc[i]=(2/M_PI*(1/(double)qCos(qExp(-f_calc[i]))));
+
+        K_calc[i]=(4*Fma_calc[i]*pow(qSin(qDegreesToRadians(phi_calc[i])),2)/(double)doubt_calc*cn_calc[i]);
+}
+
+        stream << qSetFieldWidth(14)  <<
+                  (i+1) << ";" <<
+                  a_calc[i] << ";" <<
+                  a_corrected_calc[i] << ";" <<
+                  a_lin_calc[i] << ";" <<
+                  a_variation_calc[i] << ";" <<
+                  a_lin_variation_calc[i] << ";" <<
+                  one_a_calc[i] << ";" <<
+                  one_a_lin_calc[i] << ";" <<
+                  approaxing_wind_speed << ";" <<
+                  wr << ";" <<
+                  phi_calc[i] << ";" <<
+                  lbrac << ";" <<
+                  theta_calc[i] << ";" <<
+                  cl << ";" <<
+                  cd << ";" <<
+                  cn_calc[i] << ";" <<
+                  ct_calc[i] << ";" <<
+                  doubt_calc << ";" <<
+                  f_calc[i] << ";" <<
+                  Fma_calc[i] << ";" <<
+                  K_calc[i] << ";" <<
+                endl;
+}
+                stream << endl;
+                stream << endl;
+                stream << endl;
+}
+//       delete[] variables;
+       qDeleteAll(noiseOpPoints);
+}
+
 
 //teste
 
@@ -307,6 +457,7 @@ z=z+ldelta;
 //        }
 
 //for (int j = int(noiseOpPoints.size()/2-2); j < int(noiseOpPoints.size()/2+2); ++j) {
+
 //Sara
 
 void NoiseSimulation::setAnalyzedOpPoints(QVector<OpPoint *> newList) {
