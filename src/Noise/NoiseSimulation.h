@@ -49,6 +49,9 @@ private:
     double originalMach;
     double m_sects;
     double x;
+    double m_rot_speed;
+    double m_u_wind_speed;
+    double m_TSR;
 
     QList <double> m_pos;
     QList <double> m_c_local;       //local chord

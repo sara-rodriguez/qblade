@@ -132,7 +132,17 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
                             pGrid->addEdit(P::sects, NumberEditType, new NumberEdit(),
-                                           "Number of Segments (min 13):", 13);
+                                           "Number of Segments (min 13):", 40);
+                            pGrid->addEdit(P::rot_speed, NumberEditType, new NumberEdit(),
+                                           "Rotational Speed []:", 10, SPEED);
+                            pGrid->addEdit(P::u_wind_speed, NumberEditType, new NumberEdit(),
+                                           "Uniform Wind Speed []:", 10, SPEED); //m_parameter.originalVelocity()
+                            pGrid->addEdit(P::TSR, NumberEditType, new NumberEdit(),
+                                           "TSR:", 10);
+                            QLabel *label3d = new QLabel ("Select Blade Type from Database:");
+                            pGrid->addWidget(label3d);
+                            m_airfoilComboBox = new FoilComboBox (&g_foilStore);
+                            pGrid->addWidget(m_airfoilComboBox);
                             //Sara
                             
 	setUnitContainingLabels();
@@ -149,7 +159,7 @@ void NoiseCreatorDialog::initView() {
 		if (m_editedSimulation->getSelectFrom() == NoiseParameter::OnePolar) {
 			if (!m_editedSimulation->getAnalyzedOpPoints().isEmpty()) {
 				m_airfoilComboBox->setCurrentObject(
-						static_cast<CFoil*>(m_editedSimulation->getAnalyzedOpPoints()[0]->getParent()->getParent()));
+                        static_cast<CFoil*>(m_editedSimulation->getAnalyzedOpPoints()[0]->getParent()->getParent()));
 				m_polarComboBox->setCurrentObject(
 						static_cast<CPolar*>(m_editedSimulation->getAnalyzedOpPoints()[0]->getParent()));
 			}
@@ -263,11 +273,33 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
 			break;
 		}
 	}
-	if (!hasOpPoints) {
-		QMessageBox::critical(this, "Create Noise Simulation",
-							  "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
-		return;
-	}
+    if (!hasOpPoints) {
+        QMessageBox::critical(this, "Create Noise Simulation",
+                              "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
+        return;
+    }
+    //Sara TODO criar alertas para usuario
+//    if (!hasOpPoints) {
+//		QMessageBox::critical(this, "Create Noise Simulation",
+//							  "The following error(s) occured:\n\n - Reynolds Lower 600,000", QMessageBox::Ok);
+//		return;
+//	}
+//    if (!hasOpPoints) {
+//		QMessageBox::critical(this, "Create Noise Simulation",
+//							  "Alert:\n\n - Reynolds Upper 2,400,000", QMessageBox::Ok);
+//		return;
+//	}
+//    if (!hasOpPoints) {
+//		QMessageBox::critical(this, "Create Noise Simulation",
+//							  "Alert:\n\n - Mach Upper 0.21", QMessageBox::Ok);
+//		return;
+//	}
+//    if (!hasOpPoints) {
+//		QMessageBox::critical(this, "Create Noise Simulation",
+//							  "Alert:\n\n - AOA(abs) Upper 19.8''", QMessageBox::Ok);
+//		return;
+//	}
+    //Sara
 	
 	/* create new simlation */
 	NoiseSimulation *newSimulation = new NoiseSimulation (this);

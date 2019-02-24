@@ -124,6 +124,9 @@ private:
     //Sara
     //3D
     double m_sects;
+    double m_rot_speed;
+    double m_u_wind_speed;
+    double m_TSR;
     double x;
 //Sara
 

@@ -52,6 +52,9 @@ public:
     
     //3D Sara
     double sects;
+    double rot_speed;
+    double u_wind_speed;
+    double TSR;
 };
 
 #endif // NOISEPARAMETER_H

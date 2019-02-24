@@ -18,7 +18,7 @@ void NoiseParameter::serialize() {
 	g_serializer.readOrWriteStorableObjectVector(&analyzedOpPoints);
 	
 	g_serializer.readOrWriteDouble(&wettedLength);
-	g_serializer.readOrWriteDouble(&distanceObsever);
+    g_serializer.readOrWriteDouble(&distanceObsever);
 	g_serializer.readOrWriteDouble(&directivityGreek);
 	g_serializer.readOrWriteDouble(&directivityPhi);
 	g_serializer.readOrWriteBool(&highFreq);
