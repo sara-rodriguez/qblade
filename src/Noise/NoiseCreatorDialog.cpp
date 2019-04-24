@@ -42,7 +42,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 					pGrid->addEdit(P::WettedLength, NumberEditType, new NumberEdit(),
 								  "Length of wetted Trailing-Edge (L) []:", 1, LENGTH);
 					pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
-								  "Distance from observer to TE (re) []:", 1.22, LENGTH);
+                                  "Distance from observer to TE (re) []:", 1.22, LENGTH);
 					pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
 								  "Original flow velocity (U) []:", 13, SPEED);
 					pGrid->addEdit(P::OriginalChordLength, NumberEditType, new NumberEdit(),
@@ -132,17 +132,17 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
                             pGrid->addEdit(P::sects, NumberEditType, new NumberEdit(),
-                                           "Number of Segments (min 13):", 40);
+                                           "Number of Segments (min 13):", 0);
                             pGrid->addEdit(P::rot_speed, NumberEditType, new NumberEdit(),
-                                           "Rotational Speed []:", 10, SPEED);
+                                           "Rotational Speed []:", 0, SPEED);
                             pGrid->addEdit(P::u_wind_speed, NumberEditType, new NumberEdit(),
-                                           "Uniform Wind Speed []:", 10, SPEED); //m_parameter.originalVelocity()
+                                           "Uniform Wind Speed []:", 0, SPEED); //m_parameter.originalVelocity()
                             pGrid->addEdit(P::TSR, NumberEditType, new NumberEdit(),
                                            "TSR:", 10);
-                            QLabel *label3d = new QLabel ("Select Blade Type from Database:");
-                            pGrid->addWidget(label3d);
-                            m_airfoilComboBox = new FoilComboBox (&g_foilStore);
-                            pGrid->addWidget(m_airfoilComboBox);
+                            QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
+                            pGrid->addWidget(labeltd);
+                            m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
+                            pGrid->addWidget(m_airfoilComboBoxtd);
                             //Sara
                             
 	setUnitContainingLabels();

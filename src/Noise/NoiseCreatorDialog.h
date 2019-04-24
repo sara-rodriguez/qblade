@@ -49,6 +49,7 @@ private:
 	
 	QButtonGroup *m_selectFromButtons;
 	FoilComboBox *m_airfoilComboBox;
+    FoilComboBox *m_airfoilComboBoxtd;
 	PolarComboBox *m_polarComboBox;
 	QScrollArea *m_opPointScrollArea;
 	QWidget *m_opPointViewWidget;
