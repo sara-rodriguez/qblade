@@ -8,6 +8,7 @@
 #include "NoiseParameter.h"
 
 #include "../XBEM/BData.h" //Sara
+#include <QtMath> //Sara
 
 template <class KeyType>
 class ParameterViewer;
@@ -29,6 +30,8 @@ public:
 	void simulate();  // can throw NoiseException
 	void exportCalculation (QTextStream &stream);
     void export3DCalculation (QTextStream &stream);//Sara
+
+    double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
 	
 	void setAnalyzedOpPoints (QVector<OpPoint*> newList);
 	void setSelectFrom (NoiseParameter::OpPointSource select) { m_parameter.opPointSource = select; }

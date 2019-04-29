@@ -1,4 +1,5 @@
 #include "NoiseSimulation.h"
+#include "NoiseParameter.h" //Sara
 
 #include "../ParameterViewer.h"
 #include "../Store.h"
@@ -10,54 +11,10 @@
 #include "NoiseOpPoint.h"
 #include "../XBEM/BEM.h"
 //Sara
+#include "NoiseException.h"
 #include "NoiseOpPoint.h"
 #include <cmath>
-
-//NoiseOpPoint::NoiseOpPoint(OpPoint *opPoint)
-//    : m_reynolds(-1),
-//      m_alpha(-1),
-//      m_opPoint(opPoint)
-//{}
-
-//double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
-//    bool upDownFind = false;
-//    double chordUpStream = 0;
-//    double chordDownStream = 0;
-//    double dStarUpStream = 0;
-//    double dStarDownStream = 0;
-
-//    //For positive alpha use TopSide else BottomSide
-//    //int side = top ? 1 : 2;
-//    int side = top ? 2 : 1;
-//    int nside = top ? nop->getNSide2() : nop->getNSide1();
-
-//    double currentChord = 0;
-//    double currentDStar = 0;
-//    double previousChord = 0;
-//    double previousDStar = 0;
-
-//    //Find closest station assuming crescent order on chordStation
-//    for (int i = 2; i <= nside; ++i) {
-//        currentChord = nop->getXValue(i, side);
-//        currentDStar = nop->getDstrAt(i, side);
-//        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
-//        previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
-
-//        //qDebug() << "i: " << i << " - " << ccur;
-
-//        if (currentChord > m_parameter->dStarChordStation) {
-//            chordUpStream = previousChord;
-//            chordDownStream = currentChord;
-//            dStarUpStream = previousDStar;
-//            dStarDownStream = currentDStar;
-
-//            upDownFind = true;
-//            break;
-//        }
-//    }
-//}
 //Sara
-
 
 NoiseSimulation *NoiseSimulation::newBySerialize() {
     NoiseSimulation *simulation = new NoiseSimulation;
@@ -239,6 +196,7 @@ void NoiseSimulation::export3DCalculation(QTextStream &stream) {
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
+
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
@@ -271,34 +229,38 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
 //    qDebug() << "tamanho de cl/cd: " << bdata->m_LD.size();
 //    qDebug() << "segmentos: " << number_of_segments;
 
-
     QString str= QString::number(z, 'f', 1);
 
-//    stream << "Tip Speed Ratio: " << str << endl;
-//    stream << endl;
+    stream << "Tip Speed Ratio: " << str << endl;
+    stream << endl;
 
-//    stream << qSetFieldWidth(14)  <<
-//              "Sect"  << ";" <<
-//              "Radius [m]"  << ";" <<
-//              "r/R"  << ";" <<
-//              "Chord [m]" << ";" <<
-//              "Theta [deg]" << ";" <<
-//              "Axial Ind. Fact. (a)"  << ";" <<
-//              "Axial Velocity [m/s]" << ";" <<
-//              "Tg. Ind. Fact. [a']"  << ";" <<
-//              "Tg. Speed [m/s]" << ";" <<
+    stream << qSetFieldWidth(14)  <<
+              "Sect"  << ";" <<
+              "Radius [m]"  << ";" <<
+              "r/R"  << ";" <<
+              "Chord [m]" << ";" <<
+              "Theta [deg]" << ";" <<
+              "Phi [deg]" << ";" <<
+              "Axial Ind. Fact. (a)"  << ";" <<
+              "Axial Velocity [m/s]" << ";" <<
+              "Tg. Ind. Fact. [a']"  << ";" <<
+              "Tg. Speed [m/s]" << ";" <<
 //              "Res. Local Speed Calc [m/s]" << ";" <<
-//              "Res. Local Speed BEM [m/s]" << ";" <<
-//              "Re BEM"  << ";" <<
+              "Res. Local Speed BEM [m/s]" << ";" <<
+              "Re BEM"  << ";" <<
 //              "Re calc"  << ";" <<
 //              "Mach BEM"  << ";" <<
-//              "Mach calc"  << ";" <<
-//              "(cl/cd) max"   << ";" <<
-//              "cl"   << ";" <<
-//              "cd"   << ";" <<
-//              "(cl/cd) max angle"    <<";"   <<
-//              "c/R"    <<";"   <<
-//              endl;
+              "Mach calc"  << ";" <<
+              "(cl/cd) max"   << ";" <<
+              "cl"   << ";" <<
+              "cd"   << ";" <<
+              "c/R"    <<";"   <<
+              "Alpha [deg]"   <<";"   <<
+              "D* nat.trans. S"   <<";"   <<
+              "D* nat.trans. P" <<";"   <<
+              "D* heavy trip. S"<<";"   <<
+              "D* heavy trip. P"   <<";"   <<
+              endl;
 
     //definitions
     double axial_ind_fact[number_of_segments];
@@ -307,12 +269,19 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
     double tangential_speed[number_of_segments];
     double resultant_local_speed[number_of_segments];
     double chord[number_of_segments];
-    double Reynolds_calc[number_of_segments];
+//    double Reynolds_calc[number_of_segments];
+    double Reynolds[number_of_segments];
     double Mach_calc[number_of_segments];
     double alpha[number_of_segments];
+    double phi[number_of_segments];
+    double theta[number_of_segments];
     double cl_cd[number_of_segments];
     double r_R[number_of_segments];
     double c_Rx[number_of_segments];
+    double D_starred_C_HT[number_of_segments];
+    double D_starred_HT[number_of_segments];
+    double D_starred_C_N[number_of_segments];
+    double D_starred_N[number_of_segments];
 
     double r_R0  =  0.05; double c_R0 = 0.05500;
     double r_R1  =  0.25; double c_R1 = 0.07500;
@@ -327,14 +296,15 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
             if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
             else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
 
-            //sara todo
             tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.f+bdata->m_a_tangential.value(i));
             resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
             chord[i] = bdata->m_c_local.value(i);
-            Reynolds_calc[i] = resultant_local_speed[i]*chord[i]/dynamic_visc;//*rho
+//            Reynolds_calc[i] = resultant_local_speed[i]*chord[i]/dynamic_visc;//*rho
+            Reynolds[i] = bdata->m_Reynolds.value(i);
             Mach_calc[i] = resultant_local_speed[i]/sqrt(R_air*K_air*T_std_cond);
-//            Mach_calc[i] = resultant_local_speed[i]/1235;
             alpha[i] = bdata->m_alpha.value(i);
+            phi[i] = bdata->m_phi.value(i);
+            theta[i] = bdata->m_theta.value(i);
             cl_cd[i] =  bdata->m_LD.value(i);
             r_R[i] = bdata->m_pos.value(i)/finalradius;
 
@@ -346,32 +316,202 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
 
             QString c_R= QString::number(c_Rx[i], 'f', 5);
             double Mach[number_of_segments];
-            Mach[i]=bdata->m_Mach.value(i)*3.6;
+            Mach[i]=Mach_calc[i];
 
-//        stream << qSetFieldWidth(14)  <<
-//                      (i+1) << ";" <<
-//                      bdata->m_pos.value(i) << ";" <<
-//                      r_R[i] << ";" <<
-//                      chord[i] << ";" <<
-//                      bdata->m_theta.value(i) << ";" <<
-//                      axial_ind_fact[i] << ";" <<
-//                      axial_velocity[i] << ";" <<
-//                      bdata->m_a_tangential.value(i) << ";" <<
-//                      tangential_speed[i] << ";" <<
+            double corr_fact[number_of_segments];
+
+//heavy tripping
+if (Reynolds[i]>300000){
+    D_starred_C_HT[i]=pow(10,(3.411-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
+}
+else {D_starred_C_HT[i]=0.0601*(pow(Reynolds[i],(-0.114)));}
+
+D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
+
+//natural transition
+    D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
+
+D_starred_N[i]=D_starred_C_N[i]*alpha[i];
+
+double D_starred_HT_S[number_of_segments];
+double D_starred_HT_P[number_of_segments];
+double D_starred_N_S[number_of_segments];
+double D_starred_N_P[number_of_segments];
+
+D_starred_HT_S[i]=D_starred_HT[i];
+D_starred_HT_P[i]=D_starred_HT[i];
+D_starred_N_S[i]=D_starred_N[i];
+D_starred_N_P[i]=D_starred_N[i];
+
+
+//alpha !=0 pressure side
+if (alpha[i]!=0){
+corr_fact[i]=pow(10,(-0.0432*alpha[i]+0.00113*pow(alpha[i],2)));
+D_starred_HT_P[i]=D_starred_HT[i]*corr_fact[i];
+D_starred_N_P[i]=D_starred_N[i]*corr_fact[i];
+}
+
+//alpha !=0 suction side heavy tripping
+if (alpha[i]>0 & alpha[i]<=5){
+corr_fact[i]=pow(10,(0.0679*alpha[i]));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
+
+if (alpha[i]>5 & alpha[i]<=12.5){
+corr_fact[i]=0.381*(pow(10,(0.1516*alpha[i])));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
+
+if (alpha[i]>12.5 & alpha[i]<=25){
+corr_fact[i]=14.296*(pow(10,(0.0258*alpha[i])));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
+
+//alpha !=0 suction side natural transition
+if (alpha[i]>0 & alpha[i]<=7.5){
+corr_fact[i]=pow(10,(0.0679*alpha[i]));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
+
+if (alpha[i]>7.5 & alpha[i]<=12.5){
+corr_fact[i]=0.0162*(pow(10,(0.3066*alpha[i])));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
+
+if (alpha[i]>12.5 & alpha[i]<=25){
+corr_fact[i]=54.42*(pow(10,(0.0258*alpha[i])));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
+
+//teste inicio
+
+//Rodar de novo o XFoil com os Reynolds e Machs definidos em Mach_calc[i] e bdata->m_Reynolds.value(i)
+
+//Fazer um loop externo e extrair os dados de i=1 a i=40 para cada corda de:  m_DStarInterpolatedS e m_DStarInterpolatedP e dentro com os pontos operacionais de todas as frequencias de 25 a 20000Hz (como era feito antes).
+
+//
+
+//            D_starred[i]=chord[i]*D_starred_C[i];
+//            //D_starred[i]=m_opPoint->topDStar.second[i];
+
+//            double m_DStarInterpolatedS[number_of_segments];
+//            double m_DStarInterpolatedP[number_of_segments];
+
+//    bool dStarOrder[number_of_segments];
+//    for (i=1;i<(number_of_segments+1);i++){
+//        if (alpha[i]<0){dStarOrder[i]= true;} else {dStarOrder[i]= false;}
+//    }
+
+    //        m_DStarInterpolatedS = getDStarInterpolated(dStarOrder,nop);
+
+//            double m_DStarFinalS[number_of_segments];
+//            double m_DStarFinalP[number_of_segments];
+    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+
+    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+    //        m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+
+// teste fim
+
+        stream << qSetFieldWidth(14)  <<
+                      (i+1) << ";" <<
+                      bdata->m_pos.value(i) << ";" <<
+                      r_R[i] << ";" <<
+                      chord[i] << ";" <<
+                      bdata->m_theta.value(i) << ";" <<
+                      bdata->m_phi.value(i) << ";" <<
+                      axial_ind_fact[i] << ";" <<
+                      axial_velocity[i] << ";" <<
+                      bdata->m_a_tangential.value(i) << ";" <<
+                      tangential_speed[i] << ";" <<
 //                      resultant_local_speed[i] << ";" <<
-//                      bdata->m_Windspeed.value(i) << ";" <<
-//                      bdata->m_Reynolds.value(i) << ";" <<
+                      bdata->m_Windspeed.value(i) << ";" <<
+                      bdata->m_Reynolds.value(i) << ";" <<
 //                      Reynolds_calc[i] << ";" <<
 //                      Mach[i] << ";" <<
-//                      Mach_calc[i] << ";" <<
-//                      cl_cd[i] << ";" <<
-//                      bdata->m_CL.value(i) << ";" <<
-//                      bdata->m_CD.value(i) << ";" <<
-//                      alpha[i] <<  ";" <<
-//                      c_R  << ";" <<
-//                  endl;
+                      Mach_calc[i] << ";" <<
+                      cl_cd[i] << ";" <<
+                      bdata->m_CL.value(i) << ";" <<
+                      bdata->m_CD.value(i) << ";" <<
+                      c_R  << ";" <<
+                      bdata->m_alpha.value(i) << ";" <<
+                      D_starred_N_S[i] << ";" <<
+                      D_starred_N_P[i] << ";" <<
+                      D_starred_HT_S[i] << ";" <<
+                      D_starred_HT_P[i] << ";" <<
+                      endl;
+}
+z=z+ldelta;
+    }
 
         //SPL_Alpha ********************************************************
+
+    double r_R0  =  0.05; double c_R0 = 0.05500;
+    double r_R1  =  0.25; double c_R1 = 0.07500;
+    double r_R2  =  1.00; double c_R2 = 0.02000;
+
+    z=lstart;
+    foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+    int number_of_segments = bdata->m_pos.size();
+
+    double axial_ind_fact[number_of_segments];
+    double axial_ind_fact_n[number_of_segments];
+    double axial_velocity[number_of_segments];
+    double tangential_speed[number_of_segments];
+    double resultant_local_speed[number_of_segments];
+    double chord[number_of_segments];
+    double Reynolds_calc[number_of_segments];
+    double Mach_calc[number_of_segments];
+    double alpha[number_of_segments];
+    double phi[number_of_segments];
+    double theta[number_of_segments];
+    double cl_cd[number_of_segments];
+    double r_R[number_of_segments];
+    double c_Rx[number_of_segments];
+
+    double rho = pBEM->dlg_rho;
+    double dynamic_visc = pBEM->dlg_visc;
+    double cin_visc = dynamic_visc/rho;
+    double K_air = 1.4;
+    double R_air = 286.9;
+    double T_std_cond = 288.15;
+    double P_std_cond = 101300;
+    double lambda = pBEM->dlg_lambda;
+    int mpos_size = bdata->m_pos.size(); //total number of segments
+    double finalradius = bdata->m_pos.value(mpos_size-1);
+    double nom_tg_speed = bdata->windspeed*lambda;
+    double omega = nom_tg_speed/finalradius;
+    double rotation = 60/(M_PI*100/nom_tg_speed);
+        for (int i = 0; i < number_of_segments; ++i) {
+
+            // definitions
+            axial_ind_fact[i] = bdata->m_a_axial.value(i);
+            axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
+
+            if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
+            else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
+
+            tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.f+bdata->m_a_tangential.value(i));
+            resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
+            chord[i] = bdata->m_c_local.value(i);
+            Reynolds_calc[i] = resultant_local_speed[i]*chord[i]/dynamic_visc;//*rho
+            Mach_calc[i] = resultant_local_speed[i]/sqrt(R_air*K_air*T_std_cond);
+//            Mach_calc[i] = resultant_local_speed[i]/1235;
+            alpha[i] = bdata->m_alpha.value(i);
+            phi[i] = bdata->m_phi.value(i);
+            theta[i] = bdata->m_theta.value(i);
+            cl_cd[i] =  bdata->m_LD.value(i);
+            r_R[i] = bdata->m_pos.value(i)/finalradius;
+
+            if (r_R[i] <= r_R0) {c_Rx[i] = c_R0;}
+            if (r_R[i] > r_R0 && r_R[i] < r_R1) {c_Rx[i] = (r_R[i]-r_R0)*(c_R1-c_R0)/(0.25-r_R0)+c_R0;}
+            if (r_R[i] <= r_R1 && r_R[i] >= r_R1) {c_Rx[i] = c_R1;}
+            if (r_R[i] > r_R1 && r_R[i] < r_R2) {c_Rx[i] = (r_R[i]-r_R1)*(c_R2-c_R1)/(r_R2-r_R1)+c_R1;}
+            if (r_R[i] >= r_R2) {c_Rx[i] = c_R2;}
+
+            QString c_R= QString::number(c_Rx[i], 'f', 5);
+            double Mach[number_of_segments];
+            Mach[i]=Mach_calc[i];
 
         //Calculate the Switching Angle
         double SwAlpha[number_of_segments];
@@ -387,25 +527,46 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
         double L[number_of_segments];
         L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i); //Default = 1 m; 0.4572 m for comparison to BPM data (see page 5 of report).
 
-        double Dh=1;
-        double Dl =2;
-
+        double Dh[number_of_segments];
+        double Dl[number_of_segments];
         double observer_position = 1.22;
 
+        double EddyMach = m_parameter.eddyConvectionMach;
+
+Dh[i]=(2*pow(sin(qDegreesToRadians(theta[i]/2)),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta[i]))*(1+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi[i]))),2);
+
+Dl[i]=(2*pow(sin(qDegreesToRadians(theta[i])),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta[i])))),4);
+
         //For Heavy Tripping
-        //D*/C
         double D_starred_C[number_of_segments];
-        if (Reynolds_calc[i]>30000) {D_starred_C[i] =pow(10,(3.411-1.5397*log10(Reynolds_calc[i])))+0.1059*pow(log10(Reynolds_calc[i]),2);}
-        else {D_starred_C[i]=0.0601*pow(Reynolds_calc[i],-0.114);}
+        if (bdata->m_Reynolds.value(i)>30000) {D_starred_C[i] =pow(10,(3.411-1.5397*log10(bdata->m_Reynolds.value(i))))+0.1059*pow(log10(bdata->m_Reynolds.value(i)),2);}
+        else {D_starred_C[i]=0.0601*pow(bdata->m_Reynolds.value(i),-0.114);}
 
-
+        //D*
         double D_starred[number_of_segments];
         D_starred[i]=chord[i]*D_starred_C[i];
         //D_starred[i]=m_opPoint->topDStar.second[i];
+
+        double m_DStarInterpolatedS[number_of_segments];
+        double m_DStarInterpolatedP[number_of_segments];
+
+bool dStarOrder[number_of_segments];
+for (i=1;i<(number_of_segments+1);i++){
+    if (alpha[i]<0){dStarOrder[i]= true;} else {dStarOrder[i]= false;}
+}
+
+//        m_DStarInterpolatedS = getDStarInterpolated(dStarOrder,nop);
+
+        double m_DStarFinalS[number_of_segments];
+        double m_DStarFinalP[number_of_segments];
+//        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+
+//        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+//        m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
         //parei aqui
 
         double first_term[number_of_segments];
-        first_term[i]=10*log10(pow(Mach[i],5)*L[i]*Dh*D_starred[i]/pow(observer_position,2));
+        first_term[i]=10*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred[i]/pow(observer_position,2));
 
         double St1[number_of_segments];
         St1[i] = 0.02*(pow(Mach[i],-0.6));
@@ -434,11 +595,11 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
         gamma0_gamma_plus[i]=gamma0[i]+gamma[i];
 
         double K1[number_of_segments];
-        if (Reynolds_calc[i]<247000)
-        {K1[i]=-4.31*log10(Reynolds_calc[i])+156.3;}
-        else if (Reynolds_calc[i]>800000)
+        if (bdata->m_Reynolds.value(i)<247000)
+        {K1[i]=-4.31*log10(bdata->m_Reynolds.value(i))+156.3;}
+        else if (bdata->m_Reynolds.value(i)>800000)
         {K1[i]=128.5;}
-        else {K1[i]=-9*log10(Reynolds_calc[i])+181.6;}
+        else {K1[i]=-9*log10(bdata->m_Reynolds.value(i))+181.6;}
 
         double K2[number_of_segments];
         if (alpha[i]<gamma0_gamma_min[i])
@@ -449,17 +610,18 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
         {K2[i]=K1[i]+(sqrt(pow(beta[i],2)-pow((beta[i]/gamma[i]),2)*pow((alpha[i]-gamma0[i]),2)))+beta0[i];}
 
 int q_aux=0;
+int y_aux=0;
 
         if (alpha[i]<=SwAlpha[i])
         // if alpha is less than or equal to switching angle
         {
 q_aux=q_aux+1;
         double b0[number_of_segments];
-        if (Reynolds_calc[i]<95200)
+        if (bdata->m_Reynolds.value(i)<95200)
         {b0[i]= 0.3;}
-        else if (Reynolds_calc[i]>857000)
+        else if (bdata->m_Reynolds.value(i)>857000)
         {b0[i]= 0.56;}
-        else {b0[i]=-4.48*pow(10,-13)*(pow((Reynolds_calc[i]-857000),2)+0.56);}
+        else {b0[i]=-4.48*pow(10,-13)*(pow((bdata->m_Reynolds.value(i)-857000),2)+0.56);}
 
         double B_min_b0[number_of_segments];
         if (b0[i]<0.13)
@@ -485,6 +647,7 @@ if (q_aux==1){
             stream << "Angles less than the switching angle: "  << endl;
             stream << "Tip Speed Ratio: " << str << endl;
             stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
+            stream << "D*: " << D_starred[i] << endl;
             stream << endl;
 
         stream << qSetFieldWidth(14)  <<
@@ -563,8 +726,135 @@ if(q_aux==w){q_aux=0;}
         }
         stream << endl;
         }
+else {
+//todo
+            // if alpha is bigger than the switching angle
+double first_term_a[number_of_segments];
+
+first_term_a[i]=10*log10(pow(bdata->m_Mach.value(i),5)*L[i]*Dl[i]*D_starred[i]/pow(observer_position,2));
+
+//first_term_a[i]=10*log10();
+
+
+
+    y_aux=y_aux+1;
+            double a0[number_of_segments];
+
+            if (bdata->m_Reynolds.value(i)<95200)
+            {a0[i]= 0.57;}
+            else if (bdata->m_Reynolds.value(i)>857000)
+            {a0[i]= 1.13;}
+            else {a0[i]=-9.57*pow(10,-13)*(pow((3*bdata->m_Reynolds.value(i)-857000),2))+1.13;}
+
+            double A_min_a0[number_of_segments];
+            if (a0[i]<0.204)
+            {A_min_a0[i]=sqrt(67.552-886.788*pow(a0[i],2))-8.219;}
+            else if (a0[i]>0.244)
+            {A_min_a0[i]=-142.795*pow(a0[i],3)+103.656*pow(a0[i],2)-57.757*a0[i]+6.006;}
+            else{A_min_a0[i]=-32.665*a0[i]+3.981;}
+
+            double A_max_a0[number_of_segments];
+            if (a0[i]<0.13)
+            {A_max_a0[i]=sqrt(67.552-886.788*pow(a0[i],2))-8.219;}
+            else if (a0[i]>0.321)
+            {A_max_a0[i]=-4.669*pow(a0[i],3)+3,491*pow(a0[i],2)-16.699*a0[i]+1.149;}
+            else {A_max_a0[i]=-15.901*a0[i]+1.098;}
+
+            double AR_a0[number_of_segments];
+            AR_a0[i]=(-20-A_min_a0[i])/(A_max_a0[i]-A_min_a0[i]);
+
+    if (y_aux==1){
+            QString str= QString::number(z, 'f', 1);
+
+                stream << "SPL Alpha: " <<  endl;
+                stream << "Angles bigger than the switching angle: "  << endl;
+                stream << "Tip Speed Ratio: " << str << endl;
+                stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
+                stream << "D*: " << D_starred[i] << endl;
+                stream << endl;
+
+            stream << qSetFieldWidth(14)  <<
+                      "Freq[Hz]"  << ";" <<
+                      "Sts"  << ";" <<
+                      "a"  << ";" <<
+                      "A_min(b)" << ";" <<
+                      "A_max(b)" << ";" <<
+                      "A'(b)"  << ";" <<
+                      "SPL [dB]" << ";" <<
+                      "A-Weighting"  << ";" <<
+                      "dB(A)" << ";" <<
+                      "B-Weighting" << ";" <<
+                      "dB(B)" << ";" <<
+                      "C-Weighting"  << ";" <<
+                      "dB(C)"  << ";" <<
+                      endl;
+            }
+
+            int w=30;
+
+            for (int j = 0; j < w; ++j) {
+
+                double Sts[w];
+                Sts[j]=Frequency[j]*D_starred[i]/bdata->m_a_tangential.value(i);
+
+                double a[w];
+                a[j]=qFabs(log10(Sts[j]/St2[i]));
+
+                double A_min[w];
+
+    if (a[j]<0.204)
+    {A_min[j]=sqrt(67.552-886.788*pow(a[j],2))-8.219;}
+    else if(a[j]>0.244)
+    {A_min[j]=-142.795*pow(a[j],3)+103.656*pow(a[j],2)-57.757*a[j]+6.006;}
+    else {A_min[j]=-32.665*a[j]+3.981;}
+
+    double A_max[w];
+    if (a[j]<0.13)
+    {A_max[j]=sqrt(67.552-886.788*pow(a[j],2))-8.219;}
+    else if(a[j]>0.321)
+    {A_max[j]=-4.669*pow(a[j],3)+3.491*pow(a[j],2)-16.699*a[j]+1.149;}
+    else {A_max[j]=-15.901*a[j]+1.098;}
+
+    double Alin_a[w];
+    Alin_a[j]=A_min[j]+AR_a0[i]*(A_max[j]-A_min[j]);
+
+    double SPL[w];
+    SPL[j]=first_term_a[i]+Alin_a[j]+K2[i];
+
+    double dB_A[w];
+    dB_A[j]=SPL[j]+AWeighting[j];
+
+    double dB_B[w];
+    dB_B[j]=SPL[j]+BWeighting[j];
+
+    double dB_C[w];
+    dB_C[j]=SPL[j]+CWeighting[j];
+
+            stream << qSetFieldWidth(14)  <<
+                      Frequency[j]  << ";" <<
+                      Sts[j]  << ";" <<
+                      a[j]  << ";" <<
+                      A_min[j] << ";" <<
+                      A_max[j] << ";" <<
+                      Alin_a[j]  << ";" <<
+                      SPL[j] << ";" <<
+                      AWeighting[j]  << ";" <<
+                      dB_A[j] << ";" <<
+                      BWeighting[j] << ";" <<
+                      dB_B[j] << ";" <<
+                      CWeighting[j]  << ";" <<
+                      dB_C[j]  << ";" <<
+                      endl;
+
+    if(y_aux==w){y_aux=0;}
+            }
+            stream << endl;
+//todo
+        }
 
         //SPL_Alpha ********************************************************
+
+
         //teste
 
         }
