@@ -25,6 +25,7 @@
 #include "../Globals.h"
 #include "../Store.h"
 #include "../Serializer.h"
+#include "BEM.h" //Sara
 
 BData::BData()
 {
@@ -314,6 +315,43 @@ for (i=0;i<m_pos.size();i++)
 
 
     }
+
+    //Sara
+    double R_air = 286.9;
+    double K_air = 1.4;
+    double T_std_cond = 288.15;
+    double approaxing_wind_speed = windspeed;
+    int number_of_segments=m_pos.size();
+    double resultant_local_speed[number_of_segments];
+    double tangential_speed[number_of_segments];
+    double axial_velocity[number_of_segments];
+    double axial_ind_fact[number_of_segments];
+    double axial_ind_fact_n[number_of_segments];
+    double Mach_calc[number_of_segments];
+
+    QBEM* pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    double lambda = pBEM->dlg_lambda;
+
+    double mpos_size = m_pos.size(); //total number of segments
+    double finalradius = m_pos.at(mpos_size-1);
+    double nom_tg_speed = windspeed*lambda;
+    double omega = nom_tg_speed/finalradius;
+
+tangential_speed[i] = omega*m_pos.at(i)*(1.+a_t);
+axial_ind_fact[i] = m_a_axial.value(i);//a_a;
+axial_ind_fact_n[i] = m_a_axial.value(i+1);
+
+//axial_ind_fact[i] = a_a_old;
+//axial_ind_fact_n[i] = a_a;
+
+if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
+else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
+
+resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
+
+Mach_calc[i]=resultant_local_speed[i]/sqrt(R_air*K_air*T_std_cond);
+//Sara
+
     //now results are appended in the arrays, if the results are computed later, during a
     //turbine simulation a zero as placeholder is appended
     m_a_axial.append(a_a);
@@ -336,9 +374,9 @@ for (i=0;i<m_pos.size();i++)
     m_Roughness.append(0);
     m_Windspeed.append(pow(Vrel2,0.5));
     m_Iterations.append(count);
-//    m_Mach.append(pow(Vrel2,0.5)/1235); //Sara
-    m_Mach.append(pow(Vrel2,0.5)/sqrt(1.4*286.9*288.15)); //Sara
     m_circ.append(0.5*m_c_local.at(i)*m_CL.at(i)*pow(Vrel2,0.5)*rho);
+    m_Mach.append(pow(Vrel2,0.5)/1235.);
+    m_Mach_calc.append(Mach_calc[i]);//Sara
 }
 
     //calculation of power coefficient Cp//
@@ -472,8 +510,10 @@ void BData::Serialize(QDataStream &ar, bool bIsStoring)
 			ar >> f;
 			m_Iterations.append(f);
 			ar >> f;
-			m_Mach.append(f);
-			ar >> f;
+//            m_Mach.append(f);//Sara
+//            ar >> f;//Sara
+            m_Mach_calc.append(f);//Sara
+            ar >> f;
 			m_Fa_axial.append(f);
 			ar >> f;
 			m_Fa_radial.append(f);
@@ -558,7 +598,8 @@ void BData::serialize() {
 	g_serializer.readOrWriteDoubleList1D (&m_Roughness);
 	g_serializer.readOrWriteDoubleList1D (&m_Windspeed);
 	g_serializer.readOrWriteDoubleList1D (&m_Iterations);
-	g_serializer.readOrWriteDoubleList1D (&m_Mach);
+//    g_serializer.readOrWriteDoubleList1D (&m_Mach);//Sara
+    g_serializer.readOrWriteDoubleList1D (&m_Mach_calc);//Sara
 	
     if (g_serializer.isReadMode() && g_serializer.getArchiveFormat() < 100027){ // compatibility after removing m_polarPointers
         QVector <C360Polar *> m_PolarPointers;

@@ -189,7 +189,9 @@ void NoiseSimulation::export3DCalculation(QTextStream &stream) {
                                                                          0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,
                                                                         -2.0,  -3.0,  -4.4,  -6.2,  -8.5, -11.2};
 
-    const double Frequency[]= {25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400,500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000};
+    const double Frequency[]= {10, 12.5, 16, 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400,500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000};
+
+   int w=sizeof(Frequency)/sizeof(Frequency[0]);
 
     stream << "3D Noise prediction file export" << endl;
     stream << endl;
@@ -367,6 +369,7 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
 //                  "Res. Local Speed BEM [m/s]" << ";" <<
 //                  "Re BEM"  << ";" <<
 //                  "Mach calc"  << ";" <<
+//                  "Mach BEM"  << ";" <<
 //                  "(cl/cd) max"   << ";" <<
 //                  "cl"   << ";" <<
 //                  "cd"   << ";" <<
@@ -467,7 +470,9 @@ splog_dBC=0;
             if (r_R[i] >= r_R2) {c_Rx[i] = c_R2;}
 
             QString c_R= QString::number(c_Rx[i], 'f', 5);
-            Mach[i]=Mach_calc[i];
+
+//            Mach[i]=Mach_calc[i];
+            Mach[i]=bdata->m_Mach_calc.value(i);
 
 //heavy tripping
 if (Reynolds[i]>300000){
@@ -535,25 +540,59 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 
 //
 
-//            D_starred[i]=chord[i]*D_starred_C[i];
-//            //D_starred[i]=m_opPoint->topDStar.second[i];
+//double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
+//    bool upDownFind = false;
+//    double chordUpStream = 0;
+//    double chordDownStream = 0;
+//    double dStarUpStream = 0;
+//    double dStarDownStream = 0;
 
-//            double m_DStarInterpolatedS[number_of_segments];
-//            double m_DStarInterpolatedP[number_of_segments];
+//    //For positive alpha use TopSide else BottomSide
+//    //int side = top ? 1 : 2;
+//    int side = top ? 2 : 1;
+//    int nside = top ? nop->getNSide2() : nop->getNSide1();
 
-//    bool dStarOrder[number_of_segments];
-//    for (i=1;i<(number_of_segments);i++){
-//        if (alpha[i]<0){dStarOrder[i]= true;} else {dStarOrder[i]= false;}
+//    double currentChord = 0;
+//    double currentDStar = 0;
+//    double previousChord = 0;
+//    double previousDStar = 0;
+
+//    //Find closest station assuming crescent order on chordStation
+//    for (int i = 2; i <= nside; ++i) {
+//        currentChord = nop->getXValue(i, side);
+//        currentDStar = nop->getDstrAt(i, side);
+//        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
+//        previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
+
+//        //qDebug() << "i: " << i << " - " << ccur;
+
+//        if (currentChord > m_parameter->dStarChordStation) {
+//            chordUpStream = previousChord;
+//            chordDownStream = currentChord;
+//            dStarUpStream = previousDStar;
+//            dStarDownStream = currentDStar;
+
+////			qDebug() << "Chord UpStream: " << chordUpStream;
+////			qDebug() << "Chord DownStream: " << chordDownStream;
+////			qDebug() << "D* UpStream: " << dStarUpStream;
+////			qDebug() << "D* DownStream: " << dStarDownStream;
+
+//            upDownFind = true;
+//            break;
+//        }
 //    }
 
-    //        m_DStarInterpolatedS = getDStarInterpolated(dStarOrder,nop);
+//    if (!upDownFind) {
+//        qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
+//				   << m_parameter->dStarChordStation << " - Last found X ( "<<currentChord<<" ) D* ("
+//				   << currentDStar <<")";
+//        throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
+//							 "specified chord station");
+//    }
 
-//            double m_DStarFinalS[number_of_segments];
-//            double m_DStarFinalP[number_of_segments];
-    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
-
-    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
-    //        m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+//    return ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /
+//			(chordUpStream-chordDownStream)) + dStarDownStream;
+//}
 
 // teste fim
 
@@ -734,6 +773,7 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 //                      bdata->m_Windspeed.value(i) << ";" <<
 //                      bdata->m_Reynolds.value(i) << ";" <<
 //                      Mach[i] << ";" <<
+//                      bdata->m_Mach_calc.value(i)  <<  ";" <<
 //                      cl_cd[i] << ";" <<
 //                      bdata->m_CL.value(i) << ";" <<
 //                      bdata->m_CD.value(i) << ";" <<
@@ -884,8 +924,6 @@ stream << qSetFieldWidth(14)  <<
           "s_log_dBC"  << ";" <<
           endl;
 //uncomment to input data
-
-int w=30;
 
 double slog_SPL_alpha[w];
 double slog_SPL_S[w];
@@ -1211,7 +1249,7 @@ if(z==lend & i==(number_of_segments-1)){
                 stream << endl;
 
 }}}
-//     stream << endl; //descomentar
+     stream << endl; //descomentar
 
 }
          z=z+ldelta;
