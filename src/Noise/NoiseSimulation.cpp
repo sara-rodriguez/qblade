@@ -77,7 +77,8 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 5: *vector = m_calculation.SPLdBAW()[opPointIndex]; break;
         case 6: *vector = m_calculation.SPLdBBW()[opPointIndex]; break;
         case 7: *vector = m_calculation.SPLdBCW()[opPointIndex]; break;
-        default: return NULL;
+        case 8: *vector = m_calculation.SPL_LEdB()[opPointIndex]; break; //Alexandre MOD
+        default: return nullptr;
         }
     }
 
@@ -94,7 +95,7 @@ QStringList NoiseSimulation::getAvailableVariables(NewGraph::GraphType /*graphTy
 
     // WARNING: when changing any variables list, change newCurve as well!
     variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))"
-              << "SPL (dB(C))";
+              << "SPL (dB(C))" << "SPL_LE (dB)"; //Alexandre MOD
 
     return variables;
 }
@@ -150,11 +151,13 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
                   "SPLp" <<
                   "SPL (dB(A))" <<
                   "SPL (dB(B))" <<
-                  "SPL (dB(C))" << endl;
+                  "SPL (dB(C))" <<
+                  "SPL_LE (dB)" <<endl; //Alexandre MOD
 
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
             stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] <<
                       m_calculation.SPLdB()[i][j] <<
+                      m_calculation.SPL_LEdB()[i][j] << //Alexandre MOD
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
                       m_calculation.SPLpdB()[i][j] <<
@@ -184,14 +187,12 @@ void NoiseSimulation::export3DCalculation(QTextStream &stream) {
                                                                          0.0,   0.0,   0.0,  -0.1,  -0.2,  -0.4,  -0.7,  -1.2,
                                                                         -1.9,  -2.9,  -4.3,  -6.1,  -8.4, -11.1};
 
-    const double CWeighting[] = { -4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2,
+    const double CWeighting[] = {-4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2,
                                                                         -0.1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,
                                                                          0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,
                                                                         -2.0,  -3.0,  -4.4,  -6.2,  -8.5, -11.2};
 
-    const double Frequency[]= {10, 12.5, 16, 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400,500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000};
-
-   int w=sizeof(Frequency)/sizeof(Frequency[0]);
+    const double Frequency[]= {25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400,500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000};
 
     stream << "3D Noise prediction file export" << endl;
     stream << endl;
@@ -369,7 +370,6 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
 //                  "Res. Local Speed BEM [m/s]" << ";" <<
 //                  "Re BEM"  << ";" <<
 //                  "Mach calc"  << ";" <<
-//                  "Mach BEM"  << ";" <<
 //                  "(cl/cd) max"   << ";" <<
 //                  "cl"   << ";" <<
 //                  "cd"   << ";" <<
@@ -470,9 +470,7 @@ splog_dBC=0;
             if (r_R[i] >= r_R2) {c_Rx[i] = c_R2;}
 
             QString c_R= QString::number(c_Rx[i], 'f', 5);
-
-//            Mach[i]=Mach_calc[i];
-            Mach[i]=bdata->m_Mach_calc.value(i);
+            Mach[i]=Mach_calc[i];
 
 //heavy tripping
 if (Reynolds[i]>300000){
@@ -540,59 +538,25 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 
 //
 
-//double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
-//    bool upDownFind = false;
-//    double chordUpStream = 0;
-//    double chordDownStream = 0;
-//    double dStarUpStream = 0;
-//    double dStarDownStream = 0;
+//            D_starred[i]=chord[i]*D_starred_C[i];
+//            //D_starred[i]=m_opPoint->topDStar.second[i];
 
-//    //For positive alpha use TopSide else BottomSide
-//    //int side = top ? 1 : 2;
-//    int side = top ? 2 : 1;
-//    int nside = top ? nop->getNSide2() : nop->getNSide1();
+//            double m_DStarInterpolatedS[number_of_segments];
+//            double m_DStarInterpolatedP[number_of_segments];
 
-//    double currentChord = 0;
-//    double currentDStar = 0;
-//    double previousChord = 0;
-//    double previousDStar = 0;
-
-//    //Find closest station assuming crescent order on chordStation
-//    for (int i = 2; i <= nside; ++i) {
-//        currentChord = nop->getXValue(i, side);
-//        currentDStar = nop->getDstrAt(i, side);
-//        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
-//        previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
-
-//        //qDebug() << "i: " << i << " - " << ccur;
-
-//        if (currentChord > m_parameter->dStarChordStation) {
-//            chordUpStream = previousChord;
-//            chordDownStream = currentChord;
-//            dStarUpStream = previousDStar;
-//            dStarDownStream = currentDStar;
-
-////			qDebug() << "Chord UpStream: " << chordUpStream;
-////			qDebug() << "Chord DownStream: " << chordDownStream;
-////			qDebug() << "D* UpStream: " << dStarUpStream;
-////			qDebug() << "D* DownStream: " << dStarDownStream;
-
-//            upDownFind = true;
-//            break;
-//        }
+//    bool dStarOrder[number_of_segments];
+//    for (i=1;i<(number_of_segments);i++){
+//        if (alpha[i]<0){dStarOrder[i]= true;} else {dStarOrder[i]= false;}
 //    }
 
-//    if (!upDownFind) {
-//        qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
-//				   << m_parameter->dStarChordStation << " - Last found X ( "<<currentChord<<" ) D* ("
-//				   << currentDStar <<")";
-//        throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
-//							 "specified chord station");
-//    }
+    //        m_DStarInterpolatedS = getDStarInterpolated(dStarOrder,nop);
 
-//    return ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /
-//			(chordUpStream-chordDownStream)) + dStarDownStream;
-//}
+//            double m_DStarFinalS[number_of_segments];
+//            double m_DStarFinalP[number_of_segments];
+    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+
+    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+    //        m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
 
 // teste fim
 
@@ -773,7 +737,6 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 //                      bdata->m_Windspeed.value(i) << ";" <<
 //                      bdata->m_Reynolds.value(i) << ";" <<
 //                      Mach[i] << ";" <<
-//                      bdata->m_Mach_calc.value(i)  <<  ";" <<
 //                      cl_cd[i] << ";" <<
 //                      bdata->m_CL.value(i) << ";" <<
 //                      bdata->m_CD.value(i) << ";" <<
@@ -924,6 +887,8 @@ stream << qSetFieldWidth(14)  <<
           "s_log_dBC"  << ";" <<
           endl;
 //uncomment to input data
+
+int w=30;
 
 double slog_SPL_alpha[w];
 double slog_SPL_S[w];
@@ -1249,7 +1214,7 @@ if(z==lend & i==(number_of_segments-1)){
                 stream << endl;
 
 }}}
-     stream << endl; //descomentar
+//     stream << endl; //descomentar
 
 }
          z=z+ldelta;
@@ -1320,6 +1285,13 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
     case P::Transition:
         if(set) m_parameter.transition = static_cast<NoiseParameter::TransitionType>(value.toInt());
         else value = static_cast<int>(m_parameter.transition); break;
+        //Alexandre MOD
+        case P::IntegralLengthScale:
+            if(set) m_parameter.IntegralLengthScale = value.toDouble();
+            else value = m_parameter.IntegralLengthScale; break;
+        case P::TurbulenceIntensity:
+            if(set) m_parameter.TurbulenceIntensity = value.toDouble();
+            else value = m_parameter.TurbulenceIntensity; break;
 
         //Sara
     case P::sects:

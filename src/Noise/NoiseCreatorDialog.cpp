@@ -49,6 +49,12 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 								  "Original airfoil Chord length (C) []:", 1, LENGTH);
 					pGrid->addEdit(P::OriginalMach, NumberEditType, new NumberEdit(),
 								  "Original flow Mach Number (M):", 0.21);
+                    //Alexandre MOD
+                    pGrid->addEdit(P::IntegralLengthScale, NumberEditType, new NumberEdit(),
+                                  "Turbulence integral length scale (l) []:", 1, LENGTH);
+                    pGrid->addEdit(P::TurbulenceIntensity, NumberEditType, new NumberEdit(),
+                                  "Turbulence intensity []:", 0.125, PERCENT);
+                    //End Alexandre MOD
 					pGrid->addEdit(P::DStarChordStation, NumberEditType, new NumberEdit(),
 								  "D* at chord station:", 0.98);
 					pGrid->addEdit(P::DStarScalingFactor, NumberEditType, new NumberEdit(),

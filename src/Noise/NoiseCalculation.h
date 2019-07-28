@@ -23,7 +23,7 @@ public:
 	typedef QVector< QVector<double> > TwoDVector;
 	
 	static constexpr double SWITCHING_ANGLE2 = 12.5;
-	static constexpr int FREQUENCY_TABLE_SIZE = 30;
+    static constexpr int FREQUENCY_TABLE_SIZE = 34; //Alexandre MOD
 	static const double AWeighting[FREQUENCY_TABLE_SIZE];  // 1/3 octave band frequency
 	static const double BWeighting[FREQUENCY_TABLE_SIZE];
 	static const double CWeighting[FREQUENCY_TABLE_SIZE];
@@ -43,6 +43,7 @@ public:
 	TwoDVector SPLdBAW() const { return m_SPLdBAW; }
 	TwoDVector SPLdBBW() const { return m_SPLdBBW; }
 	TwoDVector SPLdBCW() const { return m_SPLdBCW; }
+    TwoDVector SPL_LEdB() const { return m_SPL_LEdB; } //Alexandre MOD
 	
 	// NM apparently needed for export as .txt only
 	QVector<double> OASPL() const { return m_OASPL; }
@@ -59,6 +60,7 @@ private:
 	// calculation sub-functions
 	double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
+        double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara teste
     double getDH();
     double getDL();
     double getSt1();
@@ -71,18 +73,28 @@ private:
     void calcSPLa(double alpha,int posOpPoint,int posFreq);
     void calcSPLs(int posOpPoint,int posFreq);
     void calcSPLp(int posOpPoint,int posFreq);
+    void LECalc(int posOpPoint, int posFreq); //Alexandre MOD
 		
 	NoiseParameter *m_parameter;
 	
     //For general
     double m_DStarInterpolatedS;
     double m_DStarInterpolatedP;
+
+    //Sara
+    double m_DStarInterpolatedS3d;
+    double m_DStarInterpolatedP3d;
+    //Sara
+
     double m_DStarFinalS;
     double m_DStarFinalP;
     double m_EddyMachNumber;
     double m_SwAlpha1;
     double m_SwAlpha;
     bool m_AlphaBigSw;
+    //Turbulent Inflow
+    double m_IntegralLengthScale; //Alexandre MOD
+    double m_TurbulenceIntensity; //Alexandre MOD
 
     bool m_CalcSeparatedFlow;
     bool m_CalcSuctionSide;
@@ -161,6 +173,17 @@ private:
     TwoDVector m_SPLdBAW; //Store db of SPL + A-Weighting
     TwoDVector m_SPLdBBW; //Store db of SPL + B-Weighting
     TwoDVector m_SPLdBCW; //Store db of SPL + C-Weighting
+
+    //For LE - Alexandre MOD
+    TwoDVector m_SPL_LEdB; //Store db of SPL_LE
+    TwoDVector m_SPL_LEdBAW; //Store db of SPL_LE + A-Weighting
+    TwoDVector m_SPL_LEdBBW; //Store db of SPL_LE + B-Weighting
+    TwoDVector m_SPL_LEdBCW; //Store db of SPL_LE + C-Weighting
+    double m_originalVelocity;
+    double m_originalChordLength;
+    double m_distanceObserver;
+    double m_originalMach;
+    double m_wettedLength;
 };
 
 #endif // NOISECALCULATION_H

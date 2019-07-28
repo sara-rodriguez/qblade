@@ -57,6 +57,10 @@ public:
     double TSR;
     double dstar_type;
     double phi_type;
+
+    //Turbulence parameters - Alexandre MOD
+    double TurbulenceIntensity;
+    double IntegralLengthScale;
 };
 
 #endif // NOISEPARAMETER_H

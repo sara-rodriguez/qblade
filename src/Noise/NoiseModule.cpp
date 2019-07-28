@@ -16,10 +16,10 @@
 NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
 {
 	m_globalModuleIndentifier = NOISEMODULE;
-	m_shownSimulation = NULL;
+    m_shownSimulation = nullptr;
 	
 	m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
-	m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
+    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false}); //Alexandre MOD
 	m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
 	m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
 

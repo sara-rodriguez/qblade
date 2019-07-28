@@ -6,40 +6,45 @@
 #include "../Serializer.h"
 #include "NoiseOpPoint.h"
 #include "NoiseException.h"
+#include "../XBEM/BEM.h" //Sara
 
 
-const double NoiseCalculation::AWeighting[] = {-44.7, -39.4, -34.6, -30.2, -26.2, -22.5, -19.1, -16.1,
+const double NoiseCalculation::AWeighting[] = {-70.4, -63.4, -56.7,  -50.5, -44.7, -39.4, -34.6, -30.2, -26.2, -22.5, -19.1, -16.1,
 											   -13.4, -10.9,  -8.6,  -6.6,  -4.8,  -3.2,  -1.9,  -0.8,
 											     0.0,   0.6,   1.0,   1.2,   1.3,   1.2,   1.0,   0.5,
 											    -0.1,  -1.1,  -2.5,  -4.3,  -6.6,-  9.3};
-const double NoiseCalculation::BWeighting[] = {-20.4, -17.1, -14.2, -11.6,  -9.3,  -7.4,  -5.6,  -4.2,
+const double NoiseCalculation::BWeighting[] = {38.2, -33.3, -28.3, -24.2, -20.4, -17.1, -14.2, -11.6,  -9.3,  -7.4,  -5.6,  -4.2,
 											    -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.1,   0.0,
 											     0.0,   0.0,   0.0,  -0.1,  -0.2,  -0.4,  -0.7,  -1.2,
 											    -1.9,  -2.9,  -4.3,  -6.1,  -8.4, -11.1};
-const double NoiseCalculation::CWeighting[] = { -4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2,
+const double NoiseCalculation::CWeighting[] = {-14.3, -11.2, -8.5, -6.2, -4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2,
 												-0.1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,
 												 0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,
 												-2.0,  -3.0,  -4.4,  -6.2,  -8.5, -11.2};
-const QVector<double> NoiseCalculation::CENTRAL_BAND_FREQUENCY ({25, 31.5, 40, 50, 63, 80, 100, 125, 160,
+const QVector<double> NoiseCalculation::CENTRAL_BAND_FREQUENCY ({10, 12.5, 16, 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,
 																 200, 250, 315, 400, 500, 630, 800, 1000,
 																 1250, 1600, 2000, 2500, 3150, 4000, 5000,
 																 6300, 8000, 10000, 12500, 16000, 20000});
 
 NoiseCalculation::NoiseCalculation() {
-    m_parameter = NULL;
+    m_parameter = nullptr; //Alexandre MOD - changed NULL for nullptr
     m_CalcSeparatedFlow = false;
     m_CalcPressureSide = false;
 	m_CalcSuctionSide = false;
 }
 
 void NoiseCalculation::serialize() {
-	g_serializer.readOrWriteDoubleVector2D(&m_SPLadB);
-	g_serializer.readOrWriteDoubleVector2D(&m_SPLsdB);
-	g_serializer.readOrWriteDoubleVector2D(&m_SPLpdB);
-	g_serializer.readOrWriteDoubleVector2D(&m_SPLdB);
-	g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW);
-	g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW);
-	g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLadB);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLsdB);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLpdB);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdB);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdB); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBCW); //Alexandre MOD
 	
 	g_serializer.readOrWriteDoubleVector1D(&m_OASPL);
 	g_serializer.readOrWriteDoubleVector1D(&m_OASPLA);
@@ -75,6 +80,11 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
         previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
 
         //qDebug() << "i: " << i << " - " << ccur;
+//        qDebug() << "currentChord" << nop->getXValue(i, side);
+//        qDebug() << "currentDStar" << nop->getDstrAt(i, side);
+//        qDebug() << nop->getXValue(i, side);
+//        qDebug() << nop->getDstrAt(i, side);
+//        qDebug() << "";
 
         if (currentChord > m_parameter->dStarChordStation) {
             chordUpStream = previousChord;
@@ -100,9 +110,74 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
 							 "specified chord station");
     }
 
+//    qDebug() << ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /                                       (chordUpStream-chordDownStream)) + dStarDownStream;
+
     return ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /
 			(chordUpStream-chordDownStream)) + dStarDownStream;
 }
+
+//Sara teste
+double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoint * nop) {
+    bool upDownFind = false;
+    double chordUpStream = 0;
+    double chordDownStream = 0;
+    double dStarUpStream = 0;
+    double dStarDownStream = 0;
+
+    //For positive alpha use TopSide else BottomSide
+    //int side = top ? 1 : 2;
+    int side = top ? 2 : 1;
+    int nside = top ? nop->getNSide2() : nop->getNSide1();
+
+    double currentChord = 0;
+    double currentDStar = 0;
+    double previousChord = 0;
+    double previousDStar = 0;
+
+    //Find closest station assuming crescent order on chordStation
+    for (int i = 2; i <= nside; ++i) {
+        currentChord = nop->getXValue(i, side);
+        currentDStar = nop->getDstrAt(i, side);
+        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
+        previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
+
+        //qDebug() << "i: " << i << " - " << ccur;
+//        qDebug() << "currentChord" << nop->getXValue(i, side);
+//        qDebug() << "currentDStar" << nop->getDstrAt(i, side);
+//        qDebug() << nop->getXValue(i, side);
+//        qDebug() << nop->getDstrAt(i, side);
+//        qDebug() << "";
+
+        if (currentChord > chord) {
+            chordUpStream = previousChord;
+            chordDownStream = currentChord;
+            dStarUpStream = previousDStar;
+            dStarDownStream = currentDStar;
+
+//			qDebug() << "Chord UpStream: " << chordUpStream;
+//			qDebug() << "Chord DownStream: " << chordDownStream;
+//			qDebug() << "D* UpStream: " << dStarUpStream;
+//			qDebug() << "D* DownStream: " << dStarDownStream;
+
+            upDownFind = true;
+            break;
+        }
+    }
+
+    if (!upDownFind) {
+        qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
+                   << chord << " - Last found X ( "<<currentChord<<" ) D* ("
+                   << currentDStar <<")";
+        throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
+                             "specified chord station");
+    }
+
+//    qDebug() << ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /                                       (chordUpStream-chordDownStream)) + dStarDownStream;
+
+    return ((dStarUpStream-dStarDownStream) * (chord-chordDownStream) /
+            (chordUpStream-chordDownStream)) + dStarDownStream;
+}
+//Sara teste
 
 double NoiseCalculation::getDL() {
     //Dh, Low Freq. Directivity Factor
@@ -589,6 +664,34 @@ void NoiseCalculation::calcSPLp(int posOpPoint,int posFreq) {
 //			 << m_SPLpdBCW[posOpPoint][posFreq] <<")\t";
 }
 
+//Alexandre MOD
+
+void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
+    double SPL_LEdB = 0;
+    const double rho = 0.001225;
+    const double c_0 = 34000;
+    const double u = (m_parameter->originalVelocity)*100.;
+    const double c = 100.*(m_parameter->originalChordLength);
+    const double I = (m_parameter->TurbulenceIntensity);
+    const double Lambda = 100.*(m_parameter->IntegralLengthScale);
+    const double r_e = 100.*(m_parameter->distanceObsever);
+    const double Mach = m_parameter->originalMach;
+    const double beta = sqrt(1-pow(Mach, 2));
+    const double D_L = 0.5*getDL();
+    const double L = 100.*(m_parameter->wettedLength);
+    double Aux = 0.5*(Lambda*L*pow(rho, 2)*pow(c_0, 2)*pow(u, 2)*pow(Mach, 3)*pow(I, 2)*D_L)/(pow(r_e, 2));
+    double K = 3.1416*CENTRAL_BAND_FREQUENCY[posFreq]*c/u;
+    double S = sqrt(pow((2.*3.1416*K/(pow(beta, 2)))+(pow((1+(2.4*K/pow(beta,2))), -1)), -1));
+    double LFC = 10.*Mach*pow(S*K/beta, 2);
+    double Aux1 = 10.*log10(pow(LFC/(1+LFC), 2)) + 65.95; //Lowson's standard is pow = 1 and const is 58.4
+    double Aux4 = pow(K, 3)/pow(1+(pow(K, 2)), 19/6); //Lowson's standard is 7/3
+    double Aux5 = 10.*log10(Aux*Aux4);
+    SPL_LEdB = 10.*log10(pow(10, (Aux1+Aux5)/10.));
+
+    m_SPL_LEdB[posOpPoint][posFreq] = SPL_LEdB;
+}
+//end Alexandre MOD
+
 void NoiseCalculation::calculate() {
     setupVectors();
 
@@ -621,8 +724,34 @@ void NoiseCalculation::calculate() {
 		{
 
             //For XFoil model
+
             m_DStarInterpolatedS = getDStarInterpolated(dStarOrder,nop);
             m_DStarInterpolatedP = getDStarInterpolated(!dStarOrder,nop);
+
+//qDebug() << "D* S original:" << m_DStarInterpolatedS;
+
+            //Sara teste
+QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+
+foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+int number_of_segments = bdata->m_pos.size();
+double chord[number_of_segments];
+double chordmax=0;
+for (int j = 0; j <= number_of_segments; ++j) {
+    if(chord[j]>chordmax){chordmax=chord[j];}
+}
+
+for (int j = 0; j <= number_of_segments; ++j) {
+chord[j] = bdata->m_c_local.value(j);
+
+qDebug() << "j:" << j;
+
+m_DStarInterpolatedS3d = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
+qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d;
+m_DStarInterpolatedP3d = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
+qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
+}}
+            //Sara teste
 
             m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
             m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
@@ -631,6 +760,10 @@ void NoiseCalculation::calculate() {
             m_DStarInterpolatedS = 0;
             m_DStarInterpolatedP = 0;
 
+            //Sara teste
+//            m_DStarInterpolated3dS = 0;
+//            m_DStarInterpolated3dP = 0;
+//Sara teste
             //For BPM model
 			
             m_DStarFinalS = getBPMThickness(nop, SuctionSide) * m_parameter->dStarScalingFactor;
@@ -709,6 +842,8 @@ void NoiseCalculation::calculate() {
         for (unsigned int posFreq = 0; posFreq < FREQUENCY_TABLE_SIZE; ++posFreq) {
 //			qDebug() << "==== Band Frequency ====";
 //			qDebug() << "Freq: [" << (posFreq+1) << "] " << Noise::CENTRAL_BAND_FREQUENCY[posFreq] ;
+
+            LECalc(posOpPoint, posFreq); //Alexandre MOD
 			
             if (m_CalcSeparatedFlow) {
                 calcSPLa(nop->getAlphaDegree(),posOpPoint,posFreq);
@@ -795,6 +930,11 @@ void NoiseCalculation::setupVectors() {
     m_SPLadBAW.clear();
     m_SPLadBBW.clear();
     m_SPLadBCW.clear();
+    //Alexandre MOD
+    m_SPL_LEdB.clear();
+    m_SPL_LEdBAW.clear();
+    m_SPL_LEdBBW.clear();
+    m_SPL_LEdBCW.clear();
 
     m_OASPL.clear();
     m_OASPLA.clear();
@@ -830,6 +970,11 @@ void NoiseCalculation::setupVectors() {
     m_SPLadBAW.resize(size);
     m_SPLadBBW.resize(size);
     m_SPLadBCW.resize(size);
+    //Alexandre MOD
+    m_SPL_LEdB.resize(size);
+    m_SPL_LEdBAW.resize(size);
+    m_SPL_LEdBBW.resize(size);
+    m_SPL_LEdBCW.resize(size);
 
     m_OASPL.resize  (size);
     m_OASPLA.resize (size);
@@ -857,5 +1002,10 @@ void NoiseCalculation::setupVectors() {
         m_SPLadBAW[i].resize(FREQUENCY_TABLE_SIZE);
         m_SPLadBBW[i].resize(FREQUENCY_TABLE_SIZE);
         m_SPLadBCW[i].resize(FREQUENCY_TABLE_SIZE);
+        //Alexandre MOD
+        m_SPL_LEdB[i].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW[i].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW[i].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW[i].resize(FREQUENCY_TABLE_SIZE);
     }
 }

@@ -33,6 +33,10 @@ void NoiseParameter::serialize() {
 	g_serializer.readOrWriteDouble(&originalMach);
 	g_serializer.readOrWriteDouble(&originalChordLength);
 	g_serializer.readOrWriteDouble(&originalVelocity);
+
+    //Alexandre MOD
+    g_serializer.readOrWriteDouble(&TurbulenceIntensity);
+    g_serializer.readOrWriteDouble(&IntegralLengthScale);
 	
 	g_serializer.readOrWriteDouble(&aoa);
 	g_serializer.readOrWriteDouble(&chordBasedReynolds);

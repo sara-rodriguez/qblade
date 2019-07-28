@@ -102,8 +102,7 @@ public:
     QList <double>  m_Roughness;    //the critical roughness for the blade surface
     QList <double>  m_Windspeed;    //windspeed at section (turbine calc)
     QList <double>  m_Iterations;   //total number of iterations required to converge
-    QList <double>  m_Mach;         //Mach Number Sara
-    QList <double>  m_Mach_calc;         //Mach Number Sara
+    QList <double>  m_Mach;         //Mach Number
 
     QList <double> deltas;
     QList <double> dist;

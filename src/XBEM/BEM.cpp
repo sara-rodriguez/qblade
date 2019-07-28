@@ -3795,7 +3795,7 @@ void * QBEM::GetBladeVariable(void *Data, int iVar)
 //Sara
             case 23:
 
-                    pVar = &pBData->m_Mach_calc;
+                    pVar = &pBData->m_Mach;
                     break;
 //Sara
             default:
@@ -4064,7 +4064,7 @@ void * QBEM::GetTurbineBladeVariable(void *Data, int iVar)
                     break;
             case 21:
 
-                    pVar = &pBData->m_Mach_calc;
+                    pVar = &pBData->m_Mach;
                     break;
             case 22:
 
