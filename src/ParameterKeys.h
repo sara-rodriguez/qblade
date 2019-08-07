@@ -32,7 +32,7 @@ struct Parameter {
 	struct NoiseSimulation {
         enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,
                   DStarChordStation, DStarScalingFactor, EddyConvectionMach, DirectivityTheta, DirectivityPhi,
-                  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition, sects, rot_speed, u_wind_speed, TSR, dstar_type, phi_type, IntegralLengthScale, TurbulenceIntensity}; //Sara and Alexandre MOD
+                  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition, sects, rot_speed, check_rot_speed,u_wind_speed, TSR, dstar_type, phi_type, IntegralLengthScale, TurbulenceIntensity}; //Sara and Alexandre MOD
 	};
 };
 

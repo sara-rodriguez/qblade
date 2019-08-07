@@ -7,6 +7,9 @@ class QScrollArea;
 #include "../CreatorDialog.h"
 #include "../ParameterViewer.h"
 #include "../StoreAssociatedComboBox_include.h"
+#include "../XBEM/TBEMData.h" //Sara
+#include "../Noise/NoiseSimulation.h" //Sara
+#include <QCheckBox>//Sara
 class NoiseModule;
 
 
@@ -15,8 +18,8 @@ class NoiseCreatorDialog : public CreatorDialog, public ParameterViewer<Paramete
 	Q_OBJECT	
 	
 public:
-	NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseModule *module);
-	
+    NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseModule *module);
+
 private:
 	class OpPointRecord {  // a class representing one row in the OpPoint selection view
 	public:

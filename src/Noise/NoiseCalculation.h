@@ -53,6 +53,13 @@ public:
 	QVector<double> SPLALOG() const { return m_SPLALOG; }
 	QVector<double> SPLSLOG() const { return m_SPLSLOG; }
 	QVector<double> SPLPLOG() const { return m_SPLPLOG; }
+
+    //Sara
+        QVector<double> m_DStarInterpolatedS3d;
+        QVector<double> m_DStarInterpolatedP3d;
+//    double m_DStarInterpolatedS3d[number_of_elements];
+//    double m_DStarInterpolatedP3d[number_of_elements];
+    //Sara
 	
 private:
     void setupVectors();
@@ -60,7 +67,7 @@ private:
 	// calculation sub-functions
 	double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
-        double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara teste
+        double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara
     double getDH();
     double getDL();
     double getSt1();
@@ -80,11 +87,6 @@ private:
     //For general
     double m_DStarInterpolatedS;
     double m_DStarInterpolatedP;
-
-    //Sara
-    double m_DStarInterpolatedS3d;
-    double m_DStarInterpolatedP3d;
-    //Sara
 
     double m_DStarFinalS;
     double m_DStarFinalP;
@@ -137,6 +139,7 @@ private:
     //3D
     double m_sects;
     double m_rot_speed;
+    double m_check_rot_speed;
     double m_u_wind_speed;
     double m_TSR;
     double m_dstar_type;

@@ -53,6 +53,7 @@ public:
     //3D Sara
     double sects;
     double rot_speed;
+    double check_rot_speed;
     double u_wind_speed;
     double TSR;
     double dstar_type;

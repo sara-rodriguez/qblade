@@ -139,20 +139,22 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                             groupBox->setLayout(pGrid);
                             pGrid->addEdit(P::sects, NumberEditType, new NumberEdit(),
                                            "Number of Segments (min 13):", 0);
-                            pGrid->addEdit(P::rot_speed, NumberEditType, new NumberEdit(),
-                                           "Rotational Speed []:", 0, SPEED);
+                            //teste
+                            pGrid->addEdit(P::check_rot_speed, CheckBox, new QCheckBox (""),"Rotational Speed [rpm]:", true);
+                            pGrid->addEdit(P::rot_speed, NumberEditType, new NumberEdit(), "",1);
+                            //teste
                             pGrid->addEdit(P::u_wind_speed, NumberEditType, new NumberEdit(),
-                                           "Uniform Wind Speed []:", 0, SPEED); //m_parameter.originalVelocity()
+                                           "Uniform Wind Speed []:", 1, SPEED); //m_parameter.originalVelocity()
                             pGrid->addEdit(P::TSR, NumberEditType, new NumberEdit(),
-                                           "TSR:", 10);
+                                           "TSR:", 1);
                             QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
                             pGrid->addWidget(labeltd);
                             m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
                             pGrid->addWidget(m_airfoilComboBoxtd);
 
-                            pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"D* type (0-Natural Transition, 1-Heavy-tripping):", 0);
+                            pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"D* type (0-Natural Transition, 1-Heavy-tripping, 2 - XFoil):", 1);
 
-                            pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Phi type (0-90º, 1-free):", 0);
+                            pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Phi type (0-90º, 1-free):", 1);
                             //Sara
                             
 	setUnitContainingLabels();

@@ -53,6 +53,7 @@ private:
     double m_sects;
     double x;
     double m_rot_speed;
+    double m_check_rot_speed;
     double m_u_wind_speed;
     double m_TSR;
     double m_dstar_type;

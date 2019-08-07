@@ -1,4 +1,5 @@
 #include "NoiseSimulation.h"
+#include "NoiseCalculation.h" //Sara
 #include "NoiseParameter.h" //Sara
 
 #include "../ParameterViewer.h"
@@ -317,6 +318,9 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
     double A[number_of_segments];
     double phi_lin[number_of_segments];
 
+    double DStarXFoilS[number_of_segments];
+    double DStarXFoilP[number_of_segments];
+
     double sp_OASPL_alpha=0;
     double splog_OASPL_alpha=0;
     double st_OASPL_alpha=0;
@@ -530,37 +534,12 @@ corr_fact[i]=54.42*(pow(10.,(0.0258*alpha[i])));
 D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 }
 
-//teste inicio
+//For D* Xfoil
 
-//Rodar de novo o XFoil com os Reynolds e Machs definidos em Mach_calc[i] e bdata->m_Reynolds.value(i)
+DStarXFoilS[i]=m_calculation.m_DStarInterpolatedS3d[i];
+DStarXFoilP[i]=m_calculation.m_DStarInterpolatedP3d[i];
 
-//Fazer um loop externo e extrair os dados de i=1 a i=40 para cada corda de:  m_DStarInterpolatedS e m_DStarInterpolatedP e dentro com os pontos operacionais de todas as frequencias de 25 a 20000Hz (como era feito antes).
-
-//
-
-//            D_starred[i]=chord[i]*D_starred_C[i];
-//            //D_starred[i]=m_opPoint->topDStar.second[i];
-
-//            double m_DStarInterpolatedS[number_of_segments];
-//            double m_DStarInterpolatedP[number_of_segments];
-
-//    bool dStarOrder[number_of_segments];
-//    for (i=1;i<(number_of_segments);i++){
-//        if (alpha[i]<0){dStarOrder[i]= true;} else {dStarOrder[i]= false;}
-//    }
-
-    //        m_DStarInterpolatedS = getDStarInterpolated(dStarOrder,nop);
-
-//            double m_DStarFinalS[number_of_segments];
-//            double m_DStarFinalP[number_of_segments];
-    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
-
-    //        m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
-    //        m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
-
-// teste fim
-
-//Length of Wetted  Trailing Edge
+//Length of Wetted Trailing Edge
 L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);
 
 //Calculate the Switching Angle
@@ -606,6 +585,7 @@ double EddyMach_perc=EddyMach;
 EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
+
 if (m_parameter.dstar_type==0){
     D_starred_S[i]=D_starred_N_S[i];
     D_starred_P[i]=D_starred_N_P[i];
@@ -614,6 +594,11 @@ else if (m_parameter.dstar_type==1){
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
 }
+else if (m_parameter.dstar_type==2){
+    D_starred_S[i]=DStarXFoilS[i];
+    D_starred_P[i]=DStarXFoilP[i];
+}
+
 //todo D* BEM
 
 double B=0;
@@ -1232,6 +1217,11 @@ void NoiseSimulation::setAnalyzedOpPoints(QVector<OpPoint *> newList) {
 }
 
 QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, QVariant value) {
+//Sara
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    double outer_radius=pBEM->m_pTData->OuterRadius;
+//Sara
+
     typedef Parameter::NoiseSimulation P;
 
     const bool set = value.isValid();
@@ -1290,63 +1280,54 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
             if(set) m_parameter.IntegralLengthScale = value.toDouble();
             else value = m_parameter.IntegralLengthScale; break;
         case P::TurbulenceIntensity:
-            if(set) m_parameter.TurbulenceIntensity = value.toDouble();
+        if(set) m_parameter.TurbulenceIntensity = value.toDouble();
             else value = m_parameter.TurbulenceIntensity; break;
 
         //Sara
     case P::sects:
-        if(set) {m_parameter.sects = value.toDouble(); if(m_parameter.sects<13) value=13;}
-        else {
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-value = pBEM->dlg_elements; break;
-        }
+        if(set) m_parameter.sects=value.toDouble(); else value=m_parameter.sects;
+        if (m_parameter.sects>=13 & m_parameter.sects<=40){}
+            else{
+            QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+            m_parameter.sects = pBEM->dlg_elements;
+            value=m_parameter.sects;}
+break;
 
+//teste
+//        se checkbox estiver ativo setar o valor do usuário caso contrário calcular : ((m_TSR*m_u_wind_speed*60/(2*PI*outer_radius))
     case P::rot_speed:
-        if(set) {m_parameter.sects = value.toDouble();}
-        else {
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-value =0; break;
-        }
-
-    case P::u_wind_speed:
-        if(set) {m_parameter.sects = value.toDouble();}
-        else {
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-
-SimuWidget *pSimuWidget = (SimuWidget *) pBEM->m_pSimuWidget;
-value = pSimuWidget->m_pctrlWindspeed->getValue();
- break;
-        }
+        if(set) {m_parameter.rot_speed = value.toDouble();}
+        else if (m_TSR>0 & m_u_wind_speed>0){m_parameter.rot_speed=(m_TSR*m_u_wind_speed*60/(2*PI*outer_radius));
+        value=m_parameter.rot_speed;}
+        else {value=m_parameter.rot_speed;}
+        break;
+//teste
 
     case P::TSR:
-        if(set) {m_parameter.sects = value.toDouble();}
-        else {
+        if(set) m_parameter.TSR = value.toDouble();
+        else if (m_parameter.rot_speed>0 & m_u_wind_speed>0){m_parameter.TSR=(2*PI*m_rot_speed/60*outer_radius/m_u_wind_speed);value=m_parameter.TSR;}
+        else {m_parameter.TSR=0;value=m_parameter.TSR;}break;
+
+    case P::u_wind_speed:
+        if(set) m_parameter.u_wind_speed = value.toDouble();
+        else if(m_parameter.rot_speed>0){
+m_parameter.u_wind_speed=(2*PI*m_rot_speed/60*outer_radius/m_TSR);
+value=m_parameter.u_wind_speed;
+        } else {
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-value = 0; break;
-        }
+SimuWidget *pSimuWidget = (SimuWidget *) pBEM->m_pSimuWidget;
+m_parameter.u_wind_speed = pSimuWidget->m_pctrlWindspeed->getValue();
+value=m_parameter.u_wind_speed;
+}
+break;
 
     case P::dstar_type:
-        if(set) {m_parameter.dstar_type = value.toDouble();}
-        else {
-value = 0; break;
-        }
+        if(set) m_parameter.dstar_type = value.toDouble();
+        else value = m_parameter.dstar_type;break;
 
     case P::phi_type:
-        if(set) {m_parameter.phi_type = value.toDouble();}
-        else {
-value = 0; break;
-        }
-
-        //todo
-//    case D_calc_mode:::
-//        if(set) {m_parameter.sects = value.toDouble();}
-//        else {
-//QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-//value = 0; break;
-//        }
-
-//rot = m_pTData->Lambda0*windspeed*60/2/PI/m_pTData->OuterRadius;
-
+        if(set) m_parameter.phi_type = value.toDouble();
+        else {value = m_parameter.phi_type;}break;
         //Sara
     }
 

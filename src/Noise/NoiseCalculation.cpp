@@ -116,7 +116,7 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
 			(chordUpStream-chordDownStream)) + dStarDownStream;
 }
 
-//Sara teste
+//Sara
 double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoint * nop) {
     bool upDownFind = false;
     double chordUpStream = 0;
@@ -177,7 +177,7 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
     return ((dStarUpStream-dStarDownStream) * (chord-chordDownStream) /
             (chordUpStream-chordDownStream)) + dStarDownStream;
 }
-//Sara teste
+//Sara
 
 double NoiseCalculation::getDL() {
     //Dh, Low Freq. Directivity Factor
@@ -730,12 +730,14 @@ void NoiseCalculation::calculate() {
 
 //qDebug() << "D* S original:" << m_DStarInterpolatedS;
 
-            //Sara teste
+            //Sara
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
 int number_of_segments = bdata->m_pos.size();
 double chord[number_of_segments];
+m_DStarInterpolatedS3d.resize(number_of_segments+1);
+m_DStarInterpolatedP3d.resize(number_of_segments+1);
 double chordmax=0;
 for (int j = 0; j <= number_of_segments; ++j) {
     if(chord[j]>chordmax){chordmax=chord[j];}
@@ -744,14 +746,18 @@ for (int j = 0; j <= number_of_segments; ++j) {
 for (int j = 0; j <= number_of_segments; ++j) {
 chord[j] = bdata->m_c_local.value(j);
 
-qDebug() << "j:" << j;
+//double m_DStarInterpolatedS3d [number_of_segments];
+//double m_DStarInterpolatedP3d [number_of_segments];
 
-m_DStarInterpolatedS3d = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
-qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d;
-m_DStarInterpolatedP3d = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
-qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
-}}
-            //Sara teste
+//qDebug() << "j:" << j;
+
+m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
+//qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
+m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
+//qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
+}
+}
+            //Sara
 
             m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
             m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
@@ -760,14 +766,11 @@ qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
             m_DStarInterpolatedS = 0;
             m_DStarInterpolatedP = 0;
 
-            //Sara teste
-//            m_DStarInterpolated3dS = 0;
-//            m_DStarInterpolated3dP = 0;
-//Sara teste
             //For BPM model
 			
             m_DStarFinalS = getBPMThickness(nop, SuctionSide) * m_parameter->dStarScalingFactor;
             m_DStarFinalP = getBPMThickness(nop, PressureSide) * m_parameter->dStarScalingFactor;
+
         }
 
         m_EddyMachNumber = m_parameter->originalMach * m_parameter->eddyConvectionMach;
