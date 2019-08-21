@@ -26,8 +26,11 @@ public:
 	double getDstrAt(int x, int y);
 	
 private:
-    double m_reynolds, m_alpha, m_sects, x, m_rot_speed, m_check_rot_speed, m_u_wind_speed, m_TSR, m_dstar_type, m_phi_type; //Sara
+    double m_reynolds, m_alpha, m_sects, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_dstar_type, m_phi_type, m_rot_speed_calc, m_u_wind_speed_calc, m_TSR_calc; //Sara
 	OpPoint *m_opPoint;
+//Sara
+bool m_rot_speed_check, m_u_wind_speed_check, m_TSR_check;
+//Sara
 };
 
 #endif // NOISEOPPOINT_H

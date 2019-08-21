@@ -57,8 +57,6 @@ public:
     //Sara
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
-//    double m_DStarInterpolatedS3d[number_of_elements];
-//    double m_DStarInterpolatedP3d[number_of_elements];
     //Sara
 	
 private:
@@ -139,12 +137,17 @@ private:
     //3D
     double m_sects;
     double m_rot_speed;
-    double m_check_rot_speed;
     double m_u_wind_speed;
-    double m_TSR;
+    double m_TSRtd;
     double m_dstar_type;
     double m_phi_type;
     double x;
+    double m_rot_speed_calc;
+    double m_u_wind_speed_calc;
+    double m_TSR_calc;
+    bool m_rot_speed_check;
+    bool m_u_wind_speed_check;
+    bool m_TSRtd_check;
 //Sara
 
     //For SPLs

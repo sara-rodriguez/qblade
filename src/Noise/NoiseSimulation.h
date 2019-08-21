@@ -37,6 +37,17 @@ public:
 	void setSelectFrom (NoiseParameter::OpPointSource select) { m_parameter.opPointSource = select; }
 	QVector<OpPoint*> getAnalyzedOpPoints () { return m_parameter.analyzedOpPoints; }
 	NoiseParameter::OpPointSource getSelectFrom () { return m_parameter.opPointSource; }
+
+    //Sara
+    QVector<double> listtsr;
+
+    double m_rot_speed_calc;
+    double m_u_wind_speed_calc;
+    double m_TSR_calc;
+    double m_rot_speed_check;
+    double m_u_wind_speed_check;
+    double m_TSR_check;
+    //Sara
 	
 private:
 	NoiseSimulation () { }
@@ -53,7 +64,6 @@ private:
     double m_sects;
     double x;
     double m_rot_speed;
-    double m_check_rot_speed;
     double m_u_wind_speed;
     double m_TSR;
     double m_dstar_type;

@@ -14,6 +14,7 @@
 //Sara
 #include "NoiseException.h"
 #include "NoiseOpPoint.h"
+#include "NoiseCreatorDialog.h"
 #include <cmath>
 //Sara
 
@@ -208,10 +209,6 @@ double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 double z=lstart;
 double approaxing_wind_speed = m_parameter.originalVelocity;
 
-//nome da pa
-//QGroupBox* SimulationCreatorDialog<ParameterGroup>::constructParameterBox(QString defaultName)
-//SimulationCreatorDialog *pSimulationCreatorDialog = (SimulationCreatorDialog *) constructParameterBox->;
-//SimulationCreatorDialog->ParameterGroup->constructParameterBox->defaultName
 
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
@@ -1285,51 +1282,97 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
 
         //Sara
     case P::sects:
-        if(set) m_parameter.sects=value.toDouble(); else value=m_parameter.sects;
-        if (m_parameter.sects>=13 & m_parameter.sects<=40){}
-            else{
-            QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-            m_parameter.sects = pBEM->dlg_elements;
-            value=m_parameter.sects;}
-break;
-
-//teste
-//        se checkbox estiver ativo setar o valor do usuário caso contrário calcular : ((m_TSR*m_u_wind_speed*60/(2*PI*outer_radius))
-    case P::rot_speed:
-        if(set) {m_parameter.rot_speed = value.toDouble();}
-        else if (m_TSR>0 & m_u_wind_speed>0){m_parameter.rot_speed=(m_TSR*m_u_wind_speed*60/(2*PI*outer_radius));
-        value=m_parameter.rot_speed;}
-        else {value=m_parameter.rot_speed;}
+        if(set) m_parameter.sects=value.toDouble();
+else {m_parameter.sects = pBEM->dlg_elements; value=m_parameter.sects;}
         break;
-//teste
 
-    case P::TSR:
-        if(set) m_parameter.TSR = value.toDouble();
-        else if (m_parameter.rot_speed>0 & m_u_wind_speed>0){m_parameter.TSR=(2*PI*m_rot_speed/60*outer_radius/m_u_wind_speed);value=m_parameter.TSR;}
-        else {m_parameter.TSR=0;value=m_parameter.TSR;}break;
+    case P::TSRtd:
+        if(set) m_parameter.TSRtd = value.toDouble();
+        else {value=m_parameter.TSRtd;}
+break;
 
     case P::u_wind_speed:
         if(set) m_parameter.u_wind_speed = value.toDouble();
-        else if(m_parameter.rot_speed>0){
-m_parameter.u_wind_speed=(2*PI*m_rot_speed/60*outer_radius/m_TSR);
-value=m_parameter.u_wind_speed;
-        } else {
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-SimuWidget *pSimuWidget = (SimuWidget *) pBEM->m_pSimuWidget;
-m_parameter.u_wind_speed = pSimuWidget->m_pctrlWindspeed->getValue();
-value=m_parameter.u_wind_speed;
-}
+        else {value=m_parameter.u_wind_speed;}
 break;
+
+    case P::rot_speed:
+        if(set) {m_parameter.rot_speed = value.toDouble();}
+        else{value=m_parameter.rot_speed;}
+        break;
+
+    case P::TSR_check:
+        if(set) m_parameter.TSR_check = value.toBool();
+        else {value=m_parameter.TSR_check;}
+break;
+
+    case P::u_wind_speed_check:
+        if(set) m_parameter.u_wind_speed_check = value.toBool();
+        else {value=m_parameter.u_wind_speed_check;}
+break;
+
+    case P::rot_speed_check:
+        if(set) {m_parameter.rot_speed_check = value.toBool();}
+else {value=m_parameter.rot_speed_check;}
+        break;
 
     case P::dstar_type:
         if(set) m_parameter.dstar_type = value.toDouble();
-        else value = m_parameter.dstar_type;break;
+        else {m_parameter.dstar_type=0;value = m_parameter.dstar_type;}break;
 
     case P::phi_type:
         if(set) m_parameter.phi_type = value.toDouble();
-        else {value = m_parameter.phi_type;}break;
-        //Sara
+        else {m_parameter.phi_type=0;value = m_parameter.phi_type;}break;
     }
+// Sara
+
+SimuWidget *pSimuWidget = (SimuWidget *) pBEM->m_pSimuWidget;
+
+//cálculos TSR w e u
+m_parameter.TSR_calc=2.*PI*m_parameter.rot_speed/60.*outer_radius/m_parameter.u_wind_speed;
+
+m_parameter.rot_speed_calc=m_parameter.TSRtd*m_parameter.u_wind_speed*60./(2.*PI*outer_radius);
+
+m_parameter.u_wind_speed_calc=2.*PI*m_parameter.rot_speed/60.*outer_radius/m_parameter.TSRtd;
+
+//cálculo para não sets
+if(m_parameter.u_wind_speed_check==false){
+m_parameter.u_wind_speed=m_parameter.u_wind_speed_calc;}
+
+if(m_parameter.TSR_check==false){
+SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+    double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+    double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
+
+double v=lstart;
+while (qAbs(m_parameter.TSR_calc-v)>ldelta){
+v=v+ldelta;
+}
+
+int q=0;
+if(m_parameter.TSR_calc<v || m_parameter.TSR_calc>v){
+m_parameter.TSR_calc=v;
+m_parameter.TSR_check=true;
+m_parameter.rot_speed=m_parameter.rot_speed_calc;
+m_parameter.rot_speed_check=false;
+m_parameter.u_wind_speed_check=true;
+}
+m_parameter.TSRtd=m_parameter.TSR_calc;
+}
+
+if(m_parameter.rot_speed_check==false){m_parameter.rot_speed=m_parameter.rot_speed_calc;}
+
+//condição inicial
+if((m_parameter.u_wind_speed_check==false) && (m_parameter.rot_speed_check==false) && (m_parameter.TSR_check==false)){
+ m_parameter.u_wind_speed_check=true;
+ m_parameter.rot_speed_check=false;
+ m_parameter.TSR_check=true;
+ m_parameter.TSRtd=7;
+ m_parameter.u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();
+ m_parameter.rot_speed=m_parameter.rot_speed_calc;
+}
+// Sara
 
     return (set ? QVariant() : value);
 }

@@ -19,6 +19,10 @@ class NoiseCreatorDialog : public CreatorDialog, public ParameterViewer<Paramete
 	
 public:
     NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseModule *module);
+    //Sara
+    double calc_TSR;
+    double change_TSR;
+    //Sara
 
 private:
 	class OpPointRecord {  // a class representing one row in the OpPoint selection view
@@ -52,7 +56,8 @@ private:
 	
 	QButtonGroup *m_selectFromButtons;
 	FoilComboBox *m_airfoilComboBox;
-    FoilComboBox *m_airfoilComboBoxtd;
+    FoilComboBox *m_airfoilComboBoxtd;//Sara
+    FoilComboBox *m_airfoilComboBoxte;//Sara
 	PolarComboBox *m_polarComboBox;
 	QScrollArea *m_opPointScrollArea;
 	QWidget *m_opPointViewWidget;

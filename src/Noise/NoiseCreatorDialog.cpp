@@ -15,6 +15,8 @@
 #include "../Objects/Polar.h"
 #include "../Objects/Foil.h"
 #include "NoiseException.h"
+#include "../Noise/NoiseCreatorDialog.h"
+#include "../XBEM/BEM.h"//Sara
 
 
 typedef Parameter::NoiseSimulation P;
@@ -137,25 +139,49 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                             hBox->addWidget(groupBox);
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
-                            pGrid->addEdit(P::sects, NumberEditType, new NumberEdit(),
-                                           "Number of Segments (min 13):", 0);
-                            //teste
-                            pGrid->addEdit(P::check_rot_speed, CheckBox, new QCheckBox (""),"Rotational Speed [rpm]:", true);
-                            pGrid->addEdit(P::rot_speed, NumberEditType, new NumberEdit(), "",1);
-                            //teste
-                            pGrid->addEdit(P::u_wind_speed, NumberEditType, new NumberEdit(),
-                                           "Uniform Wind Speed []:", 1, SPEED); //m_parameter.originalVelocity()
-                            pGrid->addEdit(P::TSR, NumberEditType, new NumberEdit(),
-                                           "TSR:", 1);
-                            QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
-                            pGrid->addWidget(labeltd);
-                            m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
-                            pGrid->addWidget(m_airfoilComboBoxtd);
+                            NumberEdit *numEdit = new NumberEdit();
+                            QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+                            double max_sects = pBEM->dlg_elements;
+                            pGrid->addEdit(P::sects, NumberEditType, numEdit,"Number of Segments:", 40);
+                            numEdit->setRange(13,max_sects);
+                            numEdit->setValue(30,true);
+                            numEdit->setAutomaticPrecision(0);
 
-                            pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"D* type (0-Natural Transition, 1-Heavy-tripping, 2 - XFoil):", 1);
+NumberEdit *NumberEditb = new NumberEdit();
+NumberEditb->setAutomaticPrecision(3);
+pGrid->addEdit(P::rot_speed_check, CheckBox, new QCheckBox ("rot. speed set (set 2 of 3)"),"", 0);
+pGrid->addEdit(P::rot_speed, NumberEditType, NumberEditb, "Rotational Speed [rpm]:",1);
+//pGrid->addWidget(QCheckBox);//Sara todo
 
-                            pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Phi type (0-90º, 1-free):", 1);
-                            //Sara
+NumberEdit *numEdita = new NumberEdit();
+//QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+pGrid->addEdit(P::u_wind_speed_check, CheckBox, new QCheckBox ("wind speed set (set 2 of 3)"),"", 1);
+pGrid->addEdit(P::u_wind_speed, NumberEditType, numEdita,"Uniform Wind Speed []:", 1, SPEED);
+
+QDoubleSpinBox *tsrSpinBox = new QDoubleSpinBox;
+tsrSpinBox->setLocale(QLocale("en_us"));
+
+pGrid->addEdit(P::TSR_check, CheckBox, new QCheckBox ("TSR set (set 2 of 3)"),"", 1);
+pGrid->addEdit(P::TSRtd,DoubleSpinBox, tsrSpinBox,"TSR:", 1);
+
+SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
+
+     tsrSpinBox->setRange(lstart, lend);
+     tsrSpinBox->setSingleStep(ldelta);
+     tsrSpinBox->setDecimals(1);
+     tsrSpinBox->valueChanged(change_TSR);
+
+QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
+pGrid->addWidget(labeltd);
+m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
+pGrid->addWidget(m_airfoilComboBoxtd);
+pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"D* type (0-Natural Transition, 1-Heavy-tripping, 2 - XFoil):", 1);
+
+pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Phi type (0-90º, 1-free):", 1);
+//Sara
                             
 	setUnitContainingLabels();
 	initView();			

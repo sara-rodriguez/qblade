@@ -4,6 +4,7 @@
 #include <QGroupBox>
 #include <QBoxLayout>
 #include <QComboBox>
+#include <QDoubleSpinBox>//Sara
 #include <QMainWindow>
 
 #include "../Store.h"
