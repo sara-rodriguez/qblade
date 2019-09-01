@@ -621,9 +621,9 @@ else if (m_parameter.phi_type==1){
 //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
     b[i]=qRadiansToDegrees(qAtan((chord[i]-chord[i-1])/(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))));
     a[i]=SwAlpha[i];
-    XB=m_parameter.distanceObsever;
-    YB=m_parameter.distanceObsever;
-    ZB=bdata->m_pos.value(number_of_segments-1)/2.;
+    XB=m_parameter.obs_x_pos;
+    YB=m_parameter.obs_y_pos;
+    ZB=m_parameter.obs_z_pos;
 
     XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
     YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
@@ -1039,6 +1039,31 @@ SPL_B[j]=SPL_dB[j]+BWeighting[j];
 double SPL_C[w];
 SPL_C[j]=SPL_dB[j]+CWeighting[j];
 
+//BPM conditions
+//Sara todo
+if((bdata->m_Reynolds.value(i)>1.5*pow(10,6) || bdata->m_Mach.value(i)>0.208) || bdata->m_alpha.value(i)<=19.8){
+
+        SPL_alpha_min0[j]=0;
+        SPL_alpha_big0[j]=0;
+        dBA_alpha_min0[j]=0;
+        dBA_alpha_big0[j]=0;
+        dBB_alpha_min0[j]=0;
+        dBB_alpha_big0[j]=0;
+        dBC_alpha_min0[j]=0;
+        dBC_alpha_big0[j]=0;
+        SPL_dB_P[j]=0;
+        dBA_P[j]=0;
+        dBB_P[j]=0;
+        dBC_P[j]=0;
+        SPL_alpha[j]=0;
+        SPL_S[j]=0;
+        SPL_P[j]=0;
+        SPL_dB[j]=0;
+        SPL_A[j]=0;
+        SPL_B[j]=0;
+        SPL_C[j]=0;
+}
+
 slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
 slog_SPL_S[j]=pow(10.,(SPL_S[j]/10.));
 slog_SPL_P[j]=pow(10.,(SPL_P[j]/10.));
@@ -1323,6 +1348,26 @@ else {value=m_parameter.rot_speed_check;}
     case P::phi_type:
         if(set) m_parameter.phi_type = value.toDouble();
         else {m_parameter.phi_type=0;value = m_parameter.phi_type;}break;
+
+    case P::obs_x_pos:
+        if(set) m_parameter.obs_x_pos = value.toDouble();
+        else {m_parameter.obs_x_pos=10;value = m_parameter.obs_x_pos;}break;
+
+    case P::obs_y_pos:
+        if(set) m_parameter.obs_y_pos = value.toDouble();
+        else {m_parameter.obs_y_pos=10;value = m_parameter.obs_y_pos;}break;
+
+    case P::obs_z_pos:
+        if(set) m_parameter.obs_z_pos = value.toDouble();
+        else {
+double blade_radius=0;
+int number_of_segments=0;
+
+double hub_radius=pBEM->m_pBlade->m_HubRadius;
+blade_radius=(outer_radius-hub_radius);
+m_parameter.obs_z_pos=blade_radius/2.;
+value = m_parameter.obs_z_pos;
+}break;
     }
 // Sara
 

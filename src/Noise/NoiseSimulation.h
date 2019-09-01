@@ -68,6 +68,9 @@ private:
     double m_TSR;
     double m_dstar_type;
     double m_phi_type;
+    double obs_x_pos;
+    double obs_y_pos;
+    double obs_z_pos;
 
     QList <double> m_pos;
     QList <double> m_c_local;       //local chord

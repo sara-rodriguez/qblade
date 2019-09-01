@@ -100,6 +100,11 @@ private:
     bool m_CalcSuctionSide;
     bool m_CalcPressureSide;
 
+    //Sara
+    bool m_CalcAmiet;
+    bool m_CalcLowson;
+    //Sara
+
     double m_A1Ar;
 
     QVector<double> m_OASPL;
@@ -145,6 +150,9 @@ private:
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
     double m_TSR_calc;
+    double m_obs_x_pos;
+    double m_obs_y_pos;
+    double m_obs_z_pos;
     bool m_rot_speed_check;
     bool m_u_wind_speed_check;
     bool m_TSRtd_check;

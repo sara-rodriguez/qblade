@@ -67,6 +67,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 								  "Directivity angle θe [deg]:", 90);
 					pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
 								  "Directivity angle ψe [deg]:", 90);
+
 					
 			QVBoxLayout *vBox = new QVBoxLayout;
 			hBox->addLayout(vBox);
@@ -75,16 +76,21 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 				vBox->addWidget(imageLabel, 0, Qt::AlignHCenter);
 				groupBox = new QGroupBox ("TE noise source contributions");
 				vBox->addWidget(groupBox);
-					pGrid = new ParameterGrid<P>(this);
-					groupBox->setLayout(pGrid);
-						pGrid->addEdit(P::SeparatedFlow, CheckBox, new QCheckBox ("enable"),
-									   "Separated flow on the suction side (high Reynolds flow):", true);
-						pGrid->addEdit(P::SuctionSide, CheckBox, new QCheckBox ("enable"),
-									   "Suction side of airfoil (attached flow):", true);
-						pGrid->addEdit(P::PressureSide, CheckBox, new QCheckBox ("enable"),
-									   "Pressure side of airfoil (attached flow):", true);
+                pGrid = new ParameterGrid<P>(this);
+                groupBox->setLayout(pGrid);
+                pGrid->addEdit(P::SeparatedFlow, CheckBox, new QCheckBox ("enable"),"Separated flow on the suction side (high Reynolds flow):", true);
+                pGrid->addEdit(P::SuctionSide, CheckBox, new QCheckBox ("enable"),"Suction side of airfoil (attached flow):", true);
+                pGrid->addEdit(P::PressureSide, CheckBox, new QCheckBox ("enable"),"Pressure side of airfoil (attached flow):", true);
+
+                //Sara
+                groupBox = new QGroupBox ("LE noise source contributions");
+                vBox->addWidget(groupBox);
+                pGrid = new ParameterGrid<P>(this);
+                groupBox->setLayout(pGrid);
+                pGrid->addEdit(P::Lowson, CheckBox, new QCheckBox ("enable"),"Lowson's Model:", false);
+                pGrid->addEdit(P::Amiet, CheckBox, new QCheckBox ("enable"),"Amiet's Model:", false);
+                //Sara
 				vBox->addStretch();
-	
 	
 	widget = new QWidget;
 	tabWidget->addTab(widget, "Op. Points");
@@ -151,7 +157,6 @@ NumberEdit *NumberEditb = new NumberEdit();
 NumberEditb->setAutomaticPrecision(3);
 pGrid->addEdit(P::rot_speed_check, CheckBox, new QCheckBox ("rot. speed set (set 2 of 3)"),"", 0);
 pGrid->addEdit(P::rot_speed, NumberEditType, NumberEditb, "Rotational Speed [rpm]:",1);
-//pGrid->addWidget(QCheckBox);//Sara todo
 
 NumberEdit *numEdita = new NumberEdit();
 //QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
@@ -178,9 +183,15 @@ QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
 pGrid->addWidget(labeltd);
 m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
 pGrid->addWidget(m_airfoilComboBoxtd);
-pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"D* type (0-Natural Transition, 1-Heavy-tripping, 2 - XFoil):", 1);
+pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"δ* type (0-Natural Transition, 1-Heavy-tripping, 2 - XFoil):", 1);
 
-pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Phi type (0-90º, 1-free):", 1);
+pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Φ type (0-90º, 1-free):", 1);
+
+QLabel *labelte = new QLabel ("Observer Position:");
+pGrid->addWidget(labelte);
+pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"X:", 1);
+pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"Y:", 1);
+pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"Z:", 1);
 //Sara
                             
 	setUnitContainingLabels();
@@ -316,7 +327,7 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
                               "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
         return;
     }
-    //Sara TODO criar alertas para usuario
+    //Sara todo criar alertas para usuario
 //    if (!hasOpPoints) {
 //		QMessageBox::critical(this, "Create Noise Simulation",
 //							  "The following error(s) occured:\n\n - Reynolds Lower 600,000", QMessageBox::Ok);

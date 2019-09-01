@@ -36,6 +36,12 @@ public:
 	bool suctionSide; //SPLs
 	bool pressureSide; //SPLp
 	bool separatedFlow; //SPLa
+
+    //Sara
+    //LE
+    bool Lowson;
+    bool Amiet;
+    //Sara
 	
 	//XFoil correlation
 	double dStarChordStation;
@@ -60,6 +66,9 @@ public:
     double rot_speed_calc;
     double u_wind_speed_calc;
     double TSR_calc;
+    double obs_x_pos;
+    double obs_y_pos;
+    double obs_z_pos;
     bool rot_speed_check;
     bool u_wind_speed_check;
     bool TSR_check;
