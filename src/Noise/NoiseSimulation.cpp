@@ -216,16 +216,17 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
     double rho = pBEM->dlg_rho;
     double dynamic_visc = pBEM->dlg_visc;
     double cin_visc = dynamic_visc/rho;
-    double K_air = 1.4;
-    double R_air = 286.9;
-    double T_std_cond = 288.15;
+    double K_air = bdata->k_air;
+    double R_air = bdata->r_air;
+    double T_std_cond =pBEM->dlg_temp;
+    qDebug()<<T_std_cond;
     double P_std_cond = 101300;
     double lambda = pBEM->dlg_lambda;
     int mpos_size = bdata->m_pos.size(); //total number of segments
     double finalradius = bdata->m_pos.value(mpos_size-1);
     double nom_tg_speed = bdata->windspeed*lambda;
     double omega = nom_tg_speed/finalradius;
-    double rotation = 60/(M_PI*100/nom_tg_speed);
+//    double rotation = 60./(M_PI*100./nom_tg_speed);
 
 //    qDebug() << "tamanho de alpha: " << bdata->m_alpha.size();
 //    qDebug() << "tamanho de cl/cd: " << bdata->m_LD.size();
@@ -461,6 +462,8 @@ splog_dBC=0;
             alpha[i] = bdata->m_alpha.value(i);
             phi_BEM[i] = bdata->m_phi.value(i);
             theta_BEM[i] = bdata->m_theta.value(i);
+//            theta[i]=theta_BEM[i];
+//            phi[i]=phi_BEM[i];
             cl_cd[i] =  bdata->m_LD.value(i);
             r_R[i] = bdata->m_pos.value(i)/finalradius;
 
@@ -490,7 +493,6 @@ D_starred_HT_S[i]=D_starred_HT[i];
 D_starred_HT_P[i]=D_starred_HT[i];
 D_starred_N_S[i]=D_starred_N[i];
 D_starred_N_P[i]=D_starred_N[i];
-
 
 //alpha !=0 pressure side
 if (alpha[i]!=0){
@@ -699,7 +701,7 @@ AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
 
 St1_bar[i]=(St1[i]+St2[i])/2.;
 
-Re_disp_thick[i]=1.225*bdata->m_Windspeed.value(i)*D_starred_P[i]/(0.0000178);
+Re_disp_thick[i]=rho*bdata->m_Windspeed.value(i)*D_starred_P[i]/(0.0000178);
 
 if (Re_disp_thick[i]>5000){delta_K1[i]=0;}
 else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
@@ -1040,7 +1042,6 @@ double SPL_C[w];
 SPL_C[j]=SPL_dB[j]+CWeighting[j];
 
 //BPM conditions
-//Sara todo
 if((bdata->m_Reynolds.value(i)>1.5*pow(10,6) || bdata->m_Mach.value(i)>0.208) || bdata->m_alpha.value(i)<=19.8){
 
         SPL_alpha_min0[j]=0;

@@ -28,6 +28,7 @@ QGroupBox* SimulationCreatorDialog<ParameterGroup>::constructParameterBox(QStrin
 		ParameterGrid<P> *grid = new ParameterGrid<P>(this);
 		groupBox->setLayout(grid);
 			grid->addEdit(P::Name, this->LineEdit, new QLineEdit(), "Name of Simulation:", defaultName);
+            grid->addEdit(P::Temperature, this->NumberEditType, new NumberEdit (), "Temperature [K]:", 288.15);//Sara new
 			grid->addEdit(P::Rho, this->NumberEditType, new NumberEdit (), "Rho [kg/m^3]:", 1.225);
 			grid->addEdit(P::Viscosity, this->NumberEditType, new NumberEdit (), "Viscosity [kg/(m*s)]:", 0.00001647);
 			grid->addEdit(P::Discretize, this->NumberEditType, new NumberEdit (), "Discretize Blade into N Elements:", 40);
@@ -61,7 +62,7 @@ void SimulationCreatorDialog<ParameterGroup>::loadValuesFromSettings() {
     //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
     QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
-	
+    this->template get<NumberEdit>(P::Temperature)->setValue(settings.value("temperature", 288.15).toDouble());//Sara new
 	this->template get<NumberEdit>(P::Rho)->setValue(settings.value("rho", 1.225).toDouble());
 	this->template get<NumberEdit>(P::Viscosity)->setValue(settings.value("viscosity", 0.00001647).toDouble());
 	this->template get<NumberEdit>(P::Discretize)->setValue(settings.value("discretize", 40).toDouble());
@@ -80,6 +81,7 @@ void SimulationCreatorDialog<ParameterGroup>::saveValuesToSettings() {
     QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
 
+    settings.setValue("Temperature", this->template get<NumberEdit>(P::Temperature)->getValue());//Sara new
 	settings.setValue("rho", this->template get<NumberEdit>(P::Rho)->getValue());
 	settings.setValue("viscosity", this->template get<NumberEdit>(P::Viscosity)->getValue());
 	settings.setValue("discretize", this->template get<NumberEdit>(P::Discretize)->getValue());

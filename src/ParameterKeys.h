@@ -16,18 +16,18 @@ struct Parameter {
 				  RotorSweptArea, LossFactor, FixedLosses, RotationalSpeed, RotationalSpeedMin, RotationalSpeedMax, TSR};
 	};
 	struct DMSData {
-		enum Key {Name, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
-				  TipSpeedFrom, TipSpeedTo, TipSpeedDelta, Windspeed};
+        enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
+                  TipSpeedFrom, TipSpeedTo, TipSpeedDelta, Windspeed};//Sara new
 	};
 
 	struct CDMSData {
-		enum Key {Name, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
+        enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
 				  WindspeedFrom, WindspeedTo, WindspeedDelta, RotationalFrom, RotationalTo, RotationalDelta, PitchFrom,
-				  PitchTo, PitchDelta};
+                  PitchTo, PitchDelta};//Sara new
 	};
 	struct TDMSData {
-		enum Key {Name, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, WindspeedFrom, WindspeedTo,
-				  WindspeedDelta, TipLoss, VariableInduction, AnnualYield};
+        enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, WindspeedFrom, WindspeedTo,
+                  WindspeedDelta, TipLoss, VariableInduction, AnnualYield};//Sara new
 	};
 	struct NoiseSimulation {
         enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,

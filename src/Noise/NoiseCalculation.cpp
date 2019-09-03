@@ -479,7 +479,16 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
     m_SplpK1 = getK1(nop);
     m_SplpK13 = m_SplpK1-3;
     m_SplpDeltaK1 = 0;
-    m_ReynoldsBasedDisplacement = 1.225 * m_parameter->originalVelocity * m_DStarFinalP / 0.0000178;
+
+    //Sara
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    double rho=0;
+        foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+       rho = pBEM->dlg_rho;
+        }
+
+    m_ReynoldsBasedDisplacement = rho * m_parameter->originalVelocity * m_DStarFinalP / 0.0000178;// Sara correção rho
+    //Sara
 
     if (m_ReynoldsBasedDisplacement > 5000) {
         m_SplpDeltaK1 = 0;

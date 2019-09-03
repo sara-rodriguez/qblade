@@ -51,7 +51,7 @@ SimuWidget::SimuWidget(QWidget */*parent*/)
 void SimuWidget::SetupLayout()
 {
 
-//	setFixedWidth(250);
+    setFixedWidth(250);
     /////////top Layout//////////
     m_pctrlRho = new QLabel(tr("Rho"));
     m_pctrlElements = new QLabel(tr("Elements"));
@@ -89,7 +89,7 @@ void SimuWidget::SetupLayout()
     m_pctrlNewRootLoss = new QCheckBox(tr("New Root Loss"));
     m_pctrlNewRootLoss->setEnabled(false);
 
-    m_pctrlCdReynolds = new QCheckBox(tr("Reynolds Drag Correction"));
+    m_pctrlCdReynolds = new QCheckBox(tr("Re Drag Correction"));//Sara new
     m_pctrlCdReynolds->setEnabled(false);
 
     QGridLayout *SimuShow = new QGridLayout;
