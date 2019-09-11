@@ -7,8 +7,11 @@
 #include "NoiseCalculation.h"
 #include "NoiseParameter.h"
 
-#include "../XBEM/BData.h" //Sara
-#include <QtMath> //Sara
+//Sara
+#include "../XDirect/FoilPolarDlg.h"
+#include "../XBEM/BData.h"
+#include <QtMath>
+//Sara
 
 template <class KeyType>
 class ParameterViewer;
@@ -29,7 +32,9 @@ public:
 	
 	void simulate();  // can throw NoiseException
 	void exportCalculation (QTextStream &stream);
-    void export3DCalculation (QTextStream &stream);//Sara
+    void exportqs3DCalculationComplete (QTextStream &stream);//Sara
+    void exportqs3DCalculation (QTextStream &stream);//Sara
+    void exportqs3DLog (QTextStream &stream);//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
 	

@@ -89,7 +89,7 @@ void SimuWidget::SetupLayout()
     m_pctrlNewRootLoss = new QCheckBox(tr("New Root Loss"));
     m_pctrlNewRootLoss->setEnabled(false);
 
-    m_pctrlCdReynolds = new QCheckBox(tr("Re Drag Correction"));//Sara new
+    m_pctrlCdReynolds = new QCheckBox(tr("Re Drag Correction"));//Sara
     m_pctrlCdReynolds->setEnabled(false);
 
     QGridLayout *SimuShow = new QGridLayout;

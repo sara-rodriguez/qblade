@@ -43,7 +43,7 @@ QBEM *pBEM = (QBEM *) m_pParent;
 
 QGridLayout *VarLayout = new QGridLayout;
 
-TempEdit = new NumberEdit;//Sara new
+TempEdit = new NumberEdit;//Sara
 IterationsEdit = new NumberEdit;
 EpsilonEdit = new NumberEdit;
 ElementsEdit = new NumberEdit;
@@ -53,8 +53,8 @@ ViscEdit = new NumberEdit;
 
 SimName = new QLineEdit;
 
-TempEdit->setValue(pBEM->dlg_temp);//Sara new
-TempEdit->setAutomaticPrecision(2);//Sara new
+TempEdit->setValue(pBEM->dlg_temp);//Sara
+TempEdit->setAutomaticPrecision(2);//Sara
 IterationsEdit->setValue(pBEM->dlg_iterations);
 IterationsEdit->setAutomaticPrecision(0);
 IterationsEdit->setMinimum(1);
@@ -71,13 +71,13 @@ RhoEdit->setValue(pBEM->dlg_rho);
 RhoEdit->setAutomaticPrecision(4);
 ViscEdit->setValue(pBEM->dlg_visc);
 ViscEdit->setAutomaticPrecision(8);
-TempEdit->setValue(pBEM->dlg_temp);//Sara new
-TempEdit->setAutomaticPrecision(2);//Sara new
+TempEdit->setValue(pBEM->dlg_temp);//Sara
+TempEdit->setAutomaticPrecision(2);//Sara
 
 IterationsLabel = new QLabel(tr("Max Number of Iterations"));
 EpsilonLabel = new QLabel(tr("Max Epsilon for Convergence"));
 ElementsLabel = new QLabel("Discretize Blade into N Elements");
-TempEditLabel = new QLabel("Temperature");//Sara new Sara todo
+TempEditLabel = new QLabel("Temperature");//Sara
 RhoEditLabel = new QLabel(tr("Rho"));
 RelaxEditLabel = new QLabel(tr("Relax. Factor"));
 ViscEditLabel = new QLabel(tr("Viscosity"));
@@ -94,8 +94,8 @@ VarLayout->addWidget(RelaxEdit,4,1);
 VarLayout->addWidget(RelaxEditLabel,4,2);
 VarLayout->addWidget(ViscEditLabel,6,2);
 VarLayout->addWidget(ViscEdit,6,1);
-VarLayout->addWidget(TempEditLabel,7,2);//Sara new
-VarLayout->addWidget(TempEdit,7,1);//Sara new
+VarLayout->addWidget(TempEditLabel,7,2);//Sara
+VarLayout->addWidget(TempEdit,7,1);//Sara
 
 QGroupBox *NameGroup = new QGroupBox(tr("Simulation Name"));
 QHBoxLayout *NameLayout = new QHBoxLayout;
@@ -110,7 +110,7 @@ QGridLayout *CorLayout = new QGridLayout;
 TipLossBox = new QCheckBox(tr("Prandtl Tip Loss"));
 TipLossBox->setChecked(pBEM->dlg_tiploss);
 
-ReynoldsBox = new QCheckBox(tr("Re Drag Correction"));//Sara new
+ReynoldsBox = new QCheckBox(tr("Re Drag Correction"));//Sara
 ReynoldsBox->setChecked(pBEM->dlg_reynolds);
 
 RootLossBox = new QCheckBox(tr("Prandtl Root Loss"));

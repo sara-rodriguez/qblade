@@ -16,8 +16,11 @@
 #include "../Objects/Foil.h"
 #include "NoiseException.h"
 #include "../Noise/NoiseCreatorDialog.h"
-#include "../XBEM/BEM.h"//Sara
 
+//Sara
+#include "../XBEM/BEM.h"
+#include "../XDirect/FoilPolarDlg.h"
+//Sara
 
 typedef Parameter::NoiseSimulation P;
 
@@ -58,9 +61,9 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                                   "Turbulence intensity []:", 0.125, PERCENT);
                     //End Alexandre MOD
 					pGrid->addEdit(P::DStarChordStation, NumberEditType, new NumberEdit(),
-								  "D* at chord station:", 0.98);
+                                  "δ* at chord station:", 0.98);//Sara
 					pGrid->addEdit(P::DStarScalingFactor, NumberEditType, new NumberEdit(),
-								  "D* scaling factor:", 1);
+                                  "δ* scaling factor:", 1);//Sara
 					pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
 								  "Eddy Convection Mach number []:", 0.8, PERCENT);
 					pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
@@ -127,7 +130,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 						// scroll area is filled in NoiseCreatorDialog::fillOpPointView
 					
 					m_originalBpmWidget = new QWidget;
-					grid->addWidget(m_originalBpmWidget, 3, 0, 1, 4, Qt::AlignLeft | Qt::AlignTop);
+                    grid->addWidget(m_originalBpmWidget, 3, 1, 1, 3, Qt::AlignLeft | Qt::AlignTop);//Sara 3,0,1,4
 						pGrid = new ParameterGrid<P>(this);
 						m_originalBpmWidget->setLayout(pGrid);
 							pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);
@@ -183,7 +186,7 @@ QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
 pGrid->addWidget(labeltd);
 m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
 pGrid->addWidget(m_airfoilComboBoxtd);
-pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"δ* type (0-Natural Transition, 1-Heavy-tripping, 2 - XFoil):", 1);
+pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"δ* type (0-BPM, 1-XFoil):", 1);//Sara todo 0-Natural Transition, 1-Heavy-tripping, 2 - XFoil Interpolated
 
 pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Φ type (0-90º, 1-free):", 1);
 

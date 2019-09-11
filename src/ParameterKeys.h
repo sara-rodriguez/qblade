@@ -17,17 +17,17 @@ struct Parameter {
 	};
 	struct DMSData {
         enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
-                  TipSpeedFrom, TipSpeedTo, TipSpeedDelta, Windspeed};//Sara new
+                  TipSpeedFrom, TipSpeedTo, TipSpeedDelta, Windspeed};//Sara
 	};
 
 	struct CDMSData {
         enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
 				  WindspeedFrom, WindspeedTo, WindspeedDelta, RotationalFrom, RotationalTo, RotationalDelta, PitchFrom,
-                  PitchTo, PitchDelta};//Sara new
+                  PitchTo, PitchDelta};//Sara
 	};
 	struct TDMSData {
         enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, WindspeedFrom, WindspeedTo,
-                  WindspeedDelta, TipLoss, VariableInduction, AnnualYield};//Sara new
+                  WindspeedDelta, TipLoss, VariableInduction, AnnualYield};//Sara
 	};
 	struct NoiseSimulation {
         enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,

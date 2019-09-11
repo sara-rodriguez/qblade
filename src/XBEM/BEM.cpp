@@ -312,7 +312,7 @@ QBEM::QBEM(QWidget *parent)
     dlg_lambda = 7;
 
     dlg_relax = 0.35;
-    dlg_temp = 288.15;//Sara new
+    dlg_temp = 288.15;//Sara
     dlg_rho = 1.225;
     dlg_epsilon = 0.001;
     dlg_iterations = 100;
@@ -6015,7 +6015,7 @@ void QBEM::LoadSettings(QSettings *pSettings)
 		dlg_epsilon     =       pSettings->value("Epsilon").toDouble();
 		dlg_iterations  =       pSettings->value("Interations").toInt();
 		dlg_elements    =       pSettings->value("Elements").toInt();
-        dlg_temp         =       pSettings->value("Temperature").toDouble();//Sara new
+        dlg_temp         =       pSettings->value("Temperature").toDouble();//Sara
 		dlg_rho         =       pSettings->value("Rho").toDouble();
 		dlg_relax       =       pSettings->value("Relax").toDouble();
 		dlg_tiploss     =       pSettings->value("TipLoss").toBool();
@@ -6945,7 +6945,7 @@ void QBEM::OnCreateCharacteristicSimulation()
 		pCBEMData->m_Color = g_mainFrame->GetColor(12);
         pCBEMData->m_WingName = m_pBlade->getName();
         pCBEMData->setSingleParent(m_pBlade);
-        pCBEMData->temp = pBEMDlg.TempEdit->getValue();//Sara new
+        pCBEMData->temp = pBEMDlg.TempEdit->getValue();//Sara
 		pCBEMData->rho = pBEMDlg.RhoEdit->getValue();
 		pCBEMData->visc = pBEMDlg.ViscEdit->getValue();
 		pCBEMData->m_bNewRootLoss = pBEMDlg.NewRootLossBox->isChecked();
@@ -6960,7 +6960,6 @@ void QBEM::OnCreateCharacteristicSimulation()
         m_BEMToolBar->m_cbemdataComboBox->setCurrentObject(m_pCBEMData);
 		
         //////set the selected values as standard values for next definition of a simulation///
-//        dlg_temp = pCBEMData->temp;//Sara new
 		dlg_rho = pCBEMData->rho;
 		dlg_relax = pCBEMData->relax;
 		dlg_iterations = pCBEMData->iterations;
@@ -7029,7 +7028,6 @@ void QBEM::OnCreateRotorSimulation()
 		m_pBEMData = pBEMData;
 		
 		//////set the selected values as standart values for next definition of a simulation///
-//        dlg_temp = pBEMData->temp;//Sara new
         dlg_rho = pBEMData->rho;
 		dlg_relax = pBEMData->relax;
 		dlg_iterations = pBEMData->iterations;
@@ -7109,7 +7107,6 @@ void QBEM::OnCreateTurbineSimulation()
  m_pTurbineBData = NULL;
  selected_windspeed = -1;
 
-// dlg_temp = pTBEMData->temp;//Sara new
  dlg_rho = pTBEMData->rho;
  dlg_relax = pTBEMData->relax;
  dlg_iterations = pTBEMData->iterations;
@@ -11751,7 +11748,7 @@ void QBEM::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("Epsilon", dlg_epsilon);
 		pSettings->setValue("Interations", dlg_iterations);
 		pSettings->setValue("Elements", dlg_elements);
-        pSettings->setValue("Temperature", dlg_temp);//Sara new
+        pSettings->setValue("Temperature", dlg_temp);//Sara
 		pSettings->setValue("Rho", dlg_rho);
 		pSettings->setValue("Relax", dlg_relax);
 		pSettings->setValue("TipLoss", dlg_tiploss);
