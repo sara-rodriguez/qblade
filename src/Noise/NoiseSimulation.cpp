@@ -610,14 +610,16 @@ if (m_parameter.dstar_type<=0 & m_parameter.dstar_type>=0){
     D_starred_S[i]=D_starred_N_S[i];
     D_starred_P[i]=D_starred_N_P[i];
 }
+
 else if (m_parameter.dstar_type<=1 & m_parameter.dstar_type>=1){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-//Sara todo Joseph falou algo de 0.15 aqui
-    if((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) {
+// Sara todo
+// The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
+    if(((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
@@ -1448,8 +1450,9 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-//Sara todo Joseph falou algo de 0.15 aqui
-    if((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) {
+    // Sara todo
+    // The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
+        if(((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
@@ -2340,8 +2343,9 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
         double TopTrip=pFoilPolarDlg->m_XTopTr;
         double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-    //Sara todo Joseph falou algo de 0.15 aqui
-        if((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) {
+        // Sara todo
+        // The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
+            if(((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
     //        natural transition
         D_starred_S[i]=D_starred_HT_S[i];
         D_starred_P[i]=D_starred_HT_P[i];
