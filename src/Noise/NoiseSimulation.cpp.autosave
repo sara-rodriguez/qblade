@@ -510,11 +510,11 @@ splog_dBC=0;
             Reynolds[i] = bdata->m_Reynolds.value(i);
 
 //            Sara experiment
-            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
+//            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
 //            Reynolds_polar[i]=Reynolds_BEM[i];
-            Reynolds_polar[i]=pCPolar->m_Re.value(i);//Sara todo
-//            Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();//Sara todo
+//            Reynolds_polar[i]=pCPolar->m_Re.value(i);//Sara todo
+            Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();//Sara todo
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_polar[i]*100.;
 
             Mach[i]=bdata->m_Mach.value(i);

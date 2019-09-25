@@ -40,7 +40,8 @@ public:
     //Sara
     //LE
     bool Lowson;
-    bool Amiet;
+    bool VonKarman;
+    bool RapidDistortion;
     //Sara
 	
 	//XFoil correlation

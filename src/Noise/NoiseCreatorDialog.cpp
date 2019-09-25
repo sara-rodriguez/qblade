@@ -88,10 +88,13 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                 //Sara
                 groupBox = new QGroupBox ("LE noise source contributions");
                 vBox->addWidget(groupBox);
-                pGrid = new ParameterGrid<P>(this);
+                pGrid = new ParameterGrid<P>(this);//Sara urgente
                 groupBox->setLayout(pGrid);
                 pGrid->addEdit(P::Lowson, CheckBox, new QCheckBox ("enable"),"Lowson's Model:", false);
-                pGrid->addEdit(P::Amiet, CheckBox, new QCheckBox ("enable"),"Amiet's Model:", false);
+
+pGrid->addEdit(P::VonKarman, CheckBox, new QCheckBox ("Von Kármán (set 1 of 2)"),"", false);
+pGrid->addEdit(P::RapidDistortion, CheckBox, new QCheckBox ("Rapid Distortion (set 1 of 2)"),"", false);
+   //Sara experiment
                 //Sara
 				vBox->addStretch();
 	
@@ -130,7 +133,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 						// scroll area is filled in NoiseCreatorDialog::fillOpPointView
 					
 					m_originalBpmWidget = new QWidget;
-                    grid->addWidget(m_originalBpmWidget, 3, 1, 1, 3, Qt::AlignLeft | Qt::AlignTop);//Sara 3,0,1,4
+                    grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignLeft | Qt::AlignTop);
 						pGrid = new ParameterGrid<P>(this);
 						m_originalBpmWidget->setLayout(pGrid);
 							pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);

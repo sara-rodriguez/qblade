@@ -19,7 +19,12 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
     m_shownSimulation = nullptr;
 	
 	m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
+
+//    if(m_parameter->Lowson){
     m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false}); //Alexandre MOD
+//    }
+    //Sara experiment
+
 	m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
 	m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
 

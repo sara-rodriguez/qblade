@@ -41,6 +41,7 @@ void NoiseCalculation::serialize() {
     g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW);
     g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW);
     g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW);
+
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdB); //Alexandre MOD
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW); //Alexandre MOD
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW); //Alexandre MOD
@@ -177,6 +178,56 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
     return ((dStarUpStream-dStarDownStream) * (chord-chordDownStream) /
             (chordUpStream-chordDownStream)) + dStarDownStream;
 }
+
+//Sara experiment
+//double NoiseCalculation::getReynoldsInterpolated3d(bool top,double chord,NoiseOpPoint * nop) {
+//    bool upDownFind = false;
+//    double chordUpStream = 0;
+//    double chordDownStream = 0;
+//    double ReynoldsUpStream = 0;
+//    double ReynoldsDownStream = 0;
+
+//    //For positive alpha use TopSide else BottomSide
+//    //int side = top ? 1 : 2;
+//    int side = top ? 2 : 1;
+//    int nside = top ? nop->getNSide2() : nop->getNSide1();
+
+//    double currentChord = 0;
+//    double currentReynolds = 0;
+//    double previousChord = 0;
+//    double previousReynolds = 0;
+
+//    //Find closest station assuming crescent order on chordStation
+//    for (int i = 2; i <= nside; ++i) {
+//        currentChord = nop->getXValue(i, side);
+//        currentReynolds = nop->getReynolds();
+//        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
+//        previousReynolds = i == 0 ? currentReynolds: nop->getReynolds();
+
+//        //qDebug() << "i: " << i << " - " << ccur;
+
+//        if (currentChord > chord) {
+//            chordUpStream = previousChord;
+//            chordDownStream = currentChord;
+//            dStarUpStream = previousDStar;
+//            dStarDownStream = currentDStar;
+
+//            upDownFind = true;
+//            break;
+//        }
+//    }
+
+//    if (!upDownFind) {
+//        qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
+//                   << chord << " - Last found X ( "<<currentChord<<" ) D* ("
+//                   << currentDStar <<")";
+//        throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
+//                             "specified chord station");
+//    }
+
+//    return ((dStarUpStream-dStarDownStream) * (chord-chordDownStream) /
+//            (chordUpStream-chordDownStream)) + dStarDownStream;
+//}
 //Sara
 
 double NoiseCalculation::getDL() {
@@ -692,10 +743,24 @@ void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
     double K = 3.1416*CENTRAL_BAND_FREQUENCY[posFreq]*c/u;
     double S = sqrt(pow((2.*3.1416*K/(pow(beta, 2)))+(pow((1+(2.4*K/pow(beta,2))), -1)), -1));
     double LFC = 10.*Mach*pow(S*K/beta, 2);
-    double Aux1 = 10.*log10(pow(LFC/(1+LFC), 2)) + 65.95; //Lowson's standard is pow = 1 and const is 58.4
-    double Aux4 = pow(K, 3)/pow(1+(pow(K, 2)), 19/6); //Lowson's standard is 7/3
+
+if(m_parameter->RapidDistortion==true & m_parameter->VonKarman==false){
+    c_const=19./6.;
+    d_const = 65.95;
+ }
+else if(m_parameter->VonKarman==true & m_parameter->RapidDistortion==false){
+    c_const=7./3.;
+    d_const = 58.4;
+ }
+else {
+    c_const=0;
+    d_const = 0;
+}
+
+    double Aux1 = 10.*log10(pow(LFC/(1+LFC), 2))+d_const; //Lowson's standard is pow = 1 and const is 58.4
+    double Aux4 = pow(K, 3)/pow(1+(pow(K, 2)),c_const); //Lowson's standard is 7/3
     double Aux5 = 10.*log10(Aux*Aux4);
-    SPL_LEdB = 10.*log10(pow(10, (Aux1+Aux5)/10.));
+    SPL_LEdB = 10.*log10(pow(10,(Aux1+Aux5)/10.));
 
     m_SPL_LEdB[posOpPoint][posFreq] = SPL_LEdB;
 }

@@ -57,6 +57,14 @@ public:
     //Sara
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
+        QVector<double> m_AlphaInterpolated3d;
+        QVector<double> m_ReynoldsInterpolated3d;
+        QVector<double> m_MachInterpolated3d;
+        double c_const;
+        double d_const;
+        bool m_Lowson;
+        bool m_VonKarman;
+        bool m_RapidDistortion;
     //Sara
 	
 private:
@@ -101,7 +109,6 @@ private:
     bool m_CalcPressureSide;
 
     //Sara
-    bool m_CalcAmiet;
     bool m_CalcLowson;
     //Sara
 

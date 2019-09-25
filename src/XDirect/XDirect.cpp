@@ -6098,12 +6098,12 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 			break;
 		case 14:
 			pGraph->SetXTitle(tr("XCp"));
+            break;
             //Sara
-                case 15:
-                    pGraph->SetXTitle(tr("Ma"));
-                    break;
+//                case 15:
+//                    pGraph->SetXTitle(tr("Ma"));
+//                    break;
             //Sara
-			break;
 		default:
 			pGraph->SetXTitle(tr("Alpha"));
 			break;
@@ -6156,9 +6156,9 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 			pGraph->SetYTitle(tr("XCp"));
 			break;
 //Sara
-    case 15:
-        pGraph->SetYTitle(tr("Ma"));
-        break;
+//    case 15:
+//        pGraph->SetYTitle(tr("Ma"));
+//        break;
 //Sara
 		default:
 			pGraph->SetYTitle(tr("Alpha"));

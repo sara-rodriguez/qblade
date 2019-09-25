@@ -55,6 +55,7 @@ private:
 	QList<OpPointRecord> m_opPointRecords;  // store a sorted list of all OpPoints
 	
 	QButtonGroup *m_selectFromButtons;
+    QButtonGroup *m_selectFromButtonsLE;//Sara
 	FoilComboBox *m_airfoilComboBox;
     FoilComboBox *m_airfoilComboBoxtd;//Sara
     FoilComboBox *m_airfoilComboBoxte;//Sara
