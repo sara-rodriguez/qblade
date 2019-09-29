@@ -336,7 +336,6 @@ for (i=0;i<m_pos.size();i++)
     m_Roughness.append(0);
     m_Windspeed.append(pow(Vrel2,0.5));
     m_Iterations.append(count);
-//    m_Mach.append(pow(Vrel2,0.5)/1235); //Sara
     m_Mach.append(pow(Vrel2,0.5)/sqrt(k_air*r_air*temp)); //Sara
     m_circ.append(0.5*m_c_local.at(i)*m_CL.at(i)*pow(Vrel2,0.5)*rho);
 }

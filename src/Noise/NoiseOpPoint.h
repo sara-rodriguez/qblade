@@ -24,6 +24,12 @@ public:
 	int getNSide2();    
 	double getXValue(int index, int topOrBot);
 	double getDstrAt(int x, int y);
+
+    //Sara
+    double getAlphaAt(int x, int y);
+    double getReynoldsAt(int x, int y);
+    double getMachAt(int x, int y);
+    //Sara
 	
 private:
     double m_reynolds, m_alpha, m_sects, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_dstar_type, m_phi_type, m_rot_speed_calc, m_u_wind_speed_calc, m_TSR_calc, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos, m_mach; //Sara

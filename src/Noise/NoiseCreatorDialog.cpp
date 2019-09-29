@@ -94,7 +94,6 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 
 pGrid->addEdit(P::VonKarman, CheckBox, new QCheckBox ("Von Kármán (set 1 of 2)"),"", false);
 pGrid->addEdit(P::RapidDistortion, CheckBox, new QCheckBox ("Rapid Distortion (set 1 of 2)"),"", false);
-   //Sara experiment
                 //Sara
 				vBox->addStretch();
 	

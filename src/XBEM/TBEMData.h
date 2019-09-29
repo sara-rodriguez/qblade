@@ -47,11 +47,13 @@ public:
 	void serialize();  // override from BEMData
 	TBEMData();
 
+    QList <double> m_Pitch;                 //pitch angle Sara new
+
 private:
     QString m_TurbineName;
     QString m_SimName;
 
-	QList <double> m_Pitch;                 //pitch angle
+//	QList <double> m_Pitch;                 //pitch angle
     QList <double> m_Cp_loss;               //power coefficient including losses
 
     double OuterRadius;

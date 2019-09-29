@@ -464,7 +464,15 @@ void QXDirect::AddOpData(OpPoint *pOpPoint)
 	pOpPoint->topShearEq.first = offset;
 	pOpPoint->topShearEq.second.resize(nside1-offset);
 	pOpPoint->topDStar.first = offset;
-	pOpPoint->topDStar.second.resize(nside1-offset);
+    pOpPoint->topDStar.second.resize(nside1-offset);
+    //Sara new
+//    pOpPoint->topAlpha.first = offset;
+//    pOpPoint->topAlpha.second.resize(nside1-offset);
+//    pOpPoint->topMach.first = offset;
+//    pOpPoint->topMach.second.resize(nside1-offset);
+//    pOpPoint->topReynolds.first = offset;
+//    pOpPoint->topReynolds.second.resize(nside1-offset);
+    //Sara
 	pOpPoint->topTheta.first = offset;
 	pOpPoint->topTheta.second.resize(nside1-offset);
 	pOpPoint->reThetaTop.first = offset;
@@ -481,6 +489,11 @@ void QXDirect::AddOpData(OpPoint *pOpPoint)
 		const int index = i-offset;
 		pOpPoint->topShearEq.second[index] = m_pXFoil->ctq[i][1];
 		pOpPoint->topDStar.second[index] = m_pXFoil->dstr[i][1];
+        //Sara new experiment
+//        pOpPoint->topAlpha.second[index] = m_pXFoil->alfa[i][1];
+//        pOpPoint->topMach.second[index] = m_pXFoil->mach[i][1];
+//        pOpPoint->topReynolds.second[index] = m_pXFoil->reinf[i][1];
+        //Sara
 		pOpPoint->topTheta.second[index] = m_pXFoil->thet[i][1];
 		pOpPoint->reThetaTop.second[index] = reTheta[i][1];
 		pOpPoint->dissipationTop.second[index] = m_pXFoil->dis[i][1] / m_pXFoil->qinf / m_pXFoil->qinf / m_pXFoil->qinf;
@@ -515,6 +528,14 @@ void QXDirect::AddOpData(OpPoint *pOpPoint)
 	pOpPoint->botShearEq.second.resize(nside2-offset);
 	pOpPoint->botDStar.first = offset;
 	pOpPoint->botDStar.second.resize(nside2-offset);
+    //Sara new
+//    pOpPoint->botAlpha.first = offset;
+//    pOpPoint->botAlpha.second.resize(nside2-offset);
+//    pOpPoint->botMach.first = offset;
+//    pOpPoint->botMach.second.resize(nside2-offset);
+//    pOpPoint->botReynolds.first = offset;
+//    pOpPoint->botReynolds.second.resize(nside2-offset);
+    //Sara
 	pOpPoint->botTheta.first = offset;
 	pOpPoint->botTheta.second.resize(nside2-offset);
 	pOpPoint->reThetaBot.first = offset;
@@ -1387,6 +1408,11 @@ void * QXDirect::GetVariable(CPolar *pPolar, int iVar)
 		case 14:
 			pVar = &pPolar->m_XCp;
 			break;
+            //Sara experiment
+    case 15:
+        pVar = &pPolar->m_Ma;//Sara todo experiment
+        break;
+        //Sara
 		default:
 			pVar = &pPolar->m_Alpha;
 			break;
@@ -6100,9 +6126,9 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 			pGraph->SetXTitle(tr("XCp"));
             break;
             //Sara
-//                case 15:
-//                    pGraph->SetXTitle(tr("Ma"));
-//                    break;
+//        case 15:
+//            pGraph->SetXTitle(tr("Ma"));
+//            break;
             //Sara
 		default:
 			pGraph->SetXTitle(tr("Alpha"));
@@ -6156,9 +6182,9 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 			pGraph->SetYTitle(tr("XCp"));
 			break;
 //Sara
-//    case 15:
-//        pGraph->SetYTitle(tr("Ma"));
-//        break;
+//        case 15:
+//            pGraph->SetYTitle(tr("Ma"));
+//            break;
 //Sara
 		default:
 			pGraph->SetYTitle(tr("Alpha"));

@@ -12,6 +12,8 @@
 #include "NoiseOpPoint.h"
 #include "../XBEM/BEM.h"
 //Sara
+#include "../XBEM/TBEMData.h"
+#include "../XDMS/DData.h"
 #include "NoiseException.h"
 #include "NoiseOpPoint.h"
 #include "NoiseCreatorDialog.h"
@@ -347,6 +349,16 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
     double theta[number_of_segments];
     double phi[number_of_segments];
     double pitch[number_of_segments];
+    double calc_int_a[number_of_segments];//Sara new
+    double psi_e[number_of_segments];//Sara new
+    double theta_e[number_of_segments];//Sara new
+    double r_rt[number_of_segments];//Sara new
+    double r_e[number_of_segments];//Sara new
+    double r_1[number_of_segments];//Sara new
+    double c_1[number_of_segments];//Sara new
+    double r_0[number_of_segments];//Sara new
+    double c_0[number_of_segments];//Sara new
+    double twist[number_of_segments];//Sara new
 
     double ri[number_of_segments];
     double ri_1[number_of_segments];
@@ -512,19 +524,29 @@ splog_dBC=0;
 //            Sara experiment
             CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
-//            Reynolds_polar[i]=Reynolds_BEM[i];
-            Reynolds_polar[i]=pCPolar->m_Re.value(i);//Sara todo
-//            Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();//Sara todo
-            Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_polar[i]*100.;
+            Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
+            Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
 
             Mach[i]=bdata->m_Mach.value(i);
             Mach_BEM[i] = bdata->m_Mach.value(i);
-            Mach_polar[i]=Mach_BEM[i];//Sara todo
-            Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_polar[i]*100.;
+            Mach_polar[i]=qFabs(pCPolar->m_Mach);
+            Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
             alpha_BEM[i] = bdata->m_alpha.value(i);
 
-//            alpha_polar[i]=pCPolar->m_Alpha.value(i);//Sara todo
-            alpha_polar[i]=noiseOpPoints[i]->getAlphaDegreeAbsolute();//Sara todo
+double aux_alpha_polar[noiseOpPoints.size()];
+for (int k=0;k<noiseOpPoints.size();++k){
+aux_alpha_polar[k]=qFabs(alpha_BEM[i]-noiseOpPoints[k]->getAlphaDegreeAbsolute());
+}
+
+double aux_alpha_polar_set=aux_alpha_polar[0];
+double aux_alpha_polar_def=noiseOpPoints[0]->getAlphaDegreeAbsolute();
+
+for (int k=1;k<noiseOpPoints.size();++k){
+    if(aux_alpha_polar_set>aux_alpha_polar[k])
+   {aux_alpha_polar_set=aux_alpha_polar[k]; aux_alpha_polar_def=noiseOpPoints[k]->getAlphaDegreeAbsolute();}
+}
+
+alpha_polar[i]=aux_alpha_polar_def;
             alpha[i]=alpha_BEM[i];
 
             phi_BEM[i] = bdata->m_phi.value(i);
@@ -546,7 +568,7 @@ splog_dBC=0;
 //            Mach[i]=Mach_calc[i];
 
 //heavy tripping
-if (alpha[i]<=0 & alpha[i]>=0){//Sara todo
+if (alpha[i]<=0 & alpha[i]>=0){
 if (Reynolds[i]>300000){
     D_starred_C_HT[i]=pow(10,(3.411-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
 }
@@ -666,7 +688,6 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-// Sara todo
 // The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
     if(((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
 //        natural transition
@@ -699,25 +720,60 @@ if (m_parameter.phi_type<=0 & m_parameter.phi_type>=0){
     dist_obs[i]=ri_1[i];
 }
 else if (m_parameter.phi_type<=1 & m_parameter.phi_type>=1){
-//    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
-    b[i]=qRadiansToDegrees(qAtan((chord[i]-chord[i-1])/(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))));
+//    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf  
+    if(i<=number_of_segments & i>=number_of_segments){
+c_1[i]=0;
+r_1[i]=0;
+    }
+    else
+    {
+c_1[i]=bdata->m_c_local.value(i+1);
+r_1[i]=bdata->m_pos.value(i+1);
+    }
+c_0[i]=bdata->m_c_local.value(i);
+r_0[i]=bdata->m_pos.value(i);
+
+    b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
     a[i]=SwAlpha[i];
+//    Input X e , Y e , Z e
+//    Attribute their respective values to X B , Y B , Z B
     XB=m_parameter.obs_x_pos;
     YB=m_parameter.obs_y_pos;
     ZB=m_parameter.obs_z_pos;
+
+//Sara todo experiment
+//For the blade, get the Pitch angle, θ p
+    TBEMData *pTBEMData = (TBEMData *) g_mainFrame->m_pBEM;
+
+//    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+//    double outer_radius=pBEM->m_pTData->OuterRadius;
+pitch[i]=pTBEMData->m_Pitch[i];
+qDebug() << "pitchsize: " << pTBEMData->m_Pitch.size();
+//qDebug() << "pitch: " << pitch[i];
+
+DData *pDData = (DData *) g_mainFrame->m_pBEM;
+twist[i]=pDData->m_twist[i];
+qDebug() << "twistsize: " << pDData->m_twist.size();
+
+//twist[i]=bdata->m_twist[i];
+//For each blade segment, get: C r i+1 , C r i , r i+1 , r i , β
 
     XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
     YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
     ZRS[i]=ZB-(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))/2.;
 
+//    Calculate Y RS − 0.75 ∗ (C r i+1 − C r i )/2
+    calc_int_a[i]=(YRS[i]-0.75*(c_1[i]-c_0[i])/2.);
+
     XRT[i]=XRS[i];
-    YRT[i]=cos(qDegreesToRadians(b[i]))*(YRS[i]-0.75*(chord[i]-chord[i-1])/2.)+sin(qDegreesToRadians(b[i]))*ZRS[i];
-    ZRT[i]=-sin(qDegreesToRadians(b[i]))*(YRS[i]-0.75*(chord[i]-chord[i-1])/2.)+cos(qDegreesToRadians(b[i]))*ZRS[i];
+    YRT[i]=cos(qDegreesToRadians(b[i]))*calc_int_a[i]+sin(qDegreesToRadians(b[i]))*ZRS[i];
+    ZRT[i]=-sin(qDegreesToRadians(b[i]))*calc_int_a[i]+cos(qDegreesToRadians(b[i]))*ZRS[i];
 
-    re[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
-    theta[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));//Sara todo theta_e
+    r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
+    r_rt[i]=r_e[i];
+    theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));//Sara todo theta_e
 
-    phi[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));//Sara todo psi_e
+    psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));//Sara todo psi_e
 
     //Sara todo theta=theta_p (pitch angle)+beta(local twist angle)
 
@@ -728,7 +784,7 @@ else if (m_parameter.phi_type<=1 & m_parameter.phi_type>=1){
    theta_rad[i]=qDegreesToRadians(theta[i]);
 
 //   alpha_calc[i] = alpha_BEM[i]; //Sara todo
-   alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_polar[i]*100.;
+   alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
 //dist_obs[i]=re[i];
 
@@ -1507,7 +1563,6 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-    // Sara todo
     // The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
         if(((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
 //        natural transition
@@ -1529,8 +1584,19 @@ double ZB=0;
 if (m_parameter.phi_type<=0 & m_parameter.phi_type>=0){
     //by the quasi-3D spreadsheet
     ri[i]=bdata->m_pos.value(i);
+if(i<=number_of_segments){
+ri_1[i]=bdata->m_pos.value(i);
+ri_2[i]=bdata->m_pos.value(i);
+}
+else if (i<=(number_of_segments-1))
+{
+ ri_2[i]=bdata->m_pos.value(i);
+}
+else
+{
     ri_1[i]=bdata->m_pos.value(i+1);
     ri_2[i]=bdata->m_pos.value(i+2);
+}
     B=bdata->m_pos.value(number_of_segments-1)/2.;
     A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
     re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
@@ -2283,7 +2349,7 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
                 Mach[i]=Mach_calc[i];
 
     //heavy tripping
-                if (alpha[i]<=0 & alpha[i]>=0){//Sara todo
+                if (alpha[i]<=0 & alpha[i]>=0){
                 if (Reynolds[i]>300000){
                     D_starred_C_HT[i]=pow(10,(3.411-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
                 }
@@ -2402,7 +2468,6 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
         double TopTrip=pFoilPolarDlg->m_XTopTr;
         double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-        // Sara todo
         // The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
             if(((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
     //        natural transition

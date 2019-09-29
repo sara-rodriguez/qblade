@@ -113,8 +113,7 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
 
 //    qDebug() << ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /                                       (chordUpStream-chordDownStream)) + dStarDownStream;
 
-    return ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /
-			(chordUpStream-chordDownStream)) + dStarDownStream;
+    return ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream)/(chordUpStream-chordDownStream)) + dStarDownStream;
 }
 
 //Sara
@@ -200,17 +199,17 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
 //    //Find closest station assuming crescent order on chordStation
 //    for (int i = 2; i <= nside; ++i) {
 //        currentChord = nop->getXValue(i, side);
-//        currentReynolds = nop->getReynolds();
+//        currentReynolds = nop->getReynoldsAt(i,side);
 //        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
-//        previousReynolds = i == 0 ? currentReynolds: nop->getReynolds();
+//        previousReynolds = i == 0 ? currentReynolds: nop->getReynoldsAt(i-1,side);
 
 //        //qDebug() << "i: " << i << " - " << ccur;
 
 //        if (currentChord > chord) {
 //            chordUpStream = previousChord;
 //            chordDownStream = currentChord;
-//            dStarUpStream = previousDStar;
-//            dStarDownStream = currentDStar;
+//            ReynoldsUpStream = previousReynolds;
+//            ReynoldsDownStream = currentReynolds;
 
 //            upDownFind = true;
 //            break;
@@ -220,13 +219,111 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
 //    if (!upDownFind) {
 //        qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
 //                   << chord << " - Last found X ( "<<currentChord<<" ) D* ("
-//                   << currentDStar <<")";
+//                   << currentReynolds <<")";
 //        throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
 //                             "specified chord station");
 //    }
 
-//    return ((dStarUpStream-dStarDownStream) * (chord-chordDownStream) /
-//            (chordUpStream-chordDownStream)) + dStarDownStream;
+//    return ((ReynoldsUpStream-ReynoldsDownStream) * (chord-chordDownStream) /
+//            (chordUpStream-chordDownStream)) + ReynoldsDownStream;
+//}
+
+//double NoiseCalculation::getMachInterpolated3d(bool top,double chord,NoiseOpPoint * nop) {
+//    bool upDownFind = false;
+//    double chordUpStream = 0;
+//    double chordDownStream = 0;
+//    double MachUpStream = 0;
+//    double MachDownStream = 0;
+
+//    //For positive alpha use TopSide else BottomSide
+//    //int side = top ? 1 : 2;
+//    int side = top ? 2 : 1;
+//    int nside = top ? nop->getNSide2() : nop->getNSide1();
+
+//    double currentChord = 0;
+//    double currentMach = 0;
+//    double previousChord = 0;
+//    double previousMach = 0;
+
+//    //Find closest station assuming crescent order on chordStation
+//    for (int i = 2; i <= nside; ++i) {
+//        currentChord = nop->getXValue(i, side);
+//        currentMach = nop->getMach(i,side);
+//        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
+//        previousMach = i == 0 ? currentMach: nop->getMach(i-1,side);
+
+//        //qDebug() << "i: " << i << " - " << ccur;
+
+//        if (currentChord > chord) {
+//            chordUpStream = previousChord;
+//            chordDownStream = currentChord;
+//            MachUpStream = previousMach;
+//            MachDownStream = currentMach;
+
+//            upDownFind = true;
+//            break;
+//        }
+//    }
+
+//    if (!upDownFind) {
+//        qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
+//                   << chord << " - Last found X ( "<<currentChord<<" ) D* ("
+//                   << currentMach <<")";
+//        throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
+//                             "specified chord station");
+//    }
+
+//    return ((MachUpStream-MachDownStream) * (chord-chordDownStream) /
+//            (chordUpStream-chordDownStream)) + MachDownStream;
+//}
+
+//double NoiseCalculation::getAlphaInterpolated3d(bool top,double chord,NoiseOpPoint * nop) {
+//    bool upDownFind = false;
+//    double chordUpStream = 0;
+//    double chordDownStream = 0;
+//    double AlphaUpStream = 0;
+//    double AlphaDownStream = 0;
+
+//    //For positive alpha use TopSide else BottomSide
+//    //int side = top ? 1 : 2;
+//    int side = top ? 2 : 1;
+//    int nside = top ? nop->getNSide2() : nop->getNSide1();
+
+//    double currentChord = 0;
+//    double currentAlpha = 0;
+//    double previousChord = 0;
+//    double previousAlpha = 0;
+
+//    //Find closest station assuming crescent order on chordStation
+//    for (int i = 2; i <= nside; ++i) {
+//        currentChord = nop->getXValue(i, side);
+//        currentAlpha = nop->getAlphaDegreeAbsolute();
+//        previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
+//        previousAlpha = i == 0 ? currentAlpha: nop->getAlphaDegreeAbsolute();
+
+//        //qDebug() << "i: " << i << " - " << ccur;
+
+//        if (currentChord > chord) {
+//            chordUpStream = previousChord;
+//            chordDownStream = currentChord;
+//            AlphaUpStream = previousAlpha;
+//            AlphaDownStream = currentAlpha;
+
+//            upDownFind = true;
+//            break;
+//        }
+//    }
+
+//    if (!upDownFind) {
+//        qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
+//                   << chord << " - Last found X ( "<<currentChord<<" ) D* ("
+//                   << currentAlpha <<")";
+//        throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
+//                             "specified chord station");
+//    }
+
+//    return ((AlphaUpStream-AlphaDownStream) * (chord-chordDownStream) /
+//            (chordUpStream-chordDownStream)) + AlphaDownStream;
 //}
 //Sara
 
