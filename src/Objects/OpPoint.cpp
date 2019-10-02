@@ -75,11 +75,6 @@ void OpPoint::writeData(QTextStream &stream, bool asCsv) {
 			   << topDStar.second[i] << sep
 			   << topTheta.second[i] << sep
                << topShearEq.second[i] << endl;
-//                  << sep
-//               << topAlpha.second[i] << sep
-//               << topMach.second[i] << sep
-//               << topReynolds.second[i] <<
-                  /*endl;*///Sara new
 	}
 	
 	stream << "Bottom Side" << endl

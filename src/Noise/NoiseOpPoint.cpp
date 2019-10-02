@@ -28,9 +28,9 @@ double NoiseOpPoint::getAlphaDegree() {
 }
 
 //Sara
-//double NoiseOpPoint::getMach() {
-//    return (m_opPoint ? m_opPoint->Mach : m_mach);
-//}
+double NoiseOpPoint::getMach() {
+    return (m_opPoint ? m_opPoint->Mach : m_mach);
+}
 //Sara
 
 double NoiseOpPoint::getAlphaDegreeAbsolute() {

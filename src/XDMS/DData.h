@@ -72,8 +72,6 @@ public:
     void OnDMS(CBlade *pBlade);
 	C360Polar* Get360Polar(QString m_FoilName, QString PolarName);
 
-    QList <double> m_twist;         //twist angle Sara new
-
 //private:
     QString m_WingName;
     QString m_DMSName;
@@ -125,7 +123,7 @@ public:
     QList <double> m_Ftip_dw;       //local downwind tiploss factor
     QList <double> m_it_up;         //iterations for convergence upwind
     QList <double> m_it_dw;         //iterations for convergence downwind
-//    QList <double> m_twist;         //twist angle
+    QList <double> m_twist;         //twist angle
 
     // one value per azimuthal position
     QList <double> m_theta;         //azimuthal angle

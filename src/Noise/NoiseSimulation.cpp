@@ -12,8 +12,10 @@
 #include "NoiseOpPoint.h"
 #include "../XBEM/BEM.h"
 //Sara
+#include "../XBEM/TData.h"
 #include "../XBEM/TBEMData.h"
 #include "../XDMS/DData.h"
+#include "../XBEM/Blade.h"
 #include "NoiseException.h"
 #include "NoiseOpPoint.h"
 #include "NoiseCreatorDialog.h"
@@ -258,6 +260,7 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
     double nom_tg_speed = bdata->windspeed*lambda;
     double omega = nom_tg_speed/finalradius;
     double rotation = 60/(M_PI*100/nom_tg_speed);
+    double blade_pitch;
 
 //    qDebug() << "tamanho de alpha: " << bdata->m_alpha.size();
 //    qDebug() << "tamanho de cl/cd: " << bdata->m_LD.size();
@@ -348,17 +351,17 @@ double approaxing_wind_speed = m_parameter.originalVelocity;
     double re[number_of_segments];
     double theta[number_of_segments];
     double phi[number_of_segments];
-    double pitch[number_of_segments];
-    double calc_int_a[number_of_segments];//Sara new
-    double psi_e[number_of_segments];//Sara new
-    double theta_e[number_of_segments];//Sara new
-    double r_rt[number_of_segments];//Sara new
-    double r_e[number_of_segments];//Sara new
-    double r_1[number_of_segments];//Sara new
-    double c_1[number_of_segments];//Sara new
-    double r_0[number_of_segments];//Sara new
-    double c_0[number_of_segments];//Sara new
-    double twist[number_of_segments];//Sara new
+    double calc_int_a[number_of_segments];
+    double psi_e[number_of_segments];
+    double theta_e[number_of_segments];
+    double r_rt[number_of_segments];
+    double r_e[number_of_segments];
+    double r_1[number_of_segments];
+    double c_1[number_of_segments];
+    double r_0[number_of_segments];
+    double c_0[number_of_segments];
+    double twist[number_of_segments];
+    double local_twist[number_of_segments];
 
     double ri[number_of_segments];
     double ri_1[number_of_segments];
@@ -521,15 +524,15 @@ splog_dBC=0;
             chord[i] = bdata->m_c_local.value(i);
             Reynolds[i] = bdata->m_Reynolds.value(i);
 
-//            Sara experiment
             CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
             Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
 
+            Mach_polar[i]=noiseOpPoints[i]->getMach();
             Mach[i]=bdata->m_Mach.value(i);
             Mach_BEM[i] = bdata->m_Mach.value(i);
-            Mach_polar[i]=qFabs(pCPolar->m_Mach);
+
             Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
             alpha_BEM[i] = bdata->m_alpha.value(i);
 
@@ -539,14 +542,14 @@ aux_alpha_polar[k]=qFabs(alpha_BEM[i]-noiseOpPoints[k]->getAlphaDegreeAbsolute()
 }
 
 double aux_alpha_polar_set=aux_alpha_polar[0];
-double aux_alpha_polar_def=noiseOpPoints[0]->getAlphaDegreeAbsolute();
 
 for (int k=1;k<noiseOpPoints.size();++k){
     if(aux_alpha_polar_set>aux_alpha_polar[k])
-   {aux_alpha_polar_set=aux_alpha_polar[k]; aux_alpha_polar_def=noiseOpPoints[k]->getAlphaDegreeAbsolute();}
+   {aux_alpha_polar_set=aux_alpha_polar[k];
+alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
+    }
 }
 
-alpha_polar[i]=aux_alpha_polar_def;
             alpha[i]=alpha_BEM[i];
 
             phi_BEM[i] = bdata->m_phi.value(i);
@@ -720,7 +723,24 @@ if (m_parameter.phi_type<=0 & m_parameter.phi_type>=0){
     dist_obs[i]=ri_1[i];
 }
 else if (m_parameter.phi_type<=1 & m_parameter.phi_type>=1){
-//    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf  
+    //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
+    //    Input X e , Y e , Z e
+    //    Attribute their respective values to X B , Y B , Z B
+        XB=m_parameter.obs_x_pos;
+        YB=m_parameter.obs_y_pos;
+        ZB=m_parameter.obs_z_pos;
+
+    //For the blade, get the Pitch angle, θ p
+        QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+        blade_pitch=pbem->m_pctrlFixedPitch->getValue();
+
+    //For each blade segment, get: C r i+1 , C r i , r i+1 , r i , β
+    //Cri+1 = c_1
+    //r+1 = r_1
+    //Cri = c_0
+    //ri = r_0
+    //beta = local_twist
+
     if(i<=number_of_segments & i>=number_of_segments){
 c_1[i]=0;
 r_1[i]=0;
@@ -729,34 +749,17 @@ r_1[i]=0;
     {
 c_1[i]=bdata->m_c_local.value(i+1);
 r_1[i]=bdata->m_pos.value(i+1);
-    }
+    }}
+
 c_0[i]=bdata->m_c_local.value(i);
 r_0[i]=bdata->m_pos.value(i);
 
+local_twist[i]=theta_BEM[i];//Sara experiment
+
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
+
+//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line
     a[i]=SwAlpha[i];
-//    Input X e , Y e , Z e
-//    Attribute their respective values to X B , Y B , Z B
-    XB=m_parameter.obs_x_pos;
-    YB=m_parameter.obs_y_pos;
-    ZB=m_parameter.obs_z_pos;
-
-//Sara todo experiment
-//For the blade, get the Pitch angle, θ p
-    TBEMData *pTBEMData = (TBEMData *) g_mainFrame->m_pBEM;
-
-//    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-//    double outer_radius=pBEM->m_pTData->OuterRadius;
-pitch[i]=pTBEMData->m_Pitch[i];
-qDebug() << "pitchsize: " << pTBEMData->m_Pitch.size();
-//qDebug() << "pitch: " << pitch[i];
-
-DData *pDData = (DData *) g_mainFrame->m_pBEM;
-twist[i]=pDData->m_twist[i];
-qDebug() << "twistsize: " << pDData->m_twist.size();
-
-//twist[i]=bdata->m_twist[i];
-//For each blade segment, get: C r i+1 , C r i , r i+1 , r i , β
 
     XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
     YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
@@ -771,22 +774,17 @@ qDebug() << "twistsize: " << pDData->m_twist.size();
 
     r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
     r_rt[i]=r_e[i];
-    theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));//Sara todo theta_e
+    theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
 
-    psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));//Sara todo psi_e
-
-    //Sara todo theta=theta_p (pitch angle)+beta(local twist angle)
+    psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
 
     dist_obs[i]=re[i];
- }
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
 
 //   alpha_calc[i] = alpha_BEM[i]; //Sara todo
    alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
-
-//dist_obs[i]=re[i];
 
 first_term_Dh_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_S[i]/pow(dist_obs[i],2));
 

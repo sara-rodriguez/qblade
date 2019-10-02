@@ -95,7 +95,6 @@ public:
 	QList <double> m_ClCd, m_Cl32Cd;
 	QList <double> m_RtCl;
 	QList <double> m_Re;//type 4 polars
-    QList <double> m_Ma;//Sara new
 };
 
 #endif

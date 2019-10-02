@@ -393,7 +393,7 @@ void BData::Serialize(QDataStream &ar, bool bIsStoring)
 		{
 			ar << (float) m_pos[i] << (float) m_c_local[i] << (float) m_lambda_local[i] << (float) m_p_tangential[i];
             ar << (float) m_p_normal[i] << (float) m_a_axial[i] << (float) m_a_tangential[i] << (float) m_theta[i];
-			ar << (float) m_alpha[i] << (float) m_phi[i] << (float) m_CL[i] << (float) m_CD[i] << (float) m_LD[i];
+            ar << (float) m_alpha[i] << (float) m_phi[i] << (float) m_CL[i] << (float) m_CD[i] << (float) m_LD[i];
 			ar << (float) m_Cn[i] << (float) m_Ct[i] << (float) m_F[i] << (float) m_Reynolds[i] << (float) m_DeltaReynolds[i] << (float) m_Roughness[i] << (float) m_Windspeed[i];
 			ar << (float) m_Iterations[i] << (float) m_Mach[i] << (float) m_Fa_axial[i] << (float) m_Fa_radial[i] << (float) m_circ[i];
 		}

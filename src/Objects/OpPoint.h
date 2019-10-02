@@ -84,7 +84,7 @@ public:
 	int nSide1, nSide2;  // created by m_pXFoil->CreateXBL(x, nside1, nside2);
 	YVector topShear, topShearEq, botShear, botShearEq;  // "Max. Shear Coefficient" > QXDirect::OnCtPlot()
 	YVector botDStar, botTheta;  // "Bottom Side D* and Theta" > QXDirect::OnDbPlot()
-    YVector topDStar, topTheta;//, topAlpha, topMach, topReynolds;  //Sara new "Top Side D* and Theta" > QXDirect::OnDtPlot()
+    YVector topDStar, topTheta;// "Top Side D* and Theta" > QXDirect::OnDtPlot()
 	YVector reThetaTop, reThetaBot;  // "Re_Theta" > QXDirect::OnRtPlot()
 	YVector amplificationTop, amplificationBot;  // "Amplification Ratio" > QXDirect::OnNPlot()
 	YVector dissipationTop, dissipationBot;  // "Dissipation Coefficient" > QXDirect::OnCdPlot()

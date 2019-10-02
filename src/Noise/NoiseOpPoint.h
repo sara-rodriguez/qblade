@@ -15,6 +15,7 @@ public:
 	NoiseOpPoint(OpPoint *opPoint);
     NoiseOpPoint(double reynolds, double alpha);
 	
+    double getMach();//Sara
 	double getReynolds();
 	double getAlphaDegree();
 	double getAlphaDegreeAbsolute();
