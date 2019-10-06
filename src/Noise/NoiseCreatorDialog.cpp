@@ -188,12 +188,37 @@ QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
 pGrid->addWidget(labeltd);
 m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
 pGrid->addWidget(m_airfoilComboBoxtd);
-pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"δ* type (0-BPM, 1-XFoil):", 1);//Sara todo 0-Natural Transition, 1-Heavy-tripping, 2 - XFoil Interpolated
+pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"δ* type (0-BPM, 1-XFoil, 2-User):", 1);//Sara todo 0-Natural Transition, 1-Heavy-tripping, 2 - XFoil Interpolated
+
+//pGrid->setHorizontalSpacing(20);
+//pGrid->setVerticalSpacing(20);
+pGrid->setSizeConstraint(QLayout::SetMinimumSize);
+//m_opPointViewWidget->setLayout(pGrid);
+//    QPushButton *button = new QPushButton ("All");
+//    button->setMinimumWidth(QFontMetrics(QFont()).width("All") * 1.8);
+//    button->setCheckable(true);
+//    connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
+//    grid->addWidget(button, 0, 0, 1, 1);
+
+QPushButton *buttonle = new QPushButton ("δ* User Input");
+buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
+buttonle->setCheckable(true);
+//connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
+pGrid->addWidget(buttonle,9,2);//, 0, 0, 1, 1 , 7, 5, 1, 1
+//Sara experiment
+//falta conectar esse botão para quando o usuário clicar nele, abrir uma tela para escolher o csv de entrada do delta estrela e esse csv virar um array para pegar os dados do delta estrela
+//esse botão só deve estar ativo para quando o usuário selecionar que quer utilizar entrada do delta estrela via usuário
+//também mudaros checkbuttons que eu coloquei para radiobuttons quando aplicável
 
 pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Φ type (0-90º, 1-free):", 1);
 
+//groupBox = new QGroupBox ("Observer Position:");
+//hBox->addWidget(groupBox);
+//pGrid = new ParameterGrid<P>(this);
+//groupBox->setLayout(pGrid);
+
 QLabel *labelte = new QLabel ("Observer Position:");
-pGrid->addWidget(labelte);
+pGrid->addWidget(labelte,11,0);
 pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"X:", 1);
 pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"Y:", 1);
 pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"Z:", 1);

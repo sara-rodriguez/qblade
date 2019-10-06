@@ -52,6 +52,7 @@ public:
     double m_rot_speed_check;
     double m_u_wind_speed_check;
     double m_TSR_check;
+
     //Sara
 	
 private:
