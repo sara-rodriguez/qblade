@@ -466,6 +466,9 @@ splog_dBC=0;
             Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
             alpha_BEM[i] = bdata->m_alpha.value(i);
 
+            D_starred_N_S[i]=0;
+            D_starred_HT_S[i]=0;
+
 double aux_alpha_polar[noiseOpPoints.size()];
 for (int k=0;k<noiseOpPoints.size();++k){
 aux_alpha_polar[k]=qFabs(alpha_BEM[i]-noiseOpPoints[k]->getAlphaDegreeAbsolute());
@@ -557,7 +560,8 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 if ((alpha[i]>12.5) & (alpha[i]<=25)){
 corr_fact[i]=54.42*(pow(10.,(0.0258*alpha[i])));
 D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
-}}
+}
+}
 
 //For D* Xfoil
 
@@ -682,7 +686,7 @@ r_1[i]=bdata->m_pos.value(i+1);
 c_0[i]=bdata->m_c_local.value(i);
 r_0[i]=bdata->m_pos.value(i);
 
-local_twist[i]=theta_BEM[i];//Sara experiment
+local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
 
@@ -832,7 +836,6 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double Dh[number_of_segments];
     double Dl[number_of_segments];
     double Mach[number_of_segments];
-    double Mach_calc[number_of_segments];
     double corr_fact[number_of_segments];
     double D_starred_HT_S[number_of_segments];
     double D_starred_HT_P[number_of_segments];
@@ -942,9 +945,7 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double r_R1  =  0.25; double c_R1 = 0.07500;
     double r_R2  =  1.00; double c_R2 = 0.02000;
 
-        QString str= QString::number(z, 'f', 1);
-
-        for (int i = 0; i < number_of_segments; ++i) {
+    for (int i = 0; i < number_of_segments; ++i) {
 
 sp_OASPL_alpha=0;
 sp_OASPL_S=0;
@@ -961,93 +962,120 @@ splog_dBA=0;
 splog_dBB=0;
 splog_dBC=0;
 
-            // definitions
-            axial_ind_fact[i] = bdata->m_a_axial.value(i);
-            axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
+        // definitions
+        axial_ind_fact[i] = bdata->m_a_axial.value(i);
+        axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
 
-            if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
-            else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
+        if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
+        else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
 
-            tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.+bdata->m_a_tangential.value(i));
-            resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
-            chord[i] = bdata->m_c_local.value(i);
-            Reynolds[i] = bdata->m_Reynolds.value(i);
-            Mach_calc[i] = resultant_local_speed[i]/sqrt(R_air*K_air*T_std_cond);
-            alpha[i] = bdata->m_alpha.value(i);
-            phi_BEM[i] = bdata->m_phi.value(i);
-            theta_BEM[i] = bdata->m_theta.value(i);
-//            theta[i]=theta_BEM[i];
-//            phi[i]=phi_BEM[i];
-            cl_cd[i] =  bdata->m_LD.value(i);
-            r_R[i] = bdata->m_pos.value(i)/finalradius;
+        tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.+bdata->m_a_tangential.value(i));
+        resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
+        chord[i] = bdata->m_c_local.value(i);
+        Reynolds[i] = bdata->m_Reynolds.value(i);
 
-            if (r_R[i] <= r_R0) {c_Rx[i] = c_R0;}
-            if (r_R[i] > r_R0 & r_R[i] < r_R1) {c_Rx[i] = (r_R[i]-r_R0)*(c_R1-c_R0)/(0.25-r_R0)+c_R0;}
-            if (r_R[i] <= r_R1 & r_R[i] >= r_R1) {c_Rx[i] = c_R1;}
-            if (r_R[i] > r_R1 & r_R[i] < r_R2) {c_Rx[i] = (r_R[i]-r_R1)*(c_R2-c_R1)/(r_R2-r_R1)+c_R1;}
-            if (r_R[i] >= r_R2) {c_Rx[i] = c_R2;}
+        CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
+        Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
+        Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
+        Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
+        Mach_polar[i]=noiseOpPoints[i]->getMach();
+        Mach[i]=bdata->m_Mach.value(i);
+        Mach_BEM[i] = bdata->m_Mach.value(i);
+        Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
+        alpha_BEM[i] = bdata->m_alpha.value(i);
+        alpha[i]=alpha_BEM[i];
+        phi_BEM[i] = bdata->m_phi.value(i);
+        theta_BEM[i] = bdata->m_theta.value(i);
+        cl_cd[i] =  bdata->m_LD.value(i);
+        r_R[i] = bdata->m_pos.value(i)/finalradius;
 
-            QString c_R= QString::number(c_Rx[i], 'f', 5);
-            Mach[i]=Mach_calc[i];
+        D_starred_N_S[i]=0;
+        D_starred_HT_S[i]=0;
+
+double aux_alpha_polar[noiseOpPoints.size()];
+for (int k=0;k<noiseOpPoints.size();++k){
+aux_alpha_polar[k]=qFabs(alpha_BEM[i]-noiseOpPoints[k]->getAlphaDegreeAbsolute());
+}
+
+double aux_alpha_polar_set=aux_alpha_polar[0];
+
+for (int k=1;k<noiseOpPoints.size();++k){
+if(aux_alpha_polar_set>aux_alpha_polar[k])
+{aux_alpha_polar_set=aux_alpha_polar[k];
+alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
+}
+}
+        if (r_R[i] <= r_R0) {c_Rx[i] = c_R0;}
+        if ((r_R[i] > r_R0) & (r_R[i] < r_R1)) {c_Rx[i] = (r_R[i]-r_R0)*(c_R1-c_R0)/(0.25-r_R0)+c_R0;}
+        if ((r_R[i] <= r_R1) & (r_R[i] >= r_R1)) {c_Rx[i] = c_R1;}
+        if ((r_R[i] > r_R1) & (r_R[i] < r_R2)) {c_Rx[i] = (r_R[i]-r_R1)*(c_R2-c_R1)/(r_R2-r_R1)+c_R1;}
+        if (r_R[i] >= r_R2) {c_Rx[i] = c_R2;}
+
+        QString c_R= QString::number(c_Rx[i], 'f', 5);
+        QString Mach_error_x= QString::number(Mach_error[i], 'f', 2);
+        QString Reynolds_error_x= QString::number(Reynolds_error[i], 'f', 2);
+        QString alpha_error_x= QString::number(alpha_error[i], 'f', 2);
 
 //heavy tripping
-            if (alpha[i]<=0 & alpha[i]>=0){
-            if (Reynolds[i]>300000){
-                D_starred_C_HT[i]=pow(10,(3.411-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
-            }
-            else {D_starred_C_HT[i]=0.0601*(pow(Reynolds[i],(-0.114)));}
 
-            D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
+if (Reynolds[i]>300000){
+D_starred_C_HT[i]=pow(10,(3.411-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
+}
+else {D_starred_C_HT[i]=0.0601*(pow(Reynolds[i],(-0.114)));}
 
-            //natural transition
-                D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
+D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
 
-            D_starred_N[i]=D_starred_C_N[i]*chord[i];
+//natural transition
+D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
 
-            D_starred_HT_S[i]=D_starred_HT[i];
-            D_starred_HT_P[i]=D_starred_HT[i];
-            D_starred_N_S[i]=D_starred_N[i];
-            D_starred_N_P[i]=D_starred_N[i];
-            }
-            else{
-            //alpha !=0 pressure side
-            if (alpha[i]!=0){
-            corr_fact[i]=pow(10,(-0.0432*alpha[i]+0.00113*pow(alpha[i],2)));
-            D_starred_HT_P[i]=D_starred_HT[i]*corr_fact[i];
-            D_starred_N_P[i]=D_starred_N[i]*corr_fact[i];
-            }
+D_starred_N[i]=D_starred_C_N[i]*chord[i];
 
-            //alpha !=0 suction side heavy tripping
-            if (alpha[i]>0 & alpha[i]<=5){
-            corr_fact[i]=pow(10,(0.0679*alpha[i]));
-            D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
-            }
+if ((alpha[i]<=0) & (alpha[i]>=0)){
+D_starred_HT_S[i]=D_starred_HT[i];
+D_starred_HT_P[i]=D_starred_HT[i];
+D_starred_N_S[i]=D_starred_N[i];
+D_starred_N_P[i]=D_starred_N[i];
+}
+else{
+//alpha !=0 pressure side
+if ((alpha[i]<0) || (alpha[i]>0)){
+corr_fact[i]=pow(10,(-0.0432*alpha[i]+0.00113*pow(alpha[i],2)));
+D_starred_HT_P[i]=D_starred_HT[i]*corr_fact[i];
+D_starred_N_P[i]=D_starred_N[i]*corr_fact[i];
+}
 
-            if (alpha[i]>5 & alpha[i]<=12.5){
-            corr_fact[i]=0.381*(pow(10,(0.1516*alpha[i])));
-            D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
-            }
+//alpha !=0 suction side heavy tripping
+if ((alpha[i]>0) & (alpha[i]<=5)){
+corr_fact[i]=pow(10,(0.0679*alpha[i]));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
 
-            if (alpha[i]>12.5 & alpha[i]<=25){
-            corr_fact[i]=14.296*(pow(10,(0.0258*alpha[i])));
-            D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
-            }
+if ((alpha[i]>5) & (alpha[i]<=12.5)){
+corr_fact[i]=0.381*(pow(10,(0.1516*alpha[i])));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
 
-            //alpha !=0 suction side natural transition
-            if (alpha[i]>0 & alpha[i]<=7.5){
-            corr_fact[i]=pow(10,(0.0679*alpha[i]));
-            D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
-            }
+if ((alpha[i]>12.5) & (alpha[i]<=25)){
+corr_fact[i]=14.296*(pow(10,(0.0258*alpha[i])));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
 
-            if (alpha[i]>7.5 & alpha[i]<=12.5){
-            corr_fact[i]=0.0162*(pow(10,(0.3066*alpha[i])));
-            D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
-            }
+//alpha !=0 suction side natural transition
+if ((alpha[i]>0) & (alpha[i]<=7.5)){
+corr_fact[i]=pow(10.,(0.0679*alpha[i]));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
 
-            if (alpha[i]>12.5 & alpha[i]<=25){
-            corr_fact[i]=54.42*(pow(10.,(0.0258*alpha[i])));
-            D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
-            }}
+if ((alpha[i]>7.5) & (alpha[i]<=12.5)){
+corr_fact[i]=0.0162*(pow(10.,(0.3066*alpha[i])));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
+
+if ((alpha[i]>12.5) & (alpha[i]<=25)){
+corr_fact[i]=54.42*(pow(10.,(0.0258*alpha[i])));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
+}
 
 //For D* Xfoil
 
@@ -1100,26 +1128,28 @@ double EddyMach_perc=EddyMach;
 EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
-if (m_parameter.dstar_type<=0 & m_parameter.dstar_type>=0){
-    D_starred_S[i]=D_starred_N_S[i];
-    D_starred_P[i]=D_starred_N_P[i];
+if ((m_parameter.dstar_type<=0) & (m_parameter.dstar_type>=0)){
+D_starred_S[i]=D_starred_N_S[i];
+D_starred_P[i]=D_starred_N_P[i];
 }
-else if (m_parameter.dstar_type<=1 & m_parameter.dstar_type>=1){
+
+else if ((m_parameter.dstar_type<=1) & (m_parameter.dstar_type>=1)){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
-    double TopTrip=pFoilPolarDlg->m_XTopTr;
-    double BotTrip=pFoilPolarDlg->m_XBotTr;
+double TopTrip=pFoilPolarDlg->m_XTopTr;
+double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-    // The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
-        if(((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
+// The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
+//Sara experiment
+if((((TopTrip<=0) & (TopTrip>=0)) & ((BotTrip<=0) & (BotTrip>=0))) ||(((Reynolds[i]<=1.5*pow(10,6)) & (Mach[i]<0.21)) & ((alpha[i]<=19.8) & (alpha[i]>=19.8)))) {
 //        natural transition
-    D_starred_S[i]=D_starred_HT_S[i];
-    D_starred_P[i]=D_starred_HT_P[i];
+D_starred_S[i]=D_starred_HT_S[i];
+D_starred_P[i]=D_starred_HT_P[i];
 }
 else {
 //heavy tripping
-    D_starred_S[i]=DStarXFoilS[i];
-    D_starred_P[i]=DStarXFoilP[i];
+D_starred_S[i]=DStarXFoilS[i];
+D_starred_P[i]=DStarXFoilP[i];
 }}
 
 double B=0;
@@ -1128,57 +1158,80 @@ double YB=0;
 double ZB=0;
 
 //phi type, fixed 90º or free
-if (m_parameter.phi_type<=0 & m_parameter.phi_type>=0){
-    //by the quasi-3D spreadsheet
-    ri[i]=bdata->m_pos.value(i);
-if(i<=number_of_segments){
-ri_1[i]=bdata->m_pos.value(i);
-ri_2[i]=bdata->m_pos.value(i);
+if ((m_parameter.phi_type<=0) & (m_parameter.phi_type>=0)){
+//by the quasi-3D spreadsheet
+ri[i]=bdata->m_pos.value(i);
+ri_1[i]=bdata->m_pos.value(i+1);
+ri_2[i]=bdata->m_pos.value(i+2);
+B=bdata->m_pos.value(number_of_segments-1)/2.;
+A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
+re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
+phi_lin[i]=qRadiansToDegrees(qAsin(m_parameter.distanceObsever/re[i]));
+phi[i]=180.-phi_lin[i];
+theta[i]=90;
+dist_obs[i]=ri_1[i];
 }
-else if (i<=(number_of_segments-1))
-{
- ri_2[i]=bdata->m_pos.value(i);
-}
-else
-{
-    ri_1[i]=bdata->m_pos.value(i+1);
-    ri_2[i]=bdata->m_pos.value(i+2);
-}
-    B=bdata->m_pos.value(number_of_segments-1)/2.;
-    A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
-    re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
-    phi_lin[i]=qRadiansToDegrees(qAsin(m_parameter.distanceObsever/re[i]));
-    phi[i]=180.-phi_lin[i];
-    theta[i]=90;
-    dist_obs[i]=ri_1[i];
-}
-else if (m_parameter.phi_type<=1 & m_parameter.phi_type>=1){
+else if ((m_parameter.phi_type<=1) & (m_parameter.phi_type>=1)){
 //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
-    b[i]=qRadiansToDegrees(qAtan((chord[i]-chord[i-1])/(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))));
-    a[i]=SwAlpha[i];
+//    Input X e , Y e , Z e
+//    Attribute their respective values to X B , Y B , Z B
     XB=m_parameter.obs_x_pos;
     YB=m_parameter.obs_y_pos;
     ZB=m_parameter.obs_z_pos;
 
-    XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
-    YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
-    ZRS[i]=ZB-(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))/2.;
+//For the blade, get the Pitch angle, θp - blade pitch
 
-    XRT[i]=XRS[i];
-    YRT[i]=cos(qDegreesToRadians(b[i]))*(YRS[i]-0.75*(chord[i]-chord[i-1])/2.)+sin(qDegreesToRadians(b[i]))*ZRS[i];
-    ZRT[i]=-sin(qDegreesToRadians(b[i]))*(YRS[i]-0.75*(chord[i]-chord[i-1])/2.)+cos(qDegreesToRadians(b[i]))*ZRS[i];
+//For each blade segment, get: C r i+1 , C r i , r i+1 , r i , β
+//Cri+1 = c_1
+//r+1 = r_1
+//Cri = c_0
+//ri = r_0
+//beta = local_twist
 
-    re[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
-    theta[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
+if((i<=number_of_segments) & (i>=number_of_segments)){
+c_1[i]=0;
+r_1[i]=0;
+}
+else
+{
+c_1[i]=bdata->m_c_local.value(i+1);
+r_1[i]=bdata->m_pos.value(i+1);
+}}
 
-    phi[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+c_0[i]=bdata->m_c_local.value(i);
+r_0[i]=bdata->m_pos.value(i);
 
-    dist_obs[i]=re[i];
- }
+local_twist[i]=theta_BEM[i];
 
+b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
 
-   phi_rad[i]=qDegreesToRadians(phi[i]);
-   theta_rad[i]=qDegreesToRadians(theta[i]);
+//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line
+a[i]=local_twist[i]+blade_pitch;
+
+XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
+YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
+ZRS[i]=ZB-(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))/2.;
+
+//    Calculate Y RS − 0.75 ∗ (C r i+1 − C r i )/2
+calc_int_a[i]=(YRS[i]-0.75*(c_1[i]-c_0[i])/2.);
+
+XRT[i]=XRS[i];
+YRT[i]=cos(qDegreesToRadians(b[i]))*calc_int_a[i]+sin(qDegreesToRadians(b[i]))*ZRS[i];
+ZRT[i]=-sin(qDegreesToRadians(b[i]))*calc_int_a[i]+cos(qDegreesToRadians(b[i]))*ZRS[i];
+
+r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
+r_rt[i]=r_e[i];
+theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
+
+psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+
+dist_obs[i]=re[i];
+
+phi_rad[i]=qDegreesToRadians(phi[i]);
+theta_rad[i]=qDegreesToRadians(theta[i]);
+
+//   alpha_calc[i] = alpha_BEM[i]; //Sara todo
+alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
 first_term_Dh_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_S[i]/pow(dist_obs[i],2));
 
@@ -1261,10 +1314,11 @@ else {B_max_b0[i]=-31.33*b0[i]+1.854;}
 double BR_b0[number_of_segments];
 BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
 
-//uncomment to input data
+//if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
 QString str= QString::number(z, 'f', 1);
 
-    stream << "Angles less than the switching angle: "  << endl;
+
+//        stream << "Angles less than the switching angle: "  << endl;
     stream << "Tip Speed Ratio: " << str << endl;
     stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
     stream << endl;
@@ -1272,6 +1326,8 @@ QString str= QString::number(z, 'f', 1);
 stream << qSetFieldWidth(14)  <<
           "Freq[Hz]"  << ";" <<
           "Sts"  << ";" <<
+          "alpha"  << ";" <<
+          "D starred S"  << ";" <<
           "b"  << ";" <<
           "B_min(b)" << ";" <<
           "B_max(b)" << ";" <<
@@ -1325,7 +1381,7 @@ stream << qSetFieldWidth(14)  <<
           "s_log_dBB"  << ";" <<
           "s_log_dBC"  << ";" <<
           endl;
-//uncomment to input data
+//}
 
 int w=30;
 
@@ -1569,19 +1625,20 @@ if(qIsInf(st_dBB)){st_dBB=0;}
 if(qIsInf(st_dBC)){st_dBC=0;}
 
 QString observations_x("");
-if (!(Reynolds[i] >9.5*pow(10,5) & Reynolds[i]<2.5*pow(10,6)) || Mach[i]>=0.19 || !(alpha[i]<=0 & alpha[i]>=0) || !(alpha[i]<=5 & alpha[i]>=5) || !(alpha[i]<=10 & alpha[i]>=10)){
+if (!((Reynolds[i] >9.5*pow(10,5)) & (Reynolds[i]<2.5*pow(10,6))) || Mach[i]>=0.19 || !((alpha[i]<=0) & (alpha[i]>=0)) || !((alpha[i]<=5) & (alpha[i]>=5)) || !((alpha[i]<=10) & (alpha[i]>=10))){
 observations_x.append("1 ");}
-if((Reynolds[i] <=4.8*pow(10,4)) || (Reynolds[i]>=2.5*pow(10,6)) || Mach[i]<0.208 || !(alpha[i]<=0 & alpha[i]>=0)){
+if((Reynolds[i] <=4.8*pow(10,4)) || (Reynolds[i]>=2.5*pow(10,6)) || Mach[i]<0.208 || !((alpha[i]<=0) & (alpha[i]>=0))){
 observations_x.append("2 ");}
 if (Reynolds[i] >=3*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
 observations_x.append("3 ");}
 if (Reynolds[i] >1.5*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
 observations_x.append('4');}
 
-//uncomment to input data
                 stream << qSetFieldWidth(14)  <<
-                            Frequency[j]  << ";" <<
-                          Sts[j]  << ";" <<
+                          Frequency[j]  << ";" <<
+                          Sts[j]<< ";" <<
+                          alpha[i]<< ";" <<
+                          D_starred_S[i]<< ";" <<
                           b_alpha[j]  << ";" <<
                           B_min[j] << ";" <<
                           B_max[j] << ";" <<
@@ -1636,7 +1693,6 @@ observations_x.append('4');}
                           slog_dBC[j]  << ";" <<
            endl;
 
-//uncomment to input data
 
 if(j==(w-1)){
                 stream << endl;
@@ -1660,14 +1716,14 @@ if(z>=lend & i>=(number_of_segments-1)){
                 stream << "SPL B: "  << st_dBB<< endl;
                 stream << "SPL C: "  << st_dBC<< endl;
                 stream << "***********************************************************"<<endl;
-                stream << endl;
+stream << endl;
 if (observations_x!=""){
-                stream << "Error¹:" << observations_x << endl;
-                stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
+stream << "Error¹:" << observations_x << endl;
+stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
 stream << endl;}
 }}}}
-         z=z+ldelta;
-}}
+z=z+ldelta;
+    }}
 
 void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
 {
@@ -1894,13 +1950,19 @@ splog_dBC=0;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
             Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
-
             Mach_polar[i]=noiseOpPoints[i]->getMach();
             Mach[i]=bdata->m_Mach.value(i);
             Mach_BEM[i] = bdata->m_Mach.value(i);
-
             Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
             alpha_BEM[i] = bdata->m_alpha.value(i);
+            alpha[i]=alpha_BEM[i];
+            phi_BEM[i] = bdata->m_phi.value(i);
+            theta_BEM[i] = bdata->m_theta.value(i);
+            cl_cd[i] =  bdata->m_LD.value(i);
+            r_R[i] = bdata->m_pos.value(i)/finalradius;
+
+            D_starred_N_S[i]=0;
+            D_starred_HT_S[i]=0;
 
 double aux_alpha_polar[noiseOpPoints.size()];
 for (int k=0;k<noiseOpPoints.size();++k){
@@ -1915,14 +1977,6 @@ for (int k=1;k<noiseOpPoints.size();++k){
 alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
     }
 }
-
-            alpha[i]=alpha_BEM[i];
-
-            phi_BEM[i] = bdata->m_phi.value(i);
-            theta_BEM[i] = bdata->m_theta.value(i);
-            cl_cd[i] =  bdata->m_LD.value(i);
-            r_R[i] = bdata->m_pos.value(i)/finalradius;
-
             if (r_R[i] <= r_R0) {c_Rx[i] = c_R0;}
             if ((r_R[i] > r_R0) & (r_R[i] < r_R1)) {c_Rx[i] = (r_R[i]-r_R0)*(c_R1-c_R0)/(0.25-r_R0)+c_R0;}
             if ((r_R[i] <= r_R1) & (r_R[i] >= r_R1)) {c_Rx[i] = c_R1;}
@@ -1935,7 +1989,7 @@ alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
             QString alpha_error_x= QString::number(alpha_error[i], 'f', 2);
 
 //heavy tripping
-if ((alpha[i]<=0) & (alpha[i]>=0)){
+
 if (Reynolds[i]>300000){
     D_starred_C_HT[i]=pow(10,(3.411-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
 }
@@ -1948,6 +2002,7 @@ D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
 
 D_starred_N[i]=D_starred_C_N[i]*chord[i];
 
+if ((alpha[i]<=0) & (alpha[i]>=0)){
 D_starred_HT_S[i]=D_starred_HT[i];
 D_starred_HT_P[i]=D_starred_HT[i];
 D_starred_N_S[i]=D_starred_N[i];
@@ -1955,7 +2010,7 @@ D_starred_N_P[i]=D_starred_N[i];
 }
 else{
 //alpha !=0 pressure side
-if (alpha[i]!=0){
+if ((alpha[i]<0) || (alpha[i]>0)){
 corr_fact[i]=pow(10,(-0.0432*alpha[i]+0.00113*pow(alpha[i],2)));
 D_starred_HT_P[i]=D_starred_HT[i]*corr_fact[i];
 D_starred_N_P[i]=D_starred_N[i]*corr_fact[i];
@@ -1979,19 +2034,20 @@ D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
 
 //alpha !=0 suction side natural transition
 if ((alpha[i]>0) & (alpha[i]<=7.5)){
-corr_fact[i]=pow(10,(0.0679*alpha[i]));
+corr_fact[i]=pow(10.,(0.0679*alpha[i]));
 D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 }
 
 if ((alpha[i]>7.5) & (alpha[i]<=12.5)){
-corr_fact[i]=0.0162*(pow(10,(0.3066*alpha[i])));
+corr_fact[i]=0.0162*(pow(10.,(0.3066*alpha[i])));
 D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 }
 
 if ((alpha[i]>12.5) & (alpha[i]<=25)){
 corr_fact[i]=54.42*(pow(10.,(0.0258*alpha[i])));
 D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
-}}
+}
+}
 
 //For D* Xfoil
 
@@ -2056,7 +2112,8 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
 // The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
-    if((((TopTrip<=1) & (TopTrip>=1)) & ((BotTrip<=1) & (BotTrip>=1))) ||(((Reynolds[i]<=1.5*pow(10,6)) & (Mach[i]<0.21)) & ((alpha[i]<=19.8) & (alpha[i]>=19.8)))) {
+    //Sara experiment
+    if((((TopTrip<=0) & (TopTrip>=0)) & ((BotTrip<=0) & (BotTrip>=0))) ||(((Reynolds[i]<=1.5*pow(10,6)) & (Mach[i]<0.21)) & ((alpha[i]<=19.8) & (alpha[i]>=19.8)))) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
@@ -2233,7 +2290,7 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     QString str= QString::number(z, 'f', 1);
 
 
-        stream << "Angles less than the switching angle: "  << endl;
+//        stream << "Angles less than the switching angle: "  << endl;
         stream << "Tip Speed Ratio: " << str << endl;
         stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
         stream << endl;
@@ -2241,6 +2298,8 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     stream << qSetFieldWidth(14)  <<
               "Freq[Hz]"  << ";" <<
               "Sts"  << ";" <<
+              "alpha"  << ";" <<
+              "D starred S"  << ";" <<
               "b"  << ";" <<
               "B_min(b)" << ";" <<
               "B_max(b)" << ";" <<
@@ -2548,8 +2607,10 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     observations_x.append('4');}
 
                     stream << qSetFieldWidth(14)  <<
-                                Frequency[j]  << ";" <<
-                              Sts[j]  << ";" <<
+                              Frequency[j]  << ";" <<
+                              Sts[j]<< ";" <<
+                              alpha[i]<< ";" <<
+                              D_starred_S[i]<< ";" <<
                               b_alpha[j]  << ";" <<
                               B_min[j] << ";" <<
                               B_max[j] << ";" <<
@@ -2632,9 +2693,9 @@ if (observations_x!=""){
 stream << "Error¹:" << observations_x << endl;
 stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
 stream << endl;}
-}}}}
+}}}}}
 z=z+ldelta;
-        }}}
+        }}
 //Sara
 
 void NoiseSimulation::setAnalyzedOpPoints(QVector<OpPoint *> newList) {
