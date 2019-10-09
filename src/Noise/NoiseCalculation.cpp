@@ -481,10 +481,7 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
 
     //Sara
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-    double rho=0;
-        foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-       rho = pBEM->dlg_rho;
-        }
+    double rho=pBEM->dlg_rho;
 
     m_ReynoldsBasedDisplacement = rho * m_parameter->originalVelocity * m_DStarFinalP / 0.0000178;// Sara correção rho
     //Sara
@@ -688,8 +685,8 @@ void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
     const double D_L = 0.5*getDL();
     const double L = 100.*(m_parameter->wettedLength);
     double Aux = 0.5*(Lambda*L*pow(rho, 2)*pow(c_0, 2)*pow(u, 2)*pow(Mach, 3)*pow(I, 2)*D_L)/(pow(r_e, 2));
-    double K = 3.1416*CENTRAL_BAND_FREQUENCY[posFreq]*c/u;
-    double S = sqrt(pow((2.*3.1416*K/(pow(beta, 2)))+(pow((1+(2.4*K/pow(beta,2))), -1)), -1));
+    double K = M_PI*CENTRAL_BAND_FREQUENCY[posFreq]*c/u;
+    double S = sqrt(pow((2.*M_PI*K/(pow(beta, 2)))+(pow((1+(2.4*K/pow(beta,2))), -1)), -1));
     double LFC = 10.*Mach*pow(S*K/beta, 2);
 
 if(m_parameter->RapidDistortion==true & m_parameter->VonKarman==false){
