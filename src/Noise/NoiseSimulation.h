@@ -73,6 +73,7 @@ private:
     double m_u_wind_speed;
     double m_TSR;
     double m_dstar_type;
+    double m_dstar_user;
     double m_phi_type;
     double obs_x_pos;
     double obs_y_pos;

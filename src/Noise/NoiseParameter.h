@@ -63,6 +63,7 @@ public:
     double u_wind_speed;
     double TSRtd;
     double dstar_type;
+    double dstar_user;
     double phi_type;
     double rot_speed_calc;
     double u_wind_speed_calc;

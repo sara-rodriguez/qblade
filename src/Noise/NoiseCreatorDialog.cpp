@@ -190,16 +190,9 @@ m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
 pGrid->addWidget(m_airfoilComboBoxtd);
 pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"δ* type (0-BPM, 1-XFoil, 2-User):", 1);//Sara todo 0-Natural Transition, 1-Heavy-tripping, 2 - XFoil Interpolated
 
-//pGrid->setHorizontalSpacing(20);
-//pGrid->setVerticalSpacing(20);
-pGrid->setSizeConstraint(QLayout::SetMinimumSize);
-//m_opPointViewWidget->setLayout(pGrid);
-//    QPushButton *button = new QPushButton ("All");
-//    button->setMinimumWidth(QFontMetrics(QFont()).width("All") * 1.8);
-//    button->setCheckable(true);
-//    connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
-//    grid->addWidget(button, 0, 0, 1, 1);
+//pGrid->addEdit(P::dstar_user, LineEdit, new QLineEdit(),"", 1);
 
+pGrid->setSizeConstraint(QLayout::SetMinimumSize);
 QPushButton *buttonle = new QPushButton ("δ* User Input");
 buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
 buttonle->setCheckable(true);

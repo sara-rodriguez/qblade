@@ -625,8 +625,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-// The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
-    if(((TopTrip<=1 & TopTrip>=1) & (BotTrip<=1 & BotTrip>=1)) ||((Reynolds[i]<=1.5*pow(10,6) & Mach[i]<0.21) & (alpha[i]<=19.8 & alpha[i]>=19.8))) {
+    if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
@@ -751,7 +750,7 @@ observations_x.append('4');}
 
 }
      stream << endl;
-     stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
+     stream << "[1]Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
 }
 
 void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
@@ -832,6 +831,17 @@ void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
         double aux1_le;
         double aux4_le;
         double aux5_le;
+
+        QString SPL_alpha_val("");
+        QString SPL_dB_S_val("");
+        QString SPL_dB_P_val("");
+        QString SPL_S_val("");
+        QString SPL_P_val("");
+        QString SPL_dB_val("");
+        QString SPL_A_val("");
+        QString SPL_B_val("");
+        QString SPL_C_val("");
+        QString SPL_LedB_val("");
 
         //definitions
         double axial_ind_fact[number_of_segments];
@@ -976,8 +986,8 @@ void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
         double r_R1  =  0.25; double c_R1 = 0.07500;
         double r_R2  =  1.00; double c_R2 = 0.02000;
 
-        bool LE_validation=false;
-        bool BPM_validation=false;
+        bool LE_validation;
+        bool BPM_validation;
 
         for (int i = 0; i < number_of_segments; ++i) {
 
@@ -1180,9 +1190,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-// The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
-    //Sara experiment
-    if((((TopTrip<=0) & (TopTrip>=0)) & ((BotTrip<=0) & (BotTrip>=0))) ||(((Reynolds[i]<=1.5*pow(10,6)) & (Mach[i]<0.21)) & ((alpha[i]<=19.8) & (alpha[i]>=19.8)))) {
+if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
@@ -1357,7 +1365,6 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 //    if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
     QString str= QString::number(z, 'f', 1);
 
-
 //        stream << "Angles less than the switching angle: "  << endl;
         stream << "Tip Speed Ratio: " << str << endl;
         stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
@@ -1366,45 +1373,45 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 if(m_parameter.Lowson){
     stream << qSetFieldWidth(14)  <<
               "Freq[Hz]"  << ";" <<
-              "Sts"  << ";" <<
-              "b"  << ";" <<
-              "B_min(b)" << ";" <<
-              "B_max(b)" << ";" <<
-              "B(b)"  << ";" <<
-              "a_alpha"  << ";" <<
-              "A_min(a)_alpha" << ";" <<
-              "A_max(a)_alpha" << ";" <<
-              "A'(a)"  << ";" <<
-              "A-Weighting"  << ";" <<
-              "B-Weighting" << ";" <<
-              "C-Weighting"  << ";" <<
-              "SPL_alpha < 0"  << ";" <<
-              "SPL_alpha > 0"  << ";" <<
-              "dB_A_alpha S"  << ";" <<
-              "dB_A_alpha P"  << ";" <<
-              "dB_B_alpha S"  << ";" <<
-              "dB_B_alpha P"  << ";" <<
-              "dB_C_alpha S"  << ";" <<
-              "dB_C_alpha P"  << ";" <<
-              "St1_bar"  << ";" <<
-              "a_S"  << ";" <<
-              "A_min_a_S"  << ";" <<
-              "A_max_a_S"  << ";" <<
-              "A_a_S"  << ";" <<
-              "SPL_dB_S"  << ";" <<
-              "dB_A_S"  << ";" <<
-              "dB_B_S"  << ";" <<
-              "dB_C_S"  << ";" <<
-              "Sts_St1_bar"  << ";" <<
-              "Stp"  << ";" <<
-              "a_P"  << ";" <<
-              "A_min_a_P"  << ";" <<
-              "A_max_a_P"  << ";" <<
-              "A_a_P"  << ";" <<
-              "SPL_P"  << ";" <<
-              "dB_A_P"  << ";" <<
-              "dB_B_P"  << ";" <<
-              "dB_C_P"  << ";" <<
+//              "Sts"  << ";" <<
+//              "b"  << ";" <<
+//              "B_min(b)" << ";" <<
+//              "B_max(b)" << ";" <<
+//              "B(b)"  << ";" <<
+//              "a_alpha"  << ";" <<
+//              "A_min(a)_alpha" << ";" <<
+//              "A_max(a)_alpha" << ";" <<
+//              "A'(a)"  << ";" <<
+//              "A-Weighting"  << ";" <<
+//              "B-Weighting" << ";" <<
+//              "C-Weighting"  << ";" <<
+//              "SPL_alpha < 0"  << ";" <<
+//              "SPL_alpha > 0"  << ";" <<
+//              "dB_A_alpha S"  << ";" <<
+//              "dB_A_alpha P"  << ";" <<
+//              "dB_B_alpha S"  << ";" <<
+//              "dB_B_alpha P"  << ";" <<
+//              "dB_C_alpha S"  << ";" <<
+//              "dB_C_alpha P"  << ";" <<
+//              "St1_bar"  << ";" <<
+//              "a_S"  << ";" <<
+//              "A_min_a_S"  << ";" <<
+//              "A_max_a_S"  << ";" <<
+//              "A_a_S"  << ";" <<
+//              "SPL_dB_S"  << ";" <<
+//              "dB_A_S"  << ";" <<
+//              "dB_B_S"  << ";" <<
+//              "dB_C_S"  << ";" <<
+//              "Sts_St1_bar"  << ";" <<
+//              "Stp"  << ";" <<
+//              "a_P"  << ";" <<
+//              "A_min_a_P"  << ";" <<
+//              "A_max_a_P"  << ";" <<
+//              "A_a_P"  << ";" <<
+//              "SPL_dB_P"  << ";" <<
+//              "dB_A_P"  << ";" <<
+//              "dB_B_P"  << ";" <<
+//              "dB_C_P"  << ";" <<
               "SPL_alpha"  << ";" <<
               "SPL_S"  << ";" <<
               "SPL_P"  << ";" <<
@@ -1413,73 +1420,72 @@ if(m_parameter.Lowson){
               "SPL_dB_B"  << ";" <<
               "SPL_dB_C"  << ";" <<
               "SPL_LE_dB"  << ";" <<
-              "s_log_SPL_alpha"  << ";" <<
-              "s_log_SPL_S"  << ";" <<
-              "s_log_SPL_P"  << ";" <<
-              "s_log_SPL"  << ";" <<
-              "s_log_dBA"  << ";" <<
-              "s_log_dBB"  << ";" <<
-              "s_log_dBC"  << ";" <<
-              "s_log_LE_dB"  << ";" <<
-              endl;
-}else{
-    stream << qSetFieldWidth(14)  <<
-              "Freq[Hz]"  << ";" <<
-              "Sts"  << ";" <<
-              "b"  << ";" <<
-              "B_min(b)" << ";" <<
-              "B_max(b)" << ";" <<
-              "B(b)"  << ";" <<
-              "a_alpha"  << ";" <<
-              "A_min(a)_alpha" << ";" <<
-              "A_max(a)_alpha" << ";" <<
-              "A'(a)"  << ";" <<
-              "A-Weighting"  << ";" <<
-              "B-Weighting" << ";" <<
-              "C-Weighting"  << ";" <<
-              "SPL_alpha < 0"  << ";" <<
-              "SPL_alpha > 0"  << ";" <<
-              "dB_A_alpha S"  << ";" <<
-              "dB_A_alpha P"  << ";" <<
-              "dB_B_alpha S"  << ";" <<
-              "dB_B_alpha P"  << ";" <<
-              "dB_C_alpha S"  << ";" <<
-              "dB_C_alpha P"  << ";" <<
-              "St1_bar"  << ";" <<
-              "a_S"  << ";" <<
-              "A_min_a_S"  << ";" <<
-              "A_max_a_S"  << ";" <<
-              "A_a_S"  << ";" <<
-              "SPL_dB_S"  << ";" <<
-              "dB_A_S"  << ";" <<
-              "dB_B_S"  << ";" <<
-              "dB_C_S"  << ";" <<
-              "Sts_St1_bar"  << ";" <<
-              "Stp"  << ";" <<
-              "a_P"  << ";" <<
-              "A_min_a_P"  << ";" <<
-              "A_max_a_P"  << ";" <<
-              "A_a_P"  << ";" <<
-              "SPL_P"  << ";" <<
-              "dB_A_P"  << ";" <<
-              "dB_B_P"  << ";" <<
-              "dB_C_P"  << ";" <<
-              "SPL_alpha"  << ";" <<
-              "SPL_S"  << ";" <<
-              "SPL_P"  << ";" <<
-              "SPL_dB"  << ";" <<
-              "SPL_dB_A"  << ";" <<
-              "SPL_dB_B"  << ";" <<
-              "SPL_dB_C"  << ";" <<
-              "s_log_SPL_alpha"  << ";" <<
-              "s_log_SPL_S"  << ";" <<
-              "s_log_SPL_P"  << ";" <<
-              "s_log_SPL"  << ";" <<
-              "s_log_dBA"  << ";" <<
-              "s_log_dBB"  << ";" <<
-              "s_log_dBC"  << ";" <<
-              endl;
-}
+//              "s_log_SPL_alpha"  << ";" <<
+//              "s_log_SPL_S"  << ";" <<
+//              "s_log_SPL_P"  << ";" <<
+//              "s_log_SPL"  << ";" <<
+//              "s_log_dBA"  << ";" <<
+//              "s_log_dBB"  << ";" <<
+//              "s_log_dBC"  << ";" <<
+//              "s_log_LE_dB"  << ";" <<
+              endl;}
+else{
+        stream << qSetFieldWidth(14)  <<
+                  "Freq[Hz]"  << ";" <<
+//                  "Sts"  << ";" <<
+//                  "b"  << ";" <<
+//                  "B_min(b)" << ";" <<
+//                  "B_max(b)" << ";" <<
+//                  "B(b)"  << ";" <<
+//                  "a_alpha"  << ";" <<
+//                  "A_min(a)_alpha" << ";" <<
+//                  "A_max(a)_alpha" << ";" <<
+//                  "A'(a)"  << ";" <<
+//                  "A-Weighting"  << ";" <<
+//                  "B-Weighting" << ";" <<
+//                  "C-Weighting"  << ";" <<
+//                  "SPL_alpha < 0"  << ";" <<
+//                  "SPL_alpha > 0"  << ";" <<
+//                  "dB_A_alpha S"  << ";" <<
+//                  "dB_A_alpha P"  << ";" <<
+//                  "dB_B_alpha S"  << ";" <<
+//                  "dB_B_alpha P"  << ";" <<
+//                  "dB_C_alpha S"  << ";" <<
+//                  "dB_C_alpha P"  << ";" <<
+//                  "St1_bar"  << ";" <<
+//                  "a_S"  << ";" <<
+//                  "A_min_a_S"  << ";" <<
+//                  "A_max_a_S"  << ";" <<
+//                  "A_a_S"  << ";" <<
+                  "SPL_dB_S"  << ";" <<
+//                  "dB_A_S"  << ";" <<
+//                  "dB_B_S"  << ";" <<
+//                  "dB_C_S"  << ";" <<
+//                  "Sts_St1_bar"  << ";" <<
+//                  "Stp"  << ";" <<
+//                  "a_P"  << ";" <<
+//                  "A_min_a_P"  << ";" <<
+//                  "A_max_a_P"  << ";" <<
+//                  "A_a_P"  << ";" <<
+//                  "SPL_dB_P"  << ";" <<
+//                  "dB_A_P"  << ";" <<
+//                  "dB_B_P"  << ";" <<
+//                  "dB_C_P"  << ";" <<
+                  "SPL_alpha"  << ";" <<
+                  "SPL_S"  << ";" <<
+                  "SPL_P"  << ";" <<
+                  "SPL_dB"  << ";" <<
+                  "SPL_dB_A"  << ";" <<
+                  "SPL_dB_B"  << ";" <<
+                  "SPL_dB_C"  << ";" <<
+//                  "s_log_SPL_alpha"  << ";" <<
+//                  "s_log_SPL_S"  << ";" <<
+//                  "s_log_SPL_P"  << ";" <<
+//                  "s_log_SPL"  << ";" <<
+//                  "s_log_dBA"  << ";" <<
+//                  "s_log_dBB"  << ";" <<
+//                  "s_log_dBC"  << ";" <<
+                  endl;}
 
     int w=30;
 
@@ -1685,12 +1691,32 @@ aux1_le=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
 aux4_le=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le=10.*log10(aux0_le*aux4_le);
 
+//Validation:
+
 //Lowson validation:
-if (((m_parameter.Lowson & Mach[i]<=0.18) & Reynolds[i]<=(6.*pow(10,5)))){
+if ((((m_parameter.Lowson & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
 LE_validation=true;
 }
-else{SPL_LedB[j]=-999999999999.;
+else{
+SPL_LedB[j]=-999999999999.;
+LE_validation=false;
+}
+
+//BPM validation:
+//p 17 C_Project_Log_Text_15_jan_16
+if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
+BPM_validation=true;
+}
+else{
+SPL_alpha[j]=-999999999999.;
+SPL_S[j]=-999999999999.;
+SPL_P[j]=-999999999999.;
+SPL_dB[j]=-999999999999.;
+SPL_A[j]=-999999999999.;
+SPL_B[j]=-999999999999.;
+SPL_C[j]=-999999999999.;
+BPM_validation=false;
 }
 
     slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
@@ -1784,77 +1810,180 @@ else{SPL_LedB[j]=-999999999999.;
     if (Reynolds[i] >1.5*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
     observations_x.append('4');}
 
-    if (m_parameter.Lowson){
+
+SPL_LedB_val.clear();
+SPL_alpha_val.clear();
+SPL_dB_S_val.clear();
+SPL_dB_P_val.clear();
+SPL_S_val.clear();
+SPL_P_val.clear();
+SPL_dB_val.clear();
+SPL_A_val.clear();
+SPL_B_val.clear();
+SPL_C_val.clear();
+
+    if(BPM_validation){
+SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 2));
+SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 2));
+SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 2));
+SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 2));
+SPL_A_val.append(QString::number(SPL_A[j], 'f', 2));
+SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
+SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
+
+if(SPL_S[j]==-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
+if(SPL_P[j]==-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
+   }
+    else{
+SPL_alpha_val.append("N/A");
+SPL_dB_S_val.append("N/A");
+SPL_dB_P_val.append("N/A");
+SPL_S_val.append("N/A");
+SPL_P_val.append("N/A");
+SPL_dB_val.append("N/A");
+SPL_A_val.append("N/A");
+SPL_B_val.append("N/A");
+SPL_C_val.append("N/A");
+    }
+
+if (LE_validation){
+SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 2));
+}
+else{
+SPL_LedB_val.append("N/A");
+}
+
+if (m_parameter.Lowson){
         stream << qSetFieldWidth(14)  <<
                   Frequency[j] << ";" <<
-                  Sts[j]<< ";" <<
-                  b_alpha[j]  << ";" <<
-                  B_min[j] << ";" <<
-                  B_max[j] << ";" <<
-                  B_b[j]  << ";" <<
-                  a_alpha[j] << ";" <<
-                  A_min_alpha[j]  << ";" <<
-                  A_max_alpha[j]  << ";" <<
-                  Alin_a[j]  << ";" <<
-                  AWeighting[j]  << ";" <<
-                  BWeighting[j]  << ";" <<
-                  CWeighting[j]  << ";" <<
-                  SPL_alpha_min0[j]  << ";" <<
-                  SPL_alpha_big0[j]  << ";" <<
-                  dBA_alpha_min0[j]  << ";" <<
-                  dBA_alpha_big0[j]  << ";" <<
-                  dBB_alpha_min0[j]  << ";" <<
-                  dBB_alpha_big0[j]  << ";" <<
-                  dBC_alpha_min0[j]  << ";" <<
-                  dBC_alpha_big0[j]  << ";" <<
-                  St1_bar[j]  << ";" <<
-                  a_S[j]  << ";" <<
-                  A_min_S[j]  << ";" <<
-                  A_max_S[j]  << ";" <<
-                  A_a_S[j]  << ";" <<
-                  SPL_dB_S[j]  << ";" <<
-                  dBA_S[j]  << ";" <<
-                  dBB_S[j]  << ";" <<
-                  dBC_S[j]  << ";" <<
-                  Sts_St1_bar[j]  << ";" <<
-                  Stp_P[j]  << ";" <<
-                  a_P[j]  << ";" <<
-                  A_min_P[j]  << ";" <<
-                  A_max_P[j]  << ";" <<
-                  A_a_P[j]  << ";" <<
-                  SPL_dB_P[j]  << ";" <<
-                  dBA_P[j]  << ";" <<
-                  dBB_P[j]  << ";" <<
-                  dBC_P[j]  << ";" <<
-                  SPL_alpha[j]  << ";" <<
-                  SPL_S[j]  << ";" <<
-                  SPL_P[j]  << ";" <<
-                  SPL_dB[j]  << ";" <<
-                  SPL_A[j]  << ";" <<
-                  SPL_B[j]  << ";" <<
-                  SPL_C[j]  << ";" <<
-                  SPL_LedB[j]  << ";" <<
-                  slog_SPL_alpha[j]  << ";" <<
-                  slog_SPL_S[j]  << ";" <<
-                  slog_SPL_P[j]  << ";" <<
-                  slog_SPL[j]  << ";" <<
-                  slog_dBA[j]  << ";" <<
-                  slog_dBB[j]  << ";" <<
-                  slog_dBC[j]  << ";" <<
-                  slog_LedB[j]  << ";" <<
-   endl;
-
+//                  Sts[j]<< ";" <<
+//                  b_alpha[j]  << ";" <<
+//                  B_min[j] << ";" <<
+//                  B_max[j] << ";" <<
+//                  B_b[j]  << ";" <<
+//                  a_alpha[j] << ";" <<
+//                  A_min_alpha[j]  << ";" <<
+//                  A_max_alpha[j]  << ";" <<
+//                  Alin_a[j]  << ";" <<
+//                  AWeighting[j]  << ";" <<
+//                  BWeighting[j]  << ";" <<
+//                  CWeighting[j]  << ";" <<
+//                  SPL_alpha_min0[j]  << ";" <<
+//                  SPL_alpha_big0[j]  << ";" <<
+//                  dBA_alpha_min0[j]  << ";" <<
+//                  dBA_alpha_big0[j]  << ";" <<
+//                  dBB_alpha_min0[j]  << ";" <<
+//                  dBB_alpha_big0[j]  << ";" <<
+//                  dBC_alpha_min0[j]  << ";" <<
+//                  dBC_alpha_big0[j]  << ";" <<
+//                  St1_bar[j]  << ";" <<
+//                  a_S[j]  << ";" <<
+//                  A_min_S[j]  << ";" <<
+//                  A_max_S[j]  << ";" <<
+//                  A_a_S[j]  << ";" <<
+//                  SPL_dB_S_val  << ";" <<
+//                  dBA_S[j]  << ";" <<
+//                  dBB_S[j]  << ";" <<
+//                  dBC_S[j]  << ";" <<
+//                  Sts_St1_bar[j]  << ";" <<
+//                  Stp_P[j]  << ";" <<
+//                  a_P[j]  << ";" <<
+//                  A_min_P[j]  << ";" <<
+//                  A_max_P[j]  << ";" <<
+//                  A_a_P[j]  << ";" <<
+//                  SPL_dB_P_val  << ";" <<
+//                  dBA_P[j]  << ";" <<
+//                  dBB_P[j]  << ";" <<
+//                  dBC_P[j]  << ";" <<
+                  SPL_alpha_val  << ";" <<
+                  SPL_S_val << ";" <<
+                  SPL_P_val  << ";" <<
+                  SPL_dB_val  << ";" <<
+                  SPL_A_val  << ";" <<
+                  SPL_B_val  << ";" <<
+                  SPL_C_val  << ";" <<
+                  SPL_LedB_val  << ";" <<
+//                  slog_SPL_alpha[j]  << ";" <<
+//                  slog_SPL_S[j]  << ";" <<
+//                  slog_SPL_P[j]  << ";" <<
+//                  slog_SPL[j]  << ";" <<
+//                  slog_dBA[j]  << ";" <<
+//                  slog_dBB[j]  << ";" <<
+//                  slog_dBC[j]  << ";" <<
+//                  slog_LedB[j]  << ";" <<
+                  endl;
+}
+else
+{
+        stream << qSetFieldWidth(14)  <<
+                  Frequency[j] << ";" <<
+//                  Sts[j]<< ";" <<
+//                  b_alpha[j]  << ";" <<
+//                  B_min[j] << ";" <<
+//                  B_max[j] << ";" <<
+//                  B_b[j]  << ";" <<
+//                  a_alpha[j] << ";" <<
+//                  A_min_alpha[j]  << ";" <<
+//                  A_max_alpha[j]  << ";" <<
+//                  Alin_a[j]  << ";" <<
+//                  AWeighting[j]  << ";" <<
+//                  BWeighting[j]  << ";" <<
+//                  CWeighting[j]  << ";" <<
+//                  SPL_alpha_min0[j]  << ";" <<
+//                  SPL_alpha_big0[j]  << ";" <<
+//                  dBA_alpha_min0[j]  << ";" <<
+//                  dBA_alpha_big0[j]  << ";" <<
+//                  dBB_alpha_min0[j]  << ";" <<
+//                  dBB_alpha_big0[j]  << ";" <<
+//                  dBC_alpha_min0[j]  << ";" <<
+//                  dBC_alpha_big0[j]  << ";" <<
+//                  St1_bar[j]  << ";" <<
+//                  a_S[j]  << ";" <<
+//                  A_min_S[j]  << ";" <<
+//                  A_max_S[j]  << ";" <<
+//                  A_a_S[j]  << ";" <<
+//                  SPL_dB_S_val  << ";" <<
+//                  dBA_S[j]  << ";" <<
+//                  dBB_S[j]  << ";" <<
+//                  dBC_S[j]  << ";" <<
+//                  Sts_St1_bar[j]  << ";" <<
+//                  Stp_P[j]  << ";" <<
+//                  a_P[j]  << ";" <<
+//                  A_min_P[j]  << ";" <<
+//                  A_max_P[j]  << ";" <<
+//                  A_a_P[j]  << ";" <<
+//                  SPL_dB_P_val  << ";" <<
+//                  dBA_P[j]  << ";" <<
+//                  dBB_P[j]  << ";" <<
+//                  dBC_P[j]  << ";" <<
+                  SPL_alpha_val  << ";" <<
+                  SPL_S_val << ";" <<
+                  SPL_P_val  << ";" <<
+                  SPL_dB_val  << ";" <<
+                  SPL_A_val  << ";" <<
+                  SPL_B_val  << ";" <<
+                  SPL_C_val  << ";" <<
+//                  slog_SPL_alpha[j]  << ";" <<
+//                  slog_SPL_S[j]  << ";" <<
+//                  slog_SPL_P[j]  << ";" <<
+//                  slog_SPL[j]  << ";" <<
+//                  slog_dBA[j]  << ";" <<
+//                  slog_dBB[j]  << ";" <<
+//                  slog_dBC[j]  << ";" <<
+                  endl;
+}
 
 if(j==(w-1)){
         stream << endl;
-         stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;
-        stream << "SPL_S: "  << sp_OASPL_S<< endl;
-        stream << "SPL_P: "  << sp_OASPL_P<< endl;
-        stream << "SPL: "  << sp_OASPL<< endl;
-        stream << "SPL A: "  << sp_dBA<< endl;
-        stream << "SPL B: "  << sp_dBB<< endl;
-        stream << "SPL C: "  << sp_dBC<< endl;
-        stream << "LE: "  << sp_LedB<< endl;
+if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_alpha: "  << "N/A"<< endl;} else {stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;}
+if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_S: "  << "N/A"<< endl;} else {stream << "SPL_S: "  << sp_OASPL_S<< endl;}
+ if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_P: "  << "N/A"<< endl;} else {stream << "SPL_P: "  << sp_OASPL_P<< endl;}
+if (sp_OASPL<=0 & sp_OASPL>=0){stream << "SPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< endl;}
+if (sp_dBA<=0 & sp_dBA>=0){stream << "SPL A: "  << "N/A"<< endl;} else {stream << "SPL A: "  << sp_dBA<< endl;}
+if (sp_dBB<=0 & sp_dBB>=0){stream << "SPL B: "  << "N/A"<< endl;} else {stream << "SPL B: "  << sp_dBB<< endl;}
+if (sp_dBC<=0 & sp_dBC>=0){stream << "SPL C: "  << "N/A"<< endl;} else {stream << "SPL C: "  << sp_dBC<< endl;}
+  if (m_parameter.Lowson){
+if (sp_LedB<=0 & sp_LedB>=0){stream << "LE: "  << "N/A"<< endl;} else {stream << "LE: "  << sp_LedB<< endl;}}
         stream << endl;
 
 if(z>=lend & i>=(number_of_segments-1)){
@@ -1867,100 +1996,14 @@ if(z>=lend & i>=(number_of_segments-1)){
         stream << "SPL A: "  << st_dBA<< endl;
         stream << "SPL B: "  << st_dBB<< endl;
         stream << "SPL C: "  << st_dBC<< endl;
-        stream << "LE: "  << st_LedB<< endl;
+  if (m_parameter.Lowson){
+        stream << "LE: "  << st_LedB<< endl;}
         stream << "***********************************************************"<<endl;
 stream << endl;
 if (observations_x!=""){
-stream << "Error¹:" << observations_x << endl;
-stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
+stream << "Error[1]:" << observations_x << endl;
+stream << "[1]Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
 stream << endl;}}}
-}else{
-                    stream << qSetFieldWidth(14)  <<
-                              Frequency[j]  << ";" <<
-                              Sts[j]<< ";" <<
-                              b_alpha[j]  << ";" <<
-                              B_min[j] << ";" <<
-                              B_max[j] << ";" <<
-                              B_b[j]  << ";" <<
-                              a_alpha[j] << ";" <<
-                              A_min_alpha[j]  << ";" <<
-                              A_max_alpha[j]  << ";" <<
-                              Alin_a[j]  << ";" <<
-                              AWeighting[j]  << ";" <<
-                              BWeighting[j]  << ";" <<
-                              CWeighting[j]  << ";" <<
-                              SPL_alpha_min0[j]  << ";" <<
-                              SPL_alpha_big0[j]  << ";" <<
-                              dBA_alpha_min0[j]  << ";" <<
-                              dBA_alpha_big0[j]  << ";" <<
-                              dBB_alpha_min0[j]  << ";" <<
-                              dBB_alpha_big0[j]  << ";" <<
-                              dBC_alpha_min0[j]  << ";" <<
-                              dBC_alpha_big0[j]  << ";" <<
-                              St1_bar[j]  << ";" <<
-                              a_S[j]  << ";" <<
-                              A_min_S[j]  << ";" <<
-                              A_max_S[j]  << ";" <<
-                              A_a_S[j]  << ";" <<
-                              SPL_dB_S[j]  << ";" <<
-                              dBA_S[j]  << ";" <<
-                              dBB_S[j]  << ";" <<
-                              dBC_S[j]  << ";" <<
-                              Sts_St1_bar[j]  << ";" <<
-                              Stp_P[j]  << ";" <<
-                              a_P[j]  << ";" <<
-                              A_min_P[j]  << ";" <<
-                              A_max_P[j]  << ";" <<
-                              A_a_P[j]  << ";" <<
-                              SPL_dB_P[j]  << ";" <<
-                              dBA_P[j]  << ";" <<
-                              dBB_P[j]  << ";" <<
-                              dBC_P[j]  << ";" <<
-                              SPL_alpha[j]  << ";" <<
-                              SPL_S[j]  << ";" <<
-                              SPL_P[j]  << ";" <<
-                              SPL_dB[j]  << ";" <<
-                              SPL_A[j]  << ";" <<
-                              SPL_B[j]  << ";" <<
-                              SPL_C[j]  << ";" <<
-                              slog_SPL_alpha[j]  << ";" <<
-                              slog_SPL_S[j]  << ";" <<
-                              slog_SPL_P[j]  << ";" <<
-                              slog_SPL[j]  << ";" <<
-                              slog_dBA[j]  << ";" <<
-                              slog_dBB[j]  << ";" <<
-                              slog_dBC[j]  << ";" <<
-               endl;
-
-
-    if(j==(w-1)){
-                    stream << endl;
-                     stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;
-                    stream << "SPL_S: "  << sp_OASPL_S<< endl;
-                    stream << "SPL_P: "  << sp_OASPL_P<< endl;
-                    stream << "SPL: "  << sp_OASPL<< endl;
-                    stream << "SPL A: "  << sp_dBA<< endl;
-                    stream << "SPL B: "  << sp_dBB<< endl;
-                    stream << "SPL C: "  << sp_dBC<< endl;
-                    stream << endl;
-
-    if(z>=lend & i>=(number_of_segments-1)){
-                    stream << "***********************************************************"<<endl;
-                    stream << "Total: "  << endl;
-                    stream << "SPL_alpha: "  << st_OASPL_alpha<< endl;
-                    stream << "SPL_S: "  << st_OASPL_S<< endl;
-                    stream << "SPL_P: "  << st_OASPL_P<< endl;
-                    stream << "SPL: "  << st_OASPL<< endl;
-                    stream << "SPL A: "  << st_dBA<< endl;
-                    stream << "SPL B: "  << st_dBB<< endl;
-                    stream << "SPL C: "  << st_dBC<< endl;
-                    stream << "***********************************************************"<<endl;
-stream << endl;
-if (observations_x!=""){
-stream << "Error¹:" << observations_x << endl;
-stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
-stream << endl;}
-    }}}
 }}
 z=z+ldelta;
         }}
@@ -2043,6 +2086,17 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
         double aux1_le;
         double aux4_le;
         double aux5_le;
+
+        QString SPL_alpha_val("");
+        QString SPL_dB_S_val("");
+        QString SPL_dB_P_val("");
+        QString SPL_S_val("");
+        QString SPL_P_val("");
+        QString SPL_dB_val("");
+        QString SPL_A_val("");
+        QString SPL_B_val("");
+        QString SPL_C_val("");
+        QString SPL_LedB_val("");
 
         //definitions
         double axial_ind_fact[number_of_segments];
@@ -2187,8 +2241,8 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
         double r_R1  =  0.25; double c_R1 = 0.07500;
         double r_R2  =  1.00; double c_R2 = 0.02000;
 
-        bool LE_validation=false;
-        bool BPM_validation=false;
+        bool LE_validation;
+        bool BPM_validation;
 
         for (int i = 0; i < number_of_segments; ++i) {
 
@@ -2391,9 +2445,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-// The model itself was developed and validated for turbulent (tripped) flow up to Re C ≤ 1.5 × 10 6 , M < 0.21 and 19.8 0 AOA, for NACA 0012 airfoil (the airfoil TE noise scaling law employed in the BPM model was derived from acoustic spectra measured in this range, for details, see page 51 of the BPM report).
-    //Sara experiment
-    if((((TopTrip<=0) & (TopTrip>=0)) & ((BotTrip<=0) & (BotTrip>=0))) ||(((Reynolds[i]<=1.5*pow(10,6)) & (Mach[i]<0.21)) & ((alpha[i]<=19.8) & (alpha[i]>=19.8)))) {
+if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
@@ -2572,50 +2624,52 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 //        stream << "Angles less than the switching angle: "  << endl;
         stream << "Tip Speed Ratio: " << str << endl;
         stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
+        stream << "Reynolds: " << Reynolds[i] << endl;
+        stream << "alpha " << alpha[i] << endl;
         stream << endl;
 
 if(m_parameter.Lowson){
     stream << qSetFieldWidth(14)  <<
               "Freq[Hz]"  << ";" <<
-              "Sts"  << ";" <<
-              "b"  << ";" <<
-              "B_min(b)" << ";" <<
-              "B_max(b)" << ";" <<
-              "B(b)"  << ";" <<
-              "a_alpha"  << ";" <<
-              "A_min(a)_alpha" << ";" <<
-              "A_max(a)_alpha" << ";" <<
-              "A'(a)"  << ";" <<
-              "A-Weighting"  << ";" <<
-              "B-Weighting" << ";" <<
-              "C-Weighting"  << ";" <<
-              "SPL_alpha < 0"  << ";" <<
-              "SPL_alpha > 0"  << ";" <<
-              "dB_A_alpha S"  << ";" <<
-              "dB_A_alpha P"  << ";" <<
-              "dB_B_alpha S"  << ";" <<
-              "dB_B_alpha P"  << ";" <<
-              "dB_C_alpha S"  << ";" <<
-              "dB_C_alpha P"  << ";" <<
-              "St1_bar"  << ";" <<
-              "a_S"  << ";" <<
-              "A_min_a_S"  << ";" <<
-              "A_max_a_S"  << ";" <<
-              "A_a_S"  << ";" <<
-              "SPL_dB_S"  << ";" <<
-              "dB_A_S"  << ";" <<
-              "dB_B_S"  << ";" <<
-              "dB_C_S"  << ";" <<
-              "Sts_St1_bar"  << ";" <<
-              "Stp"  << ";" <<
-              "a_P"  << ";" <<
-              "A_min_a_P"  << ";" <<
-              "A_max_a_P"  << ";" <<
-              "A_a_P"  << ";" <<
-              "SPL_P"  << ";" <<
-              "dB_A_P"  << ";" <<
-              "dB_B_P"  << ";" <<
-              "dB_C_P"  << ";" <<
+//              "Sts"  << ";" <<
+//              "b"  << ";" <<
+//              "B_min(b)" << ";" <<
+//              "B_max(b)" << ";" <<
+//              "B(b)"  << ";" <<
+//              "a_alpha"  << ";" <<
+//              "A_min(a)_alpha" << ";" <<
+//              "A_max(a)_alpha" << ";" <<
+//              "A'(a)"  << ";" <<
+//              "A-Weighting"  << ";" <<
+//              "B-Weighting" << ";" <<
+//              "C-Weighting"  << ";" <<
+//              "SPL_alpha < 0"  << ";" <<
+//              "SPL_alpha > 0"  << ";" <<
+//              "dB_A_alpha S"  << ";" <<
+//              "dB_A_alpha P"  << ";" <<
+//              "dB_B_alpha S"  << ";" <<
+//              "dB_B_alpha P"  << ";" <<
+//              "dB_C_alpha S"  << ";" <<
+//              "dB_C_alpha P"  << ";" <<
+//              "St1_bar"  << ";" <<
+//              "a_S"  << ";" <<
+//              "A_min_a_S"  << ";" <<
+//              "A_max_a_S"  << ";" <<
+//              "A_a_S"  << ";" <<
+//              "SPL_dB_S"  << ";" <<
+//              "dB_A_S"  << ";" <<
+//              "dB_B_S"  << ";" <<
+//              "dB_C_S"  << ";" <<
+//              "Sts_St1_bar"  << ";" <<
+//              "Stp"  << ";" <<
+//              "a_P"  << ";" <<
+//              "A_min_a_P"  << ";" <<
+//              "A_max_a_P"  << ";" <<
+//              "A_a_P"  << ";" <<
+//              "SPL_dB_P"  << ";" <<
+//              "dB_A_P"  << ";" <<
+//              "dB_B_P"  << ";" <<
+//              "dB_C_P"  << ";" <<
               "SPL_alpha"  << ";" <<
               "SPL_S"  << ";" <<
               "SPL_P"  << ";" <<
@@ -2624,73 +2678,72 @@ if(m_parameter.Lowson){
               "SPL_dB_B"  << ";" <<
               "SPL_dB_C"  << ";" <<
               "SPL_LE_dB"  << ";" <<
-              "s_log_SPL_alpha"  << ";" <<
-              "s_log_SPL_S"  << ";" <<
-              "s_log_SPL_P"  << ";" <<
-              "s_log_SPL"  << ";" <<
-              "s_log_dBA"  << ";" <<
-              "s_log_dBB"  << ";" <<
-              "s_log_dBC"  << ";" <<
-              "s_log_LE_dB"  << ";" <<
-              endl;
-}else{
-    stream << qSetFieldWidth(14)  <<
-              "Freq[Hz]"  << ";" <<
-              "Sts"  << ";" <<
-              "b"  << ";" <<
-              "B_min(b)" << ";" <<
-              "B_max(b)" << ";" <<
-              "B(b)"  << ";" <<
-              "a_alpha"  << ";" <<
-              "A_min(a)_alpha" << ";" <<
-              "A_max(a)_alpha" << ";" <<
-              "A'(a)"  << ";" <<
-              "A-Weighting"  << ";" <<
-              "B-Weighting" << ";" <<
-              "C-Weighting"  << ";" <<
-              "SPL_alpha < 0"  << ";" <<
-              "SPL_alpha > 0"  << ";" <<
-              "dB_A_alpha S"  << ";" <<
-              "dB_A_alpha P"  << ";" <<
-              "dB_B_alpha S"  << ";" <<
-              "dB_B_alpha P"  << ";" <<
-              "dB_C_alpha S"  << ";" <<
-              "dB_C_alpha P"  << ";" <<
-              "St1_bar"  << ";" <<
-              "a_S"  << ";" <<
-              "A_min_a_S"  << ";" <<
-              "A_max_a_S"  << ";" <<
-              "A_a_S"  << ";" <<
-              "SPL_dB_S"  << ";" <<
-              "dB_A_S"  << ";" <<
-              "dB_B_S"  << ";" <<
-              "dB_C_S"  << ";" <<
-              "Sts_St1_bar"  << ";" <<
-              "Stp"  << ";" <<
-              "a_P"  << ";" <<
-              "A_min_a_P"  << ";" <<
-              "A_max_a_P"  << ";" <<
-              "A_a_P"  << ";" <<
-              "SPL_P"  << ";" <<
-              "dB_A_P"  << ";" <<
-              "dB_B_P"  << ";" <<
-              "dB_C_P"  << ";" <<
-              "SPL_alpha"  << ";" <<
-              "SPL_S"  << ";" <<
-              "SPL_P"  << ";" <<
-              "SPL_dB"  << ";" <<
-              "SPL_dB_A"  << ";" <<
-              "SPL_dB_B"  << ";" <<
-              "SPL_dB_C"  << ";" <<
-              "s_log_SPL_alpha"  << ";" <<
-              "s_log_SPL_S"  << ";" <<
-              "s_log_SPL_P"  << ";" <<
-              "s_log_SPL"  << ";" <<
-              "s_log_dBA"  << ";" <<
-              "s_log_dBB"  << ";" <<
-              "s_log_dBC"  << ";" <<
-              endl;
-}
+//              "s_log_SPL_alpha"  << ";" <<
+//              "s_log_SPL_S"  << ";" <<
+//              "s_log_SPL_P"  << ";" <<
+//              "s_log_SPL"  << ";" <<
+//              "s_log_dBA"  << ";" <<
+//              "s_log_dBB"  << ";" <<
+//              "s_log_dBC"  << ";" <<
+//              "s_log_LE_dB"  << ";" <<
+              endl;}
+else{
+        stream << qSetFieldWidth(14)  <<
+                  "Freq[Hz]"  << ";" <<
+//                  "Sts"  << ";" <<
+//                  "b"  << ";" <<
+//                  "B_min(b)" << ";" <<
+//                  "B_max(b)" << ";" <<
+//                  "B(b)"  << ";" <<
+//                  "a_alpha"  << ";" <<
+//                  "A_min(a)_alpha" << ";" <<
+//                  "A_max(a)_alpha" << ";" <<
+//                  "A'(a)"  << ";" <<
+//                  "A-Weighting"  << ";" <<
+//                  "B-Weighting" << ";" <<
+//                  "C-Weighting"  << ";" <<
+//                  "SPL_alpha < 0"  << ";" <<
+//                  "SPL_alpha > 0"  << ";" <<
+//                  "dB_A_alpha S"  << ";" <<
+//                  "dB_A_alpha P"  << ";" <<
+//                  "dB_B_alpha S"  << ";" <<
+//                  "dB_B_alpha P"  << ";" <<
+//                  "dB_C_alpha S"  << ";" <<
+//                  "dB_C_alpha P"  << ";" <<
+//                  "St1_bar"  << ";" <<
+//                  "a_S"  << ";" <<
+//                  "A_min_a_S"  << ";" <<
+//                  "A_max_a_S"  << ";" <<
+//                  "A_a_S"  << ";" <<
+                  "SPL_dB_S"  << ";" <<
+//                  "dB_A_S"  << ";" <<
+//                  "dB_B_S"  << ";" <<
+//                  "dB_C_S"  << ";" <<
+//                  "Sts_St1_bar"  << ";" <<
+//                  "Stp"  << ";" <<
+//                  "a_P"  << ";" <<
+//                  "A_min_a_P"  << ";" <<
+//                  "A_max_a_P"  << ";" <<
+//                  "A_a_P"  << ";" <<
+//                  "SPL_dB_P"  << ";" <<
+//                  "dB_A_P"  << ";" <<
+//                  "dB_B_P"  << ";" <<
+//                  "dB_C_P"  << ";" <<
+                  "SPL_alpha"  << ";" <<
+                  "SPL_S"  << ";" <<
+                  "SPL_P"  << ";" <<
+                  "SPL_dB"  << ";" <<
+                  "SPL_dB_A"  << ";" <<
+                  "SPL_dB_B"  << ";" <<
+                  "SPL_dB_C"  << ";" <<
+//                  "s_log_SPL_alpha"  << ";" <<
+//                  "s_log_SPL_S"  << ";" <<
+//                  "s_log_SPL_P"  << ";" <<
+//                  "s_log_SPL"  << ";" <<
+//                  "s_log_dBA"  << ";" <<
+//                  "s_log_dBB"  << ";" <<
+//                  "s_log_dBC"  << ";" <<
+                  endl;}
 
     int w=30;
 
@@ -2896,12 +2949,32 @@ aux1_le=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
 aux4_le=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le=10.*log10(aux0_le*aux4_le);
 
+//Validation:
+
 //Lowson validation:
-if (((m_parameter.Lowson & Mach[i]<=0.18) & Reynolds[i]<=(6.*pow(10,5)))){
+if ((((m_parameter.Lowson & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
 LE_validation=true;
 }
-else{SPL_LedB[j]=-999999999999.;
+else{
+SPL_LedB[j]=-999999999999.;
+LE_validation=false;
+}
+
+//BPM validation:
+//p 17 C_Project_Log_Text_15_jan_16
+if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
+BPM_validation=true;
+}
+else{
+SPL_alpha[j]=-999999999999.;
+SPL_S[j]=-999999999999.;
+SPL_P[j]=-999999999999.;
+SPL_dB[j]=-999999999999.;
+SPL_A[j]=-999999999999.;
+SPL_B[j]=-999999999999.;
+SPL_C[j]=-999999999999.;
+BPM_validation=false;
 }
 
     slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
@@ -2995,77 +3068,179 @@ else{SPL_LedB[j]=-999999999999.;
     if (Reynolds[i] >1.5*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
     observations_x.append('4');}
 
-    if (m_parameter.Lowson){
+    SPL_LedB_val.clear();
+    SPL_alpha_val.clear();
+    SPL_dB_S_val.clear();
+    SPL_dB_P_val.clear();
+    SPL_S_val.clear();
+    SPL_P_val.clear();
+    SPL_dB_val.clear();
+    SPL_A_val.clear();
+    SPL_B_val.clear();
+    SPL_C_val.clear();
+
+        if(BPM_validation){
+    SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 2));
+    SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 2));
+    SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 2));
+    SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 2));
+    SPL_A_val.append(QString::number(SPL_A[j], 'f', 2));
+    SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
+    SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
+
+    if(SPL_S[j]==-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
+    if(SPL_P[j]==-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
+       }
+        else{
+    SPL_alpha_val.append("N/A");
+    SPL_dB_S_val.append("N/A");
+    SPL_dB_P_val.append("N/A");
+    SPL_S_val.append("N/A");
+    SPL_P_val.append("N/A");
+    SPL_dB_val.append("N/A");
+    SPL_A_val.append("N/A");
+    SPL_B_val.append("N/A");
+    SPL_C_val.append("N/A");
+        }
+
+    if (LE_validation){
+    SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 2));
+    }
+    else{
+    SPL_LedB_val.append("N/A");
+    }
+
+if (m_parameter.Lowson){
         stream << qSetFieldWidth(14)  <<
                   Frequency[j] << ";" <<
-                  Sts[j]<< ";" <<
-                  b_alpha[j]  << ";" <<
-                  B_min[j] << ";" <<
-                  B_max[j] << ";" <<
-                  B_b[j]  << ";" <<
-                  a_alpha[j] << ";" <<
-                  A_min_alpha[j]  << ";" <<
-                  A_max_alpha[j]  << ";" <<
-                  Alin_a[j]  << ";" <<
-                  AWeighting[j]  << ";" <<
-                  BWeighting[j]  << ";" <<
-                  CWeighting[j]  << ";" <<
-                  SPL_alpha_min0[j]  << ";" <<
-                  SPL_alpha_big0[j]  << ";" <<
-                  dBA_alpha_min0[j]  << ";" <<
-                  dBA_alpha_big0[j]  << ";" <<
-                  dBB_alpha_min0[j]  << ";" <<
-                  dBB_alpha_big0[j]  << ";" <<
-                  dBC_alpha_min0[j]  << ";" <<
-                  dBC_alpha_big0[j]  << ";" <<
-                  St1_bar[j]  << ";" <<
-                  a_S[j]  << ";" <<
-                  A_min_S[j]  << ";" <<
-                  A_max_S[j]  << ";" <<
-                  A_a_S[j]  << ";" <<
-                  SPL_dB_S[j]  << ";" <<
-                  dBA_S[j]  << ";" <<
-                  dBB_S[j]  << ";" <<
-                  dBC_S[j]  << ";" <<
-                  Sts_St1_bar[j]  << ";" <<
-                  Stp_P[j]  << ";" <<
-                  a_P[j]  << ";" <<
-                  A_min_P[j]  << ";" <<
-                  A_max_P[j]  << ";" <<
-                  A_a_P[j]  << ";" <<
-                  SPL_dB_P[j]  << ";" <<
-                  dBA_P[j]  << ";" <<
-                  dBB_P[j]  << ";" <<
-                  dBC_P[j]  << ";" <<
-                  SPL_alpha[j]  << ";" <<
-                  SPL_S[j]  << ";" <<
-                  SPL_P[j]  << ";" <<
-                  SPL_dB[j]  << ";" <<
-                  SPL_A[j]  << ";" <<
-                  SPL_B[j]  << ";" <<
-                  SPL_C[j]  << ";" <<
-                  SPL_LedB[j]  << ";" <<
-                  slog_SPL_alpha[j]  << ";" <<
-                  slog_SPL_S[j]  << ";" <<
-                  slog_SPL_P[j]  << ";" <<
-                  slog_SPL[j]  << ";" <<
-                  slog_dBA[j]  << ";" <<
-                  slog_dBB[j]  << ";" <<
-                  slog_dBC[j]  << ";" <<
-                  slog_LedB[j]  << ";" <<
-   endl;
-
+//                  Sts[j]<< ";" <<
+//                  b_alpha[j]  << ";" <<
+//                  B_min[j] << ";" <<
+//                  B_max[j] << ";" <<
+//                  B_b[j]  << ";" <<
+//                  a_alpha[j] << ";" <<
+//                  A_min_alpha[j]  << ";" <<
+//                  A_max_alpha[j]  << ";" <<
+//                  Alin_a[j]  << ";" <<
+//                  AWeighting[j]  << ";" <<
+//                  BWeighting[j]  << ";" <<
+//                  CWeighting[j]  << ";" <<
+//                  SPL_alpha_min0[j]  << ";" <<
+//                  SPL_alpha_big0[j]  << ";" <<
+//                  dBA_alpha_min0[j]  << ";" <<
+//                  dBA_alpha_big0[j]  << ";" <<
+//                  dBB_alpha_min0[j]  << ";" <<
+//                  dBB_alpha_big0[j]  << ";" <<
+//                  dBC_alpha_min0[j]  << ";" <<
+//                  dBC_alpha_big0[j]  << ";" <<
+//                  St1_bar[j]  << ";" <<
+//                  a_S[j]  << ";" <<
+//                  A_min_S[j]  << ";" <<
+//                  A_max_S[j]  << ";" <<
+//                  A_a_S[j]  << ";" <<
+//                  SPL_dB_S_val  << ";" <<
+//                  dBA_S[j]  << ";" <<
+//                  dBB_S[j]  << ";" <<
+//                  dBC_S[j]  << ";" <<
+//                  Sts_St1_bar[j]  << ";" <<
+//                  Stp_P[j]  << ";" <<
+//                  a_P[j]  << ";" <<
+//                  A_min_P[j]  << ";" <<
+//                  A_max_P[j]  << ";" <<
+//                  A_a_P[j]  << ";" <<
+//                  SPL_dB_P_val  << ";" <<
+//                  dBA_P[j]  << ";" <<
+//                  dBB_P[j]  << ";" <<
+//                  dBC_P[j]  << ";" <<
+                  SPL_alpha_val  << ";" <<
+                  SPL_S_val << ";" <<
+                  SPL_P_val  << ";" <<
+                  SPL_dB_val  << ";" <<
+                  SPL_A_val  << ";" <<
+                  SPL_B_val  << ";" <<
+                  SPL_C_val  << ";" <<
+                  SPL_LedB_val  << ";" <<
+//                  slog_SPL_alpha[j]  << ";" <<
+//                  slog_SPL_S[j]  << ";" <<
+//                  slog_SPL_P[j]  << ";" <<
+//                  slog_SPL[j]  << ";" <<
+//                  slog_dBA[j]  << ";" <<
+//                  slog_dBB[j]  << ";" <<
+//                  slog_dBC[j]  << ";" <<
+//                  slog_LedB[j]  << ";" <<
+                  endl;
+}
+else
+{
+        stream << qSetFieldWidth(14)  <<
+                  Frequency[j] << ";" <<
+//                  Sts[j]<< ";" <<
+//                  b_alpha[j]  << ";" <<
+//                  B_min[j] << ";" <<
+//                  B_max[j] << ";" <<
+//                  B_b[j]  << ";" <<
+//                  a_alpha[j] << ";" <<
+//                  A_min_alpha[j]  << ";" <<
+//                  A_max_alpha[j]  << ";" <<
+//                  Alin_a[j]  << ";" <<
+//                  AWeighting[j]  << ";" <<
+//                  BWeighting[j]  << ";" <<
+//                  CWeighting[j]  << ";" <<
+//                  SPL_alpha_min0[j]  << ";" <<
+//                  SPL_alpha_big0[j]  << ";" <<
+//                  dBA_alpha_min0[j]  << ";" <<
+//                  dBA_alpha_big0[j]  << ";" <<
+//                  dBB_alpha_min0[j]  << ";" <<
+//                  dBB_alpha_big0[j]  << ";" <<
+//                  dBC_alpha_min0[j]  << ";" <<
+//                  dBC_alpha_big0[j]  << ";" <<
+//                  St1_bar[j]  << ";" <<
+//                  a_S[j]  << ";" <<
+//                  A_min_S[j]  << ";" <<
+//                  A_max_S[j]  << ";" <<
+//                  A_a_S[j]  << ";" <<
+//                  SPL_dB_S_val  << ";" <<
+//                  dBA_S[j]  << ";" <<
+//                  dBB_S[j]  << ";" <<
+//                  dBC_S[j]  << ";" <<
+//                  Sts_St1_bar[j]  << ";" <<
+//                  Stp_P[j]  << ";" <<
+//                  a_P[j]  << ";" <<
+//                  A_min_P[j]  << ";" <<
+//                  A_max_P[j]  << ";" <<
+//                  A_a_P[j]  << ";" <<
+//                  SPL_dB_P_val  << ";" <<
+//                  dBA_P[j]  << ";" <<
+//                  dBB_P[j]  << ";" <<
+//                  dBC_P[j]  << ";" <<
+                  SPL_alpha_val  << ";" <<
+                  SPL_S_val << ";" <<
+                  SPL_P_val  << ";" <<
+                  SPL_dB_val  << ";" <<
+                  SPL_A_val  << ";" <<
+                  SPL_B_val  << ";" <<
+                  SPL_C_val  << ";" <<
+//                  slog_SPL_alpha[j]  << ";" <<
+//                  slog_SPL_S[j]  << ";" <<
+//                  slog_SPL_P[j]  << ";" <<
+//                  slog_SPL[j]  << ";" <<
+//                  slog_dBA[j]  << ";" <<
+//                  slog_dBB[j]  << ";" <<
+//                  slog_dBC[j]  << ";" <<
+                  endl;
+}
 
 if(j==(w-1)){
         stream << endl;
-         stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;
-        stream << "SPL_S: "  << sp_OASPL_S<< endl;
-        stream << "SPL_P: "  << sp_OASPL_P<< endl;
-        stream << "SPL: "  << sp_OASPL<< endl;
-        stream << "SPL A: "  << sp_dBA<< endl;
-        stream << "SPL B: "  << sp_dBB<< endl;
-        stream << "SPL C: "  << sp_dBC<< endl;
-        stream << "LE: "  << sp_LedB<< endl;
+if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_alpha: "  << "N/A"<< endl;} else {stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;}
+if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_S: "  << "N/A"<< endl;} else {stream << "SPL_S: "  << sp_OASPL_S<< endl;}
+ if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_P: "  << "N/A"<< endl;} else {stream << "SPL_P: "  << sp_OASPL_P<< endl;}
+if (sp_OASPL<=0 & sp_OASPL>=0){stream << "SPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< endl;}
+if (sp_dBA<=0 & sp_dBA>=0){stream << "SPL A: "  << "N/A"<< endl;} else {stream << "SPL A: "  << sp_dBA<< endl;}
+if (sp_dBB<=0 & sp_dBB>=0){stream << "SPL B: "  << "N/A"<< endl;} else {stream << "SPL B: "  << sp_dBB<< endl;}
+if (sp_dBC<=0 & sp_dBC>=0){stream << "SPL C: "  << "N/A"<< endl;} else {stream << "SPL C: "  << sp_dBC<< endl;}
+  if (m_parameter.Lowson){
+if (sp_LedB<=0 & sp_LedB>=0){stream << "LE: "  << "N/A"<< endl;} else {stream << "LE: "  << sp_LedB<< endl;}}
         stream << endl;
 
 if(z>=lend & i>=(number_of_segments-1)){
@@ -3078,100 +3253,14 @@ if(z>=lend & i>=(number_of_segments-1)){
         stream << "SPL A: "  << st_dBA<< endl;
         stream << "SPL B: "  << st_dBB<< endl;
         stream << "SPL C: "  << st_dBC<< endl;
-        stream << "LE: "  << st_LedB<< endl;
+  if (m_parameter.Lowson){
+        stream << "LE: "  << st_LedB<< endl;}
         stream << "***********************************************************"<<endl;
 stream << endl;
 if (observations_x!=""){
-stream << "Error¹:" << observations_x << endl;
-stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
+stream << "Error[1]:" << observations_x << endl;
+stream << "[1]Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
 stream << endl;}}}
-}else{
-                    stream << qSetFieldWidth(14)  <<
-                              Frequency[j]  << ";" <<
-                              Sts[j]<< ";" <<
-                              b_alpha[j]  << ";" <<
-                              B_min[j] << ";" <<
-                              B_max[j] << ";" <<
-                              B_b[j]  << ";" <<
-                              a_alpha[j] << ";" <<
-                              A_min_alpha[j]  << ";" <<
-                              A_max_alpha[j]  << ";" <<
-                              Alin_a[j]  << ";" <<
-                              AWeighting[j]  << ";" <<
-                              BWeighting[j]  << ";" <<
-                              CWeighting[j]  << ";" <<
-                              SPL_alpha_min0[j]  << ";" <<
-                              SPL_alpha_big0[j]  << ";" <<
-                              dBA_alpha_min0[j]  << ";" <<
-                              dBA_alpha_big0[j]  << ";" <<
-                              dBB_alpha_min0[j]  << ";" <<
-                              dBB_alpha_big0[j]  << ";" <<
-                              dBC_alpha_min0[j]  << ";" <<
-                              dBC_alpha_big0[j]  << ";" <<
-                              St1_bar[j]  << ";" <<
-                              a_S[j]  << ";" <<
-                              A_min_S[j]  << ";" <<
-                              A_max_S[j]  << ";" <<
-                              A_a_S[j]  << ";" <<
-                              SPL_dB_S[j]  << ";" <<
-                              dBA_S[j]  << ";" <<
-                              dBB_S[j]  << ";" <<
-                              dBC_S[j]  << ";" <<
-                              Sts_St1_bar[j]  << ";" <<
-                              Stp_P[j]  << ";" <<
-                              a_P[j]  << ";" <<
-                              A_min_P[j]  << ";" <<
-                              A_max_P[j]  << ";" <<
-                              A_a_P[j]  << ";" <<
-                              SPL_dB_P[j]  << ";" <<
-                              dBA_P[j]  << ";" <<
-                              dBB_P[j]  << ";" <<
-                              dBC_P[j]  << ";" <<
-                              SPL_alpha[j]  << ";" <<
-                              SPL_S[j]  << ";" <<
-                              SPL_P[j]  << ";" <<
-                              SPL_dB[j]  << ";" <<
-                              SPL_A[j]  << ";" <<
-                              SPL_B[j]  << ";" <<
-                              SPL_C[j]  << ";" <<
-                              slog_SPL_alpha[j]  << ";" <<
-                              slog_SPL_S[j]  << ";" <<
-                              slog_SPL_P[j]  << ";" <<
-                              slog_SPL[j]  << ";" <<
-                              slog_dBA[j]  << ";" <<
-                              slog_dBB[j]  << ";" <<
-                              slog_dBC[j]  << ";" <<
-               endl;
-
-
-    if(j==(w-1)){
-                    stream << endl;
-                     stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;
-                    stream << "SPL_S: "  << sp_OASPL_S<< endl;
-                    stream << "SPL_P: "  << sp_OASPL_P<< endl;
-                    stream << "SPL: "  << sp_OASPL<< endl;
-                    stream << "SPL A: "  << sp_dBA<< endl;
-                    stream << "SPL B: "  << sp_dBB<< endl;
-                    stream << "SPL C: "  << sp_dBC<< endl;
-                    stream << endl;
-
-    if(z>=lend & i>=(number_of_segments-1)){
-                    stream << "***********************************************************"<<endl;
-                    stream << "Total: "  << endl;
-                    stream << "SPL_alpha: "  << st_OASPL_alpha<< endl;
-                    stream << "SPL_S: "  << st_OASPL_S<< endl;
-                    stream << "SPL_P: "  << st_OASPL_P<< endl;
-                    stream << "SPL: "  << st_OASPL<< endl;
-                    stream << "SPL A: "  << st_dBA<< endl;
-                    stream << "SPL B: "  << st_dBB<< endl;
-                    stream << "SPL C: "  << st_dBC<< endl;
-                    stream << "***********************************************************"<<endl;
-stream << endl;
-if (observations_x!=""){
-stream << "Error¹:" << observations_x << endl;
-stream << "¹Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
-stream << endl;}
-    }}}
 }}}
 z=z+ldelta;
         }}

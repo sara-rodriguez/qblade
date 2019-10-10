@@ -152,6 +152,7 @@ private:
     double m_u_wind_speed;
     double m_TSRtd;
     double m_dstar_type;
+    double m_dstar_user;
     double m_phi_type;
     double x;
     double m_rot_speed_calc;
