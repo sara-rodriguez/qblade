@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QLabel>
 #include <QDoubleSpinBox>//Sara
+#include <QComboBox>//Sara
 #include <QRadioButton>//Sara
 
 #include "Globals.h"

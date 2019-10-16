@@ -19,6 +19,7 @@ class ParameterViewer;
 class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, public ParameterObject<Parameter::NoiseSimulation>
 {
 public:
+
 	static NoiseSimulation* newBySerialize ();
 	NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
 	
@@ -45,14 +46,12 @@ public:
 
     //Sara
     QVector<double> listtsr;
-
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
     double m_TSR_calc;
     double m_rot_speed_check;
     double m_u_wind_speed_check;
     double m_TSR_check;
-
     //Sara
 	
 private:
@@ -64,6 +63,9 @@ private:
 	NoiseCalculation m_calculation;
 
     //Sara
+    double obs_x_pos;
+    double obs_y_pos;
+    double obs_z_pos;
     double m_DStarFinalS;
     double m_DStarFinalP;
     double originalMach;
@@ -72,12 +74,9 @@ private:
     double m_rot_speed;
     double m_u_wind_speed;
     double m_TSR;
-    double m_dstar_type;
     double m_dstar_user;
-    double m_phi_type;
-    double obs_x_pos;
-    double obs_y_pos;
-    double obs_z_pos;
+    int m_dstar_type;
+    int m_phi_type;
 
     QList <double> m_pos;
     QList <double> m_c_local;       //local chord

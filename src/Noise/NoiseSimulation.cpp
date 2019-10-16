@@ -136,8 +136,8 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
 
     stream << "Noise prediction file export" << endl;
     stream << endl;
-    if(m_parameter.VonKarman){stream << "leading edge model: Von Kármán" <<endl;}
-    if(m_parameter.RapidDistortion){stream << "leading edge model: Rapid Distortion" <<endl;}//era m_calculation.m_
+    if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Kármán" <<endl;}
+    if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}//era m_calculation.m_
 //    stream << "constante D: " << m_calculation.d_const << endl;
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
     for (int i = 0; i < noiseOpPoints.size(); ++i) {
@@ -152,7 +152,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
         stream << "SPL_s: " << m_calculation.SPLSLOG()[i] << "" << endl;
         stream << "SPL_p: " << m_calculation.SPLPLOG()[i] << "" << endl;
         stream << endl;
-               if(m_parameter.Lowson){
+               if(m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" <<
                   "SPL (dB)" <<
@@ -178,7 +178,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
 
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
- if(m_parameter.Lowson){
+ if(m_parameter.Lowson_type!=0){
             stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] <<
                       m_calculation.SPLdB()[i][j] <<
                       m_calculation.SPLadB()[i][j] <<
@@ -614,12 +614,12 @@ double EddyMach_perc=EddyMach;
 EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
-if ((m_parameter.dstar_type<=0) & (m_parameter.dstar_type>=0)){
+if (m_parameter.dstar_type==0){
     D_starred_S[i]=D_starred_N_S[i];
     D_starred_P[i]=D_starred_N_P[i];
 }
 
-else if ((m_parameter.dstar_type<=1) & (m_parameter.dstar_type>=1)){
+else if (m_parameter.dstar_type==1){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
     double TopTrip=pFoilPolarDlg->m_XTopTr;
@@ -631,10 +631,16 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     D_starred_P[i]=D_starred_HT_P[i];
 }
 else {
-//heavy tripping
-    D_starred_S[i]=DStarXFoilS[i];
-    D_starred_P[i]=DStarXFoilP[i];
-}}
+        //heavy tripping
+            D_starred_S[i]=DStarXFoilS[i];
+            D_starred_P[i]=DStarXFoilP[i];
+        }}
+        else if (m_parameter.dstar_type==2){
+    //user
+    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+    D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
+    D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
+        }
 
 double B=0;
 double XB=0;
@@ -642,7 +648,7 @@ double YB=0;
 double ZB=0;
 
 //phi type, fixed 90º or free
-if ((m_parameter.phi_type<=0) & (m_parameter.phi_type>=0)){
+if (m_parameter.phi_type==0){
     //by the quasi-3D spreadsheet
     ri[i]=bdata->m_pos.value(i);
     ri_1[i]=bdata->m_pos.value(i+1);
@@ -655,7 +661,7 @@ if ((m_parameter.phi_type<=0) & (m_parameter.phi_type>=0)){
     theta[i]=90;
     dist_obs[i]=ri_1[i];
 }
-else if ((m_parameter.phi_type<=1) & (m_parameter.phi_type>=1)){
+else if (m_parameter.phi_type==1){
     //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
     //    Input X e , Y e , Z e
     //    Attribute their respective values to X B , Y B , Z B
@@ -1179,12 +1185,12 @@ double EddyMach_perc=EddyMach;
 EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
-if ((m_parameter.dstar_type<=0) & (m_parameter.dstar_type>=0)){
+if (m_parameter.dstar_type==0){
     D_starred_S[i]=D_starred_N_S[i];
     D_starred_P[i]=D_starred_N_P[i];
 }
 
-else if ((m_parameter.dstar_type<=1) & (m_parameter.dstar_type>=1)){
+else if (m_parameter.dstar_type==1){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
     double TopTrip=pFoilPolarDlg->m_XTopTr;
@@ -1196,10 +1202,16 @@ if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
     D_starred_P[i]=D_starred_HT_P[i];
 }
 else {
-//heavy tripping
-    D_starred_S[i]=DStarXFoilS[i];
-    D_starred_P[i]=DStarXFoilP[i];
-}}
+    //heavy tripping
+        D_starred_S[i]=DStarXFoilS[i];
+        D_starred_P[i]=DStarXFoilP[i];
+    }}
+    else if (m_parameter.dstar_type==2){
+    //user
+    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+    D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
+    D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
+    }
 
 double B=0;
 double XB=0;
@@ -1207,7 +1219,7 @@ double YB=0;
 double ZB=0;
 
 //phi type, fixed 90º or free
-if ((m_parameter.phi_type<=0) & (m_parameter.phi_type>=0)){
+if (m_parameter.phi_type==0){
     //by the quasi-3D spreadsheet
     ri[i]=bdata->m_pos.value(i);
     ri_1[i]=bdata->m_pos.value(i+1);
@@ -1220,7 +1232,7 @@ if ((m_parameter.phi_type<=0) & (m_parameter.phi_type>=0)){
     theta[i]=90;
     dist_obs[i]=ri_1[i];
 }
-else if ((m_parameter.phi_type<=1) & (m_parameter.phi_type>=1)){
+else if (m_parameter.phi_type==1){
     //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
     //    Input X e , Y e , Z e
     //    Attribute their respective values to X B , Y B , Z B
@@ -1370,7 +1382,7 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
         stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
         stream << endl;
 
-if(m_parameter.Lowson){
+if(m_parameter.Lowson_type!=0){
     stream << qSetFieldWidth(14)  <<
               "Freq[Hz]"  << ";" <<
 //              "Sts"  << ";" <<
@@ -1457,7 +1469,7 @@ else{
 //                  "A_min_a_S"  << ";" <<
 //                  "A_max_a_S"  << ";" <<
 //                  "A_a_S"  << ";" <<
-                  "SPL_dB_S"  << ";" <<
+//                  "SPL_dB_S"  << ";" <<
 //                  "dB_A_S"  << ";" <<
 //                  "dB_B_S"  << ";" <<
 //                  "dB_C_S"  << ";" <<
@@ -1673,11 +1685,11 @@ else{
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
 
-        if(m_parameter.RapidDistortion==true & m_parameter.VonKarman==false){
+        if(m_parameter.Lowson_type==2){
             c_const_le = c_const_rd_le;
             d_const_le = d_const_rd_le;
          }
-        else if(m_parameter.VonKarman==true & m_parameter.RapidDistortion==false){
+        else if(m_parameter.Lowson_type==1){
             c_const_le = c_const_vk_le;
             d_const_le = d_const_vk_le;
          }
@@ -1694,7 +1706,7 @@ aux5_le=10.*log10(aux0_le*aux4_le);
 //Validation:
 
 //Lowson validation:
-if ((((m_parameter.Lowson & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+if ((((m_parameter.Lowson_type!=0 & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
 LE_validation=true;
 }
@@ -1853,7 +1865,7 @@ else{
 SPL_LedB_val.append("N/A");
 }
 
-if (m_parameter.Lowson){
+if (m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14)  <<
                   Frequency[j] << ";" <<
 //                  Sts[j]<< ";" <<
@@ -1982,7 +1994,7 @@ if (sp_OASPL<=0 & sp_OASPL>=0){stream << "SPL: "  << "N/A"<< endl;} else {stream
 if (sp_dBA<=0 & sp_dBA>=0){stream << "SPL A: "  << "N/A"<< endl;} else {stream << "SPL A: "  << sp_dBA<< endl;}
 if (sp_dBB<=0 & sp_dBB>=0){stream << "SPL B: "  << "N/A"<< endl;} else {stream << "SPL B: "  << sp_dBB<< endl;}
 if (sp_dBC<=0 & sp_dBC>=0){stream << "SPL C: "  << "N/A"<< endl;} else {stream << "SPL C: "  << sp_dBC<< endl;}
-  if (m_parameter.Lowson){
+  if (m_parameter.Lowson_type!=0){
 if (sp_LedB<=0 & sp_LedB>=0){stream << "LE: "  << "N/A"<< endl;} else {stream << "LE: "  << sp_LedB<< endl;}}
         stream << endl;
 
@@ -1996,7 +2008,7 @@ if(z>=lend & i>=(number_of_segments-1)){
         stream << "SPL A: "  << st_dBA<< endl;
         stream << "SPL B: "  << st_dBB<< endl;
         stream << "SPL C: "  << st_dBC<< endl;
-  if (m_parameter.Lowson){
+  if (m_parameter.Lowson_type!=0){
         stream << "LE: "  << st_LedB<< endl;}
         stream << "***********************************************************"<<endl;
 stream << endl;
@@ -2032,6 +2044,8 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
 
         stream << "Quasi 3D Noise Log" << endl;
         stream << endl;
+
+NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_pSimuWidget;
 
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
@@ -2434,12 +2448,12 @@ double EddyMach_perc=EddyMach;
 EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
-if ((m_parameter.dstar_type<=0) & (m_parameter.dstar_type>=0)){
+if (m_parameter.dstar_type==0){
     D_starred_S[i]=D_starred_N_S[i];
     D_starred_P[i]=D_starred_N_P[i];
 }
 
-else if ((m_parameter.dstar_type<=1) & (m_parameter.dstar_type>=1)){
+else if (m_parameter.dstar_type==1){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
     double TopTrip=pFoilPolarDlg->m_XTopTr;
@@ -2455,6 +2469,12 @@ else {
     D_starred_S[i]=DStarXFoilS[i];
     D_starred_P[i]=DStarXFoilP[i];
 }}
+else if (m_parameter.dstar_type==2){
+//user
+    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+    D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
+    D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
+}
 
 double B=0;
 double XB=0;
@@ -2462,7 +2482,7 @@ double YB=0;
 double ZB=0;
 
 //phi type, fixed 90º or free
-if ((m_parameter.phi_type<=0) & (m_parameter.phi_type>=0)){
+if (m_parameter.phi_type==0){
     //by the quasi-3D spreadsheet
     ri[i]=bdata->m_pos.value(i);
     ri_1[i]=bdata->m_pos.value(i+1);
@@ -2475,7 +2495,7 @@ if ((m_parameter.phi_type<=0) & (m_parameter.phi_type>=0)){
     theta[i]=90;
     dist_obs[i]=ri_1[i];
 }
-else if ((m_parameter.phi_type<=1) & (m_parameter.phi_type>=1)){
+else if (m_parameter.phi_type==1){
     //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
     //    Input X e , Y e , Z e
     //    Attribute their respective values to X B , Y B , Z B
@@ -2628,7 +2648,7 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
         stream << "alpha " << alpha[i] << endl;
         stream << endl;
 
-if(m_parameter.Lowson){
+if(m_parameter.Lowson_type!=0){
     stream << qSetFieldWidth(14)  <<
               "Freq[Hz]"  << ";" <<
 //              "Sts"  << ";" <<
@@ -2715,7 +2735,7 @@ else{
 //                  "A_min_a_S"  << ";" <<
 //                  "A_max_a_S"  << ";" <<
 //                  "A_a_S"  << ";" <<
-                  "SPL_dB_S"  << ";" <<
+//                  "SPL_dB_S"  << ";" <<
 //                  "dB_A_S"  << ";" <<
 //                  "dB_B_S"  << ";" <<
 //                  "dB_C_S"  << ";" <<
@@ -2931,11 +2951,11 @@ else{
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
 
-        if(m_parameter.RapidDistortion==true & m_parameter.VonKarman==false){
-            c_const_le = c_const_rd_le;
-            d_const_le = d_const_rd_le;
-         }
-        else if(m_parameter.VonKarman==true & m_parameter.RapidDistortion==false){
+    if(m_parameter.Lowson_type==2){
+        c_const_le = c_const_rd_le;
+        d_const_le = d_const_rd_le;
+     }
+    else if(m_parameter.Lowson_type==1){
             c_const_le = c_const_vk_le;
             d_const_le = d_const_vk_le;
          }
@@ -2952,7 +2972,7 @@ aux5_le=10.*log10(aux0_le*aux4_le);
 //Validation:
 
 //Lowson validation:
-if ((((m_parameter.Lowson & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
 LE_validation=true;
 }
@@ -3110,7 +3130,7 @@ BPM_validation=false;
     SPL_LedB_val.append("N/A");
     }
 
-if (m_parameter.Lowson){
+if (m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14)  <<
                   Frequency[j] << ";" <<
 //                  Sts[j]<< ";" <<
@@ -3239,7 +3259,7 @@ if (sp_OASPL<=0 & sp_OASPL>=0){stream << "SPL: "  << "N/A"<< endl;} else {stream
 if (sp_dBA<=0 & sp_dBA>=0){stream << "SPL A: "  << "N/A"<< endl;} else {stream << "SPL A: "  << sp_dBA<< endl;}
 if (sp_dBB<=0 & sp_dBB>=0){stream << "SPL B: "  << "N/A"<< endl;} else {stream << "SPL B: "  << sp_dBB<< endl;}
 if (sp_dBC<=0 & sp_dBC>=0){stream << "SPL C: "  << "N/A"<< endl;} else {stream << "SPL C: "  << sp_dBC<< endl;}
-  if (m_parameter.Lowson){
+  if (m_parameter.Lowson_type!=0){
 if (sp_LedB<=0 & sp_LedB>=0){stream << "LE: "  << "N/A"<< endl;} else {stream << "LE: "  << sp_LedB<< endl;}}
         stream << endl;
 
@@ -3253,7 +3273,7 @@ if(z>=lend & i>=(number_of_segments-1)){
         stream << "SPL A: "  << st_dBA<< endl;
         stream << "SPL B: "  << st_dBB<< endl;
         stream << "SPL C: "  << st_dBC<< endl;
-  if (m_parameter.Lowson){
+  if (m_parameter.Lowson_type!=0){
         stream << "LE: "  << st_LedB<< endl;}
         stream << "***********************************************************"<<endl;
 stream << endl;
@@ -3379,12 +3399,12 @@ else {value=m_parameter.rot_speed_check;}
         break;
 
     case P::dstar_type:
-        if(set) m_parameter.dstar_type = value.toDouble();
-        else {m_parameter.dstar_type=0;value = m_parameter.dstar_type;}break;
+        if(set) m_parameter.dstar_type = value.toInt();
+        else {value = m_parameter.dstar_type;}break;
 
     case P::phi_type:
-        if(set) m_parameter.phi_type = value.toDouble();
-        else {m_parameter.phi_type=0;value = m_parameter.phi_type;}break;
+        if(set) m_parameter.phi_type = value.toInt();
+        else {value = m_parameter.phi_type;}break;
 
     case P::obs_x_pos:
         if(set) m_parameter.obs_x_pos = value.toDouble();
@@ -3406,20 +3426,11 @@ m_parameter.obs_z_pos=blade_radius/2.;
 value = m_parameter.obs_z_pos;
 }break;
 
-    case P::Lowson:
-        if(set) {m_parameter.Lowson = value.toBool();}
-else {value=m_parameter.Lowson;}
+    case P::Lowson_type:
+        if(set) {m_parameter.Lowson_type = value.toInt();}
+else {value=m_parameter.Lowson_type;}
         break;
 
-    case P::VonKarman:
-        if(set) {m_parameter.VonKarman = value.toBool();}
-else {value=m_parameter.VonKarman;}
-        break;
-
-    case P::RapidDistortion:
-        if(set) {m_parameter.RapidDistortion = value.toBool();}
-else {value=m_parameter.RapidDistortion;}
-        break;
     }
 // Sara
 
@@ -3439,8 +3450,8 @@ m_parameter.u_wind_speed=m_parameter.u_wind_speed_calc;}
 if(m_parameter.TSR_check==false){
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
-    double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-    double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
+double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 
 double v=lstart;
 while (qAbs(m_parameter.TSR_calc-v)>ldelta){
@@ -3469,6 +3480,7 @@ if((m_parameter.u_wind_speed_check==false) && (m_parameter.rot_speed_check==fals
  m_parameter.u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();
  m_parameter.rot_speed=m_parameter.rot_speed_calc;
 }
+
 // Sara
 
     return (set ? QVariant() : value);

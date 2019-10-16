@@ -1,5 +1,6 @@
 #ifndef NOISEOPPOINT_H
 #define NOISEOPPOINT_H
+#include <QVector>//Sara
 
 class OpPoint;
 
@@ -33,10 +34,11 @@ public:
     //Sara
 	
 private:
-    double m_reynolds, m_alpha, m_sects, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_dstar_type, m_dstar_user, m_phi_type, m_rot_speed_calc, m_u_wind_speed_calc, m_TSR_calc, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos, m_mach; //Sara
+    double m_reynolds, m_alpha, m_sects, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_dstar_user, m_rot_speed_calc, m_u_wind_speed_calc, m_TSR_calc, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos, m_mach; //Sara
 	OpPoint *m_opPoint;
 //Sara
-bool m_rot_speed_check, m_u_wind_speed_check, m_TSR_check, m_Lowson, m_VonKarman, m_RapidDistortion;
+bool m_rot_speed_check, m_u_wind_speed_check, m_TSR_check;
+int m_Lowson_type;
 //Sara
 };
 

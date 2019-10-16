@@ -39,9 +39,7 @@ public:
 
     //Sara
     //LE
-    bool Lowson;
-    bool VonKarman;
-    bool RapidDistortion;
+    int Lowson_type;
     //Sara
 	
 	//XFoil correlation
@@ -58,22 +56,26 @@ public:
 	TransitionType transition;
     
     //3D Sara
-    double sects;
-    double rot_speed;
-    double u_wind_speed;
-    double TSRtd;
-    double dstar_type;
-    double dstar_user;
-    double phi_type;
+    bool rot_speed_check;
+    bool u_wind_speed_check;
+    bool TSR_check;
     double rot_speed_calc;
     double u_wind_speed_calc;
     double TSR_calc;
     double obs_x_pos;
     double obs_y_pos;
     double obs_z_pos;
-    bool rot_speed_check;
-    bool u_wind_speed_check;
-    bool TSR_check;
+    double sects;
+    double rot_speed;
+    double u_wind_speed;
+    double TSRtd;
+    double dstar_user;
+    int phi_type;
+    int dstar_type;
+
+    double D_starred_S_user[40];
+    double D_starred_P_user[40];
+        //Sara
 
     //Turbulence parameters - Alexandre MOD
     double TurbulenceIntensity;

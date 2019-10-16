@@ -62,9 +62,7 @@ public:
         QVector<double> m_MachInterpolated3d;
         double c_const;
         double d_const;
-        bool m_Lowson;
-        bool m_VonKarman;
-        bool m_RapidDistortion;
+        int m_Lowson_type;
     //Sara
 	
 private:
@@ -147,13 +145,14 @@ private:
 
     //Sara
     //3D
+    bool m_rot_speed_check;
+    bool m_u_wind_speed_check;
+    bool m_TSRtd_check;
     double m_sects;
     double m_rot_speed;
     double m_u_wind_speed;
     double m_TSRtd;
-    double m_dstar_type;
     double m_dstar_user;
-    double m_phi_type;
     double x;
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
@@ -161,10 +160,9 @@ private:
     double m_obs_x_pos;
     double m_obs_y_pos;
     double m_obs_z_pos;
-    bool m_rot_speed_check;
-    bool m_u_wind_speed_check;
-    bool m_TSRtd_check;
-//Sara
+    int m_dstar_type;
+    int m_phi_type;
+    //Sara
 
     //For SPLs
     TwoDVector m_SPLsdB; //Store db of SPLs

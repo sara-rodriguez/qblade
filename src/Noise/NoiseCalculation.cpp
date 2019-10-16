@@ -689,11 +689,11 @@ void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
     double S = sqrt(pow((2.*M_PI*K/(pow(beta, 2)))+(pow((1+(2.4*K/pow(beta,2))), -1)), -1));
     double LFC = 10.*Mach*pow(S*K/beta, 2);
 
-if(m_parameter->RapidDistortion==true & m_parameter->VonKarman==false){
+if(m_parameter->Lowson_type==2){
     c_const=19./6.;
     d_const = 65.95;
  }
-else if(m_parameter->VonKarman==true & m_parameter->RapidDistortion==false){
+if(m_parameter->Lowson_type==1){
     c_const=7./3.;
     d_const = 58.4;
  }

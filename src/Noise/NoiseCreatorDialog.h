@@ -8,20 +8,24 @@ class QScrollArea;
 #include "../ParameterViewer.h"
 #include "../StoreAssociatedComboBox_include.h"
 #include "../XBEM/TBEMData.h" //Sara
-#include "../Noise/NoiseSimulation.h" //Sara
+//#include "NoiseSimulation.h" //Sara
 #include <QCheckBox>//Sara
+#include <QComboBox>//Sara
 class NoiseModule;
-
 
 class NoiseCreatorDialog : public CreatorDialog, public ParameterViewer<Parameter::NoiseSimulation>
 {
 	Q_OBJECT	
 	
 public:
+
     NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseModule *module);
-    //Sara
-    double calc_TSR;
+//Sara
     double change_TSR;
+    int phi_selection;
+
+    QVector<double> a_D_starred_S_user;
+    QVector<double> a_D_starred_P_user;
     //Sara
 
 private:
@@ -53,7 +57,18 @@ private:
 	NoiseModule *m_module;
 	NoiseSimulation *m_editedSimulation;
 	QList<OpPointRecord> m_opPointRecords;  // store a sorted list of all OpPoints
-	
+
+    //Sara
+    QCheckBox *m_rot_speed_check;
+    NumberEdit *m_rot_speed_numberedit;
+    QCheckBox *m_TSR_check;
+    QDoubleSpinBox *m_TSR_spinbox;
+    QCheckBox *m_u_wind_speed_check;
+    NumberEdit *m_u_wind_speed_numberedit;
+    QPushButton *buttonle;
+    QComboBox *dstar_combobox;
+//Sara
+
 	QButtonGroup *m_selectFromButtons;
     QButtonGroup *m_selectFromButtonsLE;//Sara
 	FoilComboBox *m_airfoilComboBox;
@@ -64,6 +79,13 @@ private:
 	QWidget *m_opPointViewWidget;
 	QWidget *m_originalBpmWidget;
 	
+    //Sara
+    QList< QList<double> > m_CsvParameters;
+    QList<QString> m_CsvFileHeader;
+    QLabel *m_CsvFileLabel, *m_StarredDLabel;
+    int m_StarredDType;
+//Sara
+
 private slots:
 	void onSelectButtonsClicked (int id);
 	void onPolarBoxChange ();
@@ -71,6 +93,15 @@ private slots:
 	
 	void onCreateButtonClicked ();
 	void onUnitsChanged () { }  // no need for this
+
+    //Sara
+        void OnImportStarredD();
+        void OnSetDstarButton(int index);
+        void OnRotSpeedCheck(int state);
+        void OnWindSpeedCheck(int state);
+        void OnTSRCheck(int state);
+        void OnWarningSet3();
+        //Sara
 };
 
 #endif // NOISECREATORDIALOG_H

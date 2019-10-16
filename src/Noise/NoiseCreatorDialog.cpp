@@ -68,7 +68,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 								  "Eddy Convection Mach number []:", 0.8, PERCENT);
 					pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
 								  "Directivity angle θe [deg]:", 90);
-					pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
+                    pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
 								  "Directivity angle ψe [deg]:", 90);
 
 					
@@ -90,10 +90,11 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                 vBox->addWidget(groupBox);
                 pGrid = new ParameterGrid<P>(this);//Sara urgente
                 groupBox->setLayout(pGrid);
-                pGrid->addEdit(P::Lowson, CheckBox, new QCheckBox ("enable"),"Lowson's Model:", false);
-
-pGrid->addEdit(P::VonKarman, CheckBox, new QCheckBox ("Von Kármán (set 1 of 2)"),"", false);
-pGrid->addEdit(P::RapidDistortion, CheckBox, new QCheckBox ("Rapid Distortion (set 1 of 2)"),"", false);
+QComboBox *Lowson_type_combobox = new QComboBox;
+pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","");
+Lowson_type_combobox->insertItem(0,"None");
+Lowson_type_combobox->insertItem(1,"Von Kármán");
+Lowson_type_combobox->insertItem(2,"Rapid Distortion");
                 //Sara
 				vBox->addStretch();
 	
@@ -158,52 +159,65 @@ pGrid->addEdit(P::RapidDistortion, CheckBox, new QCheckBox ("Rapid Distortion (s
                             numEdit->setValue(30,true);
                             numEdit->setAutomaticPrecision(0);
 
-NumberEdit *NumberEditb = new NumberEdit();
-NumberEditb->setAutomaticPrecision(3);
-pGrid->addEdit(P::rot_speed_check, CheckBox, new QCheckBox ("rot. speed set (set 2 of 3)"),"", 0);
-pGrid->addEdit(P::rot_speed, NumberEditType, NumberEditb, "Rotational Speed [rpm]:",1);
+m_rot_speed_check = new QCheckBox("rot. speed set:");
+pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
+connect(m_rot_speed_check,SIGNAL(stateChanged(int)),this,SLOT(OnRotSpeedCheck(int)));
 
-NumberEdit *numEdita = new NumberEdit();
-//QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-pGrid->addEdit(P::u_wind_speed_check, CheckBox, new QCheckBox ("wind speed set (set 2 of 3)"),"", 1);
-pGrid->addEdit(P::u_wind_speed, NumberEditType, numEdita,"Uniform Wind Speed []:", 1, SPEED);
+m_rot_speed_numberedit = new NumberEdit ();
+m_rot_speed_numberedit->setAutomaticPrecision(3);
+pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",1);
+if(m_rot_speed_check->isChecked()){m_rot_speed_numberedit->setEnabled(true);}else{m_rot_speed_numberedit->setEnabled(false);}
 
-QDoubleSpinBox *tsrSpinBox = new QDoubleSpinBox;
-tsrSpinBox->setLocale(QLocale("en_us"));
+m_u_wind_speed_check = new QCheckBox("wind speed set:");
+pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", 0);
+connect(m_u_wind_speed_check,SIGNAL(stateChanged(int)),this,SLOT(OnWindSpeedCheck(int)));
 
-pGrid->addEdit(P::TSR_check, CheckBox, new QCheckBox ("TSR set (set 2 of 3)"),"", 1);
-pGrid->addEdit(P::TSRtd,DoubleSpinBox, tsrSpinBox,"TSR:", 1);
+m_u_wind_speed_numberedit = new NumberEdit ();
+m_u_wind_speed_numberedit->setAutomaticPrecision(3);
+pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []::",1, SPEED);
+if(m_u_wind_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(true);}else{m_u_wind_speed_numberedit->setEnabled(false);}
+
+m_TSR_spinbox = new QDoubleSpinBox;
+m_TSR_spinbox->setLocale(QLocale("en_us"));
+
+m_TSR_check = new QCheckBox ("TSR set");
+pGrid->addEdit(P::TSR_check, CheckBox, m_TSR_check,"", 1);
+connect(m_TSR_check,SIGNAL(stateChanged(int)),this,SLOT(OnTSRCheck(int)));
+pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 1);
 
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
 double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 
-     tsrSpinBox->setRange(lstart, lend);
-     tsrSpinBox->setSingleStep(ldelta);
-     tsrSpinBox->setDecimals(1);
-     tsrSpinBox->valueChanged(change_TSR);
+     m_TSR_spinbox->setRange(lstart, lend);
+     m_TSR_spinbox->setSingleStep(ldelta);
+     m_TSR_spinbox->setDecimals(1);
+     m_TSR_spinbox->valueChanged(change_TSR);
 
 QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
 pGrid->addWidget(labeltd);
 m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
 pGrid->addWidget(m_airfoilComboBoxtd);
-pGrid->addEdit(P::dstar_type, NumberEditType, new NumberEdit(),"δ* type (0-BPM, 1-XFoil, 2-User):", 1);//Sara todo 0-Natural Transition, 1-Heavy-tripping, 2 - XFoil Interpolated
 
-//pGrid->addEdit(P::dstar_user, LineEdit, new QLineEdit(),"", 1);
+dstar_combobox = new QComboBox;
+pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* type:","");
+dstar_combobox->insertItem(0,"BPM");
+dstar_combobox->insertItem(1,"XFoil");
+dstar_combobox->insertItem(2,"User");
+connect(dstar_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnSetDstarButton(int)));
 
 pGrid->setSizeConstraint(QLayout::SetMinimumSize);
-QPushButton *buttonle = new QPushButton ("δ* User Input");
+buttonle = new QPushButton ("δ* User Input");
 buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
-buttonle->setCheckable(true);
-//connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
+buttonle->setEnabled(false);
 pGrid->addWidget(buttonle,9,2);//, 0, 0, 1, 1 , 7, 5, 1, 1
-//Sara experiment
-//falta conectar esse botão para quando o usuário clicar nele, abrir uma tela para escolher o csv de entrada do delta estrela e esse csv virar um array para pegar os dados do delta estrela
-//esse botão só deve estar ativo para quando o usuário selecionar que quer utilizar entrada do delta estrela via usuário
-//também mudaros checkbuttons que eu coloquei para radiobuttons quando aplicável
+connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 
-pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Φ type (0-90º, 1-free):", 1);
+QComboBox *phi_combobox = new QComboBox;
+pGrid->addEdit(P::phi_type,ComboBox, phi_combobox,"Φ type:","");
+phi_combobox->insertItem(0,"90º");
+phi_combobox->insertItem(1,"free");
 
 //groupBox = new QGroupBox ("Observer Position:");
 //hBox->addWidget(groupBox);
@@ -211,7 +225,7 @@ pGrid->addEdit(P::phi_type, NumberEditType, new NumberEdit(),"Φ type (0-90º, 1
 //groupBox->setLayout(pGrid);
 
 QLabel *labelte = new QLabel ("Observer Position:");
-pGrid->addWidget(labelte,11,0);
+pGrid->addWidget(labelte,13,0);
 pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"X:", 1);
 pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"Y:", 1);
 pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"Z:", 1);
@@ -397,3 +411,101 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
 		QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
 	}
 }
+
+void NoiseCreatorDialog::OnImportStarredD(){
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    int number_of_elements = pBEM->dlg_elements;
+
+QMessageBox::information (this, "δ* User Input Instructions",QString("For user input the δ* you must to follow the instructions:\n\n - Select a csv file with tho columns and no header;\n\n- The first column must be filled with δ* on  suction side;\n\n- The second column must be filled with δ* on pressure side;\n\n -The csv file must have %1 rows filled.").arg(number_of_elements),QMessageBox::Ok);
+
+NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+
+        QString PathName, strong, header;
+        a_D_starred_S_user.clear();
+        a_D_starred_P_user.clear();
+
+PathName = QFileDialog::getOpenFileName(g_mainFrame, tr("Open csv File"),g_mainFrame->m_LastDirName,tr("δ* Input (*.csv)"));
+
+        if(!PathName.length())		return ;
+        int pos = PathName.lastIndexOf("/");
+        if(pos>0) g_mainFrame->m_LastDirName = PathName.left(pos);
+
+        QFile XFile(PathName);
+        if (!XFile.open(QIODevice::ReadOnly))
+        {
+            QString strange = tr("Could not read the file\n")+PathName;
+            QMessageBox::warning(g_mainFrame, tr("Warning"), strange);
+            return;
+        }
+
+        QTextStream in(&XFile);
+
+QString line;
+
+QStringList qList;
+QFile File(PathName);
+
+if (!File.open(QIODevice::ReadOnly | QIODevice::Text))
+     return;
+
+int w=0;
+//File.readLine(); // read first line and ignore
+while (!File.atEnd()) {
+    QString line = File.readLine(); // read wavelength line and store it
+    const QStringList fields { line.split(',') };
+    const QString D_starred_S_aux { fields[0] };
+    const QString D_starred_P_aux { fields[1] };
+    a_D_starred_S_user.append(D_starred_S_aux.toDouble());
+    a_D_starred_P_user.append(D_starred_P_aux.toDouble());
+    pNoiseParameter->D_starred_S_user[w]=D_starred_S_aux.toDouble();
+    pNoiseParameter->D_starred_P_user[w]=D_starred_P_aux.toDouble();
+    ++w;
+}
+File.close();
+
+if((a_D_starred_S_user.size()==pBEM->dlg_elements) & (a_D_starred_P_user.size()==pBEM->dlg_elements)){
+    QMessageBox::information(g_mainFrame, tr("Import Sucessfull!"), tr("The δ* was sucessfully imported."),QMessageBox::Ok);
+    return;
+}
+}
+
+void NoiseCreatorDialog::OnSetDstarButton(int index){
+    if (index==2){
+   buttonle->setEnabled(true);}
+}
+
+void NoiseCreatorDialog::OnRotSpeedCheck(int state){
+    int sum=0;
+    if (state==0){m_rot_speed_numberedit->setEnabled(false);}
+    else{m_rot_speed_numberedit->setEnabled(true);}
+        if(m_rot_speed_check->isChecked()){++sum;}
+        if(m_u_wind_speed_check->isChecked()){++sum;}
+        if(m_TSR_check->isChecked()){++sum;}
+        if(sum!=2){OnWarningSet3();}
+}
+
+void NoiseCreatorDialog::OnWindSpeedCheck(int state){
+    int sum=0;
+    if (state==0){m_u_wind_speed_numberedit->setEnabled(false);}
+    else{m_u_wind_speed_numberedit->setEnabled(true);}
+    if(m_rot_speed_check->isChecked()){++sum;}
+    if(m_u_wind_speed_check->isChecked()){++sum;}
+    if(m_TSR_check->isChecked()){++sum;}
+    if(sum==0 || sum==3){OnWarningSet3();}
+}
+
+void NoiseCreatorDialog::OnTSRCheck(int state){
+    int sum=0;
+    if (state==0){m_TSR_spinbox->setEnabled(false);}
+    else{m_TSR_spinbox->setEnabled(true);}
+    if(m_rot_speed_check->isChecked()){++sum;}
+    if(m_u_wind_speed_check->isChecked()){++sum;}
+    if(m_TSR_check->isChecked()){++sum;}
+    if(sum==0 || sum==3){OnWarningSet3();}
+}
+
+void NoiseCreatorDialog::OnWarningSet3(){
+    QMessageBox::information(this, "Create Noise Simulation","Select 2 options to input values!",QMessageBox::Ok);
+    return;
+}
+//Sara
