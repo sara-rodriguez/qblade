@@ -97,9 +97,9 @@ private slots:
     //Sara
         void OnImportStarredD();
         void OnSetDstarButton(int index);
-        void OnRotSpeedCheck(int state);
-        void OnWindSpeedCheck(int state);
-        void OnTSRCheck(int state);
+        void OnRotSpeedCheck();
+        void OnWindSpeedCheck();
+        void OnTSRCheck();
         void OnWarningSet3();
         //Sara
 };

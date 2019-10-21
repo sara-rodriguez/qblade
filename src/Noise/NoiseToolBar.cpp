@@ -29,6 +29,15 @@ NoiseToolBar::NoiseToolBar(QMainWindow *parent, NoiseModule *module) {
 	hideDocksAction->setStatusTip("Hide Docks");
 	connect(hideDocksAction, SIGNAL(toggled(bool)), m_module, SLOT(onHideDocks(bool)));
 	addAction(hideDocksAction);
+
+    //    Sara
+    QAction *m_3dAction = new QAction(QIcon(":/images/3d.png"), tr("3D Noise"), this);
+
+   m_3dAction->setCheckable(true);
+    m_3dAction->setStatusTip(tr("3D Noise"));
+        connect(m_3dAction, SIGNAL(toggled(bool)), module, SLOT(on3dGraphs(bool)));
+        addAction(m_3dAction);
+    //    Sara
 	
 	QGroupBox *groupBox = new QGroupBox ("Noise Simulation");
 	addWidget(groupBox);

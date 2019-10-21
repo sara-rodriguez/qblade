@@ -11,6 +11,7 @@
 #include "../TwoDWidget.h"
 #include "../Store.h"
 #include "NoiseMenu.h"
+#include "NoiseCreatorDialog.h"//Sara
 
 
 NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
@@ -20,9 +21,10 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
 	
 	m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
 
-//    if(m_parameter->Lowson){
+    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+    if(pNoiseParameter->Lowson_type!=0){
     m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false}); //Alexandre MOD
-//    }
+    }
 
 	m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
 	m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
@@ -140,6 +142,70 @@ void NoiseModule::onModuleChanged() {
 
 void NoiseModule::onHideDocks(bool hide) {
 	m_dock->setVisible(!hide);
+}
+
+void NoiseModule::on3dGraphs(bool graphs){
+    //experiment
+    if (graphs)	{
+        m_globalModuleIndentifier = NOISEMODULE;
+    m_shownSimulation = nullptr;
+
+    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "FreqX [Hz]", "SPLX (dB)", true, false});
+
+    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+    if(pNoiseParameter->Lowson_type!=0){
+    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "FreqX [Hz]", "SPL_LEX (dB)", true, false}); //Alexandre MOD
+    }
+
+    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "FreqX [Hz]", "SPL_SX", true, false});
+    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "FreqX [Hz]", "SPL_PX", true, false});
+
+    //experiment
+
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+    setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+                        (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quad).toInt()));
+
+//	m_menu = new NoiseMenu (mainWindow, this);
+
+//	m_toolBar = new NoiseToolBar (mainWindow, this);
+//	m_dock = new NoiseDock ("Noise Simulation", mainWindow, 0, this);
+//	registrateAtToolbar("PNoise", "Predict the noise generation", ":/images/NoiseIcon.png", toolbar);
+
+    m_contextMenu = new NoiseContextMenu (m_twoDWidget, this);  // NM TODO move this up to TwoDInterface?
+    setContextMenu(m_contextMenu);
+
+    connect(&g_noiseSimulationStore, SIGNAL(objectListChanged(bool)), this, SLOT(reloadAllGraphs()));}
+    else {
+        m_globalModuleIndentifier = NOISEMODULE;
+    m_shownSimulation = nullptr;
+
+    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
+
+    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+    if(pNoiseParameter->Lowson_type!=0){
+    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false}); //Alexandre MOD
+    }
+
+    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
+    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
+
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+    setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+                        (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quad).toInt()));
+
+//	m_menu = new NoiseMenu (mainWindow, this);
+
+//	m_toolBar = new NoiseToolBar (mainWindow, this);
+//	m_dock = new NoiseDock ("Noise Simulation", mainWindow, 0, this);
+//	registrateAtToolbar("PNoise", "Predict the noise generation", ":/images/NoiseIcon.png", toolbar);
+
+    m_contextMenu = new NoiseContextMenu (m_twoDWidget, this);  // NM TODO move this up to TwoDInterface?
+    setContextMenu(m_contextMenu);
+
+    connect(&g_noiseSimulationStore, SIGNAL(objectListChanged(bool)), this, SLOT(reloadAllGraphs()));}
 }
 
 void NoiseModule::setShownSimulation(NoiseSimulation *newSimulation, bool forceReload) {

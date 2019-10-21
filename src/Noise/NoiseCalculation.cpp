@@ -708,6 +708,9 @@ else {
     SPL_LEdB = 10.*log10(pow(10,(Aux1+Aux5)/10.));
 
     m_SPL_LEdB[posOpPoint][posFreq] = SPL_LEdB;
+    m_SPL_LEdBAW[posOpPoint][posFreq] = SPL_LEdB + AWeighting[posFreq];
+    m_SPL_LEdBBW[posOpPoint][posFreq] = SPL_LEdB + BWeighting[posFreq];
+    m_SPL_LEdBCW[posOpPoint][posFreq] = SPL_LEdB + CWeighting[posFreq];
 }
 //end Alexandre MOD
 
@@ -725,6 +728,14 @@ void NoiseCalculation::calculate() {
         m_SPLALOG[posOpPoint] = 0;
         m_SPLSLOG[posOpPoint] = 0;
         m_SPLPLOG[posOpPoint] = 0;
+
+//Sara
+        m_SPLLEdB[posOpPoint] = 0;
+        m_SPLLEdBAW[posOpPoint] = 0;
+        m_SPLLEdBBW[posOpPoint] = 0;
+        m_SPLLEdBCW[posOpPoint] = 0;
+        m_SPLlogLE[posOpPoint] = 0;
+//Sara
 
 //        qDebug() << "======================== OpPoint ========================";
 //        qDebug() << "Alpha deg: " << nop->AlphaDeg();
@@ -911,6 +922,13 @@ m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordm
             m_SPLALOG[posOpPoint] += pow(10,(m_SPLadB[posOpPoint][posFreq]/10));
             m_SPLSLOG[posOpPoint] += pow(10,(m_SPLsdB[posOpPoint][posFreq]/10));
             m_SPLPLOG[posOpPoint] += pow(10,(m_SPLpdB[posOpPoint][posFreq]/10));
+
+//Sara
+            m_SPLlogLE[posOpPoint] += pow(10,(m_SPL_LEdB[posOpPoint][posFreq]/10));
+            m_SPLLEdBAW[posOpPoint] += pow(10,(m_SPL_LEdBAW[posOpPoint][posFreq]/10));
+            m_SPLLEdBBW[posOpPoint] +=pow(10,(m_SPL_LEdBBW[posOpPoint][posFreq]/10));
+            m_SPLLEdBCW[posOpPoint] += pow(10,(m_SPL_LEdBCW[posOpPoint][posFreq]/10));
+//Sara
         }
 
         m_OASPL[posOpPoint] = 10*log10(m_OASPL[posOpPoint]);
@@ -921,6 +939,13 @@ m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordm
         m_SPLALOG[posOpPoint] = 10*log10(m_SPLALOG[posOpPoint]);
         m_SPLSLOG[posOpPoint] = 10*log10(m_SPLSLOG[posOpPoint]);
         m_SPLPLOG[posOpPoint] = 10*log10(m_SPLPLOG[posOpPoint]);
+
+//Sara
+m_SPLlogLE[posOpPoint] = 10*log10(m_SPLlogLE[posOpPoint]);
+m_SPLLEdBAW[posOpPoint] = 10*log10(m_SPLLEdBAW[posOpPoint]);
+m_SPLLEdBBW[posOpPoint] = 10*log10(m_SPLLEdBBW[posOpPoint]);
+m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
+//Sara
     }
 	qDeleteAll(noiseOpPoints);
 	
@@ -957,6 +982,13 @@ void NoiseCalculation::setupVectors() {
     m_SPL_LEdBAW.clear();
     m_SPL_LEdBBW.clear();
     m_SPL_LEdBCW.clear();
+//Sara
+    m_SPLLEdB.clear();
+    m_SPLLEdBAW.clear();
+    m_SPLLEdBBW.clear();
+    m_SPLLEdBCW.clear();
+    m_SPLlogLE.clear();
+//Sara
 
     m_OASPL.clear();
     m_OASPLA.clear();
@@ -997,7 +1029,13 @@ void NoiseCalculation::setupVectors() {
     m_SPL_LEdBAW.resize(size);
     m_SPL_LEdBBW.resize(size);
     m_SPL_LEdBCW.resize(size);
-
+    m_SPLLEdB.resize(size);
+//Sara
+    m_SPLLEdBAW.resize(size);
+    m_SPLLEdBBW.resize(size);
+    m_SPLLEdBCW.resize(size);
+    m_SPLlogLE.resize(size);
+//Sara
     m_OASPL.resize  (size);
     m_OASPLA.resize (size);
     m_OASPLB.resize (size);

@@ -44,6 +44,9 @@ public:
 	TwoDVector SPLdBBW() const { return m_SPLdBBW; }
 	TwoDVector SPLdBCW() const { return m_SPLdBCW; }
     TwoDVector SPL_LEdB() const { return m_SPL_LEdB; } //Alexandre MOD
+    TwoDVector SPL_LEdBAW() const { return m_SPL_LEdBAW; } //Alexandre MOD
+    TwoDVector SPL_LEdBBW() const { return m_SPL_LEdBBW; } //Alexandre MOD
+    TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; } //Alexandre MOD
 	
 	// NM apparently needed for export as .txt only
 	QVector<double> OASPL() const { return m_OASPL; }
@@ -53,6 +56,11 @@ public:
 	QVector<double> SPLALOG() const { return m_SPLALOG; }
 	QVector<double> SPLSLOG() const { return m_SPLSLOG; }
 	QVector<double> SPLPLOG() const { return m_SPLPLOG; }
+
+        QVector<double> SPLLEdBAW() const { return m_SPLLEdBAW;; } //Alexandre MOD
+        QVector<double> SPLLEdBBW() const { return m_SPLLEdBBW; } //Alexandre MOD
+        QVector<double> SPLLEdBCW() const { return m_SPLLEdBCW; } //Alexandre MOD
+        QVector<double> SPLlogLE() const { return m_SPLlogLE; } //Alexandre MOD
 
     //Sara
         QVector<double> m_DStarInterpolatedS3d;
@@ -119,6 +127,14 @@ private:
     QVector<double> m_SPLALOG;
     QVector<double> m_SPLSLOG;
     QVector<double> m_SPLPLOG;
+
+//Sara
+    QVector<double> m_SPLLEdB;
+    QVector<double> m_SPLLEdBAW;
+    QVector<double> m_SPLLEdBBW;
+    QVector<double> m_SPLLEdBCW;
+    QVector<double> m_SPLlogLE;
+//Sara
 
     //For SPLa
     TwoDVector m_SPLadB; //Store db of SPL alpha

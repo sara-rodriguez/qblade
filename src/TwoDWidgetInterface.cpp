@@ -21,7 +21,7 @@
 
 TwoDWidgetInterface::TwoDWidgetInterface() {
 	m_twoDWidget = g_mainFrame->getTwoDWidget();
-	m_graphArrangement = Quad;
+    m_graphArrangement = Quad;
 	m_xKeyPressed = false;
 	m_yKeyPressed = false;
 
@@ -72,7 +72,7 @@ void TwoDWidgetInterface::onPaintEvent(QPaintEvent */*event*/) {
 	switch (m_graphArrangement) {  // missing break intended
     case QuadVertical:
 	case Quad:
-		m_graph[3]->drawGraph(painter);
+        m_graph[3]->drawGraph(painter);
 	case Vertical3:
 		m_graph[2]->drawGraph(painter);
 	case Vertical:

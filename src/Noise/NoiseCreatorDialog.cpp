@@ -48,8 +48,11 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 								  "Length of wetted Trailing-Edge (L) []:", 1, LENGTH);
 					pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
+                    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+                    double u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();
+
 					pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
-								  "Original flow velocity (U) []:", 13, SPEED);
+                                  "Original flow velocity (U) []:", u_wind_speed, SPEED);
 					pGrid->addEdit(P::OriginalChordLength, NumberEditType, new NumberEdit(),
 								  "Original airfoil Chord length (C) []:", 1, LENGTH);
 					pGrid->addEdit(P::OriginalMach, NumberEditType, new NumberEdit(),
@@ -161,7 +164,7 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
 
 m_rot_speed_check = new QCheckBox("rot. speed set:");
 pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
-connect(m_rot_speed_check,SIGNAL(stateChanged(int)),this,SLOT(OnRotSpeedCheck(int)));
+    connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnRotSpeedCheck()));//int
 
 m_rot_speed_numberedit = new NumberEdit ();
 m_rot_speed_numberedit->setAutomaticPrecision(3);
@@ -169,23 +172,28 @@ pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational 
 if(m_rot_speed_check->isChecked()){m_rot_speed_numberedit->setEnabled(true);}else{m_rot_speed_numberedit->setEnabled(false);}
 
 m_u_wind_speed_check = new QCheckBox("wind speed set:");
-pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", 0);
-connect(m_u_wind_speed_check,SIGNAL(stateChanged(int)),this,SLOT(OnWindSpeedCheck(int)));
+pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", 1);
+connect(m_u_wind_speed_check,SIGNAL(clicked()),this,SLOT(OnWindSpeedCheck()));//int stateChanged(int)
+
 
 m_u_wind_speed_numberedit = new NumberEdit ();
 m_u_wind_speed_numberedit->setAutomaticPrecision(3);
-pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []::",1, SPEED);
+pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []::",u_wind_speed, SPEED);
 if(m_u_wind_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(true);}else{m_u_wind_speed_numberedit->setEnabled(false);}
 
 m_TSR_spinbox = new QDoubleSpinBox;
 m_TSR_spinbox->setLocale(QLocale("en_us"));
 
 m_TSR_check = new QCheckBox ("TSR set");
+//const bool blocked = m_TSR_check->signalsBlocked();
+//m_TSR_check->blockSignals(true);
 pGrid->addEdit(P::TSR_check, CheckBox, m_TSR_check,"", 1);
-connect(m_TSR_check,SIGNAL(stateChanged(int)),this,SLOT(OnTSRCheck(int)));
-pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 1);
+//m_TSR_check->blockSignals(blocked);
 
-SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+connect(m_TSR_check,SIGNAL(clicked()),this,SLOT(OnTSRCheck()));
+
+pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 7);
+
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
 double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
@@ -226,9 +234,16 @@ phi_combobox->insertItem(1,"free");
 
 QLabel *labelte = new QLabel ("Observer Position:");
 pGrid->addWidget(labelte,13,0);
-pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"X:", 1);
-pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"Y:", 1);
-pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"Z:", 1);
+pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"X:", 10);
+pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"Y:", 10);
+
+QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+double hub_radius=pbem->m_pBlade->m_HubRadius;
+double outer_radius=pbem->m_pTData->OuterRadius;
+double blade_radius=(outer_radius-hub_radius);
+double z_pos=blade_radius/2.;
+
+pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"Z:", z_pos);
 //Sara
                             
 	setUnitContainingLabels();
@@ -474,38 +489,32 @@ void NoiseCreatorDialog::OnSetDstarButton(int index){
    buttonle->setEnabled(true);}
 }
 
-void NoiseCreatorDialog::OnRotSpeedCheck(int state){
-    int sum=0;
-    if (state==0){m_rot_speed_numberedit->setEnabled(false);}
+void NoiseCreatorDialog::OnRotSpeedCheck(){
+    if (!m_rot_speed_check->isChecked()){m_rot_speed_numberedit->setEnabled(false);}
     else{m_rot_speed_numberedit->setEnabled(true);}
-        if(m_rot_speed_check->isChecked()){++sum;}
-        if(m_u_wind_speed_check->isChecked()){++sum;}
-        if(m_TSR_check->isChecked()){++sum;}
-        if(sum!=2){OnWarningSet3();}
+    OnWarningSet3();
 }
 
-void NoiseCreatorDialog::OnWindSpeedCheck(int state){
-    int sum=0;
-    if (state==0){m_u_wind_speed_numberedit->setEnabled(false);}
+void NoiseCreatorDialog::OnWindSpeedCheck(){
+    if (!m_rot_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(false);}
     else{m_u_wind_speed_numberedit->setEnabled(true);}
-    if(m_rot_speed_check->isChecked()){++sum;}
-    if(m_u_wind_speed_check->isChecked()){++sum;}
-    if(m_TSR_check->isChecked()){++sum;}
-    if(sum==0 || sum==3){OnWarningSet3();}
+    OnWarningSet3();
 }
 
-void NoiseCreatorDialog::OnTSRCheck(int state){
-    int sum=0;
-    if (state==0){m_TSR_spinbox->setEnabled(false);}
+void NoiseCreatorDialog::OnTSRCheck(){
+    if (!m_TSR_check->isChecked()){m_TSR_spinbox->setEnabled(false);}
     else{m_TSR_spinbox->setEnabled(true);}
-    if(m_rot_speed_check->isChecked()){++sum;}
-    if(m_u_wind_speed_check->isChecked()){++sum;}
-    if(m_TSR_check->isChecked()){++sum;}
-    if(sum==0 || sum==3){OnWarningSet3();}
+        OnWarningSet3();
 }
 
 void NoiseCreatorDialog::OnWarningSet3(){
+    int sum=0;
+    if(m_rot_speed_check->isChecked()){++sum;}
+    if(m_u_wind_speed_check->isChecked()){++sum;}
+    if(m_TSR_check->isChecked()){++sum;}
+    if(sum!=2){
     QMessageBox::information(this, "Create Noise Simulation","Select 2 options to input values!",QMessageBox::Ok);
     return;
+    }
 }
 //Sara

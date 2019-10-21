@@ -151,6 +151,11 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
         stream << "SPL_a: " << m_calculation.SPLALOG()[i] << "" << endl;
         stream << "SPL_s: " << m_calculation.SPLSLOG()[i] << "" << endl;
         stream << "SPL_p: " << m_calculation.SPLPLOG()[i] << "" << endl;
+        if(m_parameter.Lowson_type!=0){
+        stream << "SPL_LE: " << m_calculation.SPLlogLE()[i] << " dB" << endl;
+        stream << "SPL_LE (A): " << m_calculation.SPLLEdBAW()[i] << " dB(A)" << endl;
+        stream << "SPL_LE (B): " << m_calculation.SPLLEdBBW()[i] << " dB(B)" << endl;
+        stream << "SPL_LE (C): " << m_calculation.SPLLEdBCW()[i] << " dB(C)" << endl;}
         stream << endl;
                if(m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14) <<
@@ -162,7 +167,10 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
                   "SPL (dB(A))" <<
                   "SPL (dB(B))" <<
                   "SPL (dB(C))" <<
-                  "SPL_LE (dB)" <<endl; //Alexandre MOD
+                  "SPL_LE (dB)" <<
+                  "SPL_LE (dB(A))" <<
+                  "SPL_LE (dB(B))" <<
+                  "SPL_LE (dB(C))" <<endl; //Alexandre MOD
                }
                else{
                    stream << qSetFieldWidth(14) <<
@@ -187,7 +195,11 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
                       m_calculation.SPLdBAW()[i][j] <<
                       m_calculation.SPLdBBW()[i][j] <<
                       m_calculation.SPLdBCW()[i][j] <<
-                      m_calculation.SPL_LEdB()[i][j] << endl; //Alexandre MOD
+                      m_calculation.SPL_LEdB()[i][j] <<
+                      m_calculation.SPL_LEdBAW()[i][j] << //Sara
+                      m_calculation.SPL_LEdBBW()[i][j] << //Sara
+                      m_calculation.SPL_LEdBCW()[i][j] << //Sara
+                      endl; //Alexandre MOD
         }
 else{
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] <<
@@ -395,6 +407,8 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double splog_dBC=0;
     double st_dBC=0;
     double stlog_dBC=0;
+    double SPL_blade_total=0;//Sara new
+    double SPL_blade_total_aux=0;//Sara new
 
     double r_R0  =  0.05; double c_R0 = 0.05500;
     double r_R1  =  0.25; double c_R1 = 0.07500;
@@ -421,7 +435,7 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
                   "AOA polar [deg]"   <<";"   <<
                   "AOA calc [deg]"   <<";"   <<
                   "AOA error [%]"   <<";"   <<
-                  "Error number¹" <<  ";" <<
+                  "Error number[1]" <<  ";" <<
                   endl;
 }
 
@@ -784,6 +798,8 @@ void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
         stream << "Quasi 3D Noise Log" << endl;
         stream << endl;
 
+NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_pSimuWidget;
+
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
@@ -848,6 +864,9 @@ void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
         QString SPL_B_val("");
         QString SPL_C_val("");
         QString SPL_LedB_val("");
+        QString SPL_LedB_valAW("");
+        QString SPL_LedB_valBW("");
+        QString SPL_LedB_valCW("");
 
         //definitions
         double axial_ind_fact[number_of_segments];
@@ -987,6 +1006,20 @@ void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
         double splog_LedB=0;
         double st_LedB=0;
         double stlog_LedB=0;
+        double sp_LedBAW=0;
+        double splog_LedBAW=0;
+        double st_LedBAW=0;
+        double stlog_LedBAW=0;
+        double sp_LedBBW=0;
+        double splog_LedBBW=0;
+        double st_LedBBW=0;
+        double stlog_LedBBW=0;
+        double sp_LedBCW=0;
+        double splog_LedBCW=0;
+        double st_LedBCW=0;
+        double stlog_LedBCW=0;
+        double SPL_blade_total=0;
+        double SPL_blade_total_aux=0;
 
         double r_R0  =  0.05; double c_R0 = 0.05500;
         double r_R1  =  0.25; double c_R1 = 0.07500;
@@ -995,23 +1028,73 @@ void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
         bool LE_validation;
         bool BPM_validation;
 
-        for (int i = 0; i < number_of_segments; ++i) {
+        sp_OASPL_alpha=0;
+        sp_OASPL_S=0;
+        sp_OASPL_P=0;
+        sp_OASPL=0;
+        sp_dBA=0;
+        sp_dBB=0;
+        sp_dBC=0;
+        splog_OASPL_alpha=0;
+        splog_OASPL_S=0;
+        splog_OASPL_P=0;
+        splog_OASPL=0;
+        splog_dBA=0;
+        splog_dBB=0;
+        splog_dBC=0;
+        splog_LedB=0;
+        splog_LedBAW=0;
+        splog_LedBBW=0;
+        splog_LedBCW=0;
 
-sp_OASPL_alpha=0;
-sp_OASPL_S=0;
-sp_OASPL_P=0;
-sp_OASPL=0;
-sp_dBA=0;
-sp_dBB=0;
-sp_dBC=0;
-splog_OASPL_alpha=0;
-splog_OASPL_S=0;
-splog_OASPL_P=0;
-splog_OASPL=0;
-splog_dBA=0;
-splog_dBB=0;
-splog_dBC=0;
-splog_LedB=0;
+        double sp_OASPL_alpha_a=0;
+        double splog_OASPL_alpha_a=0;
+        double st_OASPL_alpha_a=0;
+        double stlog_OASPL_alpha_a=0;
+        double sp_OASPL_S_a=0;
+        double splog_OASPL_S_a=0;
+        double st_OASPL_S_a=0;
+        double stlog_OASPL_S_a=0;
+        double sp_OASPL_P_a=0;
+        double splog_OASPL_P_a=0;
+        double st_OASPL_P_a=0;
+        double stlog_OASPL_P_a=0;
+        double sp_OASPL_a=0;
+        double splog_OASPL_a=0;
+        double st_OASPL_a=0;
+        double stlog_OASPL_a=0;
+        double sp_dBA_a=0;
+        double splog_dBA_a=0;
+        double st_dBA_a=0;
+        double stlog_dBA_a=0;
+        double sp_dBB_a=0;
+        double splog_dBB_a=0;
+        double st_dBB_a=0;
+        double stlog_dBB_a=0;
+        double sp_dBC_a=0;
+        double splog_dBC_a=0;
+        double st_dBC_a=0;
+        double stlog_dBC_a=0;
+        double sp_LedB_a=0;
+        double splog_LedB_a=0;
+        double st_LedB_a=0;
+        double stlog_LedB_a=0;
+        double sp_LedBAW_a=0;
+        double splog_LedBAW_a=0;
+        double st_LedBAW_a=0;
+        double stlog_LedBAW_a=0;
+        double sp_LedBBW_a=0;
+        double splog_LedBBW_a=0;
+        double st_LedBBW_a=0;
+        double stlog_LedBBW_a=0;
+        double sp_LedBCW_a=0;
+        double splog_LedBCW_a=0;
+        double st_LedBCW_a=0;
+        double stlog_LedBCW_a=0;
+        double SPL_blade_total_a=0;
+        double SPL_blade_total_aux_a=0;
+
+        for (int i = 0; i < number_of_segments; ++i) {
 
             // definitions
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
@@ -1202,16 +1285,16 @@ if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
     D_starred_P[i]=D_starred_HT_P[i];
 }
 else {
-    //heavy tripping
-        D_starred_S[i]=DStarXFoilS[i];
-        D_starred_P[i]=DStarXFoilP[i];
-    }}
-    else if (m_parameter.dstar_type==2){
-    //user
+//heavy tripping
+    D_starred_S[i]=DStarXFoilS[i];
+    D_starred_P[i]=DStarXFoilP[i];
+}}
+else if (m_parameter.dstar_type==2){
+//user
     NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
     D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
     D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
-    }
+}
 
 double B=0;
 double XB=0;
@@ -1377,9 +1460,12 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 //    if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
     QString str= QString::number(z, 'f', 1);
 
+
 //        stream << "Angles less than the switching angle: "  << endl;
         stream << "Tip Speed Ratio: " << str << endl;
         stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
+        stream << "Reynolds: " << Reynolds[i] << endl;
+        stream << "alpha " << alpha[i] << endl;
         stream << endl;
 
 if(m_parameter.Lowson_type!=0){
@@ -1424,14 +1510,17 @@ if(m_parameter.Lowson_type!=0){
 //              "dB_A_P"  << ";" <<
 //              "dB_B_P"  << ";" <<
 //              "dB_C_P"  << ";" <<
-              "SPL_alpha"  << ";" <<
-              "SPL_S"  << ";" <<
-              "SPL_P"  << ";" <<
-              "SPL_dB"  << ";" <<
-              "SPL_dB_A"  << ";" <<
-              "SPL_dB_B"  << ";" <<
-              "SPL_dB_C"  << ";" <<
-              "SPL_LE_dB"  << ";" <<
+              "SPL (dB)"  << ";" <<
+              "SPLa"  << ";" <<
+              "SPLs"  << ";" <<
+              "SPLp"  << ";" <<
+              "SPL (dB(A))"  << ";" <<
+              "SPL (dB(B))"  << ";" <<
+              "SPL (dB(C))"  << ";" <<
+              "SPL_LE (dB) "  << ";" <<
+              "SPL_LE ((dB(A)) "  << ";" <<
+              "SPL_LE ((dB(B)) "  << ";" <<
+              "SPL_LE (dB(C)) "  << ";" <<
 //              "s_log_SPL_alpha"  << ";" <<
 //              "s_log_SPL_S"  << ";" <<
 //              "s_log_SPL_P"  << ";" <<
@@ -1483,13 +1572,13 @@ else{
 //                  "dB_A_P"  << ";" <<
 //                  "dB_B_P"  << ";" <<
 //                  "dB_C_P"  << ";" <<
-                  "SPL_alpha"  << ";" <<
-                  "SPL_S"  << ";" <<
-                  "SPL_P"  << ";" <<
-                  "SPL_dB"  << ";" <<
-                  "SPL_dB_A"  << ";" <<
-                  "SPL_dB_B"  << ";" <<
-                  "SPL_dB_C"  << ";" <<
+                  "SPL (dB)"  << ";" <<
+                  "SPLa"  << ";" <<
+                  "SPLs"  << ";" <<
+                  "SPLp"  << ";" <<
+                  "SPL (dB(A))"  << ";" <<
+                  "SPL (dB(B))"  << ";" <<
+                  "SPL (dB(C))"  << ";" <<
 //                  "s_log_SPL_alpha"  << ";" <<
 //                  "s_log_SPL_S"  << ";" <<
 //                  "s_log_SPL_P"  << ";" <<
@@ -1509,6 +1598,9 @@ else{
     double slog_dBB[w];
     double slog_dBC[w];
     double slog_LedB[w];
+    double slog_LedBAW[w];
+    double slog_LedBBW[w];
+    double slog_LedBCW[w];
 
      for (int j = 0; j < w; ++j) {
 
@@ -1672,6 +1764,15 @@ else{
     double SPL_LedB[w];
     SPL_LedB[w]=0;
 
+    double SPL_LedBAW[w];
+    SPL_LedBAW[w]=0;
+
+    double SPL_LedBBW[w];
+    SPL_LedBBW[w]=0;
+
+    double SPL_LedBCW[w];
+    SPL_LedBCW[w]=0;
+
     u_le=m_parameter.u_wind_speed*100.;
     c_le=100.*chord[i];
     I_le=m_parameter.TurbulenceIntensity;
@@ -1685,11 +1786,11 @@ else{
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
 
-        if(m_parameter.Lowson_type==2){
-            c_const_le = c_const_rd_le;
-            d_const_le = d_const_rd_le;
-         }
-        else if(m_parameter.Lowson_type==1){
+    if(m_parameter.Lowson_type==2){
+        c_const_le = c_const_rd_le;
+        d_const_le = d_const_rd_le;
+     }
+    else if(m_parameter.Lowson_type==1){
             c_const_le = c_const_vk_le;
             d_const_le = d_const_vk_le;
          }
@@ -1706,12 +1807,18 @@ aux5_le=10.*log10(aux0_le*aux4_le);
 //Validation:
 
 //Lowson validation:
-if ((((m_parameter.Lowson_type!=0 & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
+SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
+SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
+SPL_LedBCW[j]=SPL_LedB[j]+CWeighting[j];
 LE_validation=true;
 }
 else{
 SPL_LedB[j]=-999999999999.;
+SPL_LedBAW[j]=-999999999999.;
+SPL_LedBBW[j]=-999999999999.;
+SPL_LedBCW[j]=-999999999999.;
 LE_validation=false;
 }
 
@@ -1739,6 +1846,9 @@ BPM_validation=false;
     slog_dBB[j]=pow(10.,(SPL_B[j]/10.));
     slog_dBC[j]=pow(10.,(SPL_C[j]/10.));
     slog_LedB[j]=pow(10.,(SPL_LedB[j]/10.));
+    slog_LedBAW[j]=pow(10.,(SPL_LedBAW[j]/10.));
+    slog_LedBBW[j]=pow(10.,(SPL_LedBBW[j]/10.));
+    slog_LedBCW[j]=pow(10.,(SPL_LedBCW[j]/10.));
 
     if(qIsNaN(slog_SPL_alpha[j])){slog_SPL_alpha[j]=0;}
     if(qIsNaN(slog_SPL_S[j])){slog_SPL_S[j]=0;}
@@ -1748,15 +1858,33 @@ BPM_validation=false;
     if(qIsNaN(slog_dBB[j])){slog_dBB[j]=0;}
     if(qIsNaN(slog_dBC[j])){slog_dBC[j]=0;}
     if(qIsNaN(slog_LedB[j])){slog_LedB[j]=0;}
+    if(qIsNaN(slog_LedBAW[j])){slog_LedBAW[j]=0;}
+    if(qIsNaN(slog_LedBBW[j])){slog_LedBBW[j]=0;}
+    if(qIsNaN(slog_LedBCW[j])){slog_LedBCW[j]=0;}
 
-    splog_OASPL_alpha=splog_OASPL_alpha+slog_SPL_alpha[j];
-    splog_OASPL_S=splog_OASPL_S+slog_SPL_S[j];
-    splog_OASPL_P=splog_OASPL_P+slog_SPL_P[j];
-    splog_OASPL=splog_OASPL+slog_SPL[j];
-    splog_dBA=splog_dBA+slog_dBA[j];
-    splog_dBB=splog_dBB+slog_dBB[j];
-    splog_dBC=splog_dBC+slog_dBC[j];
-    splog_LedB=splog_LedB+slog_LedB[j];
+    splog_OASPL_alpha+=slog_SPL_alpha[j];
+    splog_OASPL_S+=slog_SPL_S[j];
+    splog_OASPL_P+=slog_SPL_P[j];
+    splog_OASPL+=slog_SPL[j];
+    splog_dBA+=slog_dBA[j];
+    splog_dBB+=slog_dBB[j];
+    splog_dBC+=slog_dBC[j];
+    splog_LedB+=slog_LedB[j];
+    splog_LedBAW+=slog_LedBAW[j];
+    splog_LedBBW+=slog_LedBBW[j];
+    splog_LedBCW+=slog_LedBCW[j];
+
+    splog_OASPL_alpha_a+=slog_SPL_alpha[j];
+    splog_OASPL_S_a+=slog_SPL_S[j];
+    splog_OASPL_P_a+=slog_SPL_P[j];
+    splog_OASPL_a+=slog_SPL[j];
+    splog_dBA_a+=slog_dBA[j];
+    splog_dBB_a+=slog_dBB[j];
+    splog_dBC_a+=slog_dBC[j];
+    splog_LedB_a+=slog_LedB[j];
+    splog_LedBAW_a+=slog_LedBAW[j];
+    splog_LedBBW_a+=slog_LedBBW[j];
+    splog_LedBCW_a+=slog_LedBCW[j];
 
     sp_OASPL_alpha=10*log10(splog_OASPL_alpha);
     sp_OASPL_S=10*log10(splog_OASPL_S);
@@ -1766,6 +1894,21 @@ BPM_validation=false;
     sp_dBB=10*log10(splog_dBB);
     sp_dBC=10*log10(splog_dBC);
     sp_LedB=10*log10(splog_LedB);
+    sp_LedBAW=10*log10(splog_LedBAW);
+    sp_LedBBW=10*log10(splog_LedBBW);
+    sp_LedBCW=10*log10(splog_LedBCW);
+
+    sp_OASPL_alpha_a=10*log10(splog_OASPL_alpha_a);
+    sp_OASPL_S_a=10*log10(splog_OASPL_S_a);
+    sp_OASPL_P_a=10*log10(splog_OASPL_P_a);
+    sp_OASPL_a=10*log10(splog_OASPL_a);
+    sp_dBA_a=10*log10(splog_dBA_a);
+    sp_dBB_a=10*log10(splog_dBB_a);
+    sp_dBC_a=10*log10(splog_dBC_a);
+    sp_LedB_a=10*log10(splog_LedB_a);
+    sp_LedBAW_a=10*log10(splog_LedBAW_a);
+    sp_LedBBW_a=10*log10(splog_LedBBW_a);
+    sp_LedBCW_a=10*log10(splog_LedBCW_a);
 
     if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
     if(qIsInf(sp_OASPL_S)){sp_OASPL_S=0;}
@@ -1775,6 +1918,9 @@ BPM_validation=false;
     if(qIsInf(sp_dBB)){sp_dBB=0;}
     if(qIsInf(sp_dBC)){sp_dBC=0;}
     if(qIsInf(sp_LedB)){sp_LedB=0;}
+    if(qIsInf(sp_LedBAW)){sp_LedBAW=0;}
+    if(qIsInf(sp_LedBBW)){sp_LedBBW=0;}
+    if(qIsInf(sp_LedBCW)){sp_LedBCW=0;}
 
     if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
     if(qIsInf(splog_OASPL_S)){splog_OASPL_S=0;}
@@ -1784,15 +1930,81 @@ BPM_validation=false;
     if(qIsInf(splog_dBB)){splog_dBB=0;}
     if(qIsInf(splog_dBC)){splog_dBC=0;}
     if(qIsInf(splog_LedB)){splog_LedB=0;}
+    if(qIsInf(splog_LedBAW)){splog_LedBAW=0;}
+    if(qIsInf(splog_LedBBW)){splog_LedBBW=0;}
+    if(qIsInf(splog_LedBCW)){splog_LedBCW=0;}
 
-    stlog_OASPL_alpha=stlog_OASPL_alpha+splog_OASPL_alpha;
-    stlog_OASPL_S=stlog_OASPL_S+splog_OASPL_S;
-    stlog_OASPL_P=stlog_OASPL_P+splog_OASPL_P;
-    stlog_OASPL=stlog_OASPL+splog_OASPL;
-    stlog_dBA=stlog_dBA+splog_dBA;
-    stlog_dBB=stlog_dBB+splog_dBB;
-    stlog_dBC=stlog_dBC+splog_dBC;
-    stlog_LedB=stlog_LedB+splog_LedB;
+    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
+    if(qIsInf(sp_OASPL_S_a)){sp_OASPL_S_a=0;}
+    if(qIsInf(sp_OASPL_P_a)){sp_OASPL_P_a=0;}
+    if(qIsInf(sp_OASPL_a)){sp_OASPL_a=0;}
+    if(qIsInf(sp_dBA_a)){sp_dBA_a=0;}
+    if(qIsInf(sp_dBB_a)){sp_dBB_a=0;}
+    if(qIsInf(sp_dBC_a)){sp_dBC_a=0;}
+    if(qIsInf(sp_LedB_a)){sp_LedB_a=0;}
+    if(qIsInf(sp_LedBAW_a)){sp_LedBAW_a=0;}
+    if(qIsInf(sp_LedBBW_a)){sp_LedBBW_a=0;}
+    if(qIsInf(sp_LedBCW_a)){sp_LedBCW_a=0;}
+
+    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
+    if(qIsInf(splog_OASPL_S_a)){splog_OASPL_S_a=0;}
+    if(qIsInf(splog_OASPL_P_a)){splog_OASPL_P_a=0;}
+    if(qIsInf(splog_OASPL_a)){splog_OASPL_a=0;}
+    if(qIsInf(splog_dBA_a)){splog_dBA_a=0;}
+    if(qIsInf(splog_dBB_a)){splog_dBB_a=0;}
+    if(qIsInf(splog_dBC_a)){splog_dBC_a=0;}
+    if(qIsInf(splog_LedB_a)){splog_LedB_a=0;}
+    if(qIsInf(splog_LedBAW_a)){splog_LedBAW_a=0;}
+    if(qIsInf(splog_LedBBW_a)){splog_LedBBW_a=0;}
+    if(qIsInf(splog_LedBCW_a)){splog_LedBCW_a=0;}
+
+    stlog_OASPL_alpha_a+=splog_OASPL_alpha_a;
+    stlog_OASPL_S_a+=splog_OASPL_S_a;
+    stlog_OASPL_P_a+=splog_OASPL_P_a;
+    stlog_OASPL_a+=splog_OASPL_a;
+    stlog_dBA_a+=splog_dBA_a;
+    stlog_dBB_a+=splog_dBB_a;
+    stlog_dBC_a+=splog_dBC_a;
+    stlog_LedB_a+=splog_LedB_a;
+    stlog_LedBAW_a+=splog_LedBAW_a;
+    stlog_LedBBW_a+=splog_LedBBW_a;
+    stlog_LedBCW_a+=splog_LedBCW_a;
+
+    st_OASPL_alpha_a=10*log10(stlog_OASPL_alpha_a);
+    st_OASPL_S_a=10*log10(stlog_OASPL_S_a);
+    st_OASPL_P_a=10*log10(stlog_OASPL_P_a);
+    st_OASPL_a=10*log10(stlog_OASPL_a);
+    st_dBA_a=10*log10(stlog_dBA_a);
+    st_dBB_a=10*log10(stlog_dBB_a);
+    st_dBC_a=10*log10(stlog_dBC_a);
+    st_LedB_a=10*log10(stlog_LedB_a);
+    st_LedBAW_a=10*log10(stlog_LedBAW_a);
+    st_LedBBW_a=10*log10(stlog_LedBBW_a);
+    st_LedBCW_a=10*log10(stlog_LedBAW_a);
+
+    if(qIsInf(st_OASPL_alpha_a)){st_OASPL_alpha_a=0;}
+    if(qIsInf(st_OASPL_S_a)){st_OASPL_S_a=0;}
+    if(qIsInf(st_OASPL_P_a)){st_OASPL_P_a=0;}
+    if(qIsInf(st_OASPL_a)){st_OASPL_a=0;}
+    if(qIsInf(st_dBA_a)){st_dBA_a=0;}
+    if(qIsInf(st_dBB_a)){st_dBB_a=0;}
+    if(qIsInf(st_dBC_a)){st_dBC_a=0;}
+    if(qIsInf(st_LedB_a)){st_LedB_a=0;}
+    if(qIsInf(st_LedBAW_a)){st_LedBAW_a=0;}
+    if(qIsInf(st_LedBBW_a)){st_LedBBW_a=0;}
+    if(qIsInf(st_LedBCW_a)){st_LedBCW_a=0;}
+
+    stlog_OASPL_alpha+=splog_OASPL_alpha;
+    stlog_OASPL_S+=splog_OASPL_S;
+    stlog_OASPL_P+=splog_OASPL_P;
+    stlog_OASPL+=splog_OASPL;
+    stlog_dBA+=splog_dBA;
+    stlog_dBB+=splog_dBB;
+    stlog_dBC+=splog_dBC;
+    stlog_LedB+=splog_LedB;
+    stlog_LedBAW+=splog_LedBAW;
+    stlog_LedBBW+=splog_LedBBW;
+    stlog_LedBCW+=splog_LedBCW;
 
     st_OASPL_alpha=10*log10(stlog_OASPL_alpha);
     st_OASPL_S=10*log10(stlog_OASPL_S);
@@ -1802,6 +2014,9 @@ BPM_validation=false;
     st_dBB=10*log10(stlog_dBB);
     st_dBC=10*log10(stlog_dBC);
     st_LedB=10*log10(stlog_LedB);
+    st_LedBAW=10*log10(stlog_LedBAW);
+    st_LedBBW=10*log10(stlog_LedBBW);
+    st_LedBCW=10*log10(stlog_LedBAW);
 
     if(qIsInf(st_OASPL_alpha)){st_OASPL_alpha=0;}
     if(qIsInf(st_OASPL_S)){st_OASPL_S=0;}
@@ -1811,6 +2026,26 @@ BPM_validation=false;
     if(qIsInf(st_dBB)){st_dBB=0;}
     if(qIsInf(st_dBC)){st_dBC=0;}
     if(qIsInf(st_LedB)){st_LedB=0;}
+    if(qIsInf(st_LedBAW)){st_LedBAW=0;}
+    if(qIsInf(st_LedBBW)){st_LedBBW=0;}
+    if(qIsInf(st_LedBCW)){st_LedBCW=0;}
+
+    if (m_parameter.Lowson_type==2)   {
+SPL_blade_total_aux+=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW+st_LedBCW;
+
+SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a+st_LedBCW_a;
+    }
+    else {
+SPL_blade_total_aux=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW;
+
+SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a;
+            }
+
+if (j==w){
+SPL_blade_total = 10.*log10(1./number_of_segments*(SPL_blade_total_aux));
+
+SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
+}
 
     QString observations_x("");
     if (!((Reynolds[i] >9.5*pow(10,5)) & (Reynolds[i]<2.5*pow(10,6))) || Mach[i]>=0.19 || !((alpha[i]<=0) & (alpha[i]>=0)) || !((alpha[i]<=5) & (alpha[i]>=5)) || !((alpha[i]<=10) & (alpha[i]>=10))){
@@ -1822,48 +2057,56 @@ BPM_validation=false;
     if (Reynolds[i] >1.5*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
     observations_x.append('4');}
 
+    SPL_LedB_val.clear();
+    SPL_LedB_valAW.clear();
+    SPL_LedB_valBW.clear();
+    SPL_LedB_valCW.clear();
+    SPL_alpha_val.clear();
+    SPL_dB_S_val.clear();
+    SPL_dB_P_val.clear();
+    SPL_S_val.clear();
+    SPL_P_val.clear();
+    SPL_dB_val.clear();
+    SPL_A_val.clear();
+    SPL_B_val.clear();
+    SPL_C_val.clear();
 
-SPL_LedB_val.clear();
-SPL_alpha_val.clear();
-SPL_dB_S_val.clear();
-SPL_dB_P_val.clear();
-SPL_S_val.clear();
-SPL_P_val.clear();
-SPL_dB_val.clear();
-SPL_A_val.clear();
-SPL_B_val.clear();
-SPL_C_val.clear();
+        if(BPM_validation){
+    SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 2));
+    SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 2));
+    SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 2));
+    SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 2));
+    SPL_A_val.append(QString::number(SPL_A[j], 'f', 2));
+    SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
+    SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
 
-    if(BPM_validation){
-SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 2));
-SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 2));
-SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 2));
-SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 2));
-SPL_A_val.append(QString::number(SPL_A[j], 'f', 2));
-SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
-SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
+    if(SPL_S[j]==-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
+    if(SPL_P[j]==-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
+       }
+        else{
+    SPL_alpha_val.append("N/A");
+    SPL_dB_S_val.append("N/A");
+    SPL_dB_P_val.append("N/A");
+    SPL_S_val.append("N/A");
+    SPL_P_val.append("N/A");
+    SPL_dB_val.append("N/A");
+    SPL_A_val.append("N/A");
+    SPL_B_val.append("N/A");
+    SPL_C_val.append("N/A");
+        }
 
-if(SPL_S[j]==-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
-if(SPL_P[j]==-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
-   }
-    else{
-SPL_alpha_val.append("N/A");
-SPL_dB_S_val.append("N/A");
-SPL_dB_P_val.append("N/A");
-SPL_S_val.append("N/A");
-SPL_P_val.append("N/A");
-SPL_dB_val.append("N/A");
-SPL_A_val.append("N/A");
-SPL_B_val.append("N/A");
-SPL_C_val.append("N/A");
+    if (LE_validation){
+    SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 2));
+    SPL_LedB_valAW.append(QString::number(SPL_LedBAW[j], 'f', 2));
+    SPL_LedB_valBW.append(QString::number(SPL_LedBBW[j], 'f', 2));
+    SPL_LedB_valCW.append(QString::number(SPL_LedBCW[j], 'f', 2));
     }
-
-if (LE_validation){
-SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 2));
-}
-else{
-SPL_LedB_val.append("N/A");
-}
+    else{
+    SPL_LedB_val.append("N/A");
+    SPL_LedB_valAW.append("N/A");
+    SPL_LedB_valBW.append("N/A");
+    SPL_LedB_valCW.append("N/A");
+    }
 
 if (m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14)  <<
@@ -1907,14 +2150,17 @@ if (m_parameter.Lowson_type!=0){
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
+                  SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
-                  SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
                   SPL_LedB_val  << ";" <<
+                  SPL_LedB_valAW  << ";" <<
+                  SPL_LedB_valBW  << ";" <<
+                  SPL_LedB_valCW  << ";" <<
 //                  slog_SPL_alpha[j]  << ";" <<
 //                  slog_SPL_S[j]  << ";" <<
 //                  slog_SPL_P[j]  << ";" <<
@@ -1968,10 +2214,10 @@ else
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
+                  SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
-                  SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
@@ -1987,36 +2233,61 @@ else
 
 if(j==(w-1)){
         stream << endl;
-if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_alpha: "  << "N/A"<< endl;} else {stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;}
-if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_S: "  << "N/A"<< endl;} else {stream << "SPL_S: "  << sp_OASPL_S<< endl;}
- if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_P: "  << "N/A"<< endl;} else {stream << "SPL_P: "  << sp_OASPL_P<< endl;}
-if (sp_OASPL<=0 & sp_OASPL>=0){stream << "SPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< endl;}
-if (sp_dBA<=0 & sp_dBA>=0){stream << "SPL A: "  << "N/A"<< endl;} else {stream << "SPL A: "  << sp_dBA<< endl;}
-if (sp_dBB<=0 & sp_dBB>=0){stream << "SPL B: "  << "N/A"<< endl;} else {stream << "SPL B: "  << sp_dBB<< endl;}
-if (sp_dBC<=0 & sp_dBC>=0){stream << "SPL C: "  << "N/A"<< endl;} else {stream << "SPL C: "  << sp_dBC<< endl;}
-  if (m_parameter.Lowson_type!=0){
-if (sp_LedB<=0 & sp_LedB>=0){stream << "LE: "  << "N/A"<< endl;} else {stream << "LE: "  << sp_LedB<< endl;}}
-        stream << endl;
+        if (sp_OASPL<=0 & sp_OASPL>=0){stream << "OASPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< "dB" << endl;}
+        if (sp_dBA<=0 & sp_dBA>=0){stream << "OASPL(A): "  << "N/A"<< endl;} else {stream << "OASPL(A): "  << sp_dBA<< "dB" << endl;}
+        if (sp_dBB<=0 & sp_dBB>=0){stream << "OASPL(B): "  << "N/A"<< endl;} else {stream << "OASPL(B): "  << sp_dBB<< "dB" << endl;}
+        if (sp_dBC<=0 & sp_dBC>=0){stream << "OASPL(C): "  << "N/A"<< endl;} else {stream << "OASPL(C): "  << sp_dBC<< "dB" << endl;}
+        if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_a: "  << "N/A"<< endl;} else {stream << "SPL_a: "  << sp_OASPL_alpha<< endl;}
+        if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_s: "  << "N/A"<< endl;} else {stream << "SPL_s: "  << sp_OASPL_S<< endl;}
+         if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_p: "  << "N/A"<< endl;} else {stream << "SPL_p: "  << sp_OASPL_P<< endl;}
+          if (m_parameter.Lowson_type!=0){
+        if (sp_LedB<=0 & sp_LedB>=0){stream << "SPL_LE: "  << "N/A"<< endl;} else {stream << "SPL_LE: "  << sp_LedB<< "dB" << endl;}
+        if (sp_LedBAW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBAW<< "dB" << endl;}
+        if (sp_LedBBW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBBW<< "dB" << endl;}
+        if (sp_LedBCW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBCW<< "dB" << endl;}
+          }
+                stream << endl;
+if (i>=(number_of_segments-1)){
+stream << "***********************************************************"<<endl;
+stream << "Total Blade: "  << endl;
+stream << "OASPL: "  << st_OASPL_a<< "dB" << endl;
+stream << "OASPL (A): "  << st_dBA_a<< "dB" <<  endl;
+stream << "OASPL (B): "  << st_dBB_a<< "dB" <<  endl;
+stream << "OASPL (C): "  << st_dBC_a<< "dB" <<  endl;
+stream << "SPL_a: "  << st_OASPL_alpha_a<< endl;
+stream << "SPL_s: "  << st_OASPL_S_a<< endl;
+stream << "SPL_p: "  << st_OASPL_P_a<< endl;
+if (m_parameter.Lowson_type!=0){
+stream << "SPL_LE: "  << st_LedB_a<< "dB" <<  endl;
+stream << "SPL_LE (A): "  << st_LedBAW_a<< "dB" <<  endl;
+stream << "SPL_LE (B): "  << st_LedBBW_a<< "dB" <<  endl;
+stream << "SPL_LE (C): "  << st_LedBCW_a<< "dB" <<  endl;}
+stream << "SPL_Blade_total: " << SPL_blade_total_a << "dB" <<  endl;
+stream << "***********************************************************"<<endl;
+stream << endl;}
 
 if(z>=lend & i>=(number_of_segments-1)){
-        stream << "***********************************************************"<<endl;
-        stream << "Total: "  << endl;
-        stream << "SPL_alpha: "  << st_OASPL_alpha<< endl;
-        stream << "SPL_S: "  << st_OASPL_S<< endl;
-        stream << "SPL_P: "  << st_OASPL_P<< endl;
-        stream << "SPL: "  << st_OASPL<< endl;
-        stream << "SPL A: "  << st_dBA<< endl;
-        stream << "SPL B: "  << st_dBB<< endl;
-        stream << "SPL C: "  << st_dBC<< endl;
-  if (m_parameter.Lowson_type!=0){
-        stream << "LE: "  << st_LedB<< endl;}
-        stream << "***********************************************************"<<endl;
+stream << "***********************************************************"<<endl;
+stream << "TOTAL COMPLETE" << endl;
+stream <<"***********************************************************"<<endl;
+                stream << "Total: "  << endl;
+                stream << "OASPL: "  << st_OASPL<< "dB" << endl;
+                stream << "OASPL (A): "  << st_dBA<< "dB" <<  endl;
+                stream << "OASPL (B): "  << st_dBB<< "dB" <<  endl;
+                stream << "OASPL (C): "  << st_dBC<< "dB" <<  endl;
+                stream << "SPL_a: "  << st_OASPL_alpha<< endl;
+                stream << "SPL_s: "  << st_OASPL_S<< endl;
+                stream << "SPL_p: "  << st_OASPL_P<< endl;
+          if (m_parameter.Lowson_type!=0){
+                stream << "SPL_LE: "  << st_LedB<< "dB" <<  endl;
+          stream << "SPL_LE (A): "  << st_LedBAW<< "dB" <<  endl;
+        stream << "SPL_LE (B): "  << st_LedBBW<< "dB" <<  endl;
+stream << "SPL_LE (C): "  << st_LedBCW<< "dB" <<  endl;}
+                stream << "SPL_Blade_total: " << SPL_blade_total << "dB" <<  endl;
+                stream << "***********************************************************"<<endl;
 stream << endl;
-if (observations_x!=""){
-stream << "Error[1]:" << observations_x << endl;
-stream << "[1]Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
-stream << endl;}}}
-}}
+}
+}}}
 z=z+ldelta;
         }}
 
@@ -2111,6 +2382,9 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         QString SPL_B_val("");
         QString SPL_C_val("");
         QString SPL_LedB_val("");
+        QString SPL_LedB_valAW("");
+        QString SPL_LedB_valBW("");
+        QString SPL_LedB_valCW("");
 
         //definitions
         double axial_ind_fact[number_of_segments];
@@ -2250,6 +2524,20 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double splog_LedB=0;
         double st_LedB=0;
         double stlog_LedB=0;
+        double sp_LedBAW=0;
+        double splog_LedBAW=0;
+        double st_LedBAW=0;
+        double stlog_LedBAW=0;
+        double sp_LedBBW=0;
+        double splog_LedBBW=0;
+        double st_LedBBW=0;
+        double stlog_LedBBW=0;
+        double sp_LedBCW=0;
+        double splog_LedBCW=0;
+        double st_LedBCW=0;
+        double stlog_LedBCW=0;
+        double SPL_blade_total=0;
+        double SPL_blade_total_aux=0;
 
         double r_R0  =  0.05; double c_R0 = 0.05500;
         double r_R1  =  0.25; double c_R1 = 0.07500;
@@ -2258,23 +2546,73 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         bool LE_validation;
         bool BPM_validation;
 
-        for (int i = 0; i < number_of_segments; ++i) {
+        sp_OASPL_alpha=0;
+        sp_OASPL_S=0;
+        sp_OASPL_P=0;
+        sp_OASPL=0;
+        sp_dBA=0;
+        sp_dBB=0;
+        sp_dBC=0;
+        splog_OASPL_alpha=0;
+        splog_OASPL_S=0;
+        splog_OASPL_P=0;
+        splog_OASPL=0;
+        splog_dBA=0;
+        splog_dBB=0;
+        splog_dBC=0;
+        splog_LedB=0;
+        splog_LedBAW=0;
+        splog_LedBBW=0;
+        splog_LedBCW=0;
 
-sp_OASPL_alpha=0;
-sp_OASPL_S=0;
-sp_OASPL_P=0;
-sp_OASPL=0;
-sp_dBA=0;
-sp_dBB=0;
-sp_dBC=0;
-splog_OASPL_alpha=0;
-splog_OASPL_S=0;
-splog_OASPL_P=0;
-splog_OASPL=0;
-splog_dBA=0;
-splog_dBB=0;
-splog_dBC=0;
-splog_LedB=0;
+        double sp_OASPL_alpha_a=0;
+        double splog_OASPL_alpha_a=0;
+        double st_OASPL_alpha_a=0;
+        double stlog_OASPL_alpha_a=0;
+        double sp_OASPL_S_a=0;
+        double splog_OASPL_S_a=0;
+        double st_OASPL_S_a=0;
+        double stlog_OASPL_S_a=0;
+        double sp_OASPL_P_a=0;
+        double splog_OASPL_P_a=0;
+        double st_OASPL_P_a=0;
+        double stlog_OASPL_P_a=0;
+        double sp_OASPL_a=0;
+        double splog_OASPL_a=0;
+        double st_OASPL_a=0;
+        double stlog_OASPL_a=0;
+        double sp_dBA_a=0;
+        double splog_dBA_a=0;
+        double st_dBA_a=0;
+        double stlog_dBA_a=0;
+        double sp_dBB_a=0;
+        double splog_dBB_a=0;
+        double st_dBB_a=0;
+        double stlog_dBB_a=0;
+        double sp_dBC_a=0;
+        double splog_dBC_a=0;
+        double st_dBC_a=0;
+        double stlog_dBC_a=0;
+        double sp_LedB_a=0;
+        double splog_LedB_a=0;
+        double st_LedB_a=0;
+        double stlog_LedB_a=0;
+        double sp_LedBAW_a=0;
+        double splog_LedBAW_a=0;
+        double st_LedBAW_a=0;
+        double stlog_LedBAW_a=0;
+        double sp_LedBBW_a=0;
+        double splog_LedBBW_a=0;
+        double st_LedBBW_a=0;
+        double stlog_LedBBW_a=0;
+        double sp_LedBCW_a=0;
+        double splog_LedBCW_a=0;
+        double st_LedBCW_a=0;
+        double stlog_LedBCW_a=0;
+        double SPL_blade_total_a=0;
+        double SPL_blade_total_aux_a=0;
+
+        for (int i = 0; i < number_of_segments; ++i) {
 
             // definitions
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
@@ -2690,14 +3028,17 @@ if(m_parameter.Lowson_type!=0){
 //              "dB_A_P"  << ";" <<
 //              "dB_B_P"  << ";" <<
 //              "dB_C_P"  << ";" <<
-              "SPL_alpha"  << ";" <<
-              "SPL_S"  << ";" <<
-              "SPL_P"  << ";" <<
-              "SPL_dB"  << ";" <<
-              "SPL_dB_A"  << ";" <<
-              "SPL_dB_B"  << ";" <<
-              "SPL_dB_C"  << ";" <<
-              "SPL_LE_dB"  << ";" <<
+              "SPL (dB)"  << ";" <<
+              "SPLa"  << ";" <<
+              "SPLs"  << ";" <<
+              "SPLp"  << ";" <<
+              "SPL (dB(A))"  << ";" <<
+              "SPL (dB(B))"  << ";" <<
+              "SPL (dB(C))"  << ";" <<
+              "SPL_LE (dB) "  << ";" <<
+              "SPL_LE ((dB(A)) "  << ";" <<
+              "SPL_LE ((dB(B)) "  << ";" <<
+              "SPL_LE (dB(C)) "  << ";" <<
 //              "s_log_SPL_alpha"  << ";" <<
 //              "s_log_SPL_S"  << ";" <<
 //              "s_log_SPL_P"  << ";" <<
@@ -2749,13 +3090,13 @@ else{
 //                  "dB_A_P"  << ";" <<
 //                  "dB_B_P"  << ";" <<
 //                  "dB_C_P"  << ";" <<
-                  "SPL_alpha"  << ";" <<
-                  "SPL_S"  << ";" <<
-                  "SPL_P"  << ";" <<
-                  "SPL_dB"  << ";" <<
-                  "SPL_dB_A"  << ";" <<
-                  "SPL_dB_B"  << ";" <<
-                  "SPL_dB_C"  << ";" <<
+                  "SPL (dB)"  << ";" <<
+                  "SPLa"  << ";" <<
+                  "SPLs"  << ";" <<
+                  "SPLp"  << ";" <<
+                  "SPL (dB(A))"  << ";" <<
+                  "SPL (dB(B))"  << ";" <<
+                  "SPL (dB(C))"  << ";" <<
 //                  "s_log_SPL_alpha"  << ";" <<
 //                  "s_log_SPL_S"  << ";" <<
 //                  "s_log_SPL_P"  << ";" <<
@@ -2775,6 +3116,9 @@ else{
     double slog_dBB[w];
     double slog_dBC[w];
     double slog_LedB[w];
+    double slog_LedBAW[w];
+    double slog_LedBBW[w];
+    double slog_LedBCW[w];
 
      for (int j = 0; j < w; ++j) {
 
@@ -2938,6 +3282,15 @@ else{
     double SPL_LedB[w];
     SPL_LedB[w]=0;
 
+    double SPL_LedBAW[w];
+    SPL_LedBAW[w]=0;
+
+    double SPL_LedBBW[w];
+    SPL_LedBBW[w]=0;
+
+    double SPL_LedBCW[w];
+    SPL_LedBCW[w]=0;
+
     u_le=m_parameter.u_wind_speed*100.;
     c_le=100.*chord[i];
     I_le=m_parameter.TurbulenceIntensity;
@@ -2974,10 +3327,16 @@ aux5_le=10.*log10(aux0_le*aux4_le);
 //Lowson validation:
 if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
+SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
+SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
+SPL_LedBCW[j]=SPL_LedB[j]+CWeighting[j];
 LE_validation=true;
 }
 else{
 SPL_LedB[j]=-999999999999.;
+SPL_LedBAW[j]=-999999999999.;
+SPL_LedBBW[j]=-999999999999.;
+SPL_LedBCW[j]=-999999999999.;
 LE_validation=false;
 }
 
@@ -3005,6 +3364,9 @@ BPM_validation=false;
     slog_dBB[j]=pow(10.,(SPL_B[j]/10.));
     slog_dBC[j]=pow(10.,(SPL_C[j]/10.));
     slog_LedB[j]=pow(10.,(SPL_LedB[j]/10.));
+    slog_LedBAW[j]=pow(10.,(SPL_LedBAW[j]/10.));
+    slog_LedBBW[j]=pow(10.,(SPL_LedBBW[j]/10.));
+    slog_LedBCW[j]=pow(10.,(SPL_LedBCW[j]/10.));
 
     if(qIsNaN(slog_SPL_alpha[j])){slog_SPL_alpha[j]=0;}
     if(qIsNaN(slog_SPL_S[j])){slog_SPL_S[j]=0;}
@@ -3014,15 +3376,33 @@ BPM_validation=false;
     if(qIsNaN(slog_dBB[j])){slog_dBB[j]=0;}
     if(qIsNaN(slog_dBC[j])){slog_dBC[j]=0;}
     if(qIsNaN(slog_LedB[j])){slog_LedB[j]=0;}
+    if(qIsNaN(slog_LedBAW[j])){slog_LedBAW[j]=0;}
+    if(qIsNaN(slog_LedBBW[j])){slog_LedBBW[j]=0;}
+    if(qIsNaN(slog_LedBCW[j])){slog_LedBCW[j]=0;}
 
-    splog_OASPL_alpha=splog_OASPL_alpha+slog_SPL_alpha[j];
-    splog_OASPL_S=splog_OASPL_S+slog_SPL_S[j];
-    splog_OASPL_P=splog_OASPL_P+slog_SPL_P[j];
-    splog_OASPL=splog_OASPL+slog_SPL[j];
-    splog_dBA=splog_dBA+slog_dBA[j];
-    splog_dBB=splog_dBB+slog_dBB[j];
-    splog_dBC=splog_dBC+slog_dBC[j];
-    splog_LedB=splog_LedB+slog_LedB[j];
+    splog_OASPL_alpha+=slog_SPL_alpha[j];
+    splog_OASPL_S+=slog_SPL_S[j];
+    splog_OASPL_P+=slog_SPL_P[j];
+    splog_OASPL+=slog_SPL[j];
+    splog_dBA+=slog_dBA[j];
+    splog_dBB+=slog_dBB[j];
+    splog_dBC+=slog_dBC[j];
+    splog_LedB+=slog_LedB[j];
+    splog_LedBAW+=slog_LedBAW[j];
+    splog_LedBBW+=slog_LedBBW[j];
+    splog_LedBCW+=slog_LedBCW[j];
+
+    splog_OASPL_alpha_a+=slog_SPL_alpha[j];
+    splog_OASPL_S_a+=slog_SPL_S[j];
+    splog_OASPL_P_a+=slog_SPL_P[j];
+    splog_OASPL_a+=slog_SPL[j];
+    splog_dBA_a+=slog_dBA[j];
+    splog_dBB_a+=slog_dBB[j];
+    splog_dBC_a+=slog_dBC[j];
+    splog_LedB_a+=slog_LedB[j];
+    splog_LedBAW_a+=slog_LedBAW[j];
+    splog_LedBBW_a+=slog_LedBBW[j];
+    splog_LedBCW_a+=slog_LedBCW[j];
 
     sp_OASPL_alpha=10*log10(splog_OASPL_alpha);
     sp_OASPL_S=10*log10(splog_OASPL_S);
@@ -3032,6 +3412,21 @@ BPM_validation=false;
     sp_dBB=10*log10(splog_dBB);
     sp_dBC=10*log10(splog_dBC);
     sp_LedB=10*log10(splog_LedB);
+    sp_LedBAW=10*log10(splog_LedBAW);
+    sp_LedBBW=10*log10(splog_LedBBW);
+    sp_LedBCW=10*log10(splog_LedBCW);
+
+    sp_OASPL_alpha_a=10*log10(splog_OASPL_alpha_a);
+    sp_OASPL_S_a=10*log10(splog_OASPL_S_a);
+    sp_OASPL_P_a=10*log10(splog_OASPL_P_a);
+    sp_OASPL_a=10*log10(splog_OASPL_a);
+    sp_dBA_a=10*log10(splog_dBA_a);
+    sp_dBB_a=10*log10(splog_dBB_a);
+    sp_dBC_a=10*log10(splog_dBC_a);
+    sp_LedB_a=10*log10(splog_LedB_a);
+    sp_LedBAW_a=10*log10(splog_LedBAW_a);
+    sp_LedBBW_a=10*log10(splog_LedBBW_a);
+    sp_LedBCW_a=10*log10(splog_LedBCW_a);
 
     if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
     if(qIsInf(sp_OASPL_S)){sp_OASPL_S=0;}
@@ -3041,6 +3436,9 @@ BPM_validation=false;
     if(qIsInf(sp_dBB)){sp_dBB=0;}
     if(qIsInf(sp_dBC)){sp_dBC=0;}
     if(qIsInf(sp_LedB)){sp_LedB=0;}
+    if(qIsInf(sp_LedBAW)){sp_LedBAW=0;}
+    if(qIsInf(sp_LedBBW)){sp_LedBBW=0;}
+    if(qIsInf(sp_LedBCW)){sp_LedBCW=0;}
 
     if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
     if(qIsInf(splog_OASPL_S)){splog_OASPL_S=0;}
@@ -3050,15 +3448,81 @@ BPM_validation=false;
     if(qIsInf(splog_dBB)){splog_dBB=0;}
     if(qIsInf(splog_dBC)){splog_dBC=0;}
     if(qIsInf(splog_LedB)){splog_LedB=0;}
+    if(qIsInf(splog_LedBAW)){splog_LedBAW=0;}
+    if(qIsInf(splog_LedBBW)){splog_LedBBW=0;}
+    if(qIsInf(splog_LedBCW)){splog_LedBCW=0;}
 
-    stlog_OASPL_alpha=stlog_OASPL_alpha+splog_OASPL_alpha;
-    stlog_OASPL_S=stlog_OASPL_S+splog_OASPL_S;
-    stlog_OASPL_P=stlog_OASPL_P+splog_OASPL_P;
-    stlog_OASPL=stlog_OASPL+splog_OASPL;
-    stlog_dBA=stlog_dBA+splog_dBA;
-    stlog_dBB=stlog_dBB+splog_dBB;
-    stlog_dBC=stlog_dBC+splog_dBC;
-    stlog_LedB=stlog_LedB+splog_LedB;
+    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
+    if(qIsInf(sp_OASPL_S_a)){sp_OASPL_S_a=0;}
+    if(qIsInf(sp_OASPL_P_a)){sp_OASPL_P_a=0;}
+    if(qIsInf(sp_OASPL_a)){sp_OASPL_a=0;}
+    if(qIsInf(sp_dBA_a)){sp_dBA_a=0;}
+    if(qIsInf(sp_dBB_a)){sp_dBB_a=0;}
+    if(qIsInf(sp_dBC_a)){sp_dBC_a=0;}
+    if(qIsInf(sp_LedB_a)){sp_LedB_a=0;}
+    if(qIsInf(sp_LedBAW_a)){sp_LedBAW_a=0;}
+    if(qIsInf(sp_LedBBW_a)){sp_LedBBW_a=0;}
+    if(qIsInf(sp_LedBCW_a)){sp_LedBCW_a=0;}
+
+    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
+    if(qIsInf(splog_OASPL_S_a)){splog_OASPL_S_a=0;}
+    if(qIsInf(splog_OASPL_P_a)){splog_OASPL_P_a=0;}
+    if(qIsInf(splog_OASPL_a)){splog_OASPL_a=0;}
+    if(qIsInf(splog_dBA_a)){splog_dBA_a=0;}
+    if(qIsInf(splog_dBB_a)){splog_dBB_a=0;}
+    if(qIsInf(splog_dBC_a)){splog_dBC_a=0;}
+    if(qIsInf(splog_LedB_a)){splog_LedB_a=0;}
+    if(qIsInf(splog_LedBAW_a)){splog_LedBAW_a=0;}
+    if(qIsInf(splog_LedBBW_a)){splog_LedBBW_a=0;}
+    if(qIsInf(splog_LedBCW_a)){splog_LedBCW_a=0;}
+
+    stlog_OASPL_alpha_a+=splog_OASPL_alpha_a;
+    stlog_OASPL_S_a+=splog_OASPL_S_a;
+    stlog_OASPL_P_a+=splog_OASPL_P_a;
+    stlog_OASPL_a+=splog_OASPL_a;
+    stlog_dBA_a+=splog_dBA_a;
+    stlog_dBB_a+=splog_dBB_a;
+    stlog_dBC_a+=splog_dBC_a;
+    stlog_LedB_a+=splog_LedB_a;
+    stlog_LedBAW_a+=splog_LedBAW_a;
+    stlog_LedBBW_a+=splog_LedBBW_a;
+    stlog_LedBCW_a+=splog_LedBCW_a;
+
+    st_OASPL_alpha_a=10*log10(stlog_OASPL_alpha_a);
+    st_OASPL_S_a=10*log10(stlog_OASPL_S_a);
+    st_OASPL_P_a=10*log10(stlog_OASPL_P_a);
+    st_OASPL_a=10*log10(stlog_OASPL_a);
+    st_dBA_a=10*log10(stlog_dBA_a);
+    st_dBB_a=10*log10(stlog_dBB_a);
+    st_dBC_a=10*log10(stlog_dBC_a);
+    st_LedB_a=10*log10(stlog_LedB_a);
+    st_LedBAW_a=10*log10(stlog_LedBAW_a);
+    st_LedBBW_a=10*log10(stlog_LedBBW_a);
+    st_LedBCW_a=10*log10(stlog_LedBAW_a);
+
+    if(qIsInf(st_OASPL_alpha_a)){st_OASPL_alpha_a=0;}
+    if(qIsInf(st_OASPL_S_a)){st_OASPL_S_a=0;}
+    if(qIsInf(st_OASPL_P_a)){st_OASPL_P_a=0;}
+    if(qIsInf(st_OASPL_a)){st_OASPL_a=0;}
+    if(qIsInf(st_dBA_a)){st_dBA_a=0;}
+    if(qIsInf(st_dBB_a)){st_dBB_a=0;}
+    if(qIsInf(st_dBC_a)){st_dBC_a=0;}
+    if(qIsInf(st_LedB_a)){st_LedB_a=0;}
+    if(qIsInf(st_LedBAW_a)){st_LedBAW_a=0;}
+    if(qIsInf(st_LedBBW_a)){st_LedBBW_a=0;}
+    if(qIsInf(st_LedBCW_a)){st_LedBCW_a=0;}
+
+    stlog_OASPL_alpha+=splog_OASPL_alpha;
+    stlog_OASPL_S+=splog_OASPL_S;
+    stlog_OASPL_P+=splog_OASPL_P;
+    stlog_OASPL+=splog_OASPL;
+    stlog_dBA+=splog_dBA;
+    stlog_dBB+=splog_dBB;
+    stlog_dBC+=splog_dBC;
+    stlog_LedB+=splog_LedB;
+    stlog_LedBAW+=splog_LedBAW;
+    stlog_LedBBW+=splog_LedBBW;
+    stlog_LedBCW+=splog_LedBCW;
 
     st_OASPL_alpha=10*log10(stlog_OASPL_alpha);
     st_OASPL_S=10*log10(stlog_OASPL_S);
@@ -3068,6 +3532,9 @@ BPM_validation=false;
     st_dBB=10*log10(stlog_dBB);
     st_dBC=10*log10(stlog_dBC);
     st_LedB=10*log10(stlog_LedB);
+    st_LedBAW=10*log10(stlog_LedBAW);
+    st_LedBBW=10*log10(stlog_LedBBW);
+    st_LedBCW=10*log10(stlog_LedBAW);
 
     if(qIsInf(st_OASPL_alpha)){st_OASPL_alpha=0;}
     if(qIsInf(st_OASPL_S)){st_OASPL_S=0;}
@@ -3077,6 +3544,26 @@ BPM_validation=false;
     if(qIsInf(st_dBB)){st_dBB=0;}
     if(qIsInf(st_dBC)){st_dBC=0;}
     if(qIsInf(st_LedB)){st_LedB=0;}
+    if(qIsInf(st_LedBAW)){st_LedBAW=0;}
+    if(qIsInf(st_LedBBW)){st_LedBBW=0;}
+    if(qIsInf(st_LedBCW)){st_LedBCW=0;}
+
+    if (m_parameter.Lowson_type==2)   {
+SPL_blade_total_aux+=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW+st_LedBCW;
+
+SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a+st_LedBCW_a;
+    }
+    else {
+SPL_blade_total_aux=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW;
+
+SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a;
+            }
+
+if (j==w){
+SPL_blade_total = 10.*log10(1./number_of_segments*(SPL_blade_total_aux));
+
+SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
+}
 
     QString observations_x("");
     if (!((Reynolds[i] >9.5*pow(10,5)) & (Reynolds[i]<2.5*pow(10,6))) || Mach[i]>=0.19 || !((alpha[i]<=0) & (alpha[i]>=0)) || !((alpha[i]<=5) & (alpha[i]>=5)) || !((alpha[i]<=10) & (alpha[i]>=10))){
@@ -3089,6 +3576,9 @@ BPM_validation=false;
     observations_x.append('4');}
 
     SPL_LedB_val.clear();
+    SPL_LedB_valAW.clear();
+    SPL_LedB_valBW.clear();
+    SPL_LedB_valCW.clear();
     SPL_alpha_val.clear();
     SPL_dB_S_val.clear();
     SPL_dB_P_val.clear();
@@ -3125,9 +3615,15 @@ BPM_validation=false;
 
     if (LE_validation){
     SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 2));
+    SPL_LedB_valAW.append(QString::number(SPL_LedBAW[j], 'f', 2));
+    SPL_LedB_valBW.append(QString::number(SPL_LedBBW[j], 'f', 2));
+    SPL_LedB_valCW.append(QString::number(SPL_LedBCW[j], 'f', 2));
     }
     else{
     SPL_LedB_val.append("N/A");
+    SPL_LedB_valAW.append("N/A");
+    SPL_LedB_valBW.append("N/A");
+    SPL_LedB_valCW.append("N/A");
     }
 
 if (m_parameter.Lowson_type!=0){
@@ -3172,14 +3668,17 @@ if (m_parameter.Lowson_type!=0){
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
+                  SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
-                  SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
                   SPL_LedB_val  << ";" <<
+                  SPL_LedB_valAW  << ";" <<
+                  SPL_LedB_valBW  << ";" <<
+                  SPL_LedB_valCW  << ";" <<
 //                  slog_SPL_alpha[j]  << ";" <<
 //                  slog_SPL_S[j]  << ";" <<
 //                  slog_SPL_P[j]  << ";" <<
@@ -3233,10 +3732,10 @@ else
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
+                  SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
-                  SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
@@ -3252,36 +3751,61 @@ else
 
 if(j==(w-1)){
         stream << endl;
-if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_alpha: "  << "N/A"<< endl;} else {stream << "SPL_alpha: "  << sp_OASPL_alpha<< endl;}
-if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_S: "  << "N/A"<< endl;} else {stream << "SPL_S: "  << sp_OASPL_S<< endl;}
- if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_P: "  << "N/A"<< endl;} else {stream << "SPL_P: "  << sp_OASPL_P<< endl;}
-if (sp_OASPL<=0 & sp_OASPL>=0){stream << "SPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< endl;}
-if (sp_dBA<=0 & sp_dBA>=0){stream << "SPL A: "  << "N/A"<< endl;} else {stream << "SPL A: "  << sp_dBA<< endl;}
-if (sp_dBB<=0 & sp_dBB>=0){stream << "SPL B: "  << "N/A"<< endl;} else {stream << "SPL B: "  << sp_dBB<< endl;}
-if (sp_dBC<=0 & sp_dBC>=0){stream << "SPL C: "  << "N/A"<< endl;} else {stream << "SPL C: "  << sp_dBC<< endl;}
-  if (m_parameter.Lowson_type!=0){
-if (sp_LedB<=0 & sp_LedB>=0){stream << "LE: "  << "N/A"<< endl;} else {stream << "LE: "  << sp_LedB<< endl;}}
-        stream << endl;
+        if (sp_OASPL<=0 & sp_OASPL>=0){stream << "OASPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< "dB" << endl;}
+        if (sp_dBA<=0 & sp_dBA>=0){stream << "OASPL(A): "  << "N/A"<< endl;} else {stream << "OASPL(A): "  << sp_dBA<< "dB" << endl;}
+        if (sp_dBB<=0 & sp_dBB>=0){stream << "OASPL(B): "  << "N/A"<< endl;} else {stream << "OASPL(B): "  << sp_dBB<< "dB" << endl;}
+        if (sp_dBC<=0 & sp_dBC>=0){stream << "OASPL(C): "  << "N/A"<< endl;} else {stream << "OASPL(C): "  << sp_dBC<< "dB" << endl;}
+        if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_a: "  << "N/A"<< endl;} else {stream << "SPL_a: "  << sp_OASPL_alpha<< endl;}
+        if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_s: "  << "N/A"<< endl;} else {stream << "SPL_s: "  << sp_OASPL_S<< endl;}
+         if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_p: "  << "N/A"<< endl;} else {stream << "SPL_p: "  << sp_OASPL_P<< endl;}
+          if (m_parameter.Lowson_type!=0){
+        if (sp_LedB<=0 & sp_LedB>=0){stream << "SPL_LE: "  << "N/A"<< endl;} else {stream << "SPL_LE: "  << sp_LedB<< "dB" << endl;}
+        if (sp_LedBAW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBAW<< "dB" << endl;}
+        if (sp_LedBBW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBBW<< "dB" << endl;}
+        if (sp_LedBCW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBCW<< "dB" << endl;}
+          }
+                stream << endl;
+if (i>=(number_of_segments-1)){
+stream << "***********************************************************"<<endl;
+stream << "Total Blade: "  << endl;
+stream << "OASPL: "  << st_OASPL_a<< "dB" << endl;
+stream << "OASPL (A): "  << st_dBA_a<< "dB" <<  endl;
+stream << "OASPL (B): "  << st_dBB_a<< "dB" <<  endl;
+stream << "OASPL (C): "  << st_dBC_a<< "dB" <<  endl;
+stream << "SPL_a: "  << st_OASPL_alpha_a<< endl;
+stream << "SPL_s: "  << st_OASPL_S_a<< endl;
+stream << "SPL_p: "  << st_OASPL_P_a<< endl;
+if (m_parameter.Lowson_type!=0){
+stream << "SPL_LE: "  << st_LedB_a<< "dB" <<  endl;
+stream << "SPL_LE (A): "  << st_LedBAW_a<< "dB" <<  endl;
+stream << "SPL_LE (B): "  << st_LedBBW_a<< "dB" <<  endl;
+stream << "SPL_LE (C): "  << st_LedBCW_a<< "dB" <<  endl;}
+stream << "SPL_Blade_total: " << SPL_blade_total_a << "dB" <<  endl;
+stream << "***********************************************************"<<endl;
+stream << endl;}
 
 if(z>=lend & i>=(number_of_segments-1)){
-        stream << "***********************************************************"<<endl;
-        stream << "Total: "  << endl;
-        stream << "SPL_alpha: "  << st_OASPL_alpha<< endl;
-        stream << "SPL_S: "  << st_OASPL_S<< endl;
-        stream << "SPL_P: "  << st_OASPL_P<< endl;
-        stream << "SPL: "  << st_OASPL<< endl;
-        stream << "SPL A: "  << st_dBA<< endl;
-        stream << "SPL B: "  << st_dBB<< endl;
-        stream << "SPL C: "  << st_dBC<< endl;
-  if (m_parameter.Lowson_type!=0){
-        stream << "LE: "  << st_LedB<< endl;}
-        stream << "***********************************************************"<<endl;
+stream << "***********************************************************"<<endl;
+stream << "TOTAL COMPLETE" << endl;
+stream <<"***********************************************************"<<endl;
+                stream << "Total: "  << endl;
+                stream << "OASPL: "  << st_OASPL<< "dB" << endl;
+                stream << "OASPL (A): "  << st_dBA<< "dB" <<  endl;
+                stream << "OASPL (B): "  << st_dBB<< "dB" <<  endl;
+                stream << "OASPL (C): "  << st_dBC<< "dB" <<  endl;
+                stream << "SPL_a: "  << st_OASPL_alpha<< endl;
+                stream << "SPL_s: "  << st_OASPL_S<< endl;
+                stream << "SPL_p: "  << st_OASPL_P<< endl;
+          if (m_parameter.Lowson_type!=0){
+                stream << "SPL_LE: "  << st_LedB<< "dB" <<  endl;
+          stream << "SPL_LE (A): "  << st_LedBAW<< "dB" <<  endl;
+        stream << "SPL_LE (B): "  << st_LedBBW<< "dB" <<  endl;
+stream << "SPL_LE (C): "  << st_LedBCW<< "dB" <<  endl;}
+                stream << "SPL_Blade_total: " << SPL_blade_total << "dB" <<  endl;
+                stream << "***********************************************************"<<endl;
 stream << endl;
-if (observations_x!=""){
-stream << "Error[1]:" << observations_x << endl;
-stream << "[1]Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
-stream << endl;}}}
-}}}
+}
+}}}}
 z=z+ldelta;
         }}
 //Sara
@@ -3407,24 +3931,23 @@ else {value=m_parameter.rot_speed_check;}
         else {value = m_parameter.phi_type;}break;
 
     case P::obs_x_pos:
+//        if (m_parameter.obs_x_pos==1){m_parameter.obs_x_pos=10;}
         if(set) m_parameter.obs_x_pos = value.toDouble();
-        else {m_parameter.obs_x_pos=10;value = m_parameter.obs_x_pos;}break;
+        else {value = m_parameter.obs_x_pos;}break;
 
     case P::obs_y_pos:
+//        if (m_parameter.obs_y_pos==1){m_parameter.obs_y_pos=10;}
         if(set) m_parameter.obs_y_pos = value.toDouble();
-        else {m_parameter.obs_y_pos=10;value = m_parameter.obs_y_pos;}break;
+        else {value = m_parameter.obs_y_pos;}break;
 
     case P::obs_z_pos:
+//        if (m_parameter.obs_z_pos==1){
+//            double hub_radius=pbem->m_pBlade->m_HubRadius;
+//            double blade_radius=(outer_radius-hub_radius);
+//            m_parameter.obs_z_pos=blade_radius/2.;
+//        }
         if(set) m_parameter.obs_z_pos = value.toDouble();
-        else {
-double blade_radius=0;
-int number_of_segments=0;
-
-double hub_radius=pbem->m_pBlade->m_HubRadius;
-blade_radius=(outer_radius-hub_radius);
-m_parameter.obs_z_pos=blade_radius/2.;
-value = m_parameter.obs_z_pos;
-}break;
+        else {value = m_parameter.obs_z_pos;}break;
 
     case P::Lowson_type:
         if(set) {m_parameter.Lowson_type = value.toInt();}
