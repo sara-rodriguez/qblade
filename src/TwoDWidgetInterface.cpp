@@ -45,7 +45,7 @@ void TwoDWidgetInterface::reloadForGraphType(NewGraph::GraphType type) {
 		type = m_graph[m_currentGraphIndex]->getGraphType();
 	}
 	
-	for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {//Sara
 		if (m_graph[i]) {  // TODO move all graph constructions into the module constructors and remove this if
 			if (m_graph[i]->getGraphType() == type) {
 				m_graph[i]->reloadCurves();
@@ -61,6 +61,7 @@ void TwoDWidgetInterface::reloadAllGraphCurves() {
 		m_graph[1]->reloadCurves();
 		m_graph[2]->reloadCurves();
 		m_graph[3]->reloadCurves();
+        m_graph[4]->reloadCurves();//Sara
 		update();		
 	}	
 }
@@ -70,6 +71,8 @@ void TwoDWidgetInterface::onPaintEvent(QPaintEvent */*event*/) {
 	painter.fillRect(m_twoDWidget->rect(), g_mainFrame->getBackgroundColor());
 
 	switch (m_graphArrangement) {  // missing break intended
+    case Quint:
+        m_graph[4]->drawGraph(painter);//Sara
     case QuadVertical:
 	case Quad:
         m_graph[3]->drawGraph(painter);
@@ -131,6 +134,17 @@ void TwoDWidgetInterface::onResizeEvent() {
         m_graph[2]->setDrawingArea(QRect(max.x()+border, max.y()+border+2*(h+gap), w, h));
         m_graph[3]->setDrawingArea(QRect(max.x()+border, max.y()+border+3*(h+gap), w, h+max.height()%4));
         break;
+        //Sara
+    case Quint:
+        w = (max.width()-2*border-gap) / 2;
+        h = (max.height()-2*border-2*gap) / 3;
+        m_graph[0]->setDrawingArea(QRect(max.x()+border, max.y()+border, w, h));
+        m_graph[1]->setDrawingArea(QRect(max.x()+border+w+gap, max.y()+border, w+max.width()%2, h));
+        m_graph[2]->setDrawingArea(QRect(max.x()+border, max.y()+border+h+gap, w, h));
+        m_graph[3]->setDrawingArea(QRect(max.x()+border+w+gap, max.y()+border+h+gap, w+max.width()%2, h));
+        m_graph[4]->setDrawingArea(QRect(max.x()+border+(w+gap)/2, max.y()+border+2*(h+gap), w, h+max.height()%3));
+       break;
+        //Sara
 	}
 }
 
@@ -233,7 +247,7 @@ void TwoDWidgetInterface::setGraphArrangement(TwoDWidgetInterface::GraphArrangem
 }
 
 int TwoDWidgetInterface::findCursorPositionIndex(QPoint position) {
-	for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {//Sara
 		if (m_graph[i]->contains(position)) {
 			return i;
 		}
@@ -251,7 +265,7 @@ void TwoDWidgetInterface::resetScaleForGraphType(bool force, NewGraph::GraphType
 		type = m_graph[m_currentGraphIndex]->getGraphType();
 	}
 	
-	for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {//Sara
 		if (m_graph[i]) {  // TODO if there was a general initialization phase (after constructors) this if could be deleted
 			if (m_graph[i]->getGraphType() == type) {
 				m_graph[i]->setOptimalLimits(force);

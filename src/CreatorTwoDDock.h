@@ -55,7 +55,7 @@ CreatorTwoDDock<Object>::CreatorTwoDDock(const QString &title, QMainWindow *pare
 		groupBox->setLayout(m_visualizationVBox);
 			QHBoxLayout *hBox = new QHBoxLayout;
 			m_visualizationVBox->addLayout(hBox);
-				m_showCheckBox = new QCheckBox ("Show");
+                m_showCheckBox = new QCheckBox ("Show");
 				this->connect(m_showCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onShowChanged()));
 				hBox->addWidget(m_showCheckBox);
 				m_showCurveCheckBox = new QCheckBox ("Curve");

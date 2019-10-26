@@ -27,8 +27,8 @@ NewGraph::NewGraph(QString nameInSettings, TwoDWidgetInterface *twoDInterface, c
 	: m_graphType(None),
 	  m_graphTypeMulti(None),
 	  m_twoDInterface(twoDInterface),
-	  m_xAxis (-1.1, 1.1, 2.5, defaults.xLogarithmic),
-	  m_yAxis (-1.1, 1.1, 5, defaults.yLogarithmic),
+      m_xAxis (-1.1, 1.1, 2.5, defaults.xLogarithmic),
+      m_yAxis (-1.1, 1.1, 5, defaults.yLogarithmic),
 	  m_nameInSettings(nameInSettings),
 	  m_borderGapWidth(3),
 	  m_gapWidth(3)

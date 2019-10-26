@@ -86,6 +86,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 6: *vector = m_calculation.SPLdBBW()[opPointIndex]; break;
         case 7: *vector = m_calculation.SPLdBCW()[opPointIndex]; break;
         case 8: *vector = m_calculation.SPL_LEdB()[opPointIndex]; break; //Alexandre MOD
+//experiment
         default: return nullptr;
         }
     }

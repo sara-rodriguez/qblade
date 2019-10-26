@@ -672,7 +672,17 @@ void NoiseCalculation::calcSPLp(int posOpPoint,int posFreq) {
 //Alexandre MOD
 
 void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
-    double SPL_LEdB = 0;
+    double aux_SPL_LEdB=0;
+    double Aux1=0;
+    double Aux4=0;
+    double Aux5=0;
+    c_const=0;
+    d_const = 0;
+
+    m_SPL_LEdB[posOpPoint][posFreq] = 0;
+    m_SPL_LEdBAW[posOpPoint][posFreq] = 0;
+    m_SPL_LEdBBW[posOpPoint][posFreq] = 0;
+    m_SPL_LEdBCW[posOpPoint][posFreq] = 0;
     const double rho = 0.001225;
     const double c_0 = 34000;
     const double u = (m_parameter->originalVelocity)*100.;
@@ -697,21 +707,18 @@ if(m_parameter->Lowson_type==1){
     c_const=7./3.;
     d_const = 58.4;
  }
-else {
-    c_const=0;
-    d_const = 0;
-}
 
-    double Aux1 = 10.*log10(pow(LFC/(1+LFC), 2))+d_const; //Lowson's standard is pow = 1 and const is 58.4
-    double Aux4 = pow(K, 3)/pow(1+(pow(K, 2)),c_const); //Lowson's standard is 7/3
-    double Aux5 = 10.*log10(Aux*Aux4);
-    SPL_LEdB = 10.*log10(pow(10,(Aux1+Aux5)/10.));
+if (m_parameter->Lowson_type!=0){
+    Aux1 = 10.*log10(pow(LFC/(1+LFC), 2))+d_const; //Lowson's standard is pow = 1 and const is 58.4
+    Aux4 = pow(K, 3)/pow(1+(pow(K, 2)),c_const); //Lowson's standard is 7/3
+    Aux5 = 10.*log10(Aux*Aux4);
+    aux_SPL_LEdB = 10.*log10(pow(10,(Aux1+Aux5)/10.));
 
-    m_SPL_LEdB[posOpPoint][posFreq] = SPL_LEdB;
-    m_SPL_LEdBAW[posOpPoint][posFreq] = SPL_LEdB + AWeighting[posFreq];
-    m_SPL_LEdBBW[posOpPoint][posFreq] = SPL_LEdB + BWeighting[posFreq];
-    m_SPL_LEdBCW[posOpPoint][posFreq] = SPL_LEdB + CWeighting[posFreq];
-}
+    m_SPL_LEdB[posOpPoint][posFreq] = aux_SPL_LEdB;
+    m_SPL_LEdBAW[posOpPoint][posFreq] = aux_SPL_LEdB + AWeighting[posFreq];
+    m_SPL_LEdBBW[posOpPoint][posFreq] = aux_SPL_LEdB + BWeighting[posFreq];
+    m_SPL_LEdBCW[posOpPoint][posFreq] = aux_SPL_LEdB + CWeighting[posFreq];
+}}
 //end Alexandre MOD
 
 void NoiseCalculation::calculate() {

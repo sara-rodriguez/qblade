@@ -43,10 +43,26 @@ public:
 	TwoDVector SPLdBAW() const { return m_SPLdBAW; }
 	TwoDVector SPLdBBW() const { return m_SPLdBBW; }
 	TwoDVector SPLdBCW() const { return m_SPLdBCW; }
-    TwoDVector SPL_LEdB() const { return m_SPL_LEdB; } //Alexandre MOD
-    TwoDVector SPL_LEdBAW() const { return m_SPL_LEdBAW; } //Alexandre MOD
-    TwoDVector SPL_LEdBBW() const { return m_SPL_LEdBBW; } //Alexandre MOD
-    TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; } //Alexandre MOD
+//Alexandre MOD
+    TwoDVector SPL_LEdB() const { return m_SPL_LEdB; }
+    TwoDVector SPL_LEdBAW() const { return m_SPL_LEdBAW; }
+    TwoDVector SPL_LEdBBW() const { return m_SPL_LEdBBW; }
+    TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; }
+    //Alexandre MOD
+
+//Sara experiment
+//    TwoDVector SPLadB3d() const { return m_SPLadB; }
+//	TwoDVector SPLsdB3d() const { return m_SPLsdB; }
+//	TwoDVector SPLpdB3d() const { return m_SPLpdB; }
+//	TwoDVector SPLdB3d() const { return m_SPLdB; }
+//	TwoDVector SPLdBAW3d() const { return m_SPLdBAW; }
+//	TwoDVector SPLdBBW3d() const { return m_SPLdBBW; }
+//	TwoDVector SPLdBCW3d() const { return m_SPLdBCW; }
+//    TwoDVector SPL_LEdB3d() const { return m_SPL_LEdB; }
+//    TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW; }
+//    TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW; }
+//    TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW; }
+    //Sara experiment
 	
 	// NM apparently needed for export as .txt only
 	QVector<double> OASPL() const { return m_OASPL; }
@@ -56,11 +72,25 @@ public:
 	QVector<double> SPLALOG() const { return m_SPLALOG; }
 	QVector<double> SPLSLOG() const { return m_SPLSLOG; }
 	QVector<double> SPLPLOG() const { return m_SPLPLOG; }
-
-        QVector<double> SPLLEdBAW() const { return m_SPLLEdBAW;; } //Alexandre MOD
-        QVector<double> SPLLEdBBW() const { return m_SPLLEdBBW; } //Alexandre MOD
-        QVector<double> SPLLEdBCW() const { return m_SPLLEdBCW; } //Alexandre MOD
-        QVector<double> SPLlogLE() const { return m_SPLlogLE; } //Alexandre MOD
+//Alexandre MOD
+        QVector<double> SPLLEdBAW() const { return m_SPLLEdBAW; }
+        QVector<double> SPLLEdBBW() const { return m_SPLLEdBBW; }
+        QVector<double> SPLLEdBCW() const { return m_SPLLEdBCW; }
+        QVector<double> SPLlogLE() const { return m_SPLlogLE; }
+//Alexandre MOD
+        //Sara experiment
+//        QVector<double> OASPL3d() const { return m_OASPL; }
+//        QVector<double> OASPLA3d() const { return m_OASPLA; }
+//        QVector<double> OASPLB3d() const { return m_OASPLB; }
+//        QVector<double> OASPLC3d() const { return m_OASPLC; }
+//        QVector<double> SPLALOG3d() const { return m_SPLALOG; }
+//        QVector<double> SPLSLOG3d() const { return m_SPLSLOG; }
+//        QVector<double> SPLPLOG3d() const { return m_SPLPLOG; }
+//        QVector<double> SPLLEdBAW3d() const { return m_SPLLEdBAW;}
+//        QVector<double> SPLLEdBBW3d() const { return m_SPLLEdBBW;}
+//        QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW;}
+//        QVector<double> SPLlogLE3d() const { return m_SPLlogLE; }
+    //Sara experiment
 
     //Sara
         QVector<double> m_DStarInterpolatedS3d;
