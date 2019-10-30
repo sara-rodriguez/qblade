@@ -18,7 +18,7 @@ public:
 	~NoiseModule();
 	
 	void addMainMenuEntries();
-	QList<NewCurve*> prepareCurves (QString xAxis, QString yAxis, NewGraph::GraphType graphType,
+    QList<NewCurve*> prepareCurves (QString xAxis, QString yAxis, NewGraph::GraphType graphType,
 									NewGraph::GraphType graphTypeMulti);
 	QStringList getAvailableGraphVariables(bool xAxis);  // override from TwoDWidgetInterface
 	QPair<ShowAsGraphInterface*,int> getHighlightDot(NewGraph::GraphType graphType);

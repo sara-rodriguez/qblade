@@ -19,6 +19,7 @@ class ParameterViewer;
 class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, public ParameterObject<Parameter::NoiseSimulation>
 {
 public:
+bool qs3dtest;//Sara experiment
 
 	static NoiseSimulation* newBySerialize ();
 	NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
@@ -27,9 +28,14 @@ public:
 	void restorePointers();
 	NewCurve* newCurve (QString /*xAxis*/, QString /*yAxis*/, NewGraph::GraphType /*graphType*/) { return NULL; }
 	NewCurve* newCurve (QString xAxis, QString yAxis, NewGraph::GraphType graphType, int opPointIndex);
+
 	QString getObjectName () { return m_objectName; }
 	static QStringList getAvailableVariables (NewGraph::GraphType graphType = NewGraph::None);
 	static QStringList prepareMissingObjectMessage();
+
+    //Sara experiment
+    static QStringList getAvailableVariablesqs3d (NewGraph::GraphType graphType = NewGraph::None);
+    //Sara experiment
 	
 	void simulate();  // can throw NoiseException
 	void exportCalculation (QTextStream &stream);
@@ -52,6 +58,7 @@ public:
     double m_rot_speed_check;
     double m_u_wind_speed_check;
     double m_TSR_check;
+    int vectors_size;
     //Sara
 	
 private:

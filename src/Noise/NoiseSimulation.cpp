@@ -72,21 +72,38 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         return NULL;
 
     bool zeroY = false;
+    qs3dtest = false;
     QVector<double> xVector, yVector;  // because QVector is internally shared there should be no copying
     for (int i = 0; i < 2; ++i) {
         const int index = getAvailableVariables().indexOf(i == 0 ? xAxis : yAxis);
         QVector<double> *vector = (i == 0 ? &xVector : &yVector);
         switch (index) {
         case 0: *vector = NoiseCalculation::CENTRAL_BAND_FREQUENCY; break;
-        case 1: *vector = m_calculation.SPLadB()[opPointIndex]; zeroY = true; break;
-        case 2: *vector = m_calculation.SPLsdB()[opPointIndex]; zeroY = true; break;
-        case 3: *vector = m_calculation.SPLpdB()[opPointIndex]; zeroY = true; break;
-        case 4: *vector = m_calculation.SPLdB()[opPointIndex]; break;
-        case 5: *vector = m_calculation.SPLdBAW()[opPointIndex]; break;
-        case 6: *vector = m_calculation.SPLdBBW()[opPointIndex]; break;
-        case 7: *vector = m_calculation.SPLdBCW()[opPointIndex]; break;
-        case 8: *vector = m_calculation.SPL_LEdB()[opPointIndex]; break; //Alexandre MOD
+        case 1: *vector = m_calculation.SPLadB()[opPointIndex]; zeroY = true; qs3dtest = false; break;
+        case 2: *vector = m_calculation.SPLsdB()[opPointIndex]; zeroY = true; qs3dtest = false; break;
+        case 3: *vector = m_calculation.SPLpdB()[opPointIndex]; zeroY = true; qs3dtest = false; break;
+        case 4: *vector = m_calculation.SPLdB()[opPointIndex]; qs3dtest = false; break;
+        case 5: *vector = m_calculation.SPLdBAW()[opPointIndex]; qs3dtest = false; break;
+        case 6: *vector = m_calculation.SPLdBBW()[opPointIndex]; qs3dtest = false; break;
+        case 7: *vector = m_calculation.SPLdBCW()[opPointIndex]; qs3dtest = false; break;
+        case 8: *vector = m_calculation.SPL_LEdB()[opPointIndex]; qs3dtest = false; break; //Alexandre MOD
+        case 9: *vector = m_calculation.SPL_LEdBAW()[opPointIndex]; qs3dtest = false; break; //Alexandre MOD
+        case 10: *vector = m_calculation.SPL_LEdBBW()[opPointIndex]; qs3dtest = false; break; //Alexandre MOD
+        case 11: *vector = m_calculation.SPL_LEdBCW()[opPointIndex]; qs3dtest = false; break; //Alexandre MOD
 //experiment
+            //Sara experiment
+        case 12: *vector = m_calculation.SPLadB3d()[opPointIndex]; zeroY = true; qs3dtest = true; break;
+        case 13: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; qs3dtest = true; break;
+        case 14: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; qs3dtest = true; break;
+        case 15: *vector = m_calculation.SPLdB3d()[opPointIndex]; qs3dtest = true; break;
+        case 16: *vector = m_calculation.SPLdBAW3d()[opPointIndex]; qs3dtest = true; break;
+        case 17: *vector = m_calculation.SPLdBBW3d()[opPointIndex]; qs3dtest = true; break;
+        case 18: *vector = m_calculation.SPLdBCW3d()[opPointIndex]; qs3dtest = true; break;
+        case 19: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; qs3dtest = true; break;
+        case 20: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex]; qs3dtest = true; break;
+        case 21: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; qs3dtest = true; break;
+        case 22: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; qs3dtest = true; break;
+            //Sara experiment
         default: return nullptr;
         }
     }
@@ -102,9 +119,10 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
 QStringList NoiseSimulation::getAvailableVariables(NewGraph::GraphType /*graphType*/) {
     QStringList variables;
 
-    // WARNING: when changing any variables list, change newCurve as well!
+    // WARNING: when changing any variables list, change newCurve as well! Sara experiment
     variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))"
-              << "SPL (dB(C))" << "SPL_LE (dB)"; //Alexandre MOD
+              << "SPL (dB(C))" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL_alpha[3D]" << "SPL_S[3D]" << "SPL_P[3D]" << "SPL[3D] (dB)" << "SPL[3D] (dB(A))" << "SPL[3D] (dB(B))"
+              << "SPL[3D] (dB(C))" << "SPL_LE[3D] (dB)" << "SPL_LE[3D] (dB(A))" << "SPL_LE[3D] (dB(B))" << "SPL_LE[3D] (dB(C))"; //Alexandre MOD Sara experiment
 
     return variables;
 }
@@ -129,6 +147,7 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
+    m_calculation.calculateqs3d();//Sara experiment
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -214,9 +233,29 @@ else{
  }
         }
 
-        stream << endl;
+        stream << endl; 
         stream << endl;
     }
+
+    //Sara experiment new
+
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    int number_of_segments;
+    foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+    number_of_segments = bdata->m_pos.size();}
+            for (int i = 0; i <= number_of_segments; ++i) {
+                stream << "tamanho máximo: " << number_of_segments << endl;
+                stream << "número i: " << i<< endl;
+                stream << qSetFieldWidth(14) <<
+"Freq [Hz]" << "SPL[3D] (dB)" << endl;
+
+              for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
+                  stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << m_calculation.SPLdB3d()[i][j] << endl;
+              }
+                stream << endl;
+            }
+    //Sara experiment new
+
     qDeleteAll(noiseOpPoints);
 }
 
@@ -1783,7 +1822,7 @@ else{
     L_le=100.*L[i];
     D_L_le=0.5*Dl[i];
     aux_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
-    K_le=M_PI*Frequency[i]*c_le/u_le;
+    K_le=M_PI*Frequency[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
 
@@ -3301,7 +3340,7 @@ else{
     L_le=100.*L[i];
     D_L_le=0.5*Dl[i];
     aux_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
-    K_le=M_PI*Frequency[i]*c_le/u_le;
+    K_le=M_PI*Frequency[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
 
@@ -3599,8 +3638,25 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
     SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
 
-    if(SPL_S[j]==-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
-    if(SPL_P[j]==-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
+    //Sara experiment sara new
+//        m_calculation.SPLadB3d()[j][i]=SPL_alpha[j];
+//        m_calculation.SPLsdB3d()[j][i]=SPL_dB_S[j];
+//        m_calculation.SPLpdB3d()[j][i]=SPL_dB_P[j];
+//        m_calculation.SPLdB3d()[j][i]=SPL_dB[j];
+//        m_calculation.SPLdBAW3d()[j][i]=SPL_A[j];
+//        m_calculation.SPLdBBW3d()[j][i]=SPL_B[j];
+//        m_calculation.SPLdBCW3d()[j][i]=SPL_C[j];
+
+    if(SPL_S[j]==-999999999999.){
+        SPL_S_val.append("N/A");
+//        Sara experiment
+//        m_calculation.SPLsdB3d()[j][i]=0;
+    } else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
+    if(SPL_P[j]==-999999999999.){
+        SPL_P_val.append("N/A");
+        //        Sara experiment
+//        m_calculation.SPLpdB3d()[j][i]=0;
+    } else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
        }
         else{
     SPL_alpha_val.append("N/A");
@@ -3612,6 +3668,14 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_A_val.append("N/A");
     SPL_B_val.append("N/A");
     SPL_C_val.append("N/A");
+//        Sara experiment
+//    m_calculation.SPLadB3d()[j][i]=0;
+//    m_calculation.SPLsdB3d()[j][i]=0;
+//    m_calculation.SPLpdB3d()[j][i]=0;
+//    m_calculation.SPLdB3d()[j][i]=0;
+//    m_calculation.SPLdBAW3d()[j][i]=0;
+//    m_calculation.SPLdBBW3d()[j][i]=0;
+//    m_calculation.SPLdBCW3d()[j][i]=0;
         }
 
     if (LE_validation){
@@ -3619,12 +3683,22 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_LedB_valAW.append(QString::number(SPL_LedBAW[j], 'f', 2));
     SPL_LedB_valBW.append(QString::number(SPL_LedBBW[j], 'f', 2));
     SPL_LedB_valCW.append(QString::number(SPL_LedBCW[j], 'f', 2));
+//experiment Sara new
+//    m_calculation.SPL_LEdB3d()[j][i]=SPL_LedB[j];
+//    m_calculation.SPL_LEdBAW3d()[j][i]=SPL_LedBAW[j];
+//    m_calculation.SPL_LEdBBW3d()[j][i]=SPL_LedBBW[j];
+//    m_calculation.SPL_LEdBCW3d()[j][i]=SPL_LedBCW[j];
     }
     else{
     SPL_LedB_val.append("N/A");
     SPL_LedB_valAW.append("N/A");
     SPL_LedB_valBW.append("N/A");
     SPL_LedB_valCW.append("N/A");
+//        Sara experiment
+//    m_calculation.SPL_LEdB3d()[j][i]=0;
+//    m_calculation.SPL_LEdBAW3d()[j][i]=0;
+//    m_calculation.SPL_LEdBBW3d()[j][i]=0;
+//    m_calculation.SPL_LEdBCW3d()[j][i]=0;
     }
 
 if (m_parameter.Lowson_type!=0){

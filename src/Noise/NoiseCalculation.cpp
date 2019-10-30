@@ -7,7 +7,16 @@
 #include "NoiseOpPoint.h"
 #include "NoiseException.h"
 #include "../XBEM/BEM.h" //Sara
+#include "../Objects/Polar.h"//Sara
 
+//Sara
+#include "../StorableObject.h"
+#include "../Graph/ShowAsGraphInterface.h"
+#include "../ParameterObject.h"
+#include "../XDirect/FoilPolarDlg.h"
+#include "../XBEM/BData.h"
+#include <QtMath>
+//Sara
 
 const double NoiseCalculation::AWeighting[] = {-70.4, -63.4, -56.7,  -50.5, -44.7, -39.4, -34.6, -30.2, -26.2, -22.5, -19.1, -16.1,
 											   -13.4, -10.9,  -8.6,  -6.6,  -4.8,  -3.2,  -1.9,  -0.8,
@@ -46,14 +55,24 @@ void NoiseCalculation::serialize() {
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW); //Alexandre MOD
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW); //Alexandre MOD
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBCW); //Alexandre MOD
-	
-	g_serializer.readOrWriteDoubleVector1D(&m_OASPL);
-	g_serializer.readOrWriteDoubleVector1D(&m_OASPLA);
-	g_serializer.readOrWriteDoubleVector1D(&m_OASPLB);
-	g_serializer.readOrWriteDoubleVector1D(&m_OASPLC);
-	g_serializer.readOrWriteDoubleVector1D(&m_SPLALOG);
-	g_serializer.readOrWriteDoubleVector1D(&m_SPLSLOG);
-	g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG);
+
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPL);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLA);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLB);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLC);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLALOG);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLSLOG);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG);
+
+//Sara
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPL3d);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLA3d);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLB3d);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLC3d);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLALOG3d);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLSLOG3d);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG3d);
+//Sara
 }
 
 double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
@@ -783,17 +802,11 @@ for (int j = 0; j <= number_of_segments; ++j) {
 for (int j = 0; j <= number_of_segments; ++j) {
 chord[j] = bdata->m_c_local.value(j);
 
-//double m_DStarInterpolatedS3d [number_of_segments];
-//double m_DStarInterpolatedP3d [number_of_segments];
-
-//qDebug() << "j:" << j;
-
 m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
 //qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
 m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
 //qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
-}
-}
+}}
             //Sara
 
             m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
@@ -1007,15 +1020,15 @@ void NoiseCalculation::setupVectors() {
 
     // Resize vectors acording to OpPoints total
     unsigned int size = 0;
-	if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
-		m_parameter->opPointSource == NoiseParameter::MultiplePolars)
-	{
-		size = m_parameter->analyzedOpPoints.size();
-	} else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
-		size = 1;
-	}
+    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+    {
+        size = m_parameter->analyzedOpPoints.size();
+    } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
+        size = 1;
+    }
 
-	m_SPLdB.resize   (size);
+    m_SPLdB.resize   (size);
     m_SPLdBAW.resize (size);
     m_SPLdBBW.resize (size);
     m_SPLdBCW.resize (size);
@@ -1075,4 +1088,1301 @@ void NoiseCalculation::setupVectors() {
         m_SPL_LEdBBW[i].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW[i].resize(FREQUENCY_TABLE_SIZE);
     }
+}
+
+//Sara experiment
+void NoiseCalculation::setupVectorsqs3d() {
+    m_SPLdB3d.clear();
+    m_SPLdBAW3d.clear();
+    m_SPLdBBW3d.clear();
+    m_SPLdBCW3d.clear();
+    m_SPLpdB3d.clear();
+    m_SPLpdBAW3d.clear();
+    m_SPLpdBBW3d.clear();
+    m_SPLpdBCW3d.clear();
+    m_SPLsdB3d.clear();
+    m_SPLsdBAW3d.clear();
+    m_SPLsdBBW3d.clear();
+    m_SPLsdBCW3d.clear();
+    m_SPLadB3d.clear();
+    m_SPLadBAW3d.clear();
+    m_SPLadBBW3d.clear();
+    m_SPLadBCW3d.clear();
+    m_SPL_LEdB3d.clear();
+    m_SPL_LEdBAW3d.clear();
+    m_SPL_LEdBBW3d.clear();
+    m_SPL_LEdBCW3d.clear();
+    m_SPLLEdB3d.clear();
+    m_SPLLEdBAW3d.clear();
+    m_SPLLEdBBW3d.clear();
+    m_SPLLEdBCW3d.clear();
+    m_SPLlogLE3d.clear();
+    m_OASPL3d.clear();
+    m_OASPLA3d.clear();
+    m_OASPLB3d.clear();
+    m_OASPLC3d.clear();
+    m_SPLALOG3d.clear();
+    m_SPLSLOG3d.clear();
+    m_SPLPLOG3d.clear();
+
+    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+
+
+//        foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+//        int vectors_size = bdata->m_pos.size();
+
+
+    // Resize vectors acording to OpPoints total
+//    unsigned int size = 0;
+//    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+//        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+//    {
+//        vectors_size = m_parameter->analyzedOpPoints.size();
+//    }
+//    else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
+//        vectors_size = 1;
+//    }
+//    vectors_size=40;
+     //teste Sara experiment
+    vectors_size=m_parameter->analyzedOpPoints.size();
+
+    m_SPLadB3d.resize(vectors_size);
+    m_SPLsdB3d.resize(vectors_size);
+    m_SPLpdB3d.resize(vectors_size);
+    m_SPLdB3d.resize(vectors_size);
+    m_SPLdBAW3d.resize(vectors_size);
+    m_SPLdBBW3d.resize(vectors_size);
+    m_SPLdBCW3d.resize(vectors_size);
+    m_SPL_LEdB3d.resize(vectors_size);
+    m_SPL_LEdBAW3d.resize(vectors_size);
+    m_SPL_LEdBBW3d.resize(vectors_size);
+    m_SPL_LEdBCW3d.resize(vectors_size);
+
+    for (unsigned int w = 0; w < vectors_size; ++w){
+        m_SPLadB3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d[w].resize(FREQUENCY_TABLE_SIZE);
+    }
+}
+//}
+
+//Sara experiment
+void NoiseCalculation::calculateqs3d(){
+  setupVectorsqs3d();
+
+QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+
+  vectors_size=m_parameter->analyzedOpPoints.size();
+
+  for (int posOpPoint = 0;posOpPoint < vectors_size; ++posOpPoint){
+//      NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
+      for (int y=0;y<FREQUENCY_TABLE_SIZE; ++y){
+  m_SPLadB3d[posOpPoint][y]=0;
+  m_SPLsdB3d[posOpPoint][y]=0;
+  m_SPLpdB3d[posOpPoint][y]=0;
+  m_SPLdB3d[posOpPoint][y]=0;
+  m_SPLdBAW3d[posOpPoint][y]=0;
+  m_SPLdBBW3d[posOpPoint][y]=0;
+  m_SPLdBCW3d[posOpPoint][y]=0;
+  m_SPL_LEdB3d[posOpPoint][y]=0;
+  m_SPL_LEdBAW3d[posOpPoint][y]=0;
+  m_SPL_LEdBBW3d[posOpPoint][y]=0;
+  m_SPL_LEdBCW3d[posOpPoint][y]=0;
+  }}
+}
+
+//Sara experiment new
+void NoiseCalculation::calculateqs3dx() {
+setupVectorsqs3d();
+
+
+QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+
+  vectors_size=m_parameter->analyzedOpPoints.size();
+
+  for (int posOpPoint = 0;posOpPoint < vectors_size; ++posOpPoint){
+      for (int y=0;y<FREQUENCY_TABLE_SIZE; ++y){
+  m_SPLadB3d[posOpPoint][y]=0;
+  m_SPLsdB3d[posOpPoint][y]=0;
+  m_SPLpdB3d[posOpPoint][y]=0;
+  m_SPLdB3d[posOpPoint][y]=0;
+  m_SPLdBAW3d[posOpPoint][y]=0;
+  m_SPLdBBW3d[posOpPoint][y]=0;
+  m_SPLdBCW3d[posOpPoint][y]=0;
+  m_SPL_LEdB3d[posOpPoint][y]=0;
+  m_SPL_LEdBAW3d[posOpPoint][y]=0;
+  m_SPL_LEdBBW3d[posOpPoint][y]=0;
+  m_SPL_LEdBCW3d[posOpPoint][y]=0;
+      }
+  }
+  //Sara experiment
+
+//QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+
+    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+    double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+    double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+    double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
+    double z=lstart;
+    double approaxing_wind_speed = m_parameter->originalVelocity;
+
+    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+    double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
+
+        foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+        int number_of_segments = bdata->m_pos.size();
+        double rho = pbem->dlg_rho;
+        double dynamic_visc = pbem->dlg_visc;
+        double cin_visc = dynamic_visc/rho;
+        double K_air = 1.4;
+        double R_air = 286.9;
+        double T_std_cond = pbem->dlg_temp;
+        double P_std_cond = 101300;
+        double lambda = pbem->dlg_lambda;
+        int mpos_size = bdata->m_pos.size(); //total number of segments
+        double finalradius = bdata->m_pos.value(mpos_size-1);
+        double nom_tg_speed = bdata->windspeed*lambda;
+        double omega = nom_tg_speed/finalradius;
+        double rotation = 60/(M_PI*100/nom_tg_speed);
+        double c_0_le = 34000;
+        double c_const_rd_le = 19./6.;
+        double d_const_rd_le = 65.95;
+        double c_const_vk_le = 7./3.;
+        double d_const_vk_le = 58.4;
+        double c_const_le=0;
+        double d_const_le=0;
+        double aux_le;
+        double aux_1_le;
+        double aux_4_le;
+        double aux_5_le;
+        double u_le;
+        double c_le;
+        double I_le;
+        double lambda_le;
+        double r_e_le;
+        double beta_le;
+        double L_le;
+        double D_L_le;
+        double K_le;
+        double S_le;
+        double LFC_le;
+        double aux0_le;
+        double aux1_le;
+        double aux4_le;
+        double aux5_le;
+
+        QString SPL_alpha_val("");
+        QString SPL_dB_S_val("");
+        QString SPL_dB_P_val("");
+        QString SPL_S_val("");
+        QString SPL_P_val("");
+        QString SPL_dB_val("");
+        QString SPL_A_val("");
+        QString SPL_B_val("");
+        QString SPL_C_val("");
+        QString SPL_LedB_val("");
+        QString SPL_LedB_valAW("");
+        QString SPL_LedB_valBW("");
+        QString SPL_LedB_valCW("");
+
+        //definitions
+        double axial_ind_fact[number_of_segments];
+        double axial_ind_fact_n[number_of_segments];
+        double axial_velocity[number_of_segments];
+        double tangential_speed[number_of_segments];
+        double resultant_local_speed[number_of_segments];
+        double chord[number_of_segments];
+        double Reynolds[number_of_segments];
+        double Reynolds_BEM[number_of_segments];
+        double Reynolds_polar[number_of_segments];
+        double Reynolds_error[number_of_segments];
+        double Mach_BEM[number_of_segments];
+        double Mach_polar[number_of_segments];
+        double Mach_error[number_of_segments];
+        double alpha[number_of_segments];
+        double alpha_BEM[number_of_segments];
+        double alpha_polar[number_of_segments];
+        double alpha_error[number_of_segments];
+        double phi_BEM[number_of_segments];
+        double theta_BEM[number_of_segments];
+        double cl_cd[number_of_segments];
+        double r_R[number_of_segments];
+        double c_Rx[number_of_segments];
+        double D_starred_C_HT[number_of_segments];
+        double D_starred_HT[number_of_segments];
+        double D_starred_C_N[number_of_segments];
+        double D_starred_N[number_of_segments];
+        double Dh[number_of_segments];
+        double Dl[number_of_segments];
+        double Mach[number_of_segments];
+        double corr_fact[number_of_segments];
+        double D_starred_HT_S[number_of_segments];
+        double D_starred_HT_P[number_of_segments];
+        double D_starred_N_S[number_of_segments];
+        double D_starred_N_P[number_of_segments];
+        double L[number_of_segments];
+        double SwAlpha[number_of_segments];
+        double SwAlpha_1[number_of_segments];
+        double SwAlpha_2[number_of_segments];
+        double observer_position = 10;
+        double gamma[number_of_segments];
+        double gamma0[number_of_segments];
+        double beta[number_of_segments];
+        double beta0[number_of_segments];
+        double gamma0_gamma_min[number_of_segments];
+        double gamma0_gamma_plus[number_of_segments];
+        double K1[number_of_segments];
+        double K2[number_of_segments];
+        double EddyMach_calc[number_of_segments];
+        double dist_z[number_of_segments];
+        double dist_y[number_of_segments];
+        double dist_obs[number_of_segments];
+        double D_starred_S[number_of_segments];
+        double D_starred_P[number_of_segments];
+        double first_term_Dh_S[number_of_segments];
+        double first_term_Dl_S[number_of_segments];
+        double first_term_Dh_P[number_of_segments];
+        double St1[number_of_segments];
+        double St2[number_of_segments];
+        double b0[number_of_segments];
+        double B_min_b0[number_of_segments];
+        double B_max_b0[number_of_segments];
+        double BR_b0[number_of_segments];
+        double RCmod[number_of_segments];
+        double ao_Rc[number_of_segments];
+        double A_min_ao[number_of_segments];
+        double A_max_ao[number_of_segments];
+        double K1_3[number_of_segments];
+        double AR_ao[number_of_segments];
+        double St1_bar[number_of_segments];
+        double Re_disp_thick[number_of_segments];
+        double delta_K1[number_of_segments];
+        double phi_rad[number_of_segments];
+        double theta_rad[number_of_segments];
+        double b[number_of_segments];
+        double a[number_of_segments];
+        double XRS[number_of_segments];
+        double YRS[number_of_segments];
+        double ZRS[number_of_segments];
+        double XRT[number_of_segments];
+        double YRT[number_of_segments];
+        double ZRT[number_of_segments];
+        double re[number_of_segments];
+        double theta[number_of_segments];
+        double phi[number_of_segments];
+        double calc_int_a[number_of_segments];
+        double psi_e[number_of_segments];
+        double theta_e[number_of_segments];
+        double r_rt[number_of_segments];
+        double r_e[number_of_segments];
+        double r_1[number_of_segments];
+        double c_1[number_of_segments];
+        double r_0[number_of_segments];
+        double c_0[number_of_segments];
+        double twist[number_of_segments];
+        double local_twist[number_of_segments];
+
+        double ri[number_of_segments];
+        double ri_1[number_of_segments];
+        double ri_2[number_of_segments];
+        double A[number_of_segments];
+        double phi_lin[number_of_segments];
+
+        double DStarXFoilS[number_of_segments];
+        double DStarXFoilP[number_of_segments];
+
+        double sp_OASPL_alpha=0;
+        double splog_OASPL_alpha=0;
+        double st_OASPL_alpha=0;
+        double stlog_OASPL_alpha=0;
+        double sp_OASPL_S=0;
+        double splog_OASPL_S=0;
+        double st_OASPL_S=0;
+        double stlog_OASPL_S=0;
+        double sp_OASPL_P=0;
+        double splog_OASPL_P=0;
+        double st_OASPL_P=0;
+        double stlog_OASPL_P=0;
+        double sp_OASPL=0;
+        double splog_OASPL=0;
+        double st_OASPL=0;
+        double stlog_OASPL=0;
+        double sp_dBA=0;
+        double splog_dBA=0;
+        double st_dBA=0;
+        double stlog_dBA=0;
+        double sp_dBB=0;
+        double splog_dBB=0;
+        double st_dBB=0;
+        double stlog_dBB=0;
+        double sp_dBC=0;
+        double splog_dBC=0;
+        double st_dBC=0;
+        double stlog_dBC=0;
+        double sp_LedB=0;
+        double splog_LedB=0;
+        double st_LedB=0;
+        double stlog_LedB=0;
+        double sp_LedBAW=0;
+        double splog_LedBAW=0;
+        double st_LedBAW=0;
+        double stlog_LedBAW=0;
+        double sp_LedBBW=0;
+        double splog_LedBBW=0;
+        double st_LedBBW=0;
+        double stlog_LedBBW=0;
+        double sp_LedBCW=0;
+        double splog_LedBCW=0;
+        double st_LedBCW=0;
+        double stlog_LedBCW=0;
+        double SPL_blade_total=0;
+        double SPL_blade_total_aux=0;
+
+        double r_R0  =  0.05; double c_R0 = 0.05500;
+        double r_R1  =  0.25; double c_R1 = 0.07500;
+        double r_R2  =  1.00; double c_R2 = 0.02000;
+
+        bool LE_validation;
+        bool BPM_validation;
+
+        sp_OASPL_alpha=0;
+        sp_OASPL_S=0;
+        sp_OASPL_P=0;
+        sp_OASPL=0;
+        sp_dBA=0;
+        sp_dBB=0;
+        sp_dBC=0;
+        splog_OASPL_alpha=0;
+        splog_OASPL_S=0;
+        splog_OASPL_P=0;
+        splog_OASPL=0;
+        splog_dBA=0;
+        splog_dBB=0;
+        splog_dBC=0;
+        splog_LedB=0;
+        splog_LedBAW=0;
+        splog_LedBBW=0;
+        splog_LedBCW=0;
+
+        double sp_OASPL_alpha_a=0;
+        double splog_OASPL_alpha_a=0;
+        double st_OASPL_alpha_a=0;
+        double stlog_OASPL_alpha_a=0;
+        double sp_OASPL_S_a=0;
+        double splog_OASPL_S_a=0;
+        double st_OASPL_S_a=0;
+        double stlog_OASPL_S_a=0;
+        double sp_OASPL_P_a=0;
+        double splog_OASPL_P_a=0;
+        double st_OASPL_P_a=0;
+        double stlog_OASPL_P_a=0;
+        double sp_OASPL_a=0;
+        double splog_OASPL_a=0;
+        double st_OASPL_a=0;
+        double stlog_OASPL_a=0;
+        double sp_dBA_a=0;
+        double splog_dBA_a=0;
+        double st_dBA_a=0;
+        double stlog_dBA_a=0;
+        double sp_dBB_a=0;
+        double splog_dBB_a=0;
+        double st_dBB_a=0;
+        double stlog_dBB_a=0;
+        double sp_dBC_a=0;
+        double splog_dBC_a=0;
+        double st_dBC_a=0;
+        double stlog_dBC_a=0;
+        double sp_LedB_a=0;
+        double splog_LedB_a=0;
+        double st_LedB_a=0;
+        double stlog_LedB_a=0;
+        double sp_LedBAW_a=0;
+        double splog_LedBAW_a=0;
+        double st_LedBAW_a=0;
+        double stlog_LedBAW_a=0;
+        double sp_LedBBW_a=0;
+        double splog_LedBBW_a=0;
+        double st_LedBBW_a=0;
+        double stlog_LedBBW_a=0;
+        double sp_LedBCW_a=0;
+        double splog_LedBCW_a=0;
+        double st_LedBCW_a=0;
+        double stlog_LedBCW_a=0;
+        double SPL_blade_total_a=0;
+        double SPL_blade_total_aux_a=0;
+
+        for (int i = 0; i < number_of_segments; ++i) {
+
+//setup variables
+m_OASPL3d[i]=0;
+m_OASPLA3d[i]=0;
+m_OASPLB3d[i]=0;
+m_OASPLC3d[i]=0;
+m_SPLALOG3d[i]=0;
+m_SPLSLOG3d[i]=0;
+m_SPLPLOG3d[i]=0;
+m_SPLlogLE3d[i]=0;
+
+            // definitions
+            axial_ind_fact[i] = bdata->m_a_axial.value(i);
+            axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
+
+            if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
+            else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
+
+            tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.+bdata->m_a_tangential.value(i));
+            resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
+            chord[i] = bdata->m_c_local.value(i);
+            Reynolds[i] = bdata->m_Reynolds.value(i);
+
+            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
+            Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
+            Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
+            Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
+            Mach_polar[i]=noiseOpPoints[i]->getMach();
+            Mach[i]=bdata->m_Mach.value(i);
+            Mach_BEM[i] = bdata->m_Mach.value(i);
+            Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
+            alpha_BEM[i] = bdata->m_alpha.value(i);
+            alpha[i]=alpha_BEM[i];
+            phi_BEM[i] = bdata->m_phi.value(i);
+            theta_BEM[i] = bdata->m_theta.value(i);
+            cl_cd[i] =  bdata->m_LD.value(i);
+            r_R[i] = bdata->m_pos.value(i)/finalradius;
+
+            D_starred_N_S[i]=0;
+            D_starred_HT_S[i]=0;
+
+//BPM method p 25 manual and spreadsheet
+double aux_alpha_polar[noiseOpPoints.size()];
+for (int k=0;k<noiseOpPoints.size();++k){
+aux_alpha_polar[k]=qFabs(alpha_BEM[i]-noiseOpPoints[k]->getAlphaDegreeAbsolute());
+}
+
+double aux_alpha_polar_set=aux_alpha_polar[0];
+
+for (int k=1;k<noiseOpPoints.size();++k){
+    if(aux_alpha_polar_set>aux_alpha_polar[k])
+   {aux_alpha_polar_set=aux_alpha_polar[k];
+alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
+    }
+}
+            if (r_R[i] <= r_R0) {c_Rx[i] = c_R0;}
+            if ((r_R[i] > r_R0) & (r_R[i] < r_R1)) {c_Rx[i] = (r_R[i]-r_R0)*(c_R1-c_R0)/(0.25-r_R0)+c_R0;}
+            if ((r_R[i] <= r_R1) & (r_R[i] >= r_R1)) {c_Rx[i] = c_R1;}
+            if ((r_R[i] > r_R1) & (r_R[i] < r_R2)) {c_Rx[i] = (r_R[i]-r_R1)*(c_R2-c_R1)/(r_R2-r_R1)+c_R1;}
+            if (r_R[i] >= r_R2) {c_Rx[i] = c_R2;}
+
+            QString c_R= QString::number(c_Rx[i], 'f', 5);
+            QString Mach_error_x= QString::number(Mach_error[i], 'f', 2);
+            QString Reynolds_error_x= QString::number(Reynolds_error[i], 'f', 2);
+            QString alpha_error_x= QString::number(alpha_error[i], 'f', 2);
+
+//heavy tripping
+
+if (Reynolds[i]>300000){
+    D_starred_C_HT[i]=pow(10,(3.411-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
+}
+else {D_starred_C_HT[i]=0.0601*(pow(Reynolds[i],(-0.114)));}
+
+D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
+
+//natural transition
+    D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
+
+D_starred_N[i]=D_starred_C_N[i]*chord[i];
+
+if ((alpha[i]<=0) & (alpha[i]>=0)){
+D_starred_HT_S[i]=D_starred_HT[i];
+D_starred_HT_P[i]=D_starred_HT[i];
+D_starred_N_S[i]=D_starred_N[i];
+D_starred_N_P[i]=D_starred_N[i];
+}
+else{
+//alpha !=0 pressure side
+if ((alpha[i]<0) || (alpha[i]>0)){
+corr_fact[i]=pow(10,(-0.0432*alpha[i]+0.00113*pow(alpha[i],2)));
+D_starred_HT_P[i]=D_starred_HT[i]*corr_fact[i];
+D_starred_N_P[i]=D_starred_N[i]*corr_fact[i];
+}
+
+//alpha !=0 suction side heavy tripping
+if ((alpha[i]>0) & (alpha[i]<=5)){
+corr_fact[i]=pow(10,(0.0679*alpha[i]));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
+
+if ((alpha[i]>5) & (alpha[i]<=12.5)){
+corr_fact[i]=0.381*(pow(10,(0.1516*alpha[i])));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
+
+if ((alpha[i]>12.5) & (alpha[i]<=25)){
+corr_fact[i]=14.296*(pow(10,(0.0258*alpha[i])));
+D_starred_HT_S[i]=D_starred_HT[i]*corr_fact[i];
+}
+
+//alpha !=0 suction side natural transition
+if ((alpha[i]>0) & (alpha[i]<=7.5)){
+corr_fact[i]=pow(10.,(0.0679*alpha[i]));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
+
+if ((alpha[i]>7.5) & (alpha[i]<=12.5)){
+corr_fact[i]=0.0162*(pow(10.,(0.3066*alpha[i])));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}
+
+if ((alpha[i]>12.5) & (alpha[i]<=25)){
+corr_fact[i]=54.42*(pow(10.,(0.0258*alpha[i])));
+D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
+}}
+
+//For D* Xfoil
+
+DStarXFoilS[i]=m_DStarInterpolatedS3d[i];
+DStarXFoilP[i]=m_DStarInterpolatedP3d[i];
+
+//Length of Wetted Trailing Edge
+L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);
+
+//Calculate the Switching Angle
+SwAlpha_1[i]=23.43*Mach[i]+4.651;
+SwAlpha_2[i]=12.5;
+
+if (SwAlpha_1[i]<SwAlpha_2[i]){SwAlpha[i]=SwAlpha_1[i];}
+else {SwAlpha[i]=SwAlpha_2[i];}
+
+double EddyMach = m_parameter->eddyConvectionMach;
+
+if (m_parameter->lowFreq) {
+Dh[i]=(2.*pow(sin(qDegreesToRadians(theta[i]/2.)),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi[i]))),2);
+}
+else{Dh[i]=1;}
+
+if (m_parameter->lowFreq) {
+Dl[i]=(2.*pow(sin(qDegreesToRadians(theta[i])),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta[i])))),4);
+}
+else{Dl[i]=1;}
+
+gamma[i]=27.094*Mach[i]+3.32;
+
+gamma0[i]=SwAlpha_1[i];
+
+beta[i]=72.65*Mach[i]+10.74;
+
+beta0[i]=-34.19*Mach[i]-13.82;
+
+gamma0_gamma_min[i]=gamma0[i]-gamma[i];
+
+gamma0_gamma_plus[i]=gamma0[i]+gamma[i];
+
+if (bdata->m_Reynolds.value(i)<247000)
+{K1[i]=-4.31*log10(bdata->m_Reynolds.value(i))+156.3;}
+else if (bdata->m_Reynolds.value(i)>800000)
+{K1[i]=128.5;}
+else {K1[i]=-9.*log10(bdata->m_Reynolds.value(i))+181.6;}
+
+if (alpha[i]<gamma0_gamma_min[i])
+{K2[i]=K1[i]-1000.;}
+else if (alpha[i]>gamma0_gamma_plus[i])
+{K2[i]=K1[i]-12.;}
+else
+{K2[i]=K1[i]+(sqrt(pow(beta[i],2)-pow((beta[i]/gamma[i]),2)*pow((alpha[i]-gamma0[i]),2)))+beta0[i];}
+
+double EddyMach_perc=EddyMach;
+
+EddyMach_calc[i]=Mach[i]*EddyMach_perc;
+
+//delta starred type, if natural transition or heavy-tripping
+if (m_parameter->dstar_type==0){
+    D_starred_S[i]=D_starred_N_S[i];
+    D_starred_P[i]=D_starred_N_P[i];
+}
+
+else if (m_parameter->dstar_type==1){
+FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
+
+    double TopTrip=pFoilPolarDlg->m_XTopTr;
+    double BotTrip=pFoilPolarDlg->m_XBotTr;
+
+if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
+//        natural transition
+    D_starred_S[i]=D_starred_HT_S[i];
+    D_starred_P[i]=D_starred_HT_P[i];
+}
+else {
+//heavy tripping
+    D_starred_S[i]=DStarXFoilS[i];
+    D_starred_P[i]=DStarXFoilP[i];
+}}
+else if (m_parameter->dstar_type==2){
+//user
+    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+    D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
+    D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
+}
+
+double B=0;
+double XB=0;
+double YB=0;
+double ZB=0;
+
+//phi type, fixed 90º or free
+if (m_parameter->phi_type==0){
+    //by the quasi-3D spreadsheet
+    ri[i]=bdata->m_pos.value(i);
+    ri_1[i]=bdata->m_pos.value(i+1);
+    ri_2[i]=bdata->m_pos.value(i+2);
+    B=bdata->m_pos.value(number_of_segments-1)/2.;
+    A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
+    re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter->distanceObsever,2));
+    phi_lin[i]=qRadiansToDegrees(qAsin(m_parameter->distanceObsever/re[i]));
+    phi[i]=180.-phi_lin[i];
+    theta[i]=90;
+    dist_obs[i]=ri_1[i];
+}
+else if (m_parameter->phi_type==1){
+    //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
+    //    Input X e , Y e , Z e
+    //    Attribute their respective values to X B , Y B , Z B
+        XB=m_parameter->obs_x_pos;
+        YB=m_parameter->obs_y_pos;
+        ZB=m_parameter->obs_z_pos;
+
+    if((i<=number_of_segments) & (i>=number_of_segments)){
+c_1[i]=0;
+r_1[i]=0;
+    }
+    else
+    {
+c_1[i]=bdata->m_c_local.value(i+1);
+r_1[i]=bdata->m_pos.value(i+1);
+    }}
+
+c_0[i]=bdata->m_c_local.value(i);
+r_0[i]=bdata->m_pos.value(i);
+
+local_twist[i]=theta_BEM[i];
+
+    b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
+
+//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line
+    a[i]=local_twist[i]+blade_pitch;
+
+    XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
+    YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
+    ZRS[i]=ZB-(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))/2.;
+
+//    Calculate Y RS − 0.75 ∗ (C r i+1 − C r i )/2
+    calc_int_a[i]=(YRS[i]-0.75*(c_1[i]-c_0[i])/2.);
+
+    XRT[i]=XRS[i];
+    YRT[i]=cos(qDegreesToRadians(b[i]))*calc_int_a[i]+sin(qDegreesToRadians(b[i]))*ZRS[i];
+    ZRT[i]=-sin(qDegreesToRadians(b[i]))*calc_int_a[i]+cos(qDegreesToRadians(b[i]))*ZRS[i];
+
+    r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
+    r_rt[i]=r_e[i];
+    theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
+
+    psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+
+    dist_obs[i]=re[i];
+
+   phi_rad[i]=qDegreesToRadians(phi[i]);
+   theta_rad[i]=qDegreesToRadians(theta[i]);
+
+   alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+
+first_term_Dh_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_S[i]/pow(dist_obs[i],2));
+
+first_term_Dl_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dl[i]*D_starred_S[i]/pow(dist_obs[i],2));
+
+first_term_Dh_P[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_P[i]/pow(dist_obs[i],2));
+
+St1[i]=0.02*(pow(Mach[i],-0.6));
+
+if(alpha[i]<1.33){St2[i]=St1[i];}
+else if(alpha[i]>12.5){St2[i]=St1[i]*4.72;}
+else {St2[i]=St1[i]*pow(10.,(0.0054*pow((alpha[i]-1.33),2)));}
+
+if (bdata->m_Reynolds.value(i)<95200)
+{b0[i]= 0.3;}
+else if (bdata->m_Reynolds.value(i)>857000)
+{b0[i]= 0.56;}
+else {b0[i]=-4.48*pow(10,-13)*(pow((bdata->m_Reynolds.value(i)-857000.),2)+0.56);}
+
+if (b0[i]<0.13)
+{B_min_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
+else if (b0[i]>0.145)
+{B_min_b0[i]=-817.81*pow(b0[i],3)+335.21*pow(b0[i],2)-135.024*b0[i]+10.619;}
+else{B_min_b0[i]=-83.607*b0[i]+8.138;}
+
+if (b0[i]<0.1)
+{B_max_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
+else if (b0[i]>0.187)
+{B_max_b0[i]=-80.541*pow(b0[i],3)+44.174*pow(b0[i],2)-39.381*b0[i]+2.344;}
+else {B_max_b0[i]=-31.33*b0[i]+1.854;}
+
+BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
+
+RCmod[i]=3*Reynolds[i];
+
+if (RCmod[i]<95200){ao_Rc[i]=0.57;}
+else if (RCmod[i]>857000){ao_Rc[i]=1.13;}
+else {ao_Rc[i]=-9.57*pow(10,-13)*(pow((RCmod[i]-857000),2)+1.13);}
+
+if(ao_Rc[i]<0.204){A_min_ao[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
+else if (ao_Rc[i]>0.244){A_min_ao[i]=-142.795*pow(ao_Rc[i],3)+103.656*pow(ao_Rc[i],2)-57.757*ao_Rc[i]+6.006;}
+else {A_min_ao[i]=-32.665*ao_Rc[i]+3.981;}
+
+if (ao_Rc[i]<0.13){A_max_ao[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
+else if(ao_Rc[i]>0.321){A_max_ao[i]=-4.669*pow(ao_Rc[i],3)+3.491*pow(ao_Rc[i],2)-16.699*ao_Rc[i]+1.149;}
+else {A_max_ao[i]=-15.901*ao_Rc[i]+1.098;}
+
+K1_3[i]=K1[i]-3.;
+
+AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
+
+St1_bar[i]=(St1[i]+St2[i])/2.;
+
+Re_disp_thick[i]=1.225*bdata->m_Windspeed.value(i)*D_starred_P[i]/(0.0000178);
+
+if (Re_disp_thick[i]>5000){delta_K1[i]=0;}
+else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
+
+    double b0[number_of_segments];
+    if (bdata->m_Reynolds.value(i)<95200)
+    {b0[i]= 0.3;}
+    else if (bdata->m_Reynolds.value(i)>857000)
+    {b0[i]= 0.56;}
+    else {b0[i]=-4.48*pow(10.,-13)*(pow((bdata->m_Reynolds.value(i)-857000.),2)+0.56);}
+
+    double B_min_b0[number_of_segments];
+    if (b0[i]<0.13)
+    {B_min_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
+    else if (b0[i]>0.145)
+    {B_min_b0[i]=-817.81*pow(b0[i],3)+335.21*pow(b0[i],2)-135.024*b0[i]+10.619;}
+    else{B_min_b0[i]=-83.607*b0[i]+8.138;}
+
+    double B_max_b0[number_of_segments];
+    if (b0[i]<0.1)
+    {B_max_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
+    else if (b0[i]>0.187)
+    {B_max_b0[i]=-80.541*pow(b0[i],3)+44.174*pow(b0[i],2)-39.381*b0[i]+2.344;}
+    else {B_max_b0[i]=-31.33*b0[i]+1.854;}
+
+    double BR_b0[number_of_segments];
+    BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
+
+    if((z<=m_parameter->TSRtd) & (z>=m_parameter->TSRtd)){
+    QString str= QString::number(z, 'f', 1);
+
+
+    int w=30;
+
+    double slog_SPL_alpha[w];
+    double slog_SPL_S[w];
+    double slog_SPL_P[w];
+    double slog_SPL[w];
+    double slog_dBA[w];
+    double slog_dBB[w];
+    double slog_dBC[w];
+    double slog_LedB[w];
+    double slog_LedBAW[w];
+    double slog_LedBBW[w];
+    double slog_LedBCW[w];
+
+     for (int j = 0; j < w; ++j) {
+         double Sts[w];
+         Sts[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
+
+         double b_alpha[w];
+         b_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
+
+         double B_min[w];
+    if (b_alpha[j]<0.13)
+    {B_min[j]=sqrt(16.888-886.788*pow(b_alpha[j],2));}
+    else if(b_alpha[j]>0.145)
+    {B_min[j]=-817.81*pow(b_alpha[j],3)+335.21*pow(b_alpha[j],2)-135.024*b_alpha[j]+10.619;}
+    else {B_min[j]=-83.607*b_alpha[j]+8.138;}
+
+    double B_max[w];
+    if (b_alpha[j]<0.1)
+    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4,109;}
+    else if(b_alpha[j]>0.187)
+    {B_max[j]=-80.541*pow(b_alpha[j],3)+44.174*pow(b_alpha[j],2)-39.381*b_alpha[j]+2.344;}
+    else {B_max[j]=-31.33*b_alpha[j]+1.854;}
+
+    double B_b[w];
+    B_b[j]=B_min[j]+BR_b0[i]*(B_max[j]-B_min[j]);
+    if(qIsInf(B_b[j])){B_b[j]=0;}
+
+    double a_alpha[w];
+    a_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
+
+    double A_min_alpha[w];
+    if (a_alpha[j]<0.204)
+    {A_min_alpha[j]=sqrt(67.552-886.788*pow(a_alpha[j],2))-8.219;}
+    else if(a_alpha[j]>0.244)
+    {A_min_alpha[j]=-142.795*pow(a_alpha[j],3)+103.656*pow(a_alpha[j],2)-57.757*a_alpha[j]+6.006;}
+    else {A_min_alpha[j]=-32.665*a_alpha[j]+3.981;}
+
+    double A_max_alpha[w];
+    if (a_alpha[j]<0.13)
+    {A_max_alpha[j]=sqrt(67.552-886.788*pow(a_alpha[j],2))-8.219;}
+    else if(a_alpha[j]>0.321)
+    {A_max_alpha[j]=-4.669*pow(a_alpha[j],3)+3.491*pow(a_alpha[j],2)-16.699*a_alpha[j]+1.149;}
+    else {A_max_alpha[j]=-15.901*a_alpha[j]+1.098;}
+
+    double Alin_a[w];
+    Alin_a[j]=A_min_alpha[j]+AR_ao[i]*(A_max_alpha[j]-A_min_alpha[j]);
+
+    double SPL_alpha_min0[w];
+    SPL_alpha_min0[j]=first_term_Dh_S[i]+K2[i]+B_b[j];
+
+    double SPL_alpha_big0[w];
+    SPL_alpha_big0[j]=first_term_Dl_S[i]+K2[i]+Alin_a[j];
+
+    double dBA_alpha_min0[w];
+    dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
+
+    double dBA_alpha_big0[w];
+    dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
+
+    double dBB_alpha_min0[w];
+    dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
+
+    double dBC_alpha_big0[w];
+    dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
+
+    double dBC_alpha_min0[w];
+    dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
+
+    double dBB_alpha_big0[w];
+    dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
+
+    double St1_bar[w];
+    St1_bar[j]=(St1[i]+St2[i])/2.;
+
+    double a_S[w];
+    a_S[j]=qFabs(log10(Sts[j]/St1_bar[j]));
+
+    double A_min_S[w];
+    if (a_S[j]<0.204){A_min_S[j]=sqrt(67.552-886.788*pow(a_S[j],2))-8.219;}
+    else if (a_S[j]>0.244){A_min_S[j]=-142.795*pow(a_S[j],3)+103.656*pow(a_S[j],2)-57.757*a_S[j]+6.006;}
+    else {A_min_S[j]=-32.665*a_S[j]+3.981;}
+
+    double A_max_S[w];
+    if (a_S[j]<0.13){A_max_S[j]=sqrt(67.552-886.788*pow(a_S[j],2))-8.219;}
+    else if (a_S[j]>0.321){A_max_S[j]=-4.669*pow(a_S[j],3)+3.491*pow(a_S[j],2)-16.699*a_S[j]+1.149;}
+    else {A_max_S[j]=-15.901*a_S[j]+1.098;}
+
+    double A_a_S[w];
+    A_a_S[j]=A_min_S[j]+AR_ao[i]*(A_max_S[j]-A_min_S[j]);
+
+    double SPL_dB_S[w];
+    SPL_dB_S[j]=first_term_Dh_S[i]+A_a_S[j]+K1_3[i];
+
+    double dBA_S[w];
+    dBA_S[j]=SPL_dB_S[j]+AWeighting[j];
+
+    double dBB_S[w];
+    dBB_S[j]=SPL_dB_S[j]+BWeighting[j];
+
+    double dBC_S[w];
+    dBC_S[j]=SPL_dB_S[j]+CWeighting[j];
+
+    double Sts_St1_bar[w];
+    Sts_St1_bar[j]=Sts[j]/St1_bar[i];
+
+    double Stp_P[w];
+    Stp_P[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P[i]/bdata->m_Windspeed.value(i);
+
+    double a_P[w];
+    a_P[j]=qFabs(log10(Stp_P[j]/St1[i]));
+
+    double A_min_P[w];
+    if(a_P[j]<0.204){A_min_P[j]=sqrt(67.552-886.788*pow(a_P[j],2))-8.219;}
+    else if (a_P[j]>0.244){A_min_P[j]=-142.795*pow(a_P[j],3)+103.656*pow(a_P[j],2)-57.757*a_P[j]+6.006;}
+    else {A_min_P[j]=-32.665*a_P[j]+3.981;}
+
+    double A_max_P[w];
+    if(a_P[j]<0.13){A_max_P[j]=sqrt(67.552-886.788*pow(a_P[j],2))-8.219;}
+    else if (a_P[j]>0.321){A_max_P[j]=-4.669*pow(a_P[j],3)+3.491*pow(a_P[j],2)-16.699*a_P[j]+1.149;}
+    else {A_max_P[j]=-15.901*a_P[j]+1.098;}
+
+    double A_a_P[w];
+    A_a_P[j]=A_min_P[j]+AR_ao[i]*(A_max_P[j]-A_min_P[j]);
+
+    double SPL_dB_P[w];
+    SPL_dB_P[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P[i];
+
+    double dBA_P[w];
+    dBA_P[j]=SPL_dB_P[j]+AWeighting[j];
+
+    double dBB_P[w];
+    dBB_P[j]=SPL_dB_P[j]+BWeighting[j];
+
+    double dBC_P[w];
+    dBC_P[j]=SPL_dB_P[j]+CWeighting[j];
+
+    double SPL_alpha[w];
+    if (alpha[i]<SwAlpha[i]){SPL_alpha[j]=SPL_alpha_min0[j];}
+    else {SPL_alpha[j]=SPL_alpha_big0[j];}
+
+    double SPL_S[w];
+    if (alpha[i]<SwAlpha[i]){SPL_S[j]=SPL_dB_S[j];}
+    else {SPL_S[j]=-999999999999.;}
+
+    double SPL_P[w];
+    if (alpha[i]<SwAlpha[i]){SPL_P[j]=SPL_dB_P[j];}
+    else {SPL_P[j]=-999999999999.;}
+
+    double SPL_dB[w];
+    SPL_dB[j]=10*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
+
+    double SPL_A[w];
+    SPL_A[j]=SPL_dB[j]+AWeighting[j];
+
+    double SPL_B[w];
+    SPL_B[j]=SPL_dB[j]+BWeighting[j];
+
+    double SPL_C[w];
+    SPL_C[j]=SPL_dB[j]+CWeighting[j];
+
+    double SPL_LedB[w];
+    SPL_LedB[w]=0;
+
+    double SPL_LedBAW[w];
+    SPL_LedBAW[w]=0;
+
+    double SPL_LedBBW[w];
+    SPL_LedBBW[w]=0;
+
+    double SPL_LedBCW[w];
+    SPL_LedBCW[w]=0;
+
+    u_le=m_parameter->u_wind_speed*100.;
+    c_le=100.*chord[i];
+    I_le=m_parameter->TurbulenceIntensity;
+    lambda_le=100.*m_parameter->IntegralLengthScale;
+    r_e_le=100.*dist_obs[i];
+    beta_le=sqrt(1-pow(Mach[i],2));
+    L_le=100.*L[i];
+    D_L_le=0.5*Dl[i];
+    aux_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
+    K_le=M_PI*CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
+    S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
+    LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
+
+    if(m_parameter->Lowson_type==2){
+        c_const_le = c_const_rd_le;
+        d_const_le = d_const_rd_le;
+     }
+    else if(m_parameter->Lowson_type==1){
+            c_const_le = c_const_vk_le;
+            d_const_le = d_const_vk_le;
+         }
+        else {
+            c_const_le=0;
+            d_const_le = 0;
+        }
+
+aux0_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl[i])/(pow(r_e_le, 2));
+aux1_le=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
+aux4_le=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
+aux5_le=10.*log10(aux0_le*aux4_le);
+
+//Validation:
+
+//Lowson validation:
+if (((((m_parameter->Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
+SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
+SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
+SPL_LedBCW[j]=SPL_LedB[j]+CWeighting[j];
+LE_validation=true;
+}
+else{
+SPL_LedB[j]=-999999999999.;
+SPL_LedBAW[j]=-999999999999.;
+SPL_LedBBW[j]=-999999999999.;
+SPL_LedBCW[j]=-999999999999.;
+LE_validation=false;
+}
+
+//BPM validation:
+//p 17 C_Project_Log_Text_15_jan_16
+if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
+BPM_validation=true;
+}
+else{
+SPL_alpha[j]=-999999999999.;
+SPL_S[j]=-999999999999.;
+SPL_P[j]=-999999999999.;
+SPL_dB[j]=-999999999999.;
+SPL_A[j]=-999999999999.;
+SPL_B[j]=-999999999999.;
+SPL_C[j]=-999999999999.;
+BPM_validation=false;
+}
+
+    slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
+    slog_SPL_S[j]=pow(10.,(SPL_S[j]/10.));
+    slog_SPL_P[j]=pow(10.,(SPL_P[j]/10.));
+    slog_SPL[j]=pow(10.,(SPL_dB[j]/10.));
+    slog_dBA[j]=pow(10.,(SPL_A[j]/10.));
+    slog_dBB[j]=pow(10.,(SPL_B[j]/10.));
+    slog_dBC[j]=pow(10.,(SPL_C[j]/10.));
+    slog_LedB[j]=pow(10.,(SPL_LedB[j]/10.));
+    slog_LedBAW[j]=pow(10.,(SPL_LedBAW[j]/10.));
+    slog_LedBBW[j]=pow(10.,(SPL_LedBBW[j]/10.));
+    slog_LedBCW[j]=pow(10.,(SPL_LedBCW[j]/10.));
+
+    if(qIsNaN(slog_SPL_alpha[j])){slog_SPL_alpha[j]=0;}
+    if(qIsNaN(slog_SPL_S[j])){slog_SPL_S[j]=0;}
+    if(qIsNaN(slog_SPL_P[j])){slog_SPL_P[j]=0;}
+    if(qIsNaN(slog_SPL[j])){slog_SPL[j]=0;}
+    if(qIsNaN(slog_dBA[j])){slog_dBA[j]=0;}
+    if(qIsNaN(slog_dBB[j])){slog_dBB[j]=0;}
+    if(qIsNaN(slog_dBC[j])){slog_dBC[j]=0;}
+    if(qIsNaN(slog_LedB[j])){slog_LedB[j]=0;}
+    if(qIsNaN(slog_LedBAW[j])){slog_LedBAW[j]=0;}
+    if(qIsNaN(slog_LedBBW[j])){slog_LedBBW[j]=0;}
+    if(qIsNaN(slog_LedBCW[j])){slog_LedBCW[j]=0;}
+
+    splog_OASPL_alpha+=slog_SPL_alpha[j];
+    splog_OASPL_S+=slog_SPL_S[j];
+    splog_OASPL_P+=slog_SPL_P[j];
+    splog_OASPL+=slog_SPL[j];
+    splog_dBA+=slog_dBA[j];
+    splog_dBB+=slog_dBB[j];
+    splog_dBC+=slog_dBC[j];
+    splog_LedB+=slog_LedB[j];
+    splog_LedBAW+=slog_LedBAW[j];
+    splog_LedBBW+=slog_LedBBW[j];
+    splog_LedBCW+=slog_LedBCW[j];
+
+    splog_OASPL_alpha_a+=slog_SPL_alpha[j];
+    splog_OASPL_S_a+=slog_SPL_S[j];
+    splog_OASPL_P_a+=slog_SPL_P[j];
+    splog_OASPL_a+=slog_SPL[j];
+    splog_dBA_a+=slog_dBA[j];
+    splog_dBB_a+=slog_dBB[j];
+    splog_dBC_a+=slog_dBC[j];
+    splog_LedB_a+=slog_LedB[j];
+    splog_LedBAW_a+=slog_LedBAW[j];
+    splog_LedBBW_a+=slog_LedBBW[j];
+    splog_LedBCW_a+=slog_LedBCW[j];
+
+    sp_OASPL_alpha=10*log10(splog_OASPL_alpha);
+    sp_OASPL_S=10*log10(splog_OASPL_S);
+    sp_OASPL_P=10*log10(splog_OASPL_P);
+    sp_OASPL=10*log10(splog_OASPL);
+    sp_dBA=10*log10(splog_dBA);
+    sp_dBB=10*log10(splog_dBB);
+    sp_dBC=10*log10(splog_dBC);
+    sp_LedB=10*log10(splog_LedB);
+    sp_LedBAW=10*log10(splog_LedBAW);
+    sp_LedBBW=10*log10(splog_LedBBW);
+    sp_LedBCW=10*log10(splog_LedBCW);
+
+    sp_OASPL_alpha_a=10*log10(splog_OASPL_alpha_a);
+    sp_OASPL_S_a=10*log10(splog_OASPL_S_a);
+    sp_OASPL_P_a=10*log10(splog_OASPL_P_a);
+    sp_OASPL_a=10*log10(splog_OASPL_a);
+    sp_dBA_a=10*log10(splog_dBA_a);
+    sp_dBB_a=10*log10(splog_dBB_a);
+    sp_dBC_a=10*log10(splog_dBC_a);
+    sp_LedB_a=10*log10(splog_LedB_a);
+    sp_LedBAW_a=10*log10(splog_LedBAW_a);
+    sp_LedBBW_a=10*log10(splog_LedBBW_a);
+    sp_LedBCW_a=10*log10(splog_LedBCW_a);
+
+    if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
+    if(qIsInf(sp_OASPL_S)){sp_OASPL_S=0;}
+    if(qIsInf(sp_OASPL_P)){sp_OASPL_P=0;}
+    if(qIsInf(sp_OASPL)){sp_OASPL=0;}
+    if(qIsInf(sp_dBA)){sp_dBA=0;}
+    if(qIsInf(sp_dBB)){sp_dBB=0;}
+    if(qIsInf(sp_dBC)){sp_dBC=0;}
+    if(qIsInf(sp_LedB)){sp_LedB=0;}
+    if(qIsInf(sp_LedBAW)){sp_LedBAW=0;}
+    if(qIsInf(sp_LedBBW)){sp_LedBBW=0;}
+    if(qIsInf(sp_LedBCW)){sp_LedBCW=0;}
+
+    if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
+    if(qIsInf(splog_OASPL_S)){splog_OASPL_S=0;}
+    if(qIsInf(splog_OASPL_P)){splog_OASPL_P=0;}
+    if(qIsInf(splog_OASPL)){splog_OASPL=0;}
+    if(qIsInf(splog_dBA)){splog_dBA=0;}
+    if(qIsInf(splog_dBB)){splog_dBB=0;}
+    if(qIsInf(splog_dBC)){splog_dBC=0;}
+    if(qIsInf(splog_LedB)){splog_LedB=0;}
+    if(qIsInf(splog_LedBAW)){splog_LedBAW=0;}
+    if(qIsInf(splog_LedBBW)){splog_LedBBW=0;}
+    if(qIsInf(splog_LedBCW)){splog_LedBCW=0;}
+
+    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
+    if(qIsInf(sp_OASPL_S_a)){sp_OASPL_S_a=0;}
+    if(qIsInf(sp_OASPL_P_a)){sp_OASPL_P_a=0;}
+    if(qIsInf(sp_OASPL_a)){sp_OASPL_a=0;}
+    if(qIsInf(sp_dBA_a)){sp_dBA_a=0;}
+    if(qIsInf(sp_dBB_a)){sp_dBB_a=0;}
+    if(qIsInf(sp_dBC_a)){sp_dBC_a=0;}
+    if(qIsInf(sp_LedB_a)){sp_LedB_a=0;}
+    if(qIsInf(sp_LedBAW_a)){sp_LedBAW_a=0;}
+    if(qIsInf(sp_LedBBW_a)){sp_LedBBW_a=0;}
+    if(qIsInf(sp_LedBCW_a)){sp_LedBCW_a=0;}
+
+    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
+    if(qIsInf(splog_OASPL_S_a)){splog_OASPL_S_a=0;}
+    if(qIsInf(splog_OASPL_P_a)){splog_OASPL_P_a=0;}
+    if(qIsInf(splog_OASPL_a)){splog_OASPL_a=0;}
+    if(qIsInf(splog_dBA_a)){splog_dBA_a=0;}
+    if(qIsInf(splog_dBB_a)){splog_dBB_a=0;}
+    if(qIsInf(splog_dBC_a)){splog_dBC_a=0;}
+    if(qIsInf(splog_LedB_a)){splog_LedB_a=0;}
+    if(qIsInf(splog_LedBAW_a)){splog_LedBAW_a=0;}
+    if(qIsInf(splog_LedBBW_a)){splog_LedBBW_a=0;}
+    if(qIsInf(splog_LedBCW_a)){splog_LedBCW_a=0;}
+
+    stlog_OASPL_alpha_a+=splog_OASPL_alpha_a;
+    stlog_OASPL_S_a+=splog_OASPL_S_a;
+    stlog_OASPL_P_a+=splog_OASPL_P_a;
+    stlog_OASPL_a+=splog_OASPL_a;
+    stlog_dBA_a+=splog_dBA_a;
+    stlog_dBB_a+=splog_dBB_a;
+    stlog_dBC_a+=splog_dBC_a;
+    stlog_LedB_a+=splog_LedB_a;
+    stlog_LedBAW_a+=splog_LedBAW_a;
+    stlog_LedBBW_a+=splog_LedBBW_a;
+    stlog_LedBCW_a+=splog_LedBCW_a;
+
+    st_OASPL_alpha_a=10*log10(stlog_OASPL_alpha_a);
+    st_OASPL_S_a=10*log10(stlog_OASPL_S_a);
+    st_OASPL_P_a=10*log10(stlog_OASPL_P_a);
+    st_OASPL_a=10*log10(stlog_OASPL_a);
+    st_dBA_a=10*log10(stlog_dBA_a);
+    st_dBB_a=10*log10(stlog_dBB_a);
+    st_dBC_a=10*log10(stlog_dBC_a);
+    st_LedB_a=10*log10(stlog_LedB_a);
+    st_LedBAW_a=10*log10(stlog_LedBAW_a);
+    st_LedBBW_a=10*log10(stlog_LedBBW_a);
+    st_LedBCW_a=10*log10(stlog_LedBAW_a);
+
+    if(qIsInf(st_OASPL_alpha_a)){st_OASPL_alpha_a=0;}
+    if(qIsInf(st_OASPL_S_a)){st_OASPL_S_a=0;}
+    if(qIsInf(st_OASPL_P_a)){st_OASPL_P_a=0;}
+    if(qIsInf(st_OASPL_a)){st_OASPL_a=0;}
+    if(qIsInf(st_dBA_a)){st_dBA_a=0;}
+    if(qIsInf(st_dBB_a)){st_dBB_a=0;}
+    if(qIsInf(st_dBC_a)){st_dBC_a=0;}
+    if(qIsInf(st_LedB_a)){st_LedB_a=0;}
+    if(qIsInf(st_LedBAW_a)){st_LedBAW_a=0;}
+    if(qIsInf(st_LedBBW_a)){st_LedBBW_a=0;}
+    if(qIsInf(st_LedBCW_a)){st_LedBCW_a=0;}
+
+    stlog_OASPL_alpha+=splog_OASPL_alpha;
+    stlog_OASPL_S+=splog_OASPL_S;
+    stlog_OASPL_P+=splog_OASPL_P;
+    stlog_OASPL+=splog_OASPL;
+    stlog_dBA+=splog_dBA;
+    stlog_dBB+=splog_dBB;
+    stlog_dBC+=splog_dBC;
+    stlog_LedB+=splog_LedB;
+    stlog_LedBAW+=splog_LedBAW;
+    stlog_LedBBW+=splog_LedBBW;
+    stlog_LedBCW+=splog_LedBCW;
+
+    st_OASPL_alpha=10*log10(stlog_OASPL_alpha);
+    st_OASPL_S=10*log10(stlog_OASPL_S);
+    st_OASPL_P=10*log10(stlog_OASPL_P);
+    st_OASPL=10*log10(stlog_OASPL);
+    st_dBA=10*log10(stlog_dBA);
+    st_dBB=10*log10(stlog_dBB);
+    st_dBC=10*log10(stlog_dBC);
+    st_LedB=10*log10(stlog_LedB);
+    st_LedBAW=10*log10(stlog_LedBAW);
+    st_LedBBW=10*log10(stlog_LedBBW);
+    st_LedBCW=10*log10(stlog_LedBAW);
+
+    if(qIsInf(st_OASPL_alpha)){st_OASPL_alpha=0;}
+    if(qIsInf(st_OASPL_S)){st_OASPL_S=0;}
+    if(qIsInf(st_OASPL_P)){st_OASPL_P=0;}
+    if(qIsInf(st_OASPL)){st_OASPL=0;}
+    if(qIsInf(st_dBA)){st_dBA=0;}
+    if(qIsInf(st_dBB)){st_dBB=0;}
+    if(qIsInf(st_dBC)){st_dBC=0;}
+    if(qIsInf(st_LedB)){st_LedB=0;}
+    if(qIsInf(st_LedBAW)){st_LedBAW=0;}
+    if(qIsInf(st_LedBBW)){st_LedBBW=0;}
+    if(qIsInf(st_LedBCW)){st_LedBCW=0;}
+
+    if (m_parameter->Lowson_type==2)   {
+SPL_blade_total_aux+=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW+st_LedBCW;
+
+SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a+st_LedBCW_a;
+    }
+    else {
+SPL_blade_total_aux=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW;
+
+SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a;
+            }
+
+if (j==w){
+SPL_blade_total = 10.*log10(1./number_of_segments*(SPL_blade_total_aux));
+
+SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
+}
+
+if(BPM_validation){
+    //Sara experiment
+//m_SPLadB3d[i][j]=SPL_alpha[j];
+//m_SPLsdB3d[i][j]=SPL_S[j];
+//m_SPLpdB3d[i][j]=SPL_P[j];
+//m_SPLdB3d[i][j]=SPL_dB[j];
+//m_SPLdBAW3d[i][j]=SPL_A[j];
+//m_SPLdBBW3d[i][j]=SPL_B[j];
+//m_SPLdBCW3d[i][j]=SPL_C[j];
+
+    if(SPL_S[j]==-999999999999.){
+//m_SPLsdB3d[i][j]=0;
+    }
+    if(SPL_P[j]==-999999999999.){
+//m_SPLpdB3d[i][j]=0;
+    }}
+        else{
+//m_SPLadB3d[i][j]=0;
+//m_SPLsdB3d[i][j]=0;
+//m_SPLpdB3d[i][j]=0;
+//m_SPLdB3d[i][j]=0;
+//m_SPLdBAW3d[i][j]=0;
+//m_SPLdBBW3d[i][j]=0;
+//m_SPLdBCW3d[i][j]=0;
+        }
+
+    if (LE_validation){
+//m_SPL_LEdB3d[i][j]=SPL_LedB[j];
+//m_SPL_LEdBAW3d[i][j]=SPL_LedBAW[j];
+//m_SPL_LEdBBW3d[i][j]=SPL_LedBBW[j];
+//m_SPL_LEdBCW3d[i][j]=SPL_LedBCW[j];
+    }
+    else{
+//m_SPL_LEdB3d[i][j]=0;
+//m_SPL_LEdBAW3d[i][j]=0;
+//m_SPL_LEdBBW3d[i][j]=0;
+//m_SPL_LEdBCW3d[i][j]=0;
+    }}}}
+z=z+ldelta;
+}
 }

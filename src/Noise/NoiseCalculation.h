@@ -34,6 +34,9 @@ public:
 	
 	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
 	void calculate();  // can throw NoiseException
+
+    void calculateqs3dx();//Sara experiment
+    void calculateqs3d();//Sara experiment
 	
 	// NM the arrays containing the graph data
 	TwoDVector SPLadB() const { return m_SPLadB; }
@@ -50,19 +53,21 @@ public:
     TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; }
     //Alexandre MOD
 
-//Sara experiment
-//    TwoDVector SPLadB3d() const { return m_SPLadB; }
-//	TwoDVector SPLsdB3d() const { return m_SPLsdB; }
-//	TwoDVector SPLpdB3d() const { return m_SPLpdB; }
-//	TwoDVector SPLdB3d() const { return m_SPLdB; }
-//	TwoDVector SPLdBAW3d() const { return m_SPLdBAW; }
-//	TwoDVector SPLdBBW3d() const { return m_SPLdBBW; }
-//	TwoDVector SPLdBCW3d() const { return m_SPLdBCW; }
-//    TwoDVector SPL_LEdB3d() const { return m_SPL_LEdB; }
-//    TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW; }
-//    TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW; }
-//    TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW; }
-    //Sara experiment
+//Sara
+    TwoDVector SPLadB3d() const { return m_SPLadB3d; }
+    TwoDVector SPLsdB3d() const { return m_SPLsdB3d; }
+    TwoDVector SPLpdB3d() const { return m_SPLpdB3d; }
+    TwoDVector SPLdB3d() const { return m_SPLdB3d; }
+    TwoDVector SPLdBAW3d() const { return m_SPLdBAW3d; }
+    TwoDVector SPLdBBW3d() const { return m_SPLdBBW3d; }
+    TwoDVector SPLdBCW3d() const { return m_SPLdBCW3d; }
+    TwoDVector SPL_LEdB3d() const { return m_SPL_LEdB3d; }
+    TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW3d; }
+    TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW3d; }
+    TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW3d; }
+
+    int vectors_size;
+//Sara
 	
 	// NM apparently needed for export as .txt only
 	QVector<double> OASPL() const { return m_OASPL; }
@@ -78,21 +83,20 @@ public:
         QVector<double> SPLLEdBCW() const { return m_SPLLEdBCW; }
         QVector<double> SPLlogLE() const { return m_SPLlogLE; }
 //Alexandre MOD
-        //Sara experiment
-//        QVector<double> OASPL3d() const { return m_OASPL; }
-//        QVector<double> OASPLA3d() const { return m_OASPLA; }
-//        QVector<double> OASPLB3d() const { return m_OASPLB; }
-//        QVector<double> OASPLC3d() const { return m_OASPLC; }
-//        QVector<double> SPLALOG3d() const { return m_SPLALOG; }
-//        QVector<double> SPLSLOG3d() const { return m_SPLSLOG; }
-//        QVector<double> SPLPLOG3d() const { return m_SPLPLOG; }
-//        QVector<double> SPLLEdBAW3d() const { return m_SPLLEdBAW;}
-//        QVector<double> SPLLEdBBW3d() const { return m_SPLLEdBBW;}
-//        QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW;}
-//        QVector<double> SPLlogLE3d() const { return m_SPLlogLE; }
-    //Sara experiment
 
-    //Sara
+        //Sara
+        QVector<double> OASPL3d() const { return m_OASPL3d; }
+        QVector<double> OASPLA3d() const { return m_OASPLA3d; }
+        QVector<double> OASPLB3d() const { return m_OASPLB3d; }
+        QVector<double> OASPLC3d() const { return m_OASPLC3d; }
+        QVector<double> SPLALOG3d() const { return m_SPLALOG3d; }
+        QVector<double> SPLSLOG3d() const { return m_SPLSLOG3d; }
+        QVector<double> SPLPLOG3d() const { return m_SPLPLOG3d; }
+        QVector<double> SPLLEdBAW3d() const { return m_SPLLEdBAW3d;}
+        QVector<double> SPLLEdBBW3d() const { return m_SPLLEdBBW3d;}
+        QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW3d;}
+        QVector<double> SPLlogLE3d() const { return m_SPLlogLE3d; }
+
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
         QVector<double> m_AlphaInterpolated3d;
@@ -105,6 +109,7 @@ public:
 	
 private:
     void setupVectors();
+    void setupVectorsqs3d();//Sara experiment
 
 	// calculation sub-functions
 	double getK1(NoiseOpPoint* nop);
@@ -164,7 +169,20 @@ private:
     QVector<double> m_SPLLEdBBW;
     QVector<double> m_SPLLEdBCW;
     QVector<double> m_SPLlogLE;
-//Sara
+
+    QVector<double> m_OASPL3d;
+    QVector<double> m_OASPLA3d;
+    QVector<double> m_OASPLB3d;
+    QVector<double> m_OASPLC3d;
+    QVector<double> m_SPLALOG3d;
+    QVector<double> m_SPLSLOG3d;
+    QVector<double> m_SPLPLOG3d;
+    QVector<double> m_SPLLEdB3d;
+    QVector<double> m_SPLLEdBAW3d;
+    QVector<double> m_SPLLEdBBW3d;
+    QVector<double> m_SPLLEdBCW3d;
+    QVector<double> m_SPLlogLE3d;
+    //Sara
 
     //For SPLa
     TwoDVector m_SPLadB; //Store db of SPL alpha
@@ -190,7 +208,6 @@ private:
     double m_ChordBasedReynolds;
 
     //Sara
-    //3D
     bool m_rot_speed_check;
     bool m_u_wind_speed_check;
     bool m_TSRtd_check;
@@ -250,6 +267,29 @@ private:
     double m_distanceObserver;
     double m_originalMach;
     double m_wettedLength;
+
+    //Sara
+    TwoDVector m_SPLadB3d;
+    TwoDVector m_SPLadBAW3d;
+    TwoDVector m_SPLadBBW3d;
+    TwoDVector m_SPLadBCW3d;
+    TwoDVector m_SPLpdB3d;
+    TwoDVector m_SPLpdBAW3d;
+    TwoDVector m_SPLpdBBW3d;
+    TwoDVector m_SPLpdBCW3d;
+    TwoDVector m_SPLdB3d;
+    TwoDVector m_SPLdBAW3d;
+    TwoDVector m_SPLdBBW3d;
+    TwoDVector m_SPLdBCW3d;
+    TwoDVector m_SPL_LEdB3d;
+    TwoDVector m_SPL_LEdBAW3d;
+    TwoDVector m_SPL_LEdBBW3d;
+    TwoDVector m_SPL_LEdBCW3d;
+    TwoDVector m_SPLsdB3d;
+    TwoDVector m_SPLsdBAW3d;
+    TwoDVector m_SPLsdBBW3d;
+    TwoDVector m_SPLsdBCW3d;
+    //Sara
 };
 
 #endif // NOISECALCULATION_H
