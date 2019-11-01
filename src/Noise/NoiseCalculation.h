@@ -35,8 +35,7 @@ public:
 	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
 	void calculate();  // can throw NoiseException
 
-    void calculateqs3dx();//Sara experiment
-    void calculateqs3d();//Sara experiment
+    void calculateqs3d();//Sara
 	
 	// NM the arrays containing the graph data
 	TwoDVector SPLadB() const { return m_SPLadB; }
@@ -65,8 +64,6 @@ public:
     TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW3d; }
     TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW3d; }
     TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW3d; }
-
-    int vectors_size;
 //Sara
 	
 	// NM apparently needed for export as .txt only
@@ -109,7 +106,7 @@ public:
 	
 private:
     void setupVectors();
-    void setupVectorsqs3d();//Sara experiment
+    void setupVectorsqs3d();//Sara
 
 	// calculation sub-functions
 	double getK1(NoiseOpPoint* nop);

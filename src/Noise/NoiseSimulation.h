@@ -19,7 +19,6 @@ class ParameterViewer;
 class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, public ParameterObject<Parameter::NoiseSimulation>
 {
 public:
-bool qs3dtest;//Sara experiment
 
 	static NoiseSimulation* newBySerialize ();
 	NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
@@ -33,10 +32,6 @@ bool qs3dtest;//Sara experiment
 	static QStringList getAvailableVariables (NewGraph::GraphType graphType = NewGraph::None);
 	static QStringList prepareMissingObjectMessage();
 
-    //Sara experiment
-    static QStringList getAvailableVariablesqs3d (NewGraph::GraphType graphType = NewGraph::None);
-    //Sara experiment
-	
 	void simulate();  // can throw NoiseException
 	void exportCalculation (QTextStream &stream);
     void exportqs3DCalculationComplete (QTextStream &stream);//Sara

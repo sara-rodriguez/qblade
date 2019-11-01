@@ -62,11 +62,9 @@ void NoiseModule::addMainMenuEntries() {
 	g_mainFrame->menuBar()->addMenu(m_menu);
 }
 
-//Sara experiment new
 QList<NewCurve *> NoiseModule::prepareCurves(QString xAxis, QString yAxis, NewGraph::GraphType graphType,NewGraph::GraphType /*graphTypeMulti*/) {
 	QList<NewCurve*> curves;
 
-    NoiseSimulation *pNoiseSim = (NoiseSimulation *) g_mainFrame->m_pBEM;
 	for (int simIndex = 0; simIndex < g_noiseSimulationStore.size(); ++simIndex) {
 		NoiseSimulation *simulation = g_noiseSimulationStore.at(simIndex);
                 if (simulation->getSelectFrom() == NoiseParameter::OriginalBpm) {
@@ -82,7 +80,7 @@ QList<NewCurve *> NoiseModule::prepareCurves(QString xAxis, QString yAxis, NewGr
                 }
 			}
 		}
-	}
+    }
     return curves;
 }
 
@@ -102,8 +100,8 @@ int NoiseModule::getHighlightIndex(NewGraph::GraphType /*graphTypeMulti*/) {
 			return count + std::max(0, m_toolBar->getShownOpPointIndex());
 		} else {
 			count += std::max(1, g_noiseSimulationStore.at(i)->getAnalyzedOpPoints().size());
-		}
-	}
+            }
+}
 	return -1;
 }
 
@@ -155,17 +153,17 @@ m_globalModuleIndentifier = NOISEMODULE;
 m_shownSimulation = nullptr;
 
 if (graphs)	{
-//    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_LEX (dB)", true, false});
-//    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_PX", true, false});
-//    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_SX", true, false});
-//    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_alphaX", true, false});
-//    m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D]X (dB)", true, false});//Alexandre MOD
+//        m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D]X (dB)", true, false});
+//        m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]X", true, false});
+//        m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]X", true, false});
+//        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]X", true, false});
+//        m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D]X (dB)", true, false});//Alexandre MOD
 
-    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D]X (dB)", true, false});
-    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]X", true, false});
-    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]X", true, false});
-    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]X", true, false});
-    m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D]X (dB)", true, false});//Alexandre MOD
+    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D] (dB)", true, false});
+    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]", true, false});
+    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]", true, false});
+    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]", true, false});
+    m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D] (dB)", true, false});//Alexandre MOD
 
 } else {
     m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
@@ -173,12 +171,6 @@ if (graphs)	{
     m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
     m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
     m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
-
-//    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D] (dB)", true, false});
-//    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]", true, false});
-//    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]", true, false});
-//    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]", true, false});
-//    m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D] (dB)", true, false});//Alexandre MOD
 }
 
 QSettings settings("qblade.ini", QSettings::IniFormat);//Sara

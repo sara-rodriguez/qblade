@@ -1019,14 +1019,23 @@ void NoiseCalculation::setupVectors() {
     m_SPLPLOG.clear();
 
     // Resize vectors acording to OpPoints total
-    unsigned int size = 0;
+    unsigned int sizea = 0;//Sara size
     if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
         m_parameter->opPointSource == NoiseParameter::MultiplePolars)
     {
-        size = m_parameter->analyzedOpPoints.size();
+        sizea = m_parameter->analyzedOpPoints.size();//Sara size
     } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
-        size = 1;
+        sizea = 1;//Sara size
     }
+
+    //Sara
+  QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+  int number_of_segments = pBEM->dlg_elements;
+
+  int size;
+
+  if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+    //Sara
 
     m_SPLdB.resize   (size);
     m_SPLdBAW.resize (size);
@@ -1088,9 +1097,38 @@ void NoiseCalculation::setupVectors() {
         m_SPL_LEdBBW[i].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW[i].resize(FREQUENCY_TABLE_SIZE);
     }
+
+//Sara
+    if (sizea<size){
+        for (int i=sizea;i<size;++i){
+            for (unsigned int w = 0; w < FREQUENCY_TABLE_SIZE; ++w){
+                m_SPLdB[i][w]=0;
+                m_SPLdBAW[i][w]=0;
+                m_SPLdBBW[i][w]=0;
+                m_SPLdBCW[i][w]=0;
+                m_SPLpdB[i][w]=0;
+                m_SPLpdBAW[i][w]=0;
+                m_SPLpdBBW[i][w]=0;
+                m_SPLpdBCW[i][w]=0;
+                m_SPLsdB[i][w]=0;
+                m_SPLsdBAW[i][w]=0;
+                m_SPLsdBBW[i][w]=0;
+                m_SPLsdBCW[i][w]=0;
+                m_SPLadB[i][w]=0;
+                m_SPLadBAW[i][w]=0;
+                m_SPLadBBW[i][w]=0;
+                m_SPLadBCW[i][w]=0;
+                m_SPL_LEdB[i][w]=0;
+                m_SPL_LEdBAW[i][w]=0;
+                m_SPL_LEdBBW[i][w]=0;
+                m_SPL_LEdBCW[i][w]=0;
+            }
+        }
+    }
+//Sara
 }
 
-//Sara experiment
+//Sara
 void NoiseCalculation::setupVectorsqs3d() {
     m_SPLdB3d.clear();
     m_SPLdBAW3d.clear();
@@ -1125,40 +1163,35 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPLSLOG3d.clear();
     m_SPLPLOG3d.clear();
 
-    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-
-
-//        foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-//        int vectors_size = bdata->m_pos.size();
-
-
     // Resize vectors acording to OpPoints total
-//    unsigned int size = 0;
-//    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
-//        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
-//    {
-//        vectors_size = m_parameter->analyzedOpPoints.size();
-//    }
-//    else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
-//        vectors_size = 1;
-//    }
-//    vectors_size=40;
-     //teste Sara experiment
-    vectors_size=m_parameter->analyzedOpPoints.size();
+    unsigned int sizea = 0;
+    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+    {
+        sizea = m_parameter->analyzedOpPoints.size();
+     } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
+        sizea = 1;
+    }
 
-    m_SPLadB3d.resize(vectors_size);
-    m_SPLsdB3d.resize(vectors_size);
-    m_SPLpdB3d.resize(vectors_size);
-    m_SPLdB3d.resize(vectors_size);
-    m_SPLdBAW3d.resize(vectors_size);
-    m_SPLdBBW3d.resize(vectors_size);
-    m_SPLdBCW3d.resize(vectors_size);
-    m_SPL_LEdB3d.resize(vectors_size);
-    m_SPL_LEdBAW3d.resize(vectors_size);
-    m_SPL_LEdBBW3d.resize(vectors_size);
-    m_SPL_LEdBCW3d.resize(vectors_size);
+QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+int number_of_segments = pBEM->dlg_elements;
 
-    for (unsigned int w = 0; w < vectors_size; ++w){
+int size;
+
+if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+    m_SPLadB3d.resize(size);
+    m_SPLsdB3d.resize(size);
+    m_SPLpdB3d.resize(size);
+    m_SPLdB3d.resize(size);
+    m_SPLdBAW3d.resize(size);
+    m_SPLdBBW3d.resize(size);
+    m_SPLdBCW3d.resize(size);
+    m_SPL_LEdB3d.resize(size);
+    m_SPL_LEdBAW3d.resize(size);
+    m_SPL_LEdBBW3d.resize(size);
+    m_SPL_LEdBCW3d.resize(size);
+
+    for (unsigned int w = 0; w < size; ++w){
         m_SPLadB3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPLsdB3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPLpdB3d[w].resize(FREQUENCY_TABLE_SIZE);
@@ -1171,74 +1204,62 @@ void NoiseCalculation::setupVectorsqs3d() {
         m_SPL_LEdBBW3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d[w].resize(FREQUENCY_TABLE_SIZE);
     }
-}
-//}
 
-//Sara experiment
-void NoiseCalculation::calculateqs3d(){
-  setupVectorsqs3d();
+if (sizea<size){
+    for (int i=sizea;i<size;++i){
+        for (unsigned int w = 0; w < FREQUENCY_TABLE_SIZE; ++w){
+            m_SPLadB3d[i][w]=0;
+            m_SPLsdB3d[i][w]=0;
+            m_SPLpdB3d[i][w]=0;
+            m_SPLdB3d[i][w]=0;
+            m_SPLdBAW3d[i][w]=0;
+            m_SPLdBBW3d[i][w]=0;
+            m_SPLdBCW3d[i][w]=0;
+            m_SPL_LEdB3d[i][w]=0;
+            m_SPL_LEdBAW3d[i][w]=0;
+            m_SPL_LEdBBW3d[i][w]=0;
+            m_SPL_LEdBCW3d[i][w]=0;
+        }
+    }
+}}
 
-QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+void NoiseCalculation::calculateqs3d() {
+    setupVectorsqs3d();
 
-  vectors_size=m_parameter->analyzedOpPoints.size();
+  QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
-  for (int posOpPoint = 0;posOpPoint < vectors_size; ++posOpPoint){
-//      NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
-      for (int y=0;y<FREQUENCY_TABLE_SIZE; ++y){
-  m_SPLadB3d[posOpPoint][y]=0;
-  m_SPLsdB3d[posOpPoint][y]=0;
-  m_SPLpdB3d[posOpPoint][y]=0;
-  m_SPLdB3d[posOpPoint][y]=0;
-  m_SPLdBAW3d[posOpPoint][y]=0;
-  m_SPLdBBW3d[posOpPoint][y]=0;
-  m_SPLdBCW3d[posOpPoint][y]=0;
-  m_SPL_LEdB3d[posOpPoint][y]=0;
-  m_SPL_LEdBAW3d[posOpPoint][y]=0;
-  m_SPL_LEdBBW3d[posOpPoint][y]=0;
-  m_SPL_LEdBCW3d[posOpPoint][y]=0;
-  }}
-}
+//    int limite = 40;
+//  for (int posOpPoint=0;posOpPoint<limite;++posOpPoint){
+//        for (int y=0;y<FREQUENCY_TABLE_SIZE; ++y){
+//    m_SPLadB3d[posOpPoint][y]=10;
+//    m_SPLsdB3d[posOpPoint][y]=10;
+//    m_SPLpdB3d[posOpPoint][y]=10;
+//    m_SPLdB3d[posOpPoint][y]=10;
+//    m_SPLdBAW3d[posOpPoint][y]=10;
+//    m_SPLdBBW3d[posOpPoint][y]=10;
+//    m_SPLdBCW3d[posOpPoint][y]=10;
+//    m_SPL_LEdB3d[posOpPoint][y]=10;
+//    m_SPL_LEdBAW3d[posOpPoint][y]=10;
+//    m_SPL_LEdBBW3d[posOpPoint][y]=10;
+//    m_SPL_LEdBCW3d[posOpPoint][y]=10;
+//    }}
 
-//Sara experiment new
-void NoiseCalculation::calculateqs3dx() {
-setupVectorsqs3d();
-
-
-QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
-
-  vectors_size=m_parameter->analyzedOpPoints.size();
-
-  for (int posOpPoint = 0;posOpPoint < vectors_size; ++posOpPoint){
-      for (int y=0;y<FREQUENCY_TABLE_SIZE; ++y){
-  m_SPLadB3d[posOpPoint][y]=0;
-  m_SPLsdB3d[posOpPoint][y]=0;
-  m_SPLpdB3d[posOpPoint][y]=0;
-  m_SPLdB3d[posOpPoint][y]=0;
-  m_SPLdBAW3d[posOpPoint][y]=0;
-  m_SPLdBBW3d[posOpPoint][y]=0;
-  m_SPLdBCW3d[posOpPoint][y]=0;
-  m_SPL_LEdB3d[posOpPoint][y]=0;
-  m_SPL_LEdBAW3d[posOpPoint][y]=0;
-  m_SPL_LEdBBW3d[posOpPoint][y]=0;
-  m_SPL_LEdBCW3d[posOpPoint][y]=0;
-      }
-  }
-  //Sara experiment
-
-//QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
-
-    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
     double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
     double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
-    double z=lstart;
+    double z=m_parameter->TSRtd;//lstart;
     double approaxing_wind_speed = m_parameter->originalVelocity;
 
-    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-    double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
+QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 
-        foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+
+//BData *bdata = (BData *) g_mainFrame->m_pBEM;
+//int number_of_segments = pbem->dlg_elements;
         int number_of_segments = bdata->m_pos.size();
+
+        double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
         double rho = pbem->dlg_rho;
         double dynamic_visc = pbem->dlg_visc;
         double cin_visc = dynamic_visc/rho;
@@ -1247,7 +1268,7 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
         double T_std_cond = pbem->dlg_temp;
         double P_std_cond = 101300;
         double lambda = pbem->dlg_lambda;
-        int mpos_size = bdata->m_pos.size(); //total number of segments
+        int mpos_size = pbem->dlg_elements;
         double finalradius = bdata->m_pos.value(mpos_size-1);
         double nom_tg_speed = bdata->windspeed*lambda;
         double omega = nom_tg_speed/finalradius;
@@ -1260,9 +1281,6 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
         double c_const_le=0;
         double d_const_le=0;
         double aux_le;
-        double aux_1_le;
-        double aux_4_le;
-        double aux_5_le;
         double u_le;
         double c_le;
         double I_le;
@@ -1278,20 +1296,6 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
         double aux1_le;
         double aux4_le;
         double aux5_le;
-
-        QString SPL_alpha_val("");
-        QString SPL_dB_S_val("");
-        QString SPL_dB_P_val("");
-        QString SPL_S_val("");
-        QString SPL_P_val("");
-        QString SPL_dB_val("");
-        QString SPL_A_val("");
-        QString SPL_B_val("");
-        QString SPL_C_val("");
-        QString SPL_LedB_val("");
-        QString SPL_LedB_valAW("");
-        QString SPL_LedB_valBW("");
-        QString SPL_LedB_valCW("");
 
         //definitions
         double axial_ind_fact[number_of_segments];
@@ -1398,6 +1402,18 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
         double DStarXFoilS[number_of_segments];
         double DStarXFoilP[number_of_segments];
+
+        double aux_m_SPLadB3d;
+        double aux_m_SPLsdB3d;
+        double aux_m_SPLpdB3d;
+        double aux_m_SPLdB3d;
+        double aux_m_SPLdBAW3d;
+        double aux_m_SPLdBBW3d;
+        double aux_m_SPLdBCW3d;
+        double aux_m_SPL_LEdB3d;
+        double aux_m_SPL_LEdBAW3d;
+        double aux_m_SPL_LEdBBW3d;
+        double aux_m_SPL_LEdBCW3d;
 
         double sp_OASPL_alpha=0;
         double splog_OASPL_alpha=0;
@@ -1520,17 +1536,6 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
         double SPL_blade_total_aux_a=0;
 
         for (int i = 0; i < number_of_segments; ++i) {
-
-//setup variables
-m_OASPL3d[i]=0;
-m_OASPLA3d[i]=0;
-m_OASPLB3d[i]=0;
-m_OASPLC3d[i]=0;
-m_SPLALOG3d[i]=0;
-m_SPLSLOG3d[i]=0;
-m_SPLPLOG3d[i]=0;
-m_SPLlogLE3d[i]=0;
-
             // definitions
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
             axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
@@ -1883,11 +1888,9 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     double BR_b0[number_of_segments];
     BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
 
-    if((z<=m_parameter->TSRtd) & (z>=m_parameter->TSRtd)){
-    QString str= QString::number(z, 'f', 1);
+//    if((z<=m_parameter->TSRtd) & (z>=m_parameter->TSRtd)){
 
-
-    int w=30;
+    int w=FREQUENCY_TABLE_SIZE;
 
     double slog_SPL_alpha[w];
     double slog_SPL_S[w];
@@ -2346,43 +2349,48 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
 }
 
 if(BPM_validation){
-    //Sara experiment
-//m_SPLadB3d[i][j]=SPL_alpha[j];
-//m_SPLsdB3d[i][j]=SPL_S[j];
-//m_SPLpdB3d[i][j]=SPL_P[j];
-//m_SPLdB3d[i][j]=SPL_dB[j];
-//m_SPLdBAW3d[i][j]=SPL_A[j];
-//m_SPLdBBW3d[i][j]=SPL_B[j];
-//m_SPLdBCW3d[i][j]=SPL_C[j];
-
-    if(SPL_S[j]==-999999999999.){
-//m_SPLsdB3d[i][j]=0;
-    }
-    if(SPL_P[j]==-999999999999.){
-//m_SPLpdB3d[i][j]=0;
-    }}
-        else{
-//m_SPLadB3d[i][j]=0;
-//m_SPLsdB3d[i][j]=0;
-//m_SPLpdB3d[i][j]=0;
-//m_SPLdB3d[i][j]=0;
-//m_SPLdBAW3d[i][j]=0;
-//m_SPLdBBW3d[i][j]=0;
-//m_SPLdBCW3d[i][j]=0;
-        }
-
-    if (LE_validation){
-//m_SPL_LEdB3d[i][j]=SPL_LedB[j];
-//m_SPL_LEdBAW3d[i][j]=SPL_LedBAW[j];
-//m_SPL_LEdBBW3d[i][j]=SPL_LedBBW[j];
-//m_SPL_LEdBCW3d[i][j]=SPL_LedBCW[j];
+aux_m_SPLadB3d=SPL_alpha[j];
+aux_m_SPLsdB3d=SPL_S[j];
+aux_m_SPLpdB3d=SPL_P[j];
+aux_m_SPLdB3d=SPL_dB[j];
+aux_m_SPLdBAW3d=SPL_A[j];
+aux_m_SPLdBBW3d=SPL_B[j];
+aux_m_SPLdBCW3d=SPL_C[j];
+}else{
+aux_m_SPLadB3d=0;
+aux_m_SPLsdB3d=0;
+aux_m_SPLpdB3d=0;
+aux_m_SPLdB3d=0;
+aux_m_SPLdBAW3d=0;
+aux_m_SPLdBBW3d=0;
+aux_m_SPLdBCW3d=0;
+}
+if (LE_validation){
+aux_m_SPL_LEdB3d=SPL_LedB[j];
+aux_m_SPL_LEdBAW3d=SPL_LedBAW[j];
+aux_m_SPL_LEdBBW3d=SPL_LedBBW[j];
+aux_m_SPL_LEdBCW3d=SPL_LedBCW[j];
     }
     else{
-//m_SPL_LEdB3d[i][j]=0;
-//m_SPL_LEdBAW3d[i][j]=0;
-//m_SPL_LEdBBW3d[i][j]=0;
-//m_SPL_LEdBCW3d[i][j]=0;
-    }}}}
-z=z+ldelta;
-}
-}
+aux_m_SPL_LEdB3d=0;
+aux_m_SPL_LEdBAW3d=0;
+aux_m_SPL_LEdBBW3d=0;
+aux_m_SPL_LEdBCW3d=0;
+    }
+
+m_SPLadB3d[i][j]=aux_m_SPLadB3d;
+m_SPLsdB3d[i][j]=aux_m_SPLsdB3d;
+m_SPLpdB3d[i][j]=aux_m_SPLpdB3d;
+m_SPLdB3d[i][j]=aux_m_SPLdB3d;
+m_SPLdBAW3d[i][j]=aux_m_SPLdBAW3d;
+m_SPLdBBW3d[i][j]=aux_m_SPLdBBW3d;
+m_SPLdBCW3d[i][j]=aux_m_SPLdBCW3d;
+m_SPL_LEdB3d[i][j]=aux_m_SPL_LEdB3d;
+m_SPL_LEdBAW3d[i][j]=aux_m_SPL_LEdBAW3d;
+m_SPL_LEdBBW3d[i][j]=aux_m_SPL_LEdBBW3d;
+m_SPL_LEdBCW3d[i][j]=aux_m_SPL_LEdBCW3d;
+
+     }}//}
+//z=z+ldelta;
+}}
+//Sara

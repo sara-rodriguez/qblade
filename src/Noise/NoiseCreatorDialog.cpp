@@ -496,7 +496,7 @@ void NoiseCreatorDialog::OnRotSpeedCheck(){
 }
 
 void NoiseCreatorDialog::OnWindSpeedCheck(){
-    if (!m_rot_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(false);}
+    if (!m_u_wind_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(false);}
     else{m_u_wind_speed_numberedit->setEnabled(true);}
     OnWarningSet3();
 }
