@@ -1222,41 +1222,6 @@ if (sizea<size){
     }
 }}
 
-//experiment
-void NoiseCalculation::calculateqs3dx() {
-    setupVectorsqs3d();
-    QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
-
-  SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-      double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
-      double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-      double z=lstart;
-      QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-      int number_of_segments = pbem->dlg_elements;
-
-  foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-if (z<=m_parameter->TSRtd & z>=m_parameter->TSRtd){
-  for (int i = 0; i < number_of_segments; ++i) {
-      for (int j=0;j<FREQUENCY_TABLE_SIZE;++j){
-          m_SPLadB3d[i][j]=i+j+z/ldelta;
-          m_SPLsdB3d[i][j]=i+j+z/ldelta;
-          m_SPLpdB3d[i][j]=i+j+z/ldelta;
-          m_SPLdB3d[i][j]=i+j+z/ldelta;
-          m_SPLdBAW3d[i][j]=i+j+z/ldelta;
-          m_SPLdBBW3d[i][j]=i+j+z/ldelta;
-          m_SPLdBCW3d[i][j]=i+j+z/ldelta;
-          m_SPL_LEdB3d[i][j]=i+j+z/ldelta;
-          m_SPL_LEdBAW3d[i][j]=i+j+z/ldelta;
-          m_SPL_LEdBBW3d[i][j]=i+j+z/ldelta;
-          m_SPL_LEdBCW3d[i][j]=i+j+z/ldelta;
-          qDebug() << "i/j/z: " << i << j << z;
-      }
- }
-}
-      z=z+ldelta;
-  }
-}
-
 void NoiseCalculation::calculateqs3d() {
     setupVectorsqs3d();
 
@@ -2405,7 +2370,6 @@ m_SPL_LEdB3d[i][j]=aux_m_SPL_LEdB3d;
 m_SPL_LEdBAW3d[i][j]=aux_m_SPL_LEdBAW3d;
 m_SPL_LEdBBW3d[i][j]=aux_m_SPL_LEdBBW3d;
 m_SPL_LEdBCW3d[i][j]=aux_m_SPL_LEdBCW3d;
-qDebug() << z;
      }}}
 z=z+ldelta;
 }}
