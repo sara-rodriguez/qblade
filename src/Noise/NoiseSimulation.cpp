@@ -238,8 +238,8 @@ else{
     //Sara
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     int number_of_segments;
-    foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-    number_of_segments = bdata->m_pos.size();}
+//    BData *bdata = (BData *) g_mainFrame->m_pBEM;
+    number_of_segments = pBEM->dlg_elements;
             for (int i = 0; i <= number_of_segments; ++i) {
                 stream << "tamanho máximo: " << number_of_segments << endl;
                 stream << "número i: " << i<< endl;
@@ -251,8 +251,6 @@ else{
               }
                 stream << endl;
             }
-    //Sara experiment new
-
     qDeleteAll(noiseOpPoints);
 }
 
@@ -261,23 +259,6 @@ void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
 
     stream.setRealNumberNotation(QTextStream::FixedNotation);
     stream.setRealNumberPrecision(5);
-
-    const double AWeighting[] = {-44.7, -39.4, -34.6, -30.2, -26.2, -22.5, -19.1, -16.1,
-                                                                       -13.4, -10.9,  -8.6,  -6.6,  -4.8,  -3.2,  -1.9,  -0.8,
-                                                                         0.0,   0.6,   1.0,   1.2,   1.3,   1.2,   1.0,   0.5,
-                                                                        -0.1,  -1.1,  -2.5,  -4.3,  -6.6,-  9.3};
-
-    const double BWeighting[] = {-20.4, -17.1, -14.2, -11.6,  -9.3,  -7.4,  -5.6,  -4.2,
-                                                                        -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.1,   0.0,
-                                                                         0.0,   0.0,   0.0,  -0.1,  -0.2,  -0.4,  -0.7,  -1.2,
-                                                                        -1.9,  -2.9,  -4.3,  -6.1,  -8.4, -11.1};
-
-    const double CWeighting[] = {-4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2,
-                                                                        -0.1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,
-                                                                         0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,
-                                                                        -2.0,  -3.0,  -4.4,  -6.2,  -8.5, -11.2};
-
-    const double Frequency[]= {25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400,500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000};
 
     stream << "Quasi 3D Noise Log" << endl;
     stream << endl;
@@ -296,19 +277,19 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
 
     foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
     int number_of_segments = bdata->m_pos.size();
-    double rho = pbem->dlg_rho;
-    double dynamic_visc = pbem->dlg_visc;
-    double cin_visc = dynamic_visc/rho;
-    double K_air = 1.4;
-    double R_air = 286.9;
-    double T_std_cond = pbem->dlg_temp;
-    double P_std_cond = 101300;
+//    double rho = pbem->dlg_rho;
+//    double dynamic_visc = pbem->dlg_visc;
+//    double cin_visc = dynamic_visc/rho;
+//    double K_air = 1.4;
+//    double R_air = 286.9;
+//    double T_std_cond = pbem->dlg_temp;
+//    double P_std_cond = 101300;
     double lambda = pbem->dlg_lambda;
     int mpos_size = bdata->m_pos.size(); //total number of segments
     double finalradius = bdata->m_pos.value(mpos_size-1);
     double nom_tg_speed = bdata->windspeed*lambda;
     double omega = nom_tg_speed/finalradius;
-    double rotation = 60/(M_PI*100/nom_tg_speed);
+//    double rotation = 60/(M_PI*100/nom_tg_speed);
 
     //definitions
     double axial_ind_fact[number_of_segments];
@@ -349,7 +330,7 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double SwAlpha[number_of_segments];
     double SwAlpha_1[number_of_segments];
     double SwAlpha_2[number_of_segments];
-    double observer_position = 10;
+//    double observer_position = 10;
     double gamma[number_of_segments];
     double gamma0[number_of_segments];
     double beta[number_of_segments];
@@ -359,29 +340,29 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double K1[number_of_segments];
     double K2[number_of_segments];
     double EddyMach_calc[number_of_segments];
-    double dist_z[number_of_segments];
-    double dist_y[number_of_segments];
+//    double dist_z[number_of_segments];
+//    double dist_y[number_of_segments];
     double dist_obs[number_of_segments];
     double D_starred_S[number_of_segments];
     double D_starred_P[number_of_segments];
-    double first_term_Dh_S[number_of_segments];
-    double first_term_Dl_S[number_of_segments];
-    double first_term_Dh_P[number_of_segments];
-    double St1[number_of_segments];
-    double St2[number_of_segments];
-    double b0[number_of_segments];
-    double B_min_b0[number_of_segments];
-    double B_max_b0[number_of_segments];
-    double BR_b0[number_of_segments];
-    double RCmod[number_of_segments];
-    double ao_Rc[number_of_segments];
-    double A_min_ao[number_of_segments];
-    double A_max_ao[number_of_segments];
-    double K1_3[number_of_segments];
-    double AR_ao[number_of_segments];
-    double St1_bar[number_of_segments];
-    double Re_disp_thick[number_of_segments];
-    double delta_K1[number_of_segments];
+//    double first_term_Dh_S[number_of_segments];
+//    double first_term_Dl_S[number_of_segments];
+//    double first_term_Dh_P[number_of_segments];
+//    double St1[number_of_segments];
+//    double St2[number_of_segments];
+//    double b0[number_of_segments];
+//    double B_min_b0[number_of_segments];
+//    double B_max_b0[number_of_segments];
+//    double BR_b0[number_of_segments];
+//    double RCmod[number_of_segments];
+//    double ao_Rc[number_of_segments];
+//    double A_min_ao[number_of_segments];
+//    double A_max_ao[number_of_segments];
+//    double K1_3[number_of_segments];
+//    double AR_ao[number_of_segments];
+//    double St1_bar[number_of_segments];
+//    double Re_disp_thick[number_of_segments];
+//    double delta_K1[number_of_segments];
     double phi_rad[number_of_segments];
     double theta_rad[number_of_segments];
     double b[number_of_segments];
@@ -404,7 +385,7 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double c_1[number_of_segments];
     double r_0[number_of_segments];
     double c_0[number_of_segments];
-    double twist[number_of_segments];
+//    double twist[number_of_segments];
     double local_twist[number_of_segments];
 
     double ri[number_of_segments];
@@ -418,34 +399,34 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
 
     double sp_OASPL_alpha=0;
     double splog_OASPL_alpha=0;
-    double st_OASPL_alpha=0;
-    double stlog_OASPL_alpha=0;
+//    double st_OASPL_alpha=0;
+//    double stlog_OASPL_alpha=0;
     double sp_OASPL_S=0;
     double splog_OASPL_S=0;
-    double st_OASPL_S=0;
-    double stlog_OASPL_S=0;
+//    double st_OASPL_S=0;
+//    double stlog_OASPL_S=0;
     double sp_OASPL_P=0;
     double splog_OASPL_P=0;
-    double st_OASPL_P=0;
-    double stlog_OASPL_P=0;
+//    double st_OASPL_P=0;
+//    double stlog_OASPL_P=0;
     double sp_OASPL=0;
     double splog_OASPL=0;
-    double st_OASPL=0;
-    double stlog_OASPL=0;
+//    double st_OASPL=0;
+//    double stlog_OASPL=0;
     double sp_dBA=0;
     double splog_dBA=0;
-    double st_dBA=0;
-    double stlog_dBA=0;
+//    double st_dBA=0;
+//    double stlog_dBA=0;
     double sp_dBB=0;
     double splog_dBB=0;
-    double st_dBB=0;
-    double stlog_dBB=0;
+//    double st_dBB=0;
+//    double stlog_dBB=0;
     double sp_dBC=0;
     double splog_dBC=0;
-    double st_dBC=0;
-    double stlog_dBC=0;
-    double SPL_blade_total=0;//Sara new
-    double SPL_blade_total_aux=0;//Sara new
+//    double st_dBC=0;
+//    double stlog_dBC=0;
+//    double SPL_blade_total=0;//Sara new
+//    double SPL_blade_total_aux=0;//Sara new
 
     double r_R0  =  0.05; double c_R0 = 0.05500;
     double r_R1  =  0.25; double c_R1 = 0.07500;
@@ -505,7 +486,7 @@ splog_dBC=0;
             chord[i] = bdata->m_c_local.value(i);
             Reynolds[i] = bdata->m_Reynolds.value(i);
 
-            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
+//            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
             Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
@@ -854,16 +835,16 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double rho = pbem->dlg_rho;
         double dynamic_visc = pbem->dlg_visc;
         double cin_visc = dynamic_visc/rho;
-        double K_air = 1.4;
-        double R_air = 286.9;
-        double T_std_cond = pbem->dlg_temp;
-        double P_std_cond = 101300;
+//        double K_air = 1.4;
+//        double R_air = 286.9;
+//        double T_std_cond = pbem->dlg_temp;
+//        double P_std_cond = 101300;
         double lambda = pbem->dlg_lambda;
         int mpos_size = bdata->m_pos.size(); //total number of segments
         double finalradius = bdata->m_pos.value(mpos_size-1);
         double nom_tg_speed = bdata->windspeed*lambda;
         double omega = nom_tg_speed/finalradius;
-        double rotation = 60/(M_PI*100/nom_tg_speed);
+//        double rotation = 60/(M_PI*100/nom_tg_speed);
         double c_0_le = 34000;
         double c_const_rd_le = 19./6.;
         double d_const_rd_le = 65.95;
@@ -872,9 +853,9 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double c_const_le=0;
         double d_const_le=0;
         double aux_le;
-        double aux_1_le;
-        double aux_4_le;
-        double aux_5_le;
+//        double aux_1_le;
+//        double aux_4_le;
+//        double aux_5_le;
         double u_le;
         double c_le;
         double I_le;
@@ -944,7 +925,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double SwAlpha[number_of_segments];
         double SwAlpha_1[number_of_segments];
         double SwAlpha_2[number_of_segments];
-        double observer_position = 10;
+//        double observer_position = 10;
         double gamma[number_of_segments];
         double gamma0[number_of_segments];
         double beta[number_of_segments];
@@ -954,8 +935,8 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double K1[number_of_segments];
         double K2[number_of_segments];
         double EddyMach_calc[number_of_segments];
-        double dist_z[number_of_segments];
-        double dist_y[number_of_segments];
+//        double dist_z[number_of_segments];
+//        double dist_y[number_of_segments];
         double dist_obs[number_of_segments];
         double D_starred_S[number_of_segments];
         double D_starred_P[number_of_segments];
@@ -999,7 +980,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double c_1[number_of_segments];
         double r_0[number_of_segments];
         double c_0[number_of_segments];
-        double twist[number_of_segments];
+//        double twist[number_of_segments];
         double local_twist[number_of_segments];
 
         double ri[number_of_segments];
@@ -1145,7 +1126,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
             chord[i] = bdata->m_c_local.value(i);
             Reynolds[i] = bdata->m_Reynolds.value(i);
 
-            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
+//            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
             Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
@@ -1656,7 +1637,7 @@ else{
 
     double B_max[w];
     if (b_alpha[j]<0.1)
-    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4,109;}
+    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4.109;}
     else if(b_alpha[j]>0.187)
     {B_max[j]=-80.541*pow(b_alpha[j],3)+44.174*pow(b_alpha[j],2)-39.381*b_alpha[j]+2.344;}
     else {B_max[j]=-31.33*b_alpha[j]+1.854;}
@@ -2117,8 +2098,8 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
     SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
 
-    if(SPL_S[j]==-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
-    if(SPL_P[j]==-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
+    if(SPL_S[j]<=-999999999999. & SPL_S[j]>=-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
+    if(SPL_P[j]<=-999999999999. & SPL_P[j]>=-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
        }
         else{
     SPL_alpha_val.append("N/A");
@@ -2353,7 +2334,7 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
         stream << "Quasi 3D Noise Log" << endl;
         stream << endl;
 
-NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_pSimuWidget;
+//NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_pSimuWidget;
 
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
@@ -2370,18 +2351,18 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         int number_of_segments = bdata->m_pos.size();
         double rho = pbem->dlg_rho;
-        double dynamic_visc = pbem->dlg_visc;
-        double cin_visc = dynamic_visc/rho;
-        double K_air = 1.4;
-        double R_air = 286.9;
-        double T_std_cond = pbem->dlg_temp;
-        double P_std_cond = 101300;
+//        double dynamic_visc = pbem->dlg_visc;
+//        double cin_visc = dynamic_visc/rho;
+//        double K_air = 1.4;
+//        double R_air = 286.9;
+//        double T_std_cond = pbem->dlg_temp;
+//        double P_std_cond = 101300;
         double lambda = pbem->dlg_lambda;
         int mpos_size = bdata->m_pos.size(); //total number of segments
         double finalradius = bdata->m_pos.value(mpos_size-1);
         double nom_tg_speed = bdata->windspeed*lambda;
         double omega = nom_tg_speed/finalradius;
-        double rotation = 60/(M_PI*100/nom_tg_speed);
+//        double rotation = 60/(M_PI*100/nom_tg_speed);
         double c_0_le = 34000;
         double c_const_rd_le = 19./6.;
         double d_const_rd_le = 65.95;
@@ -2390,9 +2371,9 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double c_const_le=0;
         double d_const_le=0;
         double aux_le;
-        double aux_1_le;
-        double aux_4_le;
-        double aux_5_le;
+//        double aux_1_le;
+//        double aux_4_le;
+//        double aux_5_le;
         double u_le;
         double c_le;
         double I_le;
@@ -2462,7 +2443,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double SwAlpha[number_of_segments];
         double SwAlpha_1[number_of_segments];
         double SwAlpha_2[number_of_segments];
-        double observer_position = 10;
+//        double observer_position = 10;
         double gamma[number_of_segments];
         double gamma0[number_of_segments];
         double beta[number_of_segments];
@@ -2472,8 +2453,8 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double K1[number_of_segments];
         double K2[number_of_segments];
         double EddyMach_calc[number_of_segments];
-        double dist_z[number_of_segments];
-        double dist_y[number_of_segments];
+//        double dist_z[number_of_segments];
+//        double dist_y[number_of_segments];
         double dist_obs[number_of_segments];
         double D_starred_S[number_of_segments];
         double D_starred_P[number_of_segments];
@@ -2517,7 +2498,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double c_1[number_of_segments];
         double r_0[number_of_segments];
         double c_0[number_of_segments];
-        double twist[number_of_segments];
+//        double twist[number_of_segments];
         double local_twist[number_of_segments];
 
         double ri[number_of_segments];
@@ -2663,7 +2644,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
             chord[i] = bdata->m_c_local.value(i);
             Reynolds[i] = bdata->m_Reynolds.value(i);
 
-            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
+//            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
             Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
@@ -3174,7 +3155,7 @@ else{
 
     double B_max[w];
     if (b_alpha[j]<0.1)
-    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4,109;}
+    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4.109;}
     else if(b_alpha[j]>0.187)
     {B_max[j]=-80.541*pow(b_alpha[j],3)+44.174*pow(b_alpha[j],2)-39.381*b_alpha[j]+2.344;}
     else {B_max[j]=-31.33*b_alpha[j]+1.854;}
@@ -3635,10 +3616,10 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
     SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
 
-    if(SPL_S[j]==-999999999999.){
+    if(SPL_S[j]<=-999999999999. & SPL_S[j]>=-999999999999.){
         SPL_S_val.append("N/A");
     } else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
-    if(SPL_P[j]==-999999999999.){
+    if(SPL_P[j]<=-999999999999. & SPL_P[j]>=-999999999999.){
         SPL_P_val.append("N/A");
     } else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
        }
@@ -3972,17 +3953,17 @@ else {value=m_parameter.rot_speed_check;}
         else {value = m_parameter.phi_type;}break;
 
     case P::obs_x_pos:
-        if (m_parameter.obs_x_pos==0){m_parameter.obs_x_pos=10;}
+        if (m_parameter.obs_x_pos<=0 & m_parameter.obs_x_pos>=0){m_parameter.obs_x_pos=10;}
         if(set) m_parameter.obs_x_pos = value.toDouble();
         else {value = m_parameter.obs_x_pos;}break;
 
     case P::obs_y_pos:
-        if (m_parameter.obs_y_pos==0){m_parameter.obs_y_pos=10;}
+        if (m_parameter.obs_y_pos<=0 & m_parameter.obs_y_pos>=0){m_parameter.obs_y_pos=10;}
         if(set) m_parameter.obs_y_pos = value.toDouble();
         else {value = m_parameter.obs_y_pos;}break;
 
     case P::obs_z_pos:
-        if (m_parameter.obs_z_pos==0){
+        if (m_parameter.obs_z_pos<=0 & m_parameter.obs_z_pos>=0){
             double hub_radius=pbem->m_pBlade->m_HubRadius;
             double blade_radius=(outer_radius-hub_radius);
             m_parameter.obs_z_pos=blade_radius/2.;
@@ -4015,14 +3996,14 @@ if(m_parameter.TSR_check==false){
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
+//double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 
 double v=lstart;
 while (qAbs(m_parameter.TSR_calc-v)>ldelta){
 v=v+ldelta;
 }
 
-int q=0;
+//int q=0;
 if(m_parameter.TSR_calc<v || m_parameter.TSR_calc>v){
 m_parameter.TSR_calc=v;
 m_parameter.TSR_check=true;

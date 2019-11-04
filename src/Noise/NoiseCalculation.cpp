@@ -258,7 +258,7 @@ double NoiseCalculation::getBPMThickness(NoiseOpPoint *nop, AirfoilSide as) {
 		dStar = dStarCT * m_parameter->originalChordLength;
     }
 
-    if (nop->getAlphaDegreeAbsolute() == 0) {
+    if ((nop->getAlphaDegreeAbsolute() <= 0) & (nop->getAlphaDegreeAbsolute() >= 0)) {
         bpm = dStar;
     } else {
         double corFactor = 0;
@@ -1128,7 +1128,6 @@ void NoiseCalculation::setupVectors() {
 //Sara
 }
 
-//Sara
 void NoiseCalculation::setupVectorsqs3d() {
     m_SPLdB3d.clear();
     m_SPLdBAW3d.clear();
@@ -1223,56 +1222,76 @@ if (sizea<size){
     }
 }}
 
+//experiment
+void NoiseCalculation::calculateqs3dx() {
+    setupVectorsqs3d();
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+
+  SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+      double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+      double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+      double z=lstart;
+      QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+      int number_of_segments = pbem->dlg_elements;
+
+  foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+if (z<=m_parameter->TSRtd & z>=m_parameter->TSRtd){
+  for (int i = 0; i < number_of_segments; ++i) {
+      for (int j=0;j<FREQUENCY_TABLE_SIZE;++j){
+          m_SPLadB3d[i][j]=i+j+z/ldelta;
+          m_SPLsdB3d[i][j]=i+j+z/ldelta;
+          m_SPLpdB3d[i][j]=i+j+z/ldelta;
+          m_SPLdB3d[i][j]=i+j+z/ldelta;
+          m_SPLdBAW3d[i][j]=i+j+z/ldelta;
+          m_SPLdBBW3d[i][j]=i+j+z/ldelta;
+          m_SPLdBCW3d[i][j]=i+j+z/ldelta;
+          m_SPL_LEdB3d[i][j]=i+j+z/ldelta;
+          m_SPL_LEdBAW3d[i][j]=i+j+z/ldelta;
+          m_SPL_LEdBBW3d[i][j]=i+j+z/ldelta;
+          m_SPL_LEdBCW3d[i][j]=i+j+z/ldelta;
+          qDebug() << "i/j/z: " << i << j << z;
+      }
+ }
+}
+      z=z+ldelta;
+  }
+}
+
 void NoiseCalculation::calculateqs3d() {
     setupVectorsqs3d();
 
   QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
-//    int limite = 40;
-//  for (int posOpPoint=0;posOpPoint<limite;++posOpPoint){
-//        for (int y=0;y<FREQUENCY_TABLE_SIZE; ++y){
-//    m_SPLadB3d[posOpPoint][y]=10;
-//    m_SPLsdB3d[posOpPoint][y]=10;
-//    m_SPLpdB3d[posOpPoint][y]=10;
-//    m_SPLdB3d[posOpPoint][y]=10;
-//    m_SPLdBAW3d[posOpPoint][y]=10;
-//    m_SPLdBBW3d[posOpPoint][y]=10;
-//    m_SPLdBCW3d[posOpPoint][y]=10;
-//    m_SPL_LEdB3d[posOpPoint][y]=10;
-//    m_SPL_LEdBAW3d[posOpPoint][y]=10;
-//    m_SPL_LEdBBW3d[posOpPoint][y]=10;
-//    m_SPL_LEdBCW3d[posOpPoint][y]=10;
-//    }}
-
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
     double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-    double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
-    double z=m_parameter->TSRtd;//lstart;
+    double z=lstart;
     double approaxing_wind_speed = m_parameter->originalVelocity;
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
+    if (z<=m_parameter->TSRtd & z>=m_parameter->TSRtd){
+
 //BData *bdata = (BData *) g_mainFrame->m_pBEM;
-//int number_of_segments = pbem->dlg_elements;
-        int number_of_segments = bdata->m_pos.size();
+int number_of_segments = pbem->dlg_elements;
+//        int number_of_segments = bdata->m_pos.size();
 
         double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
         double rho = pbem->dlg_rho;
-        double dynamic_visc = pbem->dlg_visc;
-        double cin_visc = dynamic_visc/rho;
-        double K_air = 1.4;
-        double R_air = 286.9;
-        double T_std_cond = pbem->dlg_temp;
-        double P_std_cond = 101300;
+//        double dynamic_visc = pbem->dlg_visc;
+//        double cin_visc = dynamic_visc/rho;
+//        double K_air = 1.4;
+//        double R_air = 286.9;
+//        double T_std_cond = pbem->dlg_temp;
+//        double P_std_cond = 101300;
         double lambda = pbem->dlg_lambda;
         int mpos_size = pbem->dlg_elements;
         double finalradius = bdata->m_pos.value(mpos_size-1);
         double nom_tg_speed = bdata->windspeed*lambda;
         double omega = nom_tg_speed/finalradius;
-        double rotation = 60/(M_PI*100/nom_tg_speed);
+//        double rotation = 60/(M_PI*100/nom_tg_speed);
         double c_0_le = 34000;
         double c_const_rd_le = 19./6.;
         double d_const_rd_le = 65.95;
@@ -1336,7 +1355,7 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         double SwAlpha[number_of_segments];
         double SwAlpha_1[number_of_segments];
         double SwAlpha_2[number_of_segments];
-        double observer_position = 10;
+//        double observer_position = 10;
         double gamma[number_of_segments];
         double gamma0[number_of_segments];
         double beta[number_of_segments];
@@ -1346,8 +1365,8 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         double K1[number_of_segments];
         double K2[number_of_segments];
         double EddyMach_calc[number_of_segments];
-        double dist_z[number_of_segments];
-        double dist_y[number_of_segments];
+//        double dist_z[number_of_segments];
+//        double dist_y[number_of_segments];
         double dist_obs[number_of_segments];
         double D_starred_S[number_of_segments];
         double D_starred_P[number_of_segments];
@@ -1391,7 +1410,7 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         double c_1[number_of_segments];
         double r_0[number_of_segments];
         double c_0[number_of_segments];
-        double twist[number_of_segments];
+//        double twist[number_of_segments];
         double local_twist[number_of_segments];
 
         double ri[number_of_segments];
@@ -1548,7 +1567,6 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
             chord[i] = bdata->m_c_local.value(i);
             Reynolds[i] = bdata->m_Reynolds.value(i);
 
-            CPolar *pCPolar = (CPolar *) g_mainFrame->m_pctrlPolar;
             Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
             Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
@@ -1888,8 +1906,6 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     double BR_b0[number_of_segments];
     BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
 
-//    if((z<=m_parameter->TSRtd) & (z>=m_parameter->TSRtd)){
-
     int w=FREQUENCY_TABLE_SIZE;
 
     double slog_SPL_alpha[w];
@@ -1920,7 +1936,7 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 
     double B_max[w];
     if (b_alpha[j]<0.1)
-    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4,109;}
+    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4.109;}
     else if(b_alpha[j]>0.187)
     {B_max[j]=-80.541*pow(b_alpha[j],3)+44.174*pow(b_alpha[j],2)-39.381*b_alpha[j]+2.344;}
     else {B_max[j]=-31.33*b_alpha[j]+1.854;}
@@ -2389,8 +2405,8 @@ m_SPL_LEdB3d[i][j]=aux_m_SPL_LEdB3d;
 m_SPL_LEdBAW3d[i][j]=aux_m_SPL_LEdBAW3d;
 m_SPL_LEdBBW3d[i][j]=aux_m_SPL_LEdBBW3d;
 m_SPL_LEdBCW3d[i][j]=aux_m_SPL_LEdBCW3d;
-
-     }}//}
-//z=z+ldelta;
+qDebug() << z;
+     }}}
+z=z+ldelta;
 }}
 //Sara

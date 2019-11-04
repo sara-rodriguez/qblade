@@ -35,6 +35,7 @@ public:
 	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
 	void calculate();  // can throw NoiseException
 
+    void calculateqs3dx();//Sara
     void calculateqs3d();//Sara
 	
 	// NM the arrays containing the graph data
