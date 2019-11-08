@@ -111,7 +111,7 @@ private:
 	// calculation sub-functions
 	double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
-        double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara
+    double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara
     double getDH();
     double getDL();
     double getSt1();
@@ -125,8 +125,8 @@ private:
     void calcSPLs(int posOpPoint,int posFreq);
     void calcSPLp(int posOpPoint,int posFreq);
     void LECalc(int posOpPoint, int posFreq); //Alexandre MOD
-		
-	NoiseParameter *m_parameter;
+
+    NoiseParameter *m_parameter;
 	
     //For general
     double m_DStarInterpolatedS;

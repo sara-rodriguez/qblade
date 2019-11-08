@@ -169,7 +169,6 @@ pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
 m_rot_speed_numberedit = new NumberEdit ();
 m_rot_speed_numberedit->setAutomaticPrecision(3);
 pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",1);
-if(m_rot_speed_check->isChecked()){m_rot_speed_numberedit->setEnabled(true);}else{m_rot_speed_numberedit->setEnabled(false);}
 
 m_u_wind_speed_check = new QCheckBox("wind speed set:");
 pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", 1);
@@ -179,7 +178,6 @@ connect(m_u_wind_speed_check,SIGNAL(clicked()),this,SLOT(OnWindSpeedCheck()));//
 m_u_wind_speed_numberedit = new NumberEdit ();
 m_u_wind_speed_numberedit->setAutomaticPrecision(3);
 pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []::",u_wind_speed, SPEED);
-if(m_u_wind_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(true);}else{m_u_wind_speed_numberedit->setEnabled(false);}
 
 m_TSR_spinbox = new QDoubleSpinBox;
 m_TSR_spinbox->setLocale(QLocale("en_us"));
@@ -203,10 +201,10 @@ double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
      m_TSR_spinbox->setDecimals(1);
      m_TSR_spinbox->valueChanged(change_TSR);
 
-QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
-pGrid->addWidget(labeltd);
-m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
-pGrid->addWidget(m_airfoilComboBoxtd);
+//QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
+//pGrid->addWidget(labeltd);
+//m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
+//pGrid->addWidget(m_airfoilComboBoxtd);
 
 dstar_combobox = new QComboBox;
 pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* type:","");
@@ -312,8 +310,8 @@ void NoiseCreatorDialog::fillOpPointView() {
 			m_opPointViewWidget->setLayout(grid);
 				QPushButton *button = new QPushButton ("All");
 				button->setMinimumWidth(QFontMetrics(QFont()).width("All") * 1.8);
-				button->setCheckable(true);
-				connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
+                button->setCheckable(true);
+                connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
 				grid->addWidget(button, 0, 0, 1, 1);
 				QLabel *label = new QLabel("<center>Op. Point</center>");
 				grid->addWidget(label, 0, 1, 1, 1);
@@ -361,7 +359,9 @@ void NoiseCreatorDialog::onPolarBoxChange() {
 
 void NoiseCreatorDialog::onAllButtonToggled(bool pressed) {
 	for (const OpPointRecord &record : m_opPointRecords) {
+        if (record.checkBox->isEnabled()){//Sara
 		record.checkBox->setChecked(pressed);
+        }//Sara
 	}
 }
 

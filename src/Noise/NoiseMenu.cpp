@@ -25,17 +25,21 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
 	addAction(m_exportNoise);
     
     //Sara
-    m_exportqs3DNoiseLog = new QAction("Export quasi 3D Noise Log", this);
+    m_exportqs3DNoiseLog = new QAction("Export current quasi 3D Noise Log", this);
     connect(m_exportqs3DNoiseLog, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseLog()));
     addAction(m_exportqs3DNoiseLog);
 
-    m_exportqs3DNoiseComplete = new QAction("Export quasi 3D Noise Complete", this);
+    m_exportqs3DNoiseComplete = new QAction("Export current quasi 3D Noise Complete", this);
     connect(m_exportqs3DNoiseComplete, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseComplete()));
     addAction(m_exportqs3DNoiseComplete);
 
-    m_exportqs3DNoise = new QAction("Export current quasi 3D Noise Simulation", this);
+    m_exportqs3DNoise = new QAction("Export current quasi Noise 3D", this);
     connect(m_exportqs3DNoise, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise()));
     addAction(m_exportqs3DNoise);
+
+    m_exportteste = new QAction("Teste", this);
+    connect(m_exportteste, SIGNAL(triggered()), this, SLOT(onExportTeste()));
+    addAction(m_exportteste);
     //Sara
 }
 
@@ -44,7 +48,10 @@ void NoiseMenu::onAboutToShow() {
 	m_exportNoise->setEnabled(simulationAvailable);
     
     //Sara
-        m_exportqs3DNoise->setEnabled(simulationAvailable);
+    m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
+    m_exportqs3DNoise->setEnabled(simulationAvailable);
+    m_exportqs3DNoiseComplete->setEnabled(simulationAvailable);
+    m_exportteste->setEnabled(simulationAvailable);
     //Sara
 }
 
@@ -57,14 +64,14 @@ void NoiseMenu::onExportNoise() {
 	if (!fileName.endsWith(".txt")) {
 		fileName.append(".txt");
 	}
-	
-	QFile file (fileName);
-	g_mainFrame->m_ExportLastDirName = QFileInfo(file).absolutePath();
-	if (file.open(QIODevice::WriteOnly)) {
-		QTextStream fileStream (&file);
-		m_module->getShownSimulation()->exportCalculation(fileStream);
-	}
-	file.close();
+
+    QFile file (fileName);
+    g_mainFrame->m_ExportLastDirName = QFileInfo(file).absolutePath();
+    if (file.open(QIODevice::WriteOnly)) {
+        QTextStream fileStream (&file);
+        m_module->getShownSimulation()->exportCalculation(fileStream);
+    }
+    file.close();
 }
 
 //Sara
@@ -125,10 +132,29 @@ void NoiseMenu::onExportqs3DNoiseComplete() {
     }
     file.close();
 }
+
+void NoiseMenu::onExportTeste() {
+    QString fileName = m_module->getShownSimulation()->getName() + "-3D-teste.csv";
+    fileName.replace(' ', '_');
+    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Simulation Teste",
+                                            g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
+                                            "Comma Separated Values (*.csv)");
+    if (!fileName.endsWith(".csv")) {
+        fileName.append(".csv");
+    }
+
+    QFile file (fileName);
+    g_mainFrame->m_ExportLastDirName = QFileInfo(file).absolutePath();
+    if (file.open(QIODevice::WriteOnly)) {
+        QTextStream fileStream (&file);
+        m_module->getShownSimulation()->exportCalculationteste(fileStream);
+    }
+    file.close();
+}
 //Sara
 
 void NoiseMenu::onModelValidityHint() {
-	const QString message ("Airfoil TE noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
+    const QString message ("Airfoil TE noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
 						   "1989.\nThe original model was developed and validated for turbulent (tripped) flow up to "
 						   "Rec ≤ 1.5 × 10^6, M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\nThe IAG Wind "
 						   "tunnel data (Herrig & Würz, 2008) showed good agreement with BPM prediction at Rec ~2.4 "

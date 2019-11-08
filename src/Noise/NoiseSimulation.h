@@ -34,6 +34,7 @@ public:
 
 	void simulate();  // can throw NoiseException
 	void exportCalculation (QTextStream &stream);
+    void exportCalculationteste (QTextStream &stream); //Sara
     void exportqs3DCalculationComplete (QTextStream &stream);//Sara
     void exportqs3DCalculation (QTextStream &stream);//Sara
     void exportqs3DLog (QTextStream &stream);//Sara

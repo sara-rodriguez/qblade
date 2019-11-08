@@ -59,7 +59,7 @@ public:
     double epsilon;
     double iterations;
     double relax;
-    double temp;//Sara
+    double temp=288.15;//Sara
     double rho;
     double visc;
     double k_air = 1.4;//Sara

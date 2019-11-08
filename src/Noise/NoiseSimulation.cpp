@@ -21,6 +21,7 @@
 #include "NoiseCreatorDialog.h"
 #include <cmath>
 #include <sstream>
+
 #include <string>
 //Sara
 
@@ -154,7 +155,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
 
     stream << "Noise prediction file export" << endl;
     stream << endl;
-    if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Kármán" <<endl;}
+    if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" <<endl;}
     if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}//era m_calculation.m_
 //    stream << "constante D: " << m_calculation.d_const << endl;
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
@@ -234,27 +235,100 @@ else{
         stream << endl; 
         stream << endl;
     }
+    qDeleteAll(noiseOpPoints);
+}
+//Sara
 
-    //Sara
-    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-    int number_of_segments;
-//    BData *bdata = (BData *) g_mainFrame->m_pBEM;
-    number_of_segments = pBEM->dlg_elements;
-            for (int i = 0; i <= number_of_segments; ++i) {
-                stream << "tamanho máximo: " << number_of_segments << endl;
-                stream << "número i: " << i<< endl;
-                stream << qSetFieldWidth(14) <<
-"Freq [Hz]" << "SPL[3D] (dB)" << endl;
+void NoiseSimulation::exportCalculationteste(QTextStream &stream) {
+    stream.setRealNumberNotation(QTextStream::FixedNotation);
+    stream.setRealNumberPrecision(5);
 
-              for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
-                  stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << m_calculation.SPLdB3d()[i][j] << endl;
-              }
-                stream << endl;
-            }
+    stream << "Noise prediction file export qs3d" << endl;
+    stream << endl;
+    if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" <<endl;}
+    if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}//era m_calculation.m_
+//    stream << "constante D: " << m_calculation.d_const << endl;
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
+    for (int i = 0; i < noiseOpPoints.size(); ++i) {
+        stream << qSetFieldWidth(0);
+        stream << "Alpha: " << noiseOpPoints[i]->getAlphaDegree() <<
+                  ", Re = " << noiseOpPoints[i]->getReynolds() << endl;
+//        stream << "OASPL: " << m_calculation.OASPL()[i] << " dB" << endl;
+//        stream << "OASPL (A): " << m_calculation.OASPLA()[i] << " dB(A)" << endl;
+//        stream << "OASPL (B): " << m_calculation.OASPLB()[i] << " dB(B)" << endl;
+//        stream << "OASPL (C): " << m_calculation.OASPLC()[i] << " dB(C)" << endl;
+//        stream << "SPL_a: " << m_calculation.SPLALOG()[i] << "" << endl;
+//        stream << "SPL_s: " << m_calculation.SPLSLOG()[i] << "" << endl;
+//        stream << "SPL_p: " << m_calculation.SPLPLOG()[i] << "" << endl;
+//        if(m_parameter.Lowson_type!=0){
+//        stream << "SPL_LE: " << m_calculation.SPLlogLE()[i] << " dB" << endl;
+//        stream << "SPL_LE (A): " << m_calculation.SPLLEdBAW()[i] << " dB(A)" << endl;
+//        stream << "SPL_LE (B): " << m_calculation.SPLLEdBBW()[i] << " dB(B)" << endl;
+//        stream << "SPL_LE (C): " << m_calculation.SPLLEdBCW()[i] << " dB(C)" << endl;}
+        stream << endl;
+               if(m_parameter.Lowson_type!=0){
+        stream << qSetFieldWidth(14) <<
+                  "Freq [Hz]" << ";" <<
+                  "SPL (dB)" << ";" <<
+                  "SPLa" << ";" <<
+                  "SPLs" << ";" <<
+                  "SPLp" << ";" <<
+                  "SPL (dB(A))" << ";" <<
+                  "SPL (dB(B))" << ";" <<
+                  "SPL (dB(C))" << ";" <<
+                  "SPL_LE (dB)" << ";" <<
+                  "SPL_LE (dB(A))" << ";" <<
+                  "SPL_LE (dB(B))" << ";" <<
+                  "SPL_LE (dB(C))" << ";" <<endl; //Alexandre MOD
+               }
+               else{
+                   stream << qSetFieldWidth(14) <<
+                             "Freq [Hz]" << ";" <<
+                             "SPL (dB)" << ";" <<
+                             "SPLa" << ";" <<
+                             "SPLs" << ";" <<
+                             "SPLp" << ";" <<
+                             "SPL (dB(A))" << ";" <<
+                             "SPL (dB(B))" << ";" <<
+                             "SPL (dB(C))" <<endl; //Alexandre MOD
+               }
+
+        for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
+
+ if(m_parameter.Lowson_type!=0){
+            stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                      m_calculation.SPLdB3d()[i][j] << ";" <<
+                      m_calculation.SPLadB3d()[i][j] << ";" <<
+                      m_calculation.SPLsdB3d()[i][j] << ";" <<
+                      m_calculation.SPLpdB3d()[i][j] << ";" <<
+                      m_calculation.SPLdBAW3d()[i][j] << ";" <<
+                      m_calculation.SPLdBBW3d()[i][j] << ";" <<
+                      m_calculation.SPLdBCW3d()[i][j] << ";" <<
+                      m_calculation.SPL_LEdB3d()[i][j] << ";" <<
+                      m_calculation.SPL_LEdBAW3d()[i][j] << ";" << //Sara
+                      m_calculation.SPL_LEdBBW3d()[i][j] << ";" << //Sara
+                      m_calculation.SPL_LEdBCW3d()[i][j] << ";" << //Sara
+                      endl; //Alexandre MOD
+        }
+else{
+     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+               m_calculation.SPLdB3d()[i][j] << ";" <<
+               m_calculation.SPLadB3d()[i][j] << ";" <<
+               m_calculation.SPLsdB3d()[i][j] << ";" <<
+               m_calculation.SPLpdB3d()[i][j] << ";" <<
+               m_calculation.SPLdBAW3d()[i][j] << ";" <<
+               m_calculation.SPLdBBW3d()[i][j] << ";" <<
+               m_calculation.SPLdBCW3d()[i][j] << ";" << endl;
+ }
+        }
+
+        stream << endl;
+        stream << endl;
+    }
+
     qDeleteAll(noiseOpPoints);
 }
 
-//Sara
 void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
 
     stream.setRealNumberNotation(QTextStream::FixedNotation);
@@ -476,7 +550,7 @@ splog_dBC=0;
 
             // definitions
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
-            axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
+            if (i==(number_of_segments-1)){axial_ind_fact_n[i] = bdata->m_a_axial.value(i);}else {axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);}
 
             if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
             else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
@@ -601,7 +675,8 @@ DStarXFoilS[i]=m_calculation.m_DStarInterpolatedS3d[i];
 DStarXFoilP[i]=m_calculation.m_DStarInterpolatedP3d[i];
 
 //Length of Wetted Trailing Edge
-L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);
+if (i==(number_of_segments-1)){L[i]=0;}else{
+L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);}
 
 //Calculate the Switching Angle
 SwAlpha_1[i]=23.43*Mach[i]+4.651;
@@ -683,8 +758,8 @@ double ZB=0;
 if (m_parameter.phi_type==0){
     //by the quasi-3D spreadsheet
     ri[i]=bdata->m_pos.value(i);
-    ri_1[i]=bdata->m_pos.value(i+1);
-    ri_2[i]=bdata->m_pos.value(i+2);
+    if(i>=number_of_segments-2){ri_1[i]=bdata->m_pos.value(i);} else {ri_1[i]=bdata->m_pos.value(i+1);}
+    if(i>=number_of_segments-3){ri_2[i]=bdata->m_pos.value(i);} else {ri_2[i]=bdata->m_pos.value(i+2);}
     B=bdata->m_pos.value(number_of_segments-1)/2.;
     A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
     re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
@@ -710,7 +785,7 @@ else if (m_parameter.phi_type==1){
     //ri = r_0
     //beta = local_twist
 
-    if((i<=number_of_segments) & (i>=number_of_segments)){
+    if(i==(number_of_segments-1)){
 c_1[i]=0;
 r_1[i]=0;
     }
@@ -755,14 +830,23 @@ local_twist[i]=theta_BEM[i];
    alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
 QString observations_x("");
-if (!((Reynolds[i] >9.5*pow(10,5)) & (Reynolds[i]<2.5*pow(10,6))) || Mach[i]>=0.19 || !((alpha[i]<=0) & (alpha[i]>=0)) || !((alpha[i]<=5) & (alpha[i]>=5)) || !(alpha[i]<=10 & alpha[i]>=10)){
-observations_x.append("1 ");}
-if((Reynolds[i] <=4.8*pow(10,4)) || (Reynolds[i]>=2.5*pow(10,6)) || Mach[i]<0.208 || !((alpha[i]<=0) & (alpha[i]>=0))){
-observations_x.append("2 ");}
-if (Reynolds[i] >=3*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
-observations_x.append("3 ");}
-if (Reynolds[i] >1.5*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
-observations_x.append('4');}
+//validation by the literature
+//if (!((Reynolds[i] >9.5*pow(10,5)) & (Reynolds[i]<2.5*pow(10,6))) || Mach[i]>=0.19 || !((alpha[i]<=0) & (alpha[i]>=0)) || !((alpha[i]<=5) & (alpha[i]>=5)) || !(alpha[i]<=10 & alpha[i]>=10)){
+//observations_x.append("1 ");}
+//if((Reynolds[i] <=4.8*pow(10,4)) || (Reynolds[i]>=2.5*pow(10,6)) || Mach[i]<0.208 || !((alpha[i]<=0) & (alpha[i]>=0))){
+//observations_x.append("2 ");}
+//if (Reynolds[i] >=3*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
+//observations_x.append("3 ");}
+//if (Reynolds[i] >1.5*pow(10,6) || Mach[i]<0.208 || alpha[i]<=19.8){
+//observations_x.append('4');}
+
+//validation used
+//if(!(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0)))){observations_x.append("1 ");}
+//if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0)))){observations_x.append("2");}
+
+//new validation for greater Reynolds
+if(!(((((alpha[i]<=19.8) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0)))){observations_x.append("1 ");}
+if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0))) & (Reynolds[i]>0))){observations_x.append("2");}
 
 //uncomment to input data
  if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
@@ -788,30 +872,13 @@ observations_x.append('4');}
 
 }
      stream << endl;
-     stream << "[1]Out of range in accordance of: 1-Brooks & Hodgson 1981. 2 - Brooks & Marcolini 1985. 3 - Brooks & Marcolini 1986. 4 - Brooks, Pope & Marcolini 1989." << endl;
+     stream << "[1]1 - Out of range for BPM method. 2 - Out of range for LE method."<< endl;
 }
 
 void NoiseSimulation::exportqs3DCalculationComplete(QTextStream &stream)
 {
         stream.setRealNumberNotation(QTextStream::FixedNotation);
         stream.setRealNumberPrecision(5);
-
-        const double AWeighting[] = {-44.7, -39.4, -34.6, -30.2, -26.2, -22.5, -19.1, -16.1,
-                                                                           -13.4, -10.9,  -8.6,  -6.6,  -4.8,  -3.2,  -1.9,  -0.8,
-                                                                             0.0,   0.6,   1.0,   1.2,   1.3,   1.2,   1.0,   0.5,
-                                                                            -0.1,  -1.1,  -2.5,  -4.3,  -6.6,-  9.3};
-
-        const double BWeighting[] = {-20.4, -17.1, -14.2, -11.6,  -9.3,  -7.4,  -5.6,  -4.2,
-                                                                            -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.1,   0.0,
-                                                                             0.0,   0.0,   0.0,  -0.1,  -0.2,  -0.4,  -0.7,  -1.2,
-                                                                            -1.9,  -2.9,  -4.3,  -6.1,  -8.4, -11.1};
-
-        const double CWeighting[] = {-4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2,
-                                                                            -0.1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,
-                                                                             0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,
-                                                                            -2.0,  -3.0,  -4.4,  -6.2,  -8.5, -11.2};
-
-        const double Frequency[]= {25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400,500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000};
 
         stream << "Quasi 3D Noise Log" << endl;
         stream << endl;
@@ -1116,7 +1183,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
 
             // definitions
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
-            axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
+           if (i==(number_of_segments-1)){axial_ind_fact_n[i] = bdata->m_a_axial.value(i);}else {axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);}
 
             if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
             else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
@@ -1235,7 +1302,8 @@ DStarXFoilS[i]=m_calculation.m_DStarInterpolatedS3d[i];
 DStarXFoilP[i]=m_calculation.m_DStarInterpolatedP3d[i];
 
 //Length of Wetted Trailing Edge
-L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);
+if (i==(number_of_segments-1)){L[i]=0;}else{
+L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);}
 
 //Calculate the Switching Angle
 SwAlpha_1[i]=23.43*Mach[i]+4.651;
@@ -1323,8 +1391,8 @@ double ZB=0;
 if (m_parameter.phi_type==0){
     //by the quasi-3D spreadsheet
     ri[i]=bdata->m_pos.value(i);
-    ri_1[i]=bdata->m_pos.value(i+1);
-    ri_2[i]=bdata->m_pos.value(i+2);
+    if(i>=number_of_segments-2){ri_1[i]=bdata->m_pos.value(i);} else {ri_1[i]=bdata->m_pos.value(i+1);}
+    if(i>=number_of_segments-3){ri_2[i]=bdata->m_pos.value(i);} else {ri_2[i]=bdata->m_pos.value(i+2);}
     B=bdata->m_pos.value(number_of_segments-1)/2.;
     A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
     re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
@@ -1350,7 +1418,7 @@ else if (m_parameter.phi_type==1){
     //ri = r_0
     //beta = local_twist
 
-    if((i<=number_of_segments) & (i>=number_of_segments)){
+    if(i==(number_of_segments-1)){
 c_1[i]=0;
 r_1[i]=0;
     }
@@ -1606,7 +1674,7 @@ else{
 //                  "s_log_dBC"  << ";" <<
                   endl;}
 
-    int w=30;
+    int w=m_calculation.FREQUENCY_TABLE_SIZE;
 
     double slog_SPL_alpha[w];
     double slog_SPL_S[w];
@@ -1620,10 +1688,10 @@ else{
     double slog_LedBBW[w];
     double slog_LedBCW[w];
 
-     for (int j = 0; j < w; ++j) {
+     for (int j = 0; j < m_calculation.FREQUENCY_TABLE_SIZE; ++j) {
 
          double Sts[w];
-         Sts[j]=Frequency[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
+         Sts[j]=m_calculation.CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
 
          double b_alpha[w];
          b_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
@@ -1673,22 +1741,22 @@ else{
     SPL_alpha_big0[j]=first_term_Dl_S[i]+K2[i]+Alin_a[j];
 
     double dBA_alpha_min0[w];
-    dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
+    dBA_alpha_min0[j]=SPL_alpha_min0[j]+m_calculation.AWeighting[j];
 
     double dBA_alpha_big0[w];
-    dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
+    dBA_alpha_big0[j]=SPL_alpha_big0[j]+m_calculation.AWeighting[j];
 
     double dBB_alpha_min0[w];
-    dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
+    dBB_alpha_min0[j]=SPL_alpha_min0[j]+m_calculation.BWeighting[j];
 
     double dBC_alpha_big0[w];
-    dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
+    dBC_alpha_big0[j]=SPL_alpha_big0[j]+m_calculation.CWeighting[j];
 
     double dBC_alpha_min0[w];
-    dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
+    dBC_alpha_min0[j]=SPL_alpha_min0[j]+m_calculation.CWeighting[j];
 
     double dBB_alpha_big0[w];
-    dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
+    dBB_alpha_big0[j]=SPL_alpha_big0[j]+m_calculation.BWeighting[j];
 
     double St1_bar[w];
     St1_bar[j]=(St1[i]+St2[i])/2.;
@@ -1713,19 +1781,19 @@ else{
     SPL_dB_S[j]=first_term_Dh_S[i]+A_a_S[j]+K1_3[i];
 
     double dBA_S[w];
-    dBA_S[j]=SPL_dB_S[j]+AWeighting[j];
+    dBA_S[j]=SPL_dB_S[j]+m_calculation.AWeighting[j];
 
     double dBB_S[w];
-    dBB_S[j]=SPL_dB_S[j]+BWeighting[j];
+    dBB_S[j]=SPL_dB_S[j]+m_calculation.BWeighting[j];
 
     double dBC_S[w];
-    dBC_S[j]=SPL_dB_S[j]+CWeighting[j];
+    dBC_S[j]=SPL_dB_S[j]+m_calculation.CWeighting[j];
 
     double Sts_St1_bar[w];
     Sts_St1_bar[j]=Sts[j]/St1_bar[i];
 
     double Stp_P[w];
-    Stp_P[j]=Frequency[j]*D_starred_P[i]/bdata->m_Windspeed.value(i);
+    Stp_P[j]=m_calculation.CENTRAL_BAND_FREQUENCY[j]*D_starred_P[i]/bdata->m_Windspeed.value(i);
 
     double a_P[w];
     a_P[j]=qFabs(log10(Stp_P[j]/St1[i]));
@@ -1747,13 +1815,13 @@ else{
     SPL_dB_P[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P[i];
 
     double dBA_P[w];
-    dBA_P[j]=SPL_dB_P[j]+AWeighting[j];
+    dBA_P[j]=SPL_dB_P[j]+m_calculation.AWeighting[j];
 
     double dBB_P[w];
-    dBB_P[j]=SPL_dB_P[j]+BWeighting[j];
+    dBB_P[j]=SPL_dB_P[j]+m_calculation.BWeighting[j];
 
     double dBC_P[w];
-    dBC_P[j]=SPL_dB_P[j]+CWeighting[j];
+    dBC_P[j]=SPL_dB_P[j]+m_calculation.CWeighting[j];
 
     double SPL_alpha[w];
     if (alpha[i]<SwAlpha[i]){SPL_alpha[j]=SPL_alpha_min0[j];}
@@ -1768,16 +1836,16 @@ else{
     else {SPL_P[j]=-999999999999.;}
 
     double SPL_dB[w];
-    SPL_dB[j]=10*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
+    SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
 
     double SPL_A[w];
-    SPL_A[j]=SPL_dB[j]+AWeighting[j];
+    SPL_A[j]=SPL_dB[j]+m_calculation.AWeighting[j];
 
     double SPL_B[w];
-    SPL_B[j]=SPL_dB[j]+BWeighting[j];
+    SPL_B[j]=SPL_dB[j]+m_calculation.BWeighting[j];
 
     double SPL_C[w];
-    SPL_C[j]=SPL_dB[j]+CWeighting[j];
+    SPL_C[j]=SPL_dB[j]+m_calculation.CWeighting[j];
 
     double SPL_LedB[w];
     SPL_LedB[w]=0;
@@ -1800,7 +1868,7 @@ else{
     L_le=100.*L[i];
     D_L_le=0.5*Dl[i];
     aux_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
-    K_le=M_PI*Frequency[j]*c_le/u_le;
+    K_le=M_PI*m_calculation.CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
 
@@ -1825,36 +1893,36 @@ aux5_le=10.*log10(aux0_le*aux4_le);
 //Validation:
 
 //Lowson validation:
-if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+//if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
-SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
-SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
-SPL_LedBCW[j]=SPL_LedB[j]+CWeighting[j];
+SPL_LedBAW[j]=SPL_LedB[j]+m_calculation.AWeighting[j];
+SPL_LedBBW[j]=SPL_LedB[j]+m_calculation.BWeighting[j];
+SPL_LedBCW[j]=SPL_LedB[j]+m_calculation.CWeighting[j];
 LE_validation=true;
-}
-else{
-SPL_LedB[j]=-999999999999.;
-SPL_LedBAW[j]=-999999999999.;
-SPL_LedBBW[j]=-999999999999.;
-SPL_LedBCW[j]=-999999999999.;
-LE_validation=false;
-}
+//}
+//else{
+//SPL_LedB[j]=-999999999999.;
+//SPL_LedBAW[j]=-999999999999.;
+//SPL_LedBBW[j]=-999999999999.;
+//SPL_LedBCW[j]=-999999999999.;
+//LE_validation=false;
+//}
 
 //BPM validation:
 //p 17 C_Project_Log_Text_15_jan_16
-if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
+//if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
 BPM_validation=true;
-}
-else{
-SPL_alpha[j]=-999999999999.;
-SPL_S[j]=-999999999999.;
-SPL_P[j]=-999999999999.;
-SPL_dB[j]=-999999999999.;
-SPL_A[j]=-999999999999.;
-SPL_B[j]=-999999999999.;
-SPL_C[j]=-999999999999.;
-BPM_validation=false;
-}
+//}
+//else{
+//SPL_alpha[j]=-999999999999.;
+//SPL_S[j]=-999999999999.;
+//SPL_P[j]=-999999999999.;
+//SPL_dB[j]=-999999999999.;
+//SPL_A[j]=-999999999999.;
+//SPL_B[j]=-999999999999.;
+//SPL_C[j]=-999999999999.;
+//BPM_validation=false;
+//}
 
     slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
     slog_SPL_S[j]=pow(10.,(SPL_S[j]/10.));
@@ -2090,16 +2158,16 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_C_val.clear();
 
         if(BPM_validation){
-    SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 2));
-    SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 2));
-    SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 2));
-    SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 2));
-    SPL_A_val.append(QString::number(SPL_A[j], 'f', 2));
-    SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
-    SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
+    SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 5));
+    SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 5));
+    SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 5));
+    SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 5));
+    SPL_A_val.append(QString::number(SPL_A[j], 'f', 5));
+    SPL_B_val.append(QString::number(SPL_B[j], 'f', 5));
+    SPL_C_val.append(QString::number(SPL_C[j], 'f', 5));
 
-    if(SPL_S[j]<=-999999999999. & SPL_S[j]>=-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
-    if(SPL_P[j]<=-999999999999. & SPL_P[j]>=-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
+    if(SPL_S[j]<=-999999999999. & SPL_S[j]>=-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 5));}
+    if(SPL_P[j]<=-999999999999. & SPL_P[j]>=-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 5));}
        }
         else{
     SPL_alpha_val.append("N/A");
@@ -2114,10 +2182,10 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
         }
 
     if (LE_validation){
-    SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 2));
-    SPL_LedB_valAW.append(QString::number(SPL_LedBAW[j], 'f', 2));
-    SPL_LedB_valBW.append(QString::number(SPL_LedBBW[j], 'f', 2));
-    SPL_LedB_valCW.append(QString::number(SPL_LedBCW[j], 'f', 2));
+    SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 5));
+    SPL_LedB_valAW.append(QString::number(SPL_LedBAW[j], 'f', 5));
+    SPL_LedB_valBW.append(QString::number(SPL_LedBBW[j], 'f', 5));
+    SPL_LedB_valCW.append(QString::number(SPL_LedBCW[j], 'f', 5));
     }
     else{
     SPL_LedB_val.append("N/A");
@@ -2128,7 +2196,7 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
 
 if (m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14)  <<
-                  Frequency[j] << ";" <<
+                  m_calculation.CENTRAL_BAND_FREQUENCY[j] << ";" <<
 //                  Sts[j]<< ";" <<
 //                  b_alpha[j]  << ";" <<
 //                  B_min[j] << ";" <<
@@ -2192,7 +2260,7 @@ if (m_parameter.Lowson_type!=0){
 else
 {
         stream << qSetFieldWidth(14)  <<
-                  Frequency[j] << ";" <<
+                  m_calculation.CENTRAL_BAND_FREQUENCY[j] << ";" <<
 //                  Sts[j]<< ";" <<
 //                  b_alpha[j]  << ";" <<
 //                  B_min[j] << ";" <<
@@ -2313,23 +2381,6 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
 {
         stream.setRealNumberNotation(QTextStream::FixedNotation);
         stream.setRealNumberPrecision(5);
-
-        const double AWeighting[] = {-44.7, -39.4, -34.6, -30.2, -26.2, -22.5, -19.1, -16.1,
-                                                                           -13.4, -10.9,  -8.6,  -6.6,  -4.8,  -3.2,  -1.9,  -0.8,
-                                                                             0.0,   0.6,   1.0,   1.2,   1.3,   1.2,   1.0,   0.5,
-                                                                            -0.1,  -1.1,  -2.5,  -4.3,  -6.6,-  9.3};
-
-        const double BWeighting[] = {-20.4, -17.1, -14.2, -11.6,  -9.3,  -7.4,  -5.6,  -4.2,
-                                                                            -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.1,   0.0,
-                                                                             0.0,   0.0,   0.0,  -0.1,  -0.2,  -0.4,  -0.7,  -1.2,
-                                                                            -1.9,  -2.9,  -4.3,  -6.1,  -8.4, -11.1};
-
-        const double CWeighting[] = {-4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2,
-                                                                            -0.1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,
-                                                                             0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,
-                                                                            -2.0,  -3.0,  -4.4,  -6.2,  -8.5, -11.2};
-
-        const double Frequency[]= {25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400,500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000};
 
         stream << "Quasi 3D Noise Log" << endl;
         stream << endl;
@@ -2634,7 +2685,7 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
 
             // definitions
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
-            axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);
+           if (i==(number_of_segments-1)){axial_ind_fact_n[i] = bdata->m_a_axial.value(i);}else {axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);}
 
             if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
             else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
@@ -2753,7 +2804,8 @@ DStarXFoilS[i]=m_calculation.m_DStarInterpolatedS3d[i];
 DStarXFoilP[i]=m_calculation.m_DStarInterpolatedP3d[i];
 
 //Length of Wetted Trailing Edge
-L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);
+if (i==(number_of_segments-1)){L[i]=0;}else{
+L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);}
 
 //Calculate the Switching Angle
 SwAlpha_1[i]=23.43*Mach[i]+4.651;
@@ -2841,8 +2893,8 @@ double ZB=0;
 if (m_parameter.phi_type==0){
     //by the quasi-3D spreadsheet
     ri[i]=bdata->m_pos.value(i);
-    ri_1[i]=bdata->m_pos.value(i+1);
-    ri_2[i]=bdata->m_pos.value(i+2);
+    if(i>=number_of_segments-2){ri_1[i]=bdata->m_pos.value(i);} else {ri_1[i]=bdata->m_pos.value(i+1);}
+    if(i>=number_of_segments-3){ri_2[i]=bdata->m_pos.value(i);} else {ri_2[i]=bdata->m_pos.value(i+2);}
     B=bdata->m_pos.value(number_of_segments-1)/2.;
     A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
     re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
@@ -2868,7 +2920,7 @@ else if (m_parameter.phi_type==1){
     //ri = r_0
     //beta = local_twist
 
-    if((i<=number_of_segments) & (i>=number_of_segments)){
+    if(i==(number_of_segments-1)){
 c_1[i]=0;
 r_1[i]=0;
     }
@@ -3124,7 +3176,7 @@ else{
 //                  "s_log_dBC"  << ";" <<
                   endl;}
 
-    int w=30;
+    int w=m_calculation.FREQUENCY_TABLE_SIZE;
 
     double slog_SPL_alpha[w];
     double slog_SPL_S[w];
@@ -3138,10 +3190,10 @@ else{
     double slog_LedBBW[w];
     double slog_LedBCW[w];
 
-     for (int j = 0; j < w; ++j) {
+     for (int j = 0; j < m_calculation.FREQUENCY_TABLE_SIZE; ++j) {
 
          double Sts[w];
-         Sts[j]=Frequency[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
+         Sts[j]=m_calculation.CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
 
          double b_alpha[w];
          b_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
@@ -3191,22 +3243,22 @@ else{
     SPL_alpha_big0[j]=first_term_Dl_S[i]+K2[i]+Alin_a[j];
 
     double dBA_alpha_min0[w];
-    dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
+    dBA_alpha_min0[j]=SPL_alpha_min0[j]+m_calculation.AWeighting[j];
 
     double dBA_alpha_big0[w];
-    dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
+    dBA_alpha_big0[j]=SPL_alpha_big0[j]+m_calculation.AWeighting[j];
 
     double dBB_alpha_min0[w];
-    dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
+    dBB_alpha_min0[j]=SPL_alpha_min0[j]+m_calculation.BWeighting[j];
 
     double dBC_alpha_big0[w];
-    dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
+    dBC_alpha_big0[j]=SPL_alpha_big0[j]+m_calculation.CWeighting[j];
 
     double dBC_alpha_min0[w];
-    dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
+    dBC_alpha_min0[j]=SPL_alpha_min0[j]+m_calculation.CWeighting[j];
 
     double dBB_alpha_big0[w];
-    dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
+    dBB_alpha_big0[j]=SPL_alpha_big0[j]+m_calculation.BWeighting[j];
 
     double St1_bar[w];
     St1_bar[j]=(St1[i]+St2[i])/2.;
@@ -3231,19 +3283,19 @@ else{
     SPL_dB_S[j]=first_term_Dh_S[i]+A_a_S[j]+K1_3[i];
 
     double dBA_S[w];
-    dBA_S[j]=SPL_dB_S[j]+AWeighting[j];
+    dBA_S[j]=SPL_dB_S[j]+m_calculation.AWeighting[j];
 
     double dBB_S[w];
-    dBB_S[j]=SPL_dB_S[j]+BWeighting[j];
+    dBB_S[j]=SPL_dB_S[j]+m_calculation.BWeighting[j];
 
     double dBC_S[w];
-    dBC_S[j]=SPL_dB_S[j]+CWeighting[j];
+    dBC_S[j]=SPL_dB_S[j]+m_calculation.CWeighting[j];
 
     double Sts_St1_bar[w];
     Sts_St1_bar[j]=Sts[j]/St1_bar[i];
 
     double Stp_P[w];
-    Stp_P[j]=Frequency[j]*D_starred_P[i]/bdata->m_Windspeed.value(i);
+    Stp_P[j]=m_calculation.CENTRAL_BAND_FREQUENCY[j]*D_starred_P[i]/bdata->m_Windspeed.value(i);
 
     double a_P[w];
     a_P[j]=qFabs(log10(Stp_P[j]/St1[i]));
@@ -3265,13 +3317,13 @@ else{
     SPL_dB_P[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P[i];
 
     double dBA_P[w];
-    dBA_P[j]=SPL_dB_P[j]+AWeighting[j];
+    dBA_P[j]=SPL_dB_P[j]+m_calculation.AWeighting[j];
 
     double dBB_P[w];
-    dBB_P[j]=SPL_dB_P[j]+BWeighting[j];
+    dBB_P[j]=SPL_dB_P[j]+m_calculation.BWeighting[j];
 
     double dBC_P[w];
-    dBC_P[j]=SPL_dB_P[j]+CWeighting[j];
+    dBC_P[j]=SPL_dB_P[j]+m_calculation.CWeighting[j];
 
     double SPL_alpha[w];
     if (alpha[i]<SwAlpha[i]){SPL_alpha[j]=SPL_alpha_min0[j];}
@@ -3286,16 +3338,16 @@ else{
     else {SPL_P[j]=-999999999999.;}
 
     double SPL_dB[w];
-    SPL_dB[j]=10*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
+    SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
 
     double SPL_A[w];
-    SPL_A[j]=SPL_dB[j]+AWeighting[j];
+    SPL_A[j]=SPL_dB[j]+m_calculation.AWeighting[j];
 
     double SPL_B[w];
-    SPL_B[j]=SPL_dB[j]+BWeighting[j];
+    SPL_B[j]=SPL_dB[j]+m_calculation.BWeighting[j];
 
     double SPL_C[w];
-    SPL_C[j]=SPL_dB[j]+CWeighting[j];
+    SPL_C[j]=SPL_dB[j]+m_calculation.CWeighting[j];
 
     double SPL_LedB[w];
     SPL_LedB[w]=0;
@@ -3318,7 +3370,7 @@ else{
     L_le=100.*L[i];
     D_L_le=0.5*Dl[i];
     aux_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
-    K_le=M_PI*Frequency[j]*c_le/u_le;
+    K_le=M_PI*m_calculation.CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
 
@@ -3343,36 +3395,36 @@ aux5_le=10.*log10(aux0_le*aux4_le);
 //Validation:
 
 //Lowson validation:
-if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+//if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
-SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
-SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
-SPL_LedBCW[j]=SPL_LedB[j]+CWeighting[j];
+SPL_LedBAW[j]=SPL_LedB[j]+m_calculation.AWeighting[j];
+SPL_LedBBW[j]=SPL_LedB[j]+m_calculation.BWeighting[j];
+SPL_LedBCW[j]=SPL_LedB[j]+m_calculation.CWeighting[j];
 LE_validation=true;
-}
-else{
-SPL_LedB[j]=-999999999999.;
-SPL_LedBAW[j]=-999999999999.;
-SPL_LedBBW[j]=-999999999999.;
-SPL_LedBCW[j]=-999999999999.;
-LE_validation=false;
-}
+//}
+//else{
+//SPL_LedB[j]=-999999999999.;
+//SPL_LedBAW[j]=-999999999999.;
+//SPL_LedBBW[j]=-999999999999.;
+//SPL_LedBCW[j]=-999999999999.;
+//LE_validation=false;
+//}
 
 //BPM validation:
 //p 17 C_Project_Log_Text_15_jan_16
-if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
+//if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
 BPM_validation=true;
-}
-else{
-SPL_alpha[j]=-999999999999.;
-SPL_S[j]=-999999999999.;
-SPL_P[j]=-999999999999.;
-SPL_dB[j]=-999999999999.;
-SPL_A[j]=-999999999999.;
-SPL_B[j]=-999999999999.;
-SPL_C[j]=-999999999999.;
-BPM_validation=false;
-}
+//}
+//else{
+//SPL_alpha[j]=-999999999999.;
+//SPL_S[j]=-999999999999.;
+//SPL_P[j]=-999999999999.;
+//SPL_dB[j]=-999999999999.;
+//SPL_A[j]=-999999999999.;
+//SPL_B[j]=-999999999999.;
+//SPL_C[j]=-999999999999.;
+//BPM_validation=false;
+//}
 
     slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
     slog_SPL_S[j]=pow(10.,(SPL_S[j]/10.));
@@ -3608,20 +3660,20 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_C_val.clear();
 
         if(BPM_validation){
-    SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 2));
-    SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 2));
-    SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 2));
-    SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 2));
-    SPL_A_val.append(QString::number(SPL_A[j], 'f', 2));
-    SPL_B_val.append(QString::number(SPL_B[j], 'f', 2));
-    SPL_C_val.append(QString::number(SPL_C[j], 'f', 2));
+    SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 5));
+    SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 5));
+    SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 5));
+    SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 5));
+    SPL_A_val.append(QString::number(SPL_A[j], 'f', 5));
+    SPL_B_val.append(QString::number(SPL_B[j], 'f', 5));
+    SPL_C_val.append(QString::number(SPL_C[j], 'f', 5));
 
     if(SPL_S[j]<=-999999999999. & SPL_S[j]>=-999999999999.){
         SPL_S_val.append("N/A");
-    } else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 2));}
+    } else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 5));}
     if(SPL_P[j]<=-999999999999. & SPL_P[j]>=-999999999999.){
         SPL_P_val.append("N/A");
-    } else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 2));}
+    } else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 5));}
        }
         else{
     SPL_alpha_val.append("N/A");
@@ -3636,10 +3688,10 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
         }
 
     if (LE_validation){
-    SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 2));
-    SPL_LedB_valAW.append(QString::number(SPL_LedBAW[j], 'f', 2));
-    SPL_LedB_valBW.append(QString::number(SPL_LedBBW[j], 'f', 2));
-    SPL_LedB_valCW.append(QString::number(SPL_LedBCW[j], 'f', 2));
+    SPL_LedB_val.append(QString::number(SPL_LedB[j], 'f', 5));
+    SPL_LedB_valAW.append(QString::number(SPL_LedBAW[j], 'f', 5));
+    SPL_LedB_valBW.append(QString::number(SPL_LedBBW[j], 'f', 5));
+    SPL_LedB_valCW.append(QString::number(SPL_LedBCW[j], 'f', 5));
     }
     else{
     SPL_LedB_val.append("N/A");
@@ -3650,7 +3702,7 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
 
 if (m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14)  <<
-                  Frequency[j] << ";" <<
+                  m_calculation.CENTRAL_BAND_FREQUENCY[j] << ";" <<
 //                  Sts[j]<< ";" <<
 //                  b_alpha[j]  << ";" <<
 //                  B_min[j] << ";" <<
@@ -3690,7 +3742,7 @@ if (m_parameter.Lowson_type!=0){
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
-                  SPL_dB_val  << ";" <<
+                  SPL_dB[j] << ";" <<//SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
@@ -3714,7 +3766,7 @@ if (m_parameter.Lowson_type!=0){
 else
 {
         stream << qSetFieldWidth(14)  <<
-                  Frequency[j] << ";" <<
+                  m_calculation.CENTRAL_BAND_FREQUENCY[j] << ";" <<
 //                  Sts[j]<< ";" <<
 //                  b_alpha[j]  << ";" <<
 //                  B_min[j] << ";" <<
