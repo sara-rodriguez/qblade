@@ -102,6 +102,17 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 20: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex]; break;
         case 21: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; break;
         case 22: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; break;
+        case 23: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
+        case 24: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
+        case 25: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
+        case 26: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; break;
+        case 27: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
+        case 28: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
+        case 29: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
+        case 30: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; break;
+        case 31: *vector = m_calculation.SPL_LEdBAW3d_final()[opPointIndex]; break;
+        case 32: *vector = m_calculation.SPL_LEdBBW3d_final()[opPointIndex]; break;
+        case 33: *vector = m_calculation.SPL_LEdBCW3d_final()[opPointIndex]; break;
             //Sara
         default: return nullptr;
         }
@@ -120,8 +131,8 @@ QStringList NoiseSimulation::getAvailableVariables(NewGraph::GraphType /*graphTy
 
     // WARNING: when changing any variables list, change newCurve as well!
     variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))"
-              << "SPL (dB(C))" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL_alpha[3D]" << "SPL_S[3D]" << "SPL_P[3D]" << "SPL[3D] (dB)" << "SPL[3D] (dB(A))" << "SPL[3D] (dB(B))"
-              << "SPL[3D] (dB(C))" << "SPL_LE[3D] (dB)" << "SPL_LE[3D] (dB(A))" << "SPL_LE[3D] (dB(B))" << "SPL_LE[3D] (dB(C))"; //Alexandre MOD Sara
+              << "SPL (dB(C))" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL_alpha[multi]" << "SPL_S[multi]" << "SPL_P[multi]" << "SPL[multi] (dB)" << "SPL[multi] (dB(A))" << "SPL[multi] (dB(B))"
+              << "SPL[multi] (dB(C))" << "SPL_LE[multi] (dB)" << "SPL_LE[multi] (dB(A))" << "SPL_LE[multi] (dB(B))" << "SPL_LE[multi] (dB(C))" << "SPL_alpha[3D]" << "SPL_S[3D]" << "SPL_P[3D]" << "SPL[3D] (dB)" << "SPL[3D] (dB(A))" << "SPL[3D] (dB(B))" << "SPL[3D] (dB(C))" << "SPL_LE[3D] (dB)" << "SPL_LE[3D] (dB(A))" << "SPL_LE[3D] (dB(B))" << "SPL_LE[3D] (dB(C))"; //Alexandre MOD Sara
 
     return variables;
 }
@@ -146,7 +157,8 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
-    m_calculation.calculateqs3d();//Sara
+    m_calculation.calculateqs3d_2d_curves();//Sara
+    m_calculation.calculateqs3d_final();//Sara
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -239,33 +251,20 @@ else{
 }
 //Sara
 
-void NoiseSimulation::exportCalculationteste(QTextStream &stream) {
+void NoiseSimulation::exportCalculationqs3DNoise_final(QTextStream &stream) {
     stream.setRealNumberNotation(QTextStream::FixedNotation);
     stream.setRealNumberPrecision(5);
 
-    stream << "Noise prediction file export qs3d" << endl;
+    stream << "Noise prediction file export quasi 3D" << endl;
     stream << endl;
     if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" <<endl;}
     if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}//era m_calculation.m_
 //    stream << "constante D: " << m_calculation.d_const << endl;
-    QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
-    for (int i = 0; i < noiseOpPoints.size(); ++i) {
-        stream << qSetFieldWidth(0);
-        stream << "Alpha: " << noiseOpPoints[i]->getAlphaDegree() <<
-                  ", Re = " << noiseOpPoints[i]->getReynolds() << endl;
-//        stream << "OASPL: " << m_calculation.OASPL()[i] << " dB" << endl;
-//        stream << "OASPL (A): " << m_calculation.OASPLA()[i] << " dB(A)" << endl;
-//        stream << "OASPL (B): " << m_calculation.OASPLB()[i] << " dB(B)" << endl;
-//        stream << "OASPL (C): " << m_calculation.OASPLC()[i] << " dB(C)" << endl;
-//        stream << "SPL_a: " << m_calculation.SPLALOG()[i] << "" << endl;
-//        stream << "SPL_s: " << m_calculation.SPLSLOG()[i] << "" << endl;
-//        stream << "SPL_p: " << m_calculation.SPLPLOG()[i] << "" << endl;
-//        if(m_parameter.Lowson_type!=0){
-//        stream << "SPL_LE: " << m_calculation.SPLlogLE()[i] << " dB" << endl;
-//        stream << "SPL_LE (A): " << m_calculation.SPLLEdBAW()[i] << " dB(A)" << endl;
-//        stream << "SPL_LE (B): " << m_calculation.SPLLEdBBW()[i] << " dB(B)" << endl;
-//        stream << "SPL_LE (C): " << m_calculation.SPLLEdBCW()[i] << " dB(C)" << endl;}
         stream << endl;
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
+//    for (int i = 0; i < noiseOpPoints.size(); ++i) {
+        stream << qSetFieldWidth(0);
+//        stream << endl;
                if(m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
@@ -292,40 +291,62 @@ void NoiseSimulation::exportCalculationteste(QTextStream &stream) {
                              "SPL (dB(B))" << ";" <<
                              "SPL (dB(C))" <<endl; //Alexandre MOD
                }
-
+int i=0;
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
- if(m_parameter.Lowson_type!=0){
-            stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                      m_calculation.SPLdB3d()[i][j] << ";" <<
-                      m_calculation.SPLadB3d()[i][j] << ";" <<
-                      m_calculation.SPLsdB3d()[i][j] << ";" <<
-                      m_calculation.SPLpdB3d()[i][j] << ";" <<
-                      m_calculation.SPLdBAW3d()[i][j] << ";" <<
-                      m_calculation.SPLdBBW3d()[i][j] << ";" <<
-                      m_calculation.SPLdBCW3d()[i][j] << ";" <<
-                      m_calculation.SPL_LEdB3d()[i][j] << ";" <<
-                      m_calculation.SPL_LEdBAW3d()[i][j] << ";" << //Sara
-                      m_calculation.SPL_LEdBBW3d()[i][j] << ";" << //Sara
-                      m_calculation.SPL_LEdBCW3d()[i][j] << ";" << //Sara
-                      endl; //Alexandre MOD
-        }
-else{
-     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-               m_calculation.SPLdB3d()[i][j] << ";" <<
-               m_calculation.SPLadB3d()[i][j] << ";" <<
-               m_calculation.SPLsdB3d()[i][j] << ";" <<
-               m_calculation.SPLpdB3d()[i][j] << ";" <<
-               m_calculation.SPLdBAW3d()[i][j] << ";" <<
-               m_calculation.SPLdBBW3d()[i][j] << ";" <<
-               m_calculation.SPLdBCW3d()[i][j] << ";" << endl;
- }
-        }
+// if(m_parameter.Lowson_type!=0){
+//            stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+//                      m_calculation.SPLdB3d()[i][j] << ";" <<
+//                      m_calculation.SPLadB3d()[i][j] << ";" <<
+//                      m_calculation.SPLsdB3d()[i][j] << ";" <<
+//                      m_calculation.SPLpdB3d()[i][j] << ";" <<
+//                      m_calculation.SPLdBAW3d()[i][j] << ";" <<
+//                      m_calculation.SPLdBBW3d()[i][j] << ";" <<
+//                      m_calculation.SPLdBCW3d()[i][j] << ";" <<
+//                      m_calculation.SPL_LEdB3d()[i][j] << ";" <<
+//                      m_calculation.SPL_LEdBAW3d()[i][j] << ";" << //Sara
+//                      m_calculation.SPL_LEdBBW3d()[i][j] << ";" << //Sara
+//                      m_calculation.SPL_LEdBCW3d()[i][j] << ";" << //Sara
+//                      endl; //Alexandre MOD
+//        }
+//else{
+//     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+//               m_calculation.SPLdB3d()[i][j] << ";" <<
+//               m_calculation.SPLadB3d()[i][j] << ";" <<
+//               m_calculation.SPLsdB3d()[i][j] << ";" <<
+//               m_calculation.SPLpdB3d()[i][j] << ";" <<
+//               m_calculation.SPLdBAW3d()[i][j] << ";" <<
+//               m_calculation.SPLdBBW3d()[i][j] << ";" <<
+//               m_calculation.SPLdBCW3d()[i][j] << ";" << endl;
+// }
 
+            if(m_parameter.Lowson_type!=0){
+                       stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                                 m_calculation.SPLdB3d_final()[i][j] << ";" <<
+                                 m_calculation.SPLadB3d_final()[i][j] << ";" <<
+                                 m_calculation.SPLsdB3d_final()[i][j] << ";" <<
+                                 m_calculation.SPLpdB3d_final()[i][j] << ";" <<
+                                 m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
+                                 m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
+                                 m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
+                                 m_calculation.SPL_LEdB3d_final()[i][j] << ";" <<
+                                 m_calculation.SPL_LEdBAW3d_final()[i][j] << ";" << //Sara
+                                 m_calculation.SPL_LEdBBW3d_final()[i][j] << ";" << //Sara_final
+                                 m_calculation.SPL_LEdBCW3d_final()[i][j] << ";" << //Sara
+                                 endl; //Alexandre MOD
+                   }
+           else{
+                stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                          m_calculation.SPLdB3d_final()[i][j] << ";" <<
+                          m_calculation.SPLadB3d_final()[i][j] << ";" <<
+                          m_calculation.SPLsdB3d_final()[i][j] << ";" <<
+                          m_calculation.SPLpdB3d_final()[i][j] << ";" <<
+                          m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
+                          m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
+                          m_calculation.SPLdBCW3d_final()[i][j] << ";" << endl;
+            }
+        }
         stream << endl;
-        stream << endl;
-    }
-
     qDeleteAll(noiseOpPoints);
 }
 
@@ -344,7 +365,7 @@ double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
 double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 double z=lstart;
-double approaxing_wind_speed = m_parameter.originalVelocity;
+double approaxing_wind_speed = m_parameter.u_wind_speed;
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
@@ -361,7 +382,7 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double lambda = pbem->dlg_lambda;
     int mpos_size = bdata->m_pos.size(); //total number of segments
     double finalradius = bdata->m_pos.value(mpos_size-1);
-    double nom_tg_speed = bdata->windspeed*lambda;
+    double nom_tg_speed = m_parameter.u_wind_speed*lambda;
     double omega = nom_tg_speed/finalradius;
 //    double rotation = 60/(M_PI*100/nom_tg_speed);
 
@@ -892,7 +913,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
     double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
     double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
     double z=lstart;
-    double approaxing_wind_speed = m_parameter.originalVelocity;
+    double approaxing_wind_speed = m_parameter.u_wind_speed;
 
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
@@ -909,7 +930,7 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double lambda = pbem->dlg_lambda;
         int mpos_size = bdata->m_pos.size(); //total number of segments
         double finalradius = bdata->m_pos.value(mpos_size-1);
-        double nom_tg_speed = bdata->windspeed*lambda;
+        double nom_tg_speed = m_parameter.u_wind_speed*lambda;
         double omega = nom_tg_speed/finalradius;
 //        double rotation = 60/(M_PI*100/nom_tg_speed);
         double c_0_le = 34000;
@@ -2394,7 +2415,7 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
     double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
     double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
     double z=lstart;
-    double approaxing_wind_speed = m_parameter.originalVelocity;
+    double approaxing_wind_speed = m_parameter.u_wind_speed;
 
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
@@ -2411,7 +2432,7 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
         double lambda = pbem->dlg_lambda;
         int mpos_size = bdata->m_pos.size(); //total number of segments
         double finalradius = bdata->m_pos.value(mpos_size-1);
-        double nom_tg_speed = bdata->windspeed*lambda;
+        double nom_tg_speed = m_parameter.u_wind_speed*lambda;
         double omega = nom_tg_speed/finalradius;
 //        double rotation = 60/(M_PI*100/nom_tg_speed);
         double c_0_le = 34000;

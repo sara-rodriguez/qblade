@@ -35,7 +35,8 @@ public:
 	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
 	void calculate();  // can throw NoiseException
 
-    void calculateqs3d();//Sara
+    void calculateqs3d_2d_curves();//Sara
+    void calculateqs3d_final();//Sara
 	
 	// NM the arrays containing the graph data
 	TwoDVector SPLadB() const { return m_SPLadB; }
@@ -64,6 +65,17 @@ public:
     TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW3d; }
     TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW3d; }
     TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW3d; }
+    TwoDVector SPLadB3d_final() const { return m_SPLadB3d_final; }
+    TwoDVector SPLsdB3d_final() const { return m_SPLsdB3d_final; }
+    TwoDVector SPLpdB3d_final() const { return m_SPLpdB3d_final; }
+    TwoDVector SPLdB3d_final() const { return m_SPLdB3d_final; }
+    TwoDVector SPLdBAW3d_final() const { return m_SPLdBAW3d_final; }
+    TwoDVector SPLdBBW3d_final() const { return m_SPLdBBW3d_final; }
+    TwoDVector SPLdBCW3d_final() const { return m_SPLdBCW3d_final; }
+    TwoDVector SPL_LEdB3d_final() const { return m_SPL_LEdB3d_final; }
+    TwoDVector SPL_LEdBAW3d_final() const { return m_SPL_LEdBAW3d_final; }
+    TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
+    TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
 //Sara
 	
 	// NM apparently needed for export as .txt only
@@ -286,6 +298,18 @@ private:
     TwoDVector m_SPLsdBAW3d;
     TwoDVector m_SPLsdBBW3d;
     TwoDVector m_SPLsdBCW3d;
+
+    TwoDVector m_SPLadB3d_final;
+    TwoDVector m_SPLpdB3d_final;
+    TwoDVector m_SPLdB3d_final;
+    TwoDVector m_SPLdBAW3d_final;
+    TwoDVector m_SPLdBBW3d_final;
+    TwoDVector m_SPLdBCW3d_final;
+    TwoDVector m_SPL_LEdB3d_final;
+    TwoDVector m_SPL_LEdBAW3d_final;
+    TwoDVector m_SPL_LEdBBW3d_final;
+    TwoDVector m_SPL_LEdBCW3d_final;
+    TwoDVector m_SPLsdB3d_final;
     //Sara
 };
 
