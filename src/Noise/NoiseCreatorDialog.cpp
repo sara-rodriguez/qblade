@@ -103,11 +103,11 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
 	
 	widget = new QWidget;
 	tabWidget->addTab(widget, "Op. Points");
-		hBox = new QHBoxLayout;
+        hBox = new QHBoxLayout;
 		widget->setLayout(hBox);
 			groupBox = new QGroupBox ("Operational Points");
 			groupBox->setMinimumHeight(300);
-			hBox->addWidget(groupBox);
+            hBox->addWidget(groupBox);
 				QGridLayout *grid = new QGridLayout;
 				grid->setColumnStretch(5, 1);
 				groupBox->setLayout(grid);
@@ -148,6 +148,7 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
                             //Sara
                             widget = new QWidget;
                             tabWidget->addTab(widget, "3D Analysis");
+                            vBox = new QVBoxLayout;
                             hBox = new QHBoxLayout;
                             widget->setLayout(hBox);
                             groupBox = new QGroupBox ("3D Simulation Parameters");
@@ -217,7 +218,7 @@ pGrid->setSizeConstraint(QLayout::SetMinimumSize);
 buttonle = new QPushButton ("δ* User Input");
 buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
 buttonle->setEnabled(false);
-pGrid->addWidget(buttonle,9,2);//, 0, 0, 1, 1 , 7, 5, 1, 1
+pGrid->addWidget(buttonle,8,2);//,9,2
 connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 
 QComboBox *phi_combobox = new QComboBox;
@@ -225,10 +226,13 @@ pGrid->addEdit(P::phi_type,ComboBox, phi_combobox,"Φ type:","");
 phi_combobox->insertItem(0,"90º");
 phi_combobox->insertItem(1,"free");
 
-//groupBox = new QGroupBox ("Observer Position:");
-//hBox->addWidget(groupBox);
-//pGrid = new ParameterGrid<P>(this);
-//groupBox->setLayout(pGrid);
+hBox->addLayout(vBox);
+//hBox = new QHBoxLayout;
+//widget->setLayout(hBox);
+    QLabel *imageLabela = new QLabel;
+    imageLabela->setPixmap(QPixmap(":/images/noise_3d_position.png"));
+//    pGrid->addWidget(imageLabela,0,3);//,9,2
+    vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
 
 QLabel *labelte = new QLabel ("Observer Position:");
 pGrid->addWidget(labelte,13,0);

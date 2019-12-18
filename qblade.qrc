@@ -55,5 +55,6 @@
         <file>images/Poli_USP.png</file>
         <file>images/logo_1000.png</file>
         <file>images/3d.png</file>
+        <file>images/noise_3d_position.png</file>
     </qresource>
 </RCC>

@@ -155,9 +155,9 @@ void NoiseMenu::onExportqs3DNoise_final() {
 
 void NoiseMenu::onModelValidityHint() {
     const QString message ("Airfoil TE noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
-						   "1989.\nThe original model was developed and validated for turbulent (tripped) flow up to "
-						   "Rec ≤ 1.5 × 10^6, M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\nThe IAG Wind "
+                           "1989.\n\nThe original model was developed and validated for turbulent (tripped) flow up to "
+                           "Rec ≤ 1.5 × 10⁶, M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\n\nThe BPM directivity expression for High Frequency noise is not suitable for shallow angles (Θ → 180°). For details, see page 105 of (BPM, 1989).\n\nThe IAG Wind "
 						   "tunnel data (Herrig & Würz, 2008) showed good agreement with BPM prediction at Rec ~2.4 "
-						   "× 10^6 and M = 0.204, for peak Strouhal number and higher frequencies.");
+                           "× 10⁶ and M = 0.204, for peak Strouhal number and higher frequencies.");
 	QMessageBox::information(g_mainFrame, "Model Validity Hint", message);
 }
