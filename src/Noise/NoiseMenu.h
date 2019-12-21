@@ -16,7 +16,7 @@ public:
 	
 private:
 	NoiseModule *m_module;
-    QAction *m_exportNoise, *m_modelValidityHint, *m_exportqs3DNoiseLog, *m_exportqs3DNoise_final; //Sara *m_exportqs3DNoise, *m_exportqs3DNoiseComplete,
+    QAction *m_exportNoise, *m_modelValidityHint, *m_exportqs3DNoiseLog, *m_exportqs3DNoise_final, *m_exportqs3DNoiseComplete; //Sara *m_exportqs3DNoise, *m_exportqs3DNoiseComplete,
 	
 private slots:
 	void onAboutToShow ();

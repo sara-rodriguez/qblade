@@ -260,10 +260,26 @@ void NoiseSimulation::exportCalculationqs3DNoise_final(QTextStream &stream) {
     if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" <<endl;}
     if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}//era m_calculation.m_
 //    stream << "constante D: " << m_calculation.d_const << endl;
-        stream << endl;
+//        stream << endl;
+                stream << qSetFieldWidth(0);
+        //        stream << "i: " << i << endl;
+                stream << "OASPL: " << m_calculation.OASPL3d()[0] << " dB" << endl;
+                stream << "OASPL (A): " << m_calculation.OASPLA3d()[0] << " dB(A)" << endl;
+                stream << "OASPL (B): " << m_calculation.OASPLB3d()[0] << " dB(B)" << endl;
+                stream << "OASPL (C): " << m_calculation.OASPLC3d()[0] << " dB(C)" << endl;
+                stream << "SPL_a: " << m_calculation.SPLALOG3d()[0] << "" << endl;
+                stream << "SPL_s: " << m_calculation.SPLSLOG3d()[0] << "" << endl;
+                stream << "SPL_p: " << m_calculation.SPLPLOG3d()[0] << "" << endl;
+                if(m_parameter.Lowson_type!=0){
+                stream << "SPL_LE: " << m_calculation.SPLlogLE3d()[0] << " dB" << endl;
+                stream << "SPL_LE (A): " << m_calculation.SPLLEdBAW3d()[0] << " dB(A)" << endl;
+                stream << "SPL_LE (B): " << m_calculation.SPLLEdBBW3d()[0] << " dB(B)" << endl;
+                stream << "SPL_LE (C): " << m_calculation.SPLLEdBCW3d()[0] << " dB(C)" << endl;}
+                stream << endl;
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 //    for (int i = 0; i < noiseOpPoints.size(); ++i) {
-        stream << qSetFieldWidth(0);
+int i=0;
+stream << qSetFieldWidth(0);
 //        stream << endl;
                if(m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14) <<
@@ -291,34 +307,8 @@ void NoiseSimulation::exportCalculationqs3DNoise_final(QTextStream &stream) {
                              "SPL (dB(B))" << ";" <<
                              "SPL (dB(C))" <<endl; //Alexandre MOD
                }
-int i=0;
+//int i=0;
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
-
-// if(m_parameter.Lowson_type!=0){
-//            stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-//                      m_calculation.SPLdB3d()[i][j] << ";" <<
-//                      m_calculation.SPLadB3d()[i][j] << ";" <<
-//                      m_calculation.SPLsdB3d()[i][j] << ";" <<
-//                      m_calculation.SPLpdB3d()[i][j] << ";" <<
-//                      m_calculation.SPLdBAW3d()[i][j] << ";" <<
-//                      m_calculation.SPLdBBW3d()[i][j] << ";" <<
-//                      m_calculation.SPLdBCW3d()[i][j] << ";" <<
-//                      m_calculation.SPL_LEdB3d()[i][j] << ";" <<
-//                      m_calculation.SPL_LEdBAW3d()[i][j] << ";" << //Sara
-//                      m_calculation.SPL_LEdBBW3d()[i][j] << ";" << //Sara
-//                      m_calculation.SPL_LEdBCW3d()[i][j] << ";" << //Sara
-//                      endl; //Alexandre MOD
-//        }
-//else{
-//     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-//               m_calculation.SPLdB3d()[i][j] << ";" <<
-//               m_calculation.SPLadB3d()[i][j] << ";" <<
-//               m_calculation.SPLsdB3d()[i][j] << ";" <<
-//               m_calculation.SPLpdB3d()[i][j] << ";" <<
-//               m_calculation.SPLdBAW3d()[i][j] << ";" <<
-//               m_calculation.SPLdBBW3d()[i][j] << ";" <<
-//               m_calculation.SPLdBCW3d()[i][j] << ";" << endl;
-// }
 
             if(m_parameter.Lowson_type!=0){
                        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
@@ -346,7 +336,10 @@ int i=0;
                           m_calculation.SPLdBCW3d_final()[i][j] << ";" << endl;
             }
         }
+//    }
         stream << endl;
+//    }
+
     qDeleteAll(noiseOpPoints);
 }
 

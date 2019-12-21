@@ -1201,6 +1201,18 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdBAW3d_final.resize(size);
     m_SPL_LEdBBW3d_final.resize(size);
     m_SPL_LEdBCW3d_final.resize(size);
+    m_SPLLEdB3d.resize(size);
+    m_SPLLEdBAW3d.resize(size);
+    m_SPLLEdBBW3d.resize(size);
+    m_SPLLEdBCW3d.resize(size);
+    m_SPLlogLE3d.resize(size);
+    m_OASPL3d.resize(size);
+    m_OASPLA3d.resize(size);
+    m_OASPLB3d.resize(size);
+    m_OASPLC3d.resize(size);
+    m_SPLALOG3d.resize(size);
+    m_SPLSLOG3d.resize(size);
+    m_SPLPLOG3d.resize(size);
 
     for (unsigned int w = 0; w < size; ++w){
         m_SPLadB3d[w].resize(FREQUENCY_TABLE_SIZE);
@@ -2494,6 +2506,31 @@ QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     double auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
 
+    // Resize vectors acording to OpPoints total
+    unsigned int sizea = 0;
+    int size;
+    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+    {
+        sizea = m_parameter->analyzedOpPoints.size();
+     } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
+        sizea = 1;
+    }
+
+if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+
+    double auxa_m_OASPL3d[size];
+    double auxa_m_OASPLA3d[size];
+    double auxa_m_OASPLB3d[size];
+    double auxa_m_OASPLC3d[size];
+    double auxa_m_SPLALOG3d[size];
+    double auxa_m_SPLSLOG3d[size];
+    double auxa_m_SPLPLOG3d[size];
+    double auxa_m_SPLLEdBAW3d[size];
+    double auxa_m_SPLLEdBBW3d[size];
+    double auxa_m_SPLLEdBCW3d[size];
+    double auxa_m_SPLlogLE3d[size];
+
 for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     aux_m_SPLadB3d_final[j]=0;
     aux_m_SPLsdB3d_final[j]=0;
@@ -2544,22 +2581,24 @@ aux_m_SPL_LEdBAW3d_final[j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d
 aux_m_SPL_LEdBBW3d_final[j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final[j]);
 aux_m_SPL_LEdBCW3d_final[j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final[j]);
 
-// Resize vectors acording to OpPoints total
-unsigned int sizea = 0;
-if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
-    m_parameter->opPointSource == NoiseParameter::MultiplePolars)
-{
-    sizea = m_parameter->analyzedOpPoints.size();
- } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
-    sizea = 1;
-}
-
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 int number_of_segments = pBEM->dlg_elements;
 
-int size;
-
 if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+for (int i=0;i<size;++i){
+    auxa_m_OASPL3d[i]=0;
+    auxa_m_OASPLA3d[i]=0;
+    auxa_m_OASPLB3d[i]=0;
+    auxa_m_OASPLC3d[i]=0;
+    auxa_m_SPLALOG3d[i]=0;
+    auxa_m_SPLSLOG3d[i]=0;
+    auxa_m_SPLPLOG3d[i]=0;
+    auxa_m_SPLLEdBAW3d[i]=0;
+    auxa_m_SPLLEdBBW3d[i]=0;
+    auxa_m_SPLLEdBCW3d[i]=0;
+    auxa_m_SPLlogLE3d[i]=0;
+}
+
 for (int i=0;i<size;++i){
 for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
 m_SPLadB3d_final[i][j]=aux_m_SPLadB3d_final[j];
@@ -2575,17 +2614,30 @@ m_SPL_LEdBBW3d_final[i][j]=aux_m_SPL_LEdBBW3d_final[j];
 m_SPL_LEdBCW3d_final[i][j]=aux_m_SPL_LEdBCW3d_final[j];
 }}}
 
-//m_OASPL[posOpPoint] += pow(10,(m_SPLdB[posOpPoint][posFreq]/10));
-//m_OASPLA[posOpPoint] += pow(10,(m_SPLdBAW[posOpPoint][posFreq]/10));
-//m_OASPLB[posOpPoint] += pow(10,(m_SPLdBBW[posOpPoint][posFreq]/10));
-//m_OASPLC[posOpPoint] += pow(10,(m_SPLdBCW[posOpPoint][posFreq]/10));
+for (int i=0;i<size;++i){
+for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+auxa_m_OASPL3d[i]+=pow(10,m_SPLdB3d_final[i][j]/10);
+auxa_m_OASPLA3d[i]+=pow(10,aux_m_SPLdBAW3d_final[j]/10);
+auxa_m_OASPLB3d[i]+=pow(10,aux_m_SPLdBBW3d_final[j]/10);
+auxa_m_OASPLC3d[i]+=pow(10,aux_m_SPLdBCW3d_final[j]/10);
+auxa_m_SPLALOG3d[i]+=pow(10,aux_m_SPLadB3d_final[j]/10);
+auxa_m_SPLSLOG3d[i]+=pow(10,aux_m_SPLsdB3d_final[j]/10);
+auxa_m_SPLPLOG3d[i]+=pow(10,aux_m_SPLpdB3d_final[j]/10);
+auxa_m_SPLLEdBAW3d[i]+=pow(10,aux_m_SPL_LEdBAW3d_final[j]/10);
+auxa_m_SPLLEdBBW3d[i]+=pow(10,aux_m_SPL_LEdBBW3d_final[j]/10);
+auxa_m_SPLLEdBCW3d[i]+=pow(10,aux_m_SPL_LEdBCW3d_final[j]/10);
+auxa_m_SPLlogLE3d[i]+=pow(10,aux_m_SPL_LEdB3d_final[j]/10);
 
-//m_SPLALOG[posOpPoint] += pow(10,(m_SPLadB[posOpPoint][posFreq]/10));
-//m_SPLSLOG[posOpPoint] += pow(10,(m_SPLsdB[posOpPoint][posFreq]/10));
-//m_SPLPLOG[posOpPoint] += pow(10,(m_SPLpdB[posOpPoint][posFreq]/10));
-
-//m_SPLlogLE[posOpPoint] += pow(10,(m_SPL_LEdB[posOpPoint][posFreq]/10));
-//m_SPLLEdBAW[posOpPoint] += pow(10,(m_SPL_LEdBAW[posOpPoint][posFreq]/10));
-//m_SPLLEdBBW[posOpPoint] +=pow(10,(m_SPL_LEdBBW[posOpPoint][posFreq]/10));
-//m_SPLLEdBCW[posOpPoint] += pow(10,(m_SPL_LEdBCW[posOpPoint][posFreq]/10));
+m_OASPL3d[i]=10*log10(auxa_m_OASPL3d[i]);
+m_OASPLA3d[i]=10*log10(auxa_m_OASPLA3d[i]);
+m_OASPLB3d[i]=10*log10(auxa_m_OASPLB3d[i]);
+m_OASPLC3d[i]=10*log10(auxa_m_OASPLC3d[i]);
+m_SPLALOG3d[i]=10*log10(auxa_m_SPLALOG3d[i]);
+m_SPLSLOG3d[i]=10*log10(auxa_m_SPLSLOG3d[i]);
+m_SPLPLOG3d[i]=10*log10(auxa_m_SPLPLOG3d[i]);
+m_SPLLEdBAW3d[i]=10*log10(auxa_m_SPLLEdBAW3d[i]);
+m_SPLLEdBBW3d[i]=10*log10(auxa_m_SPLLEdBBW3d[i]);
+m_SPLLEdBCW3d[i]=10*log10(auxa_m_SPLLEdBCW3d[i]);
+m_SPLlogLE3d[i]=10*log10(auxa_m_SPLlogLE3d[i]);
 }
+}}

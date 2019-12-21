@@ -30,6 +30,11 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 	  m_opPointViewWidget(NULL)
 {
     setWindowTitle("Noise Simulation");	//Sara
+    //Sara
+    FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
+    double Mach_initial = pFoilPolarDlg->m_pctrlMach->getValue();
+    if(Mach_initial<0.01){Mach_initial=0.18;}
+//Sara
 	
 	QTabWidget *tabWidget = new QTabWidget;
 	m_contentVBox->insertWidget(0, tabWidget);
@@ -56,7 +61,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
 					pGrid->addEdit(P::OriginalChordLength, NumberEditType, new NumberEdit(),
 								  "Original airfoil Chord length (C) []:", 1, LENGTH);
 					pGrid->addEdit(P::OriginalMach, NumberEditType, new NumberEdit(),
-								  "Original flow Mach Number (M):", 0.21);
+                                  "Original flow Mach Number (M):", Mach_initial);//0.21 Mach_initial
                     //Alexandre MOD
                     pGrid->addEdit(P::IntegralLengthScale, NumberEditType, new NumberEdit(),
                                   "Turbulence integral length scale (l) []:", 1, LENGTH);

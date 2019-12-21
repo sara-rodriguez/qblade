@@ -29,9 +29,9 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     connect(m_exportqs3DNoiseLog, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseLog()));
     addAction(m_exportqs3DNoiseLog);
 
-//    m_exportqs3DNoiseComplete = new QAction("Export current quasi 3D Noise Complete", this);
-//    connect(m_exportqs3DNoiseComplete, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseComplete()));
-//    addAction(m_exportqs3DNoiseComplete);
+    m_exportqs3DNoiseComplete = new QAction("Export current quasi 3D Noise Complete", this);
+    connect(m_exportqs3DNoiseComplete, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseComplete()));
+    addAction(m_exportqs3DNoiseComplete);
 
 //    m_exportqs3DNoise = new QAction("Export current quasi 3D Noise", this);
 //    connect(m_exportqs3DNoise, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise()));
@@ -50,7 +50,7 @@ void NoiseMenu::onAboutToShow() {
     //Sara
     m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
 //    m_exportqs3DNoise->setEnabled(simulationAvailable);
-//    m_exportqs3DNoiseComplete->setEnabled(simulationAvailable);
+    m_exportqs3DNoiseComplete->setEnabled(simulationAvailable);
     m_exportqs3DNoise_final->setEnabled(simulationAvailable);
     //Sara
 }
