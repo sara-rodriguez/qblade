@@ -24,6 +24,7 @@ public:
     double change_TSR;
     int phi_selection;
 
+    QVector<int> a_D_starred_index_user;
     QVector<double> a_D_starred_S_user;
     QVector<double> a_D_starred_P_user;
     //Sara

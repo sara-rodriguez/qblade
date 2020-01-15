@@ -25,9 +25,9 @@
 typedef Parameter::NoiseSimulation P;
 
 NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseModule *module)
-	: m_module(module),
-	  m_editedSimulation(presetSimulation),
-	  m_opPointViewWidget(NULL)
+    : m_module(module),
+      m_editedSimulation(presetSimulation),
+      m_opPointViewWidget(NULL)
 {
     setWindowTitle("Noise Simulation");	//Sara
     //Sara
@@ -35,32 +35,32 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
     double Mach_initial = pFoilPolarDlg->m_pctrlMach->getValue();
     if(Mach_initial<0.01){Mach_initial=0.18;}
 //Sara
-	
-	QTabWidget *tabWidget = new QTabWidget;
-	m_contentVBox->insertWidget(0, tabWidget);
-	
-	QWidget *widget = new QWidget;
-	tabWidget->addTab(widget, "Parameters");
-		QHBoxLayout *hBox = new QHBoxLayout;
-		widget->setLayout(hBox);
-			QGroupBox *groupBox = new QGroupBox ("Simulation Parameters");
-			hBox->addWidget(groupBox);
-				ParameterGrid<P> *pGrid = new ParameterGrid<P>(this);
-				groupBox->setLayout(pGrid);
-					pGrid->addEdit(P::Name, LineEdit, new QLineEdit, "Name of Simulation:", "Noise Simulation");
-					get<QLineEdit>(P::Name)->setMinimumWidth(150);
-					pGrid->addEdit(P::WettedLength, NumberEditType, new NumberEdit(),
-								  "Length of wetted Trailing-Edge (L) []:", 1, LENGTH);
-					pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
+
+    QTabWidget *tabWidget = new QTabWidget;
+    m_contentVBox->insertWidget(0, tabWidget);
+
+    QWidget *widget = new QWidget;
+    tabWidget->addTab(widget, "Parameters");
+        QHBoxLayout *hBox = new QHBoxLayout;
+        widget->setLayout(hBox);
+            QGroupBox *groupBox = new QGroupBox ("Simulation Parameters");
+            hBox->addWidget(groupBox);
+                ParameterGrid<P> *pGrid = new ParameterGrid<P>(this);
+                groupBox->setLayout(pGrid);
+                    pGrid->addEdit(P::Name, LineEdit, new QLineEdit, "Name of Simulation:", "Noise Simulation");
+                    get<QLineEdit>(P::Name)->setMinimumWidth(150);
+                    pGrid->addEdit(P::WettedLength, NumberEditType, new NumberEdit(),
+                                  "Length of wetted Trailing-Edge (L) []:", 1, LENGTH);
+                    pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
                     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
                     double u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();
 
-					pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
+                    pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
                                   "Original flow velocity (U) []:", u_wind_speed, SPEED);
-					pGrid->addEdit(P::OriginalChordLength, NumberEditType, new NumberEdit(),
-								  "Original airfoil Chord length (C) []:", 1, LENGTH);
-					pGrid->addEdit(P::OriginalMach, NumberEditType, new NumberEdit(),
+                    pGrid->addEdit(P::OriginalChordLength, NumberEditType, new NumberEdit(),
+                                  "Original airfoil Chord length (C) []:", 1, LENGTH);
+                    pGrid->addEdit(P::OriginalMach, NumberEditType, new NumberEdit(),
                                   "Original flow Mach Number (M):", Mach_initial);//0.21 Mach_initial
                     //Alexandre MOD
                     pGrid->addEdit(P::IntegralLengthScale, NumberEditType, new NumberEdit(),
@@ -68,25 +68,25 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                     pGrid->addEdit(P::TurbulenceIntensity, NumberEditType, new NumberEdit(),
                                   "Turbulence intensity []:", 0.125, PERCENT);
                     //End Alexandre MOD
-					pGrid->addEdit(P::DStarChordStation, NumberEditType, new NumberEdit(),
+                    pGrid->addEdit(P::DStarChordStation, NumberEditType, new NumberEdit(),
                                   "δ* at chord station:", 0.98);//Sara
-					pGrid->addEdit(P::DStarScalingFactor, NumberEditType, new NumberEdit(),
+                    pGrid->addEdit(P::DStarScalingFactor, NumberEditType, new NumberEdit(),
                                   "δ* scaling factor:", 1);//Sara
-					pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
-								  "Eddy Convection Mach number []:", 0.8, PERCENT);
-					pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
-								  "Directivity angle θe [deg]:", 90);
+                    pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
+                                  "Eddy Convection Mach number []:", 0.8, PERCENT);
+                    pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
+                                  "Directivity angle θe [deg]:", 90);
                     pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
-								  "Directivity angle ψe [deg]:", 90);
+                                  "Directivity angle ψe [deg]:", 90);
 
-					
-			QVBoxLayout *vBox = new QVBoxLayout;
-			hBox->addLayout(vBox);
-				QLabel *imageLabel = new QLabel;
-				imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
-				vBox->addWidget(imageLabel, 0, Qt::AlignHCenter);
-				groupBox = new QGroupBox ("TE noise source contributions");
-				vBox->addWidget(groupBox);
+
+            QVBoxLayout *vBox = new QVBoxLayout;
+            hBox->addLayout(vBox);
+                QLabel *imageLabel = new QLabel;
+                imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
+                vBox->addWidget(imageLabel, 0, Qt::AlignHCenter);
+                groupBox = new QGroupBox ("TE noise source contributions");
+                vBox->addWidget(groupBox);
                 pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
                 pGrid->addEdit(P::SeparatedFlow, CheckBox, new QCheckBox ("enable"),"Separated flow on the suction side (high Reynolds flow):", true);
@@ -96,7 +96,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                 //Sara
                 groupBox = new QGroupBox ("LE noise source contributions");
                 vBox->addWidget(groupBox);
-                pGrid = new ParameterGrid<P>(this);//Sara urgente
+                pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
 QComboBox *Lowson_type_combobox = new QComboBox;
 pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","");
@@ -104,51 +104,51 @@ Lowson_type_combobox->insertItem(0,"None");
 Lowson_type_combobox->insertItem(1,"Von Kármán");
 Lowson_type_combobox->insertItem(2,"Rapid Distortion");
                 //Sara
-				vBox->addStretch();
-	
-	widget = new QWidget;
-	tabWidget->addTab(widget, "Op. Points");
+                vBox->addStretch();
+
+    widget = new QWidget;
+    tabWidget->addTab(widget, "Op. Points");
         hBox = new QHBoxLayout;
-		widget->setLayout(hBox);
-			groupBox = new QGroupBox ("Operational Points");
-			groupBox->setMinimumHeight(300);
+        widget->setLayout(hBox);
+            groupBox = new QGroupBox ("Operational Points");
+            groupBox->setMinimumHeight(300);
             hBox->addWidget(groupBox);
-				QGridLayout *grid = new QGridLayout;
-				grid->setColumnStretch(5, 1);
-				groupBox->setLayout(grid);
-					QLabel *label = new QLabel ("Select operational points from");
-					grid->addWidget(label, 0, 0, 1, 1);
-					m_selectFromButtons = new QButtonGroup;
-					connect(m_selectFromButtons, SIGNAL(buttonClicked(int)), this, SLOT(onSelectButtonsClicked(int)));
-					QRadioButton *radioButton = new QRadioButton ("this polar:");
-					m_selectFromButtons->addButton(radioButton, NoiseParameter::OnePolar);
-					grid->addWidget(radioButton, 0, 1, 1, 1);
-					m_airfoilComboBox = new FoilComboBox (&g_foilStore);
-					grid->addWidget(m_airfoilComboBox, 0, 2, 1, 1);
-					m_polarComboBox = new PolarComboBox (&g_polarStore);
-					m_polarComboBox->setParentBox(m_airfoilComboBox);
-					connect(m_polarComboBox, SIGNAL(valueChanged(int)), this, SLOT(onPolarBoxChange()));
-					grid->addWidget(m_polarComboBox, 0, 3, 1, 1);
-					radioButton = new QRadioButton ("all polars");
-					m_selectFromButtons->addButton(radioButton, NoiseParameter::MultiplePolars);
-					grid->addWidget(radioButton, 1, 1, 1, 3);
-					radioButton = new QRadioButton ("original BPM δ* correlations");
-					m_selectFromButtons->addButton(radioButton, NoiseParameter::OriginalBpm);
-					grid->addWidget(radioButton, 2, 1, 1, 3);
-					
-					m_opPointScrollArea = new QScrollArea;
-					grid->addWidget(m_opPointScrollArea, 3, 0, 1, 4);
-						// scroll area is filled in NoiseCreatorDialog::fillOpPointView
-					
-					m_originalBpmWidget = new QWidget;
+                QGridLayout *grid = new QGridLayout;
+                grid->setColumnStretch(5, 1);
+                groupBox->setLayout(grid);
+                    QLabel *label = new QLabel ("Select operational points from");
+                    grid->addWidget(label, 0, 0, 1, 1);
+                    m_selectFromButtons = new QButtonGroup;
+                    connect(m_selectFromButtons, SIGNAL(buttonClicked(int)), this, SLOT(onSelectButtonsClicked(int)));
+                    QRadioButton *radioButton = new QRadioButton ("this polar:");
+                    m_selectFromButtons->addButton(radioButton, NoiseParameter::OnePolar);
+                    grid->addWidget(radioButton, 0, 1, 1, 1);
+                    m_airfoilComboBox = new FoilComboBox (&g_foilStore);
+                    grid->addWidget(m_airfoilComboBox, 0, 2, 1, 1);
+                    m_polarComboBox = new PolarComboBox (&g_polarStore);
+                    m_polarComboBox->setParentBox(m_airfoilComboBox);
+                    connect(m_polarComboBox, SIGNAL(valueChanged(int)), this, SLOT(onPolarBoxChange()));
+                    grid->addWidget(m_polarComboBox, 0, 3, 1, 1);
+                    radioButton = new QRadioButton ("all polars");
+                    m_selectFromButtons->addButton(radioButton, NoiseParameter::MultiplePolars);
+                    grid->addWidget(radioButton, 1, 1, 1, 3);
+                    radioButton = new QRadioButton ("original BPM δ* correlations");
+                    m_selectFromButtons->addButton(radioButton, NoiseParameter::OriginalBpm);
+                    grid->addWidget(radioButton, 2, 1, 1, 3);
+
+                    m_opPointScrollArea = new QScrollArea;
+                    grid->addWidget(m_opPointScrollArea, 3, 0, 1, 4);
+                        // scroll area is filled in NoiseCreatorDialog::fillOpPointView
+
+                    m_originalBpmWidget = new QWidget;
                     grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignLeft | Qt::AlignTop);
-						pGrid = new ParameterGrid<P>(this);
-						m_originalBpmWidget->setLayout(pGrid);
-							pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);
-							pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
-										   "Chord based Reynolds number (Rc):", 100000);
-							pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
-											   QStringList()<<"Fully turbulent"<<"Transition flow");
+                        pGrid = new ParameterGrid<P>(this);
+                        m_originalBpmWidget->setLayout(pGrid);
+                            pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);
+                            pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
+                                           "Chord based Reynolds number (Rc):", 100000);
+                            pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
+                                               QStringList()<<"Fully turbulent"<<"Transition flow");
 
                             //Sara
                             widget = new QWidget;
@@ -213,9 +213,9 @@ double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 //pGrid->addWidget(m_airfoilComboBoxtd);
 
 dstar_combobox = new QComboBox;
-pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* type:","");
-dstar_combobox->insertItem(0,"BPM");
-dstar_combobox->insertItem(1,"XFoil");
+pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* source:","");
+dstar_combobox->insertItem(0,"XFoil");
+dstar_combobox->insertItem(1,"BPM");
 dstar_combobox->insertItem(2,"User");
 connect(dstar_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnSetDstarButton(int)));
 
@@ -227,9 +227,15 @@ pGrid->addWidget(buttonle,8,2);//,9,2
 connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 
 QComboBox *phi_combobox = new QComboBox;
-pGrid->addEdit(P::phi_type,ComboBox, phi_combobox,"Φ type:","");
-phi_combobox->insertItem(0,"90º");
-phi_combobox->insertItem(1,"free");
+pGrid->addEdit(P::phi_type,ComboBox, phi_combobox,"directivity ψe type:","");
+phi_combobox->insertItem(0,"calculated");
+phi_combobox->insertItem(1,"90º");
+
+
+QComboBox *theta_combobox = new QComboBox;
+pGrid->addEdit(P::theta_type,ComboBox, theta_combobox,"directivity θe type:","");
+theta_combobox->insertItem(0,"calculated");
+theta_combobox->insertItem(1,"90º");
 
 hBox->addLayout(vBox);
 //hBox = new QHBoxLayout;
@@ -252,137 +258,137 @@ double z_pos=blade_radius/2.;
 
 pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"Z:", z_pos);
 //Sara
-                            
-	setUnitContainingLabels();
-	initView();			
+
+    setUnitContainingLabels();
+    initView();
 }
 
 void NoiseCreatorDialog::initView() {
-	loadObject(m_editedSimulation);
-	
-	if (m_editedSimulation) {
-		m_selectFromButtons->button(m_editedSimulation->getSelectFrom())->setChecked(true);
-		onSelectButtonsClicked(m_editedSimulation->getSelectFrom()); // needed because no signal if button is yet selected
-		
-		if (m_editedSimulation->getSelectFrom() == NoiseParameter::OnePolar) {
-			if (!m_editedSimulation->getAnalyzedOpPoints().isEmpty()) {
-				m_airfoilComboBox->setCurrentObject(
+    loadObject(m_editedSimulation);
+
+    if (m_editedSimulation) {
+        m_selectFromButtons->button(m_editedSimulation->getSelectFrom())->setChecked(true);
+        onSelectButtonsClicked(m_editedSimulation->getSelectFrom()); // needed because no signal if button is yet selected
+
+        if (m_editedSimulation->getSelectFrom() == NoiseParameter::OnePolar) {
+            if (!m_editedSimulation->getAnalyzedOpPoints().isEmpty()) {
+                m_airfoilComboBox->setCurrentObject(
                         static_cast<CFoil*>(m_editedSimulation->getAnalyzedOpPoints()[0]->getParent()->getParent()));
-				m_polarComboBox->setCurrentObject(
-						static_cast<CPolar*>(m_editedSimulation->getAnalyzedOpPoints()[0]->getParent()));
-			}
-		}
-		
-		QVector<OpPoint*> analyzedOpPoints = m_editedSimulation->getAnalyzedOpPoints();
-		for (int i = 0; i < m_opPointRecords.size(); ++i) {
-			if (analyzedOpPoints.contains(m_opPointRecords[i].opPoint)) {
-				m_opPointRecords[i].checkBox->setChecked(true);
-			}
-		}
-	} else {
-		get<QLineEdit>(P::Name)->setText(g_noiseSimulationStore.getNextName("Noise Simulation"));		
-		m_selectFromButtons->button(NoiseParameter::OnePolar)->setChecked(true);
-		onSelectButtonsClicked(NoiseParameter::OnePolar);
-	}
+                m_polarComboBox->setCurrentObject(
+                        static_cast<CPolar*>(m_editedSimulation->getAnalyzedOpPoints()[0]->getParent()));
+            }
+        }
+
+        QVector<OpPoint*> analyzedOpPoints = m_editedSimulation->getAnalyzedOpPoints();
+        for (int i = 0; i < m_opPointRecords.size(); ++i) {
+            if (analyzedOpPoints.contains(m_opPointRecords[i].opPoint)) {
+                m_opPointRecords[i].checkBox->setChecked(true);
+            }
+        }
+    } else {
+        get<QLineEdit>(P::Name)->setText(g_noiseSimulationStore.getNextName("Noise Simulation"));
+        m_selectFromButtons->button(NoiseParameter::OnePolar)->setChecked(true);
+        onSelectButtonsClicked(NoiseParameter::OnePolar);
+    }
 }
 
 void NoiseCreatorDialog::prepareOpPointRecords(bool allPolars) {
-	m_opPointRecords.clear();
-	
-	for (int i = 0; i < g_oppointStore.size(); ++i) {
-		OpPoint *opPoint = g_oppointStore.at(i);
-		if (allPolars || static_cast<CPolar*>(opPoint->getParent()) == m_polarComboBox->currentObject()) {
-			m_opPointRecords.append(OpPointRecord(opPoint->getParent()->getParent()->getName(),
-												  opPoint->getParent()->getName(),
-												  opPoint->getName(),
-												  opPoint,
-												  opPoint->m_readyForNoise));
-		}
-	}
-	
-	std::sort(m_opPointRecords.begin(), m_opPointRecords.end(), OpPointRecord::sort);
+    m_opPointRecords.clear();
+
+    for (int i = 0; i < g_oppointStore.size(); ++i) {
+        OpPoint *opPoint = g_oppointStore.at(i);
+        if (allPolars || static_cast<CPolar*>(opPoint->getParent()) == m_polarComboBox->currentObject()) {
+            m_opPointRecords.append(OpPointRecord(opPoint->getParent()->getParent()->getName(),
+                                                  opPoint->getParent()->getName(),
+                                                  opPoint->getName(),
+                                                  opPoint,
+                                                  opPoint->m_readyForNoise));
+        }
+    }
+
+    std::sort(m_opPointRecords.begin(), m_opPointRecords.end(), OpPointRecord::sort);
 }
 
 void NoiseCreatorDialog::fillOpPointView() {
-	if (m_opPointViewWidget) {
-		m_opPointViewWidget->deleteLater();
-		m_opPointViewWidget = NULL;
-	}
-	
-	if (!m_opPointRecords.isEmpty()) {
-		m_opPointViewWidget = new QWidget;
-		m_opPointViewWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);	
-		m_opPointScrollArea->setWidget(m_opPointViewWidget);
-			QGridLayout *grid = new QGridLayout;
-			grid->setHorizontalSpacing(20);
-			grid->setSizeConstraint(QLayout::SetMinimumSize);
-			m_opPointViewWidget->setLayout(grid);
-				QPushButton *button = new QPushButton ("All");
-				button->setMinimumWidth(QFontMetrics(QFont()).width("All") * 1.8);
+    if (m_opPointViewWidget) {
+        m_opPointViewWidget->deleteLater();
+        m_opPointViewWidget = NULL;
+    }
+
+    if (!m_opPointRecords.isEmpty()) {
+        m_opPointViewWidget = new QWidget;
+        m_opPointViewWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        m_opPointScrollArea->setWidget(m_opPointViewWidget);
+            QGridLayout *grid = new QGridLayout;
+            grid->setHorizontalSpacing(20);
+            grid->setSizeConstraint(QLayout::SetMinimumSize);
+            m_opPointViewWidget->setLayout(grid);
+                QPushButton *button = new QPushButton ("All");
+                button->setMinimumWidth(QFontMetrics(QFont()).width("All") * 1.8);
                 button->setCheckable(true);
                 connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
-				grid->addWidget(button, 0, 0, 1, 1);
-				QLabel *label = new QLabel("<center>Op. Point</center>");
-				grid->addWidget(label, 0, 1, 1, 1);
-				label = new QLabel("<center>Polar</center>");
-				grid->addWidget(label, 0, 2, 1, 1);
-				label = new QLabel("<center>Airfoil</center>");
-				grid->addWidget(label, 0, 3, 1, 1);
-				QFont font ("Monospace");
-				for (int i = 0; i < m_opPointRecords.size(); ++i) {
-					m_opPointRecords[i].checkBox = new QCheckBox;
-					if (!m_opPointRecords[i].readyForNoise) {
-						m_opPointRecords[i].checkBox->setEnabled(false);
-						m_opPointRecords[i].checkBox->setToolTip("This operational point lacks some data needed for "
-																 "noise simulations. Repeat the analysis in the Direct "
-																 "Analysis module");
-					}
-					grid->addWidget(m_opPointRecords[i].checkBox, i+1, 0, 1, 1, Qt::AlignHCenter);
-					label = new QLabel (QString("%1").arg(m_opPointRecords[i].name.toDouble(), 6, 'f', 2));
-					label->setFont(font);
-					grid->addWidget(label, i+1, 1);							
-					label = new QLabel (m_opPointRecords[i].polar);
-					label->setFont(font);
-					grid->addWidget(label, i+1, 2);
-					label = new QLabel (m_opPointRecords[i].airfoil);
-					label->setFont(font);
-					grid->addWidget(label, i+1, 3);
-				}
-	}
+                grid->addWidget(button, 0, 0, 1, 1);
+                QLabel *label = new QLabel("<center>Op. Point</center>");
+                grid->addWidget(label, 0, 1, 1, 1);
+                label = new QLabel("<center>Polar</center>");
+                grid->addWidget(label, 0, 2, 1, 1);
+                label = new QLabel("<center>Airfoil</center>");
+                grid->addWidget(label, 0, 3, 1, 1);
+                QFont font ("Monospace");
+                for (int i = 0; i < m_opPointRecords.size(); ++i) {
+                    m_opPointRecords[i].checkBox = new QCheckBox;
+                    if (!m_opPointRecords[i].readyForNoise) {
+                        m_opPointRecords[i].checkBox->setEnabled(false);
+                        m_opPointRecords[i].checkBox->setToolTip("This operational point lacks some data needed for "
+                                                                 "noise simulations. Repeat the analysis in the Direct "
+                                                                 "Analysis module");
+                    }
+                    grid->addWidget(m_opPointRecords[i].checkBox, i+1, 0, 1, 1, Qt::AlignHCenter);
+                    label = new QLabel (QString("%1").arg(m_opPointRecords[i].name.toDouble(), 6, 'f', 2));
+                    label->setFont(font);
+                    grid->addWidget(label, i+1, 1);
+                    label = new QLabel (m_opPointRecords[i].polar);
+                    label->setFont(font);
+                    grid->addWidget(label, i+1, 2);
+                    label = new QLabel (m_opPointRecords[i].airfoil);
+                    label->setFont(font);
+                    grid->addWidget(label, i+1, 3);
+                }
+    }
 }
 
 void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
-	m_airfoilComboBox->setEnabled(id == NoiseParameter::OnePolar);
-	m_polarComboBox->setEnabled(id == NoiseParameter::OnePolar);
-	m_opPointScrollArea->setHidden(id == NoiseParameter::OriginalBpm);
-	m_originalBpmWidget->setVisible(id == NoiseParameter::OriginalBpm);
-	
-	prepareOpPointRecords(id == NoiseParameter::MultiplePolars);
-	fillOpPointView();
+    m_airfoilComboBox->setEnabled(id == NoiseParameter::OnePolar);
+    m_polarComboBox->setEnabled(id == NoiseParameter::OnePolar);
+    m_opPointScrollArea->setHidden(id == NoiseParameter::OriginalBpm);
+    m_originalBpmWidget->setVisible(id == NoiseParameter::OriginalBpm);
+
+    prepareOpPointRecords(id == NoiseParameter::MultiplePolars);
+    fillOpPointView();
 }
 
 void NoiseCreatorDialog::onPolarBoxChange() {
-	prepareOpPointRecords(false);
-	fillOpPointView();
+    prepareOpPointRecords(false);
+    fillOpPointView();
 }
 
 void NoiseCreatorDialog::onAllButtonToggled(bool pressed) {
-	for (const OpPointRecord &record : m_opPointRecords) {
+    for (const OpPointRecord &record : m_opPointRecords) {
         if (record.checkBox->isEnabled()){//Sara
-		record.checkBox->setChecked(pressed);
+        record.checkBox->setChecked(pressed);
         }//Sara
-	}
+    }
 }
 
 void NoiseCreatorDialog::onCreateButtonClicked() {
-	/* check for parameter sanity */
-	bool hasOpPoints = (m_selectFromButtons->checkedId() == NoiseParameter::OriginalBpm ? true : false);
-	for (const OpPointRecord &record : m_opPointRecords) {
-		if (record.checkBox->isChecked()) {
-			hasOpPoints = true;
-			break;
-		}
-	}
+    /* check for parameter sanity */
+    bool hasOpPoints = (m_selectFromButtons->checkedId() == NoiseParameter::OriginalBpm ? true : false);
+    for (const OpPointRecord &record : m_opPointRecords) {
+        if (record.checkBox->isChecked()) {
+            hasOpPoints = true;
+            break;
+        }
+    }
     if (!hasOpPoints) {
         QMessageBox::critical(this, "Create Noise Simulation",
                               "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
@@ -410,41 +416,42 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
 //		return;
 //	}
     //Sara
-	
-	/* create new simlation */
-	NoiseSimulation *newSimulation = new NoiseSimulation (this);
-	newSimulation->setSelectFrom(static_cast<NoiseParameter::OpPointSource> (m_selectFromButtons->checkedId()));
-	
-	QList<OpPoint*> analyzedOpPoints;
-	for (int i = 0; i < m_opPointRecords.size(); ++i) {
-		if (m_opPointRecords[i].checkBox->isChecked()) {
-			analyzedOpPoints.append(m_opPointRecords[i].opPoint);
-		}
-	}
-	newSimulation->setAnalyzedOpPoints(analyzedOpPoints.toVector());
-	
-	try {
-		newSimulation->simulate();
-		
-		if (g_noiseSimulationStore.add(newSimulation)) {
-			m_module->setShownSimulation(newSimulation);
-			accept();  // leave dialog only if adding was successful
-		}
-	} catch (NoiseException &e) {
-		delete newSimulation;
-		QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
-	}
+
+    /* create new simlation */
+    NoiseSimulation *newSimulation = new NoiseSimulation (this);
+    newSimulation->setSelectFrom(static_cast<NoiseParameter::OpPointSource> (m_selectFromButtons->checkedId()));
+
+    QList<OpPoint*> analyzedOpPoints;
+    for (int i = 0; i < m_opPointRecords.size(); ++i) {
+        if (m_opPointRecords[i].checkBox->isChecked()) {
+            analyzedOpPoints.append(m_opPointRecords[i].opPoint);
+        }
+    }
+    newSimulation->setAnalyzedOpPoints(analyzedOpPoints.toVector());
+
+    try {
+        newSimulation->simulate();
+
+        if (g_noiseSimulationStore.add(newSimulation)) {
+            m_module->setShownSimulation(newSimulation);
+            accept();  // leave dialog only if adding was successful
+        }
+    } catch (NoiseException &e) {
+        delete newSimulation;
+        QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
+    }
 }
 
 void NoiseCreatorDialog::OnImportStarredD(){
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     int number_of_elements = pBEM->dlg_elements;
 
-QMessageBox::information (this, "δ* User Input Instructions",QString("For user input the δ* you must to follow the instructions:\n\n - Select a csv file with tho columns and no header;\n\n- The first column must be filled with δ* on  suction side;\n\n- The second column must be filled with δ* on pressure side;\n\n -The csv file must have %1 rows filled.").arg(number_of_elements),QMessageBox::Ok);
+QMessageBox::information (this, "δ* User Input Instructions",QString("For user input the δ* you must to follow the instructions:\n\n - Select a csv file with three columns and no header;\n\n- The first column must be filled with the index from 1 to %1;\n\n - The second column must be filled with the values of δ* on the suction side;\n\n- The third column must be filled with the values of δ* on the pressure side.").arg(number_of_elements),QMessageBox::Ok);
 
 NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
 
         QString PathName, strong, header;
+        a_D_starred_index_user.clear();
         a_D_starred_S_user.clear();
         a_D_starred_P_user.clear();
 
@@ -477,17 +484,21 @@ int w=0;
 while (!File.atEnd()) {
     QString line = File.readLine(); // read wavelength line and store it
     const QStringList fields { line.split(',') };
-    const QString D_starred_S_aux { fields[0] };
-    const QString D_starred_P_aux { fields[1] };
+    const QString D_starred_index { fields[0] };
+    const QString D_starred_S_aux { fields[1] };
+    const QString D_starred_P_aux { fields[2] };
+    a_D_starred_index_user.append(D_starred_index.toInt());
     a_D_starred_S_user.append(D_starred_S_aux.toDouble());
     a_D_starred_P_user.append(D_starred_P_aux.toDouble());
-    pNoiseParameter->D_starred_S_user[w]=D_starred_S_aux.toDouble();
-    pNoiseParameter->D_starred_P_user[w]=D_starred_P_aux.toDouble();
+    pNoiseParameter->D_starred_index_user[w]=D_starred_index.toInt();
+    int u = pNoiseParameter->D_starred_index_user[w]-1.;
+    pNoiseParameter->D_starred_S_user[u]=D_starred_S_aux.toDouble();
+    pNoiseParameter->D_starred_P_user[u]=D_starred_P_aux.toDouble();
     ++w;
 }
 File.close();
 
-if((a_D_starred_S_user.size()==pBEM->dlg_elements) & (a_D_starred_P_user.size()==pBEM->dlg_elements)){
+if((a_D_starred_index_user.size()==pBEM->dlg_elements) & (a_D_starred_S_user.size()==pBEM->dlg_elements) & (a_D_starred_P_user.size()==pBEM->dlg_elements)){
     QMessageBox::information(g_mainFrame, tr("Import Sucessfull!"), tr("The δ* was sucessfully imported."),QMessageBox::Ok);
     return;
 }

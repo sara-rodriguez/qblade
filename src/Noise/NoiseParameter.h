@@ -71,8 +71,10 @@ public:
     double TSRtd;
     double dstar_user;
     int phi_type;
+    int theta_type;
     int dstar_type;
 
+    double D_starred_index_user[40];
     double D_starred_S_user[40];
     double D_starred_P_user[40];
         //Sara

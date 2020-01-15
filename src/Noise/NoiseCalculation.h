@@ -234,6 +234,7 @@ private:
     double m_obs_z_pos;
     int m_dstar_type;
     int m_phi_type;
+    int m_theta_type;
     //Sara
 
     //For SPLs

@@ -33,11 +33,11 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     connect(m_exportqs3DNoiseComplete, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseComplete()));
     addAction(m_exportqs3DNoiseComplete);
 
-//    m_exportqs3DNoise = new QAction("Export current quasi 3D Noise", this);
-//    connect(m_exportqs3DNoise, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise()));
-//    addAction(m_exportqs3DNoise);
+    m_exportqs3DNoise = new QAction("Export current quasi 3D Noise", this);
+    connect(m_exportqs3DNoise, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise()));
+    addAction(m_exportqs3DNoise);
 
-    m_exportqs3DNoise_final = new QAction("Export current quasi 3D Noise", this);
+    m_exportqs3DNoise_final = new QAction("Export current quasi 3D Noise Graphics", this);
     connect(m_exportqs3DNoise_final, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_final()));
     addAction(m_exportqs3DNoise_final);
     //Sara
@@ -49,7 +49,7 @@ void NoiseMenu::onAboutToShow() {
     
     //Sara
     m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
-//    m_exportqs3DNoise->setEnabled(simulationAvailable);
+    m_exportqs3DNoise->setEnabled(simulationAvailable);
     m_exportqs3DNoiseComplete->setEnabled(simulationAvailable);
     m_exportqs3DNoise_final->setEnabled(simulationAvailable);
     //Sara
@@ -94,11 +94,10 @@ void NoiseMenu::onExportqs3DNoiseLog() {
     file.close();
 }
 
-
 void NoiseMenu::onExportqs3DNoise() {
-    QString fileName = m_module->getShownSimulation()->getName() + "-3D.csv";
+    QString fileName = m_module->getShownSimulation()->getName() + "-quasi_3D-simul.csv";
     fileName.replace(' ', '_');
-    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Simulation",
+    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Simulation Simulation",
                                             g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
                                             "Comma Separated Values (*.csv)");
     if (!fileName.endsWith(".csv")) {
@@ -134,9 +133,9 @@ void NoiseMenu::onExportqs3DNoiseComplete() {
 }
 
 void NoiseMenu::onExportqs3DNoise_final() {
-    QString fileName = m_module->getShownSimulation()->getName() + "-quasi_3D.csv";
+    QString fileName = m_module->getShownSimulation()->getName() + "-quasi_3D-graphics.csv";
     fileName.replace(' ', '_');
-    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Simulation",
+    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Simulation from Graphics",
                                             g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
                                             "Comma Separated Values (*.csv)");
     if (!fileName.endsWith(".csv")) {

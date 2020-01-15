@@ -22,12 +22,6 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
     on3dGraphs(false);
 	
 //Sara
-//	m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
-//    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
-//	m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
-//	m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
-//    m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
-
     //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
     QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
     setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
@@ -153,24 +147,18 @@ m_globalModuleIndentifier = NOISEMODULE;
 m_shownSimulation = nullptr;
 
 if (graphs)	{
-//        m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D]X (dB)", true, false});
-//        m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]X", true, false});
-//        m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]X", true, false});
-//        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]X", true, false});
-//        m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D]X (dB)", true, false});//Alexandre MOD
-
-    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D] (dB)", true, false});
-    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]", true, false});
-    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]", true, false});
-    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]", true, false});
-    m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D] (dB)", true, false});//Alexandre MOD
+    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]", true, false});
+    m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]", true, false});
+    m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]", true, false});
+    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D] (dB)", true, false});//Alexandre MOD
+    m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D] (dB)", true, false});
 
 } else {
-    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
-    m_graph[1] = new NewGraph ("NoiseGraphTwo",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
-    m_graph[2] = new NewGraph ("NoiseGraphThree", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
-    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
-    m_graph[4] = new NewGraph ("NoiseGraphFive",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
+    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
+    m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
+    m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
+    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
+    m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
 }
 
 QSettings settings("qblade.ini", QSettings::IniFormat);//Sara

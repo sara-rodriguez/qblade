@@ -82,37 +82,28 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 1: *vector = m_calculation.SPLadB()[opPointIndex]; zeroY = true; break;
         case 2: *vector = m_calculation.SPLsdB()[opPointIndex]; zeroY = true; break;
         case 3: *vector = m_calculation.SPLpdB()[opPointIndex]; zeroY = true; break;
-        case 4: *vector = m_calculation.SPLdB()[opPointIndex]; break;
-        case 5: *vector = m_calculation.SPLdBAW()[opPointIndex]; break;
-        case 6: *vector = m_calculation.SPLdBBW()[opPointIndex]; break;
-        case 7: *vector = m_calculation.SPLdBCW()[opPointIndex]; break;
-        case 8: *vector = m_calculation.SPL_LEdB()[opPointIndex]; break; //Alexandre MOD
-        case 9: *vector = m_calculation.SPL_LEdBAW()[opPointIndex]; break; //Alexandre MOD
-        case 10: *vector = m_calculation.SPL_LEdBBW()[opPointIndex]; break; //Alexandre MOD
-        case 11: *vector = m_calculation.SPL_LEdBCW()[opPointIndex]; break; //Alexandre MOD
+        case 4: *vector = m_calculation.SPL_LEdB()[opPointIndex]; break; //Alexandre MOD
             //Sara
-        case 12: *vector = m_calculation.SPLadB3d()[opPointIndex]; zeroY = true; break;
-        case 13: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
-        case 14: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
-        case 15: *vector = m_calculation.SPLdB3d()[opPointIndex]; break;
-        case 16: *vector = m_calculation.SPLdBAW3d()[opPointIndex]; break;
-        case 17: *vector = m_calculation.SPLdBBW3d()[opPointIndex]; break;
-        case 18: *vector = m_calculation.SPLdBCW3d()[opPointIndex]; break;
-        case 19: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; break;
-        case 20: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex]; break;
-        case 21: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; break;
-        case 22: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; break;
-        case 23: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
-        case 24: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
-        case 25: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
-        case 26: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; break;
-        case 27: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
-        case 28: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
-        case 29: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
-        case 30: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; break;
-        case 31: *vector = m_calculation.SPL_LEdBAW3d_final()[opPointIndex]; break;
-        case 32: *vector = m_calculation.SPL_LEdBBW3d_final()[opPointIndex]; break;
-        case 33: *vector = m_calculation.SPL_LEdBCW3d_final()[opPointIndex]; break;
+        case 5: *vector = m_calculation.SPLdB()[opPointIndex]; break;
+        case 6: *vector = m_calculation.SPLdBAW()[opPointIndex]; break;
+        case 7: *vector = m_calculation.SPLdBBW()[opPointIndex]; break;
+        case 8: *vector = m_calculation.SPLdBCW()[opPointIndex]; break;
+        case 9: *vector = m_calculation.SPLadB3d()[opPointIndex]; zeroY = true; break;
+        case 10: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
+        case 11: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
+        case 12: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; break;
+        case 13: *vector = m_calculation.SPLdB3d()[opPointIndex]; break;
+        case 14: *vector = m_calculation.SPLdBAW3d()[opPointIndex]; break;
+        case 15: *vector = m_calculation.SPLdBBW3d()[opPointIndex]; break;
+        case 16: *vector = m_calculation.SPLdBCW3d()[opPointIndex]; break;
+        case 17: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
+        case 18: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
+        case 19: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
+        case 20: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; break;
+        case 21: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; break;
+        case 22: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
+        case 23: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
+        case 24: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
             //Sara
         default: return nullptr;
         }
@@ -130,9 +121,7 @@ QStringList NoiseSimulation::getAvailableVariables(NewGraph::GraphType /*graphTy
     QStringList variables;
 
     // WARNING: when changing any variables list, change newCurve as well!
-    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))"
-              << "SPL (dB(C))" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL_alpha[multi]" << "SPL_S[multi]" << "SPL_P[multi]" << "SPL[multi] (dB)" << "SPL[multi] (dB(A))" << "SPL[multi] (dB(B))"
-              << "SPL[multi] (dB(C))" << "SPL_LE[multi] (dB)" << "SPL_LE[multi] (dB(A))" << "SPL_LE[multi] (dB(B))" << "SPL_LE[multi] (dB(C))" << "SPL_alpha[3D]" << "SPL_S[3D]" << "SPL_P[3D]" << "SPL[3D] (dB)" << "SPL[3D] (dB(A))" << "SPL[3D] (dB(B))" << "SPL[3D] (dB(C))" << "SPL_LE[3D] (dB)" << "SPL_LE[3D] (dB(A))" << "SPL_LE[3D] (dB(B))" << "SPL_LE[3D] (dB(C))"; //Alexandre MOD Sara
+    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" <<  "SPL_alpha[multi]" << "SPL_S[multi]" << "SPL_P[multi]" << "SPL_LE[multi] (dB)" << "SPL[multi] (dB)" << "SPL[multi] (dB(A))" << "SPL[multi] (dB(B))" << "SPL[multi] (dB(C))" << "SPL_alpha[3D]" << "SPL_S[3D]" << "SPL_P[3D]" << "SPL_LE[3D] (dB)" << "SPL[3D] (dB)" << "SPL[3D] (dB(A))" << "SPL[3D] (dB(B))" << "SPL[3D] (dB(C))"; //Alexandre MOD Sara
 
     return variables;
 }
@@ -175,41 +164,37 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
         stream << qSetFieldWidth(0);
         stream << "Alpha: " << noiseOpPoints[i]->getAlphaDegree() <<
                   ", Re = " << noiseOpPoints[i]->getReynolds() << endl;
-        stream << "OASPL: " << m_calculation.OASPL()[i] << " dB" << endl;
-        stream << "OASPL (A): " << m_calculation.OASPLA()[i] << " dB(A)" << endl;
-        stream << "OASPL (B): " << m_calculation.OASPLB()[i] << " dB(B)" << endl;
-        stream << "OASPL (C): " << m_calculation.OASPLC()[i] << " dB(C)" << endl;
         stream << "SPL_a: " << m_calculation.SPLALOG()[i] << "" << endl;
         stream << "SPL_s: " << m_calculation.SPLSLOG()[i] << "" << endl;
         stream << "SPL_p: " << m_calculation.SPLPLOG()[i] << "" << endl;
         if(m_parameter.Lowson_type!=0){
         stream << "SPL_LE: " << m_calculation.SPLlogLE()[i] << " dB" << endl;
-        stream << "SPL_LE (A): " << m_calculation.SPLLEdBAW()[i] << " dB(A)" << endl;
-        stream << "SPL_LE (B): " << m_calculation.SPLLEdBBW()[i] << " dB(B)" << endl;
-        stream << "SPL_LE (C): " << m_calculation.SPLLEdBCW()[i] << " dB(C)" << endl;}
+        }
+        stream << "OASPL: " << m_calculation.OASPL()[i] << " dB" << endl;
+        stream << "OASPL (A): " << m_calculation.OASPLA()[i] << " dB(A)" << endl;
+        stream << "OASPL (B): " << m_calculation.OASPLB()[i] << " dB(B)" << endl;
+        stream << "OASPL (C): " << m_calculation.OASPLC()[i] << " dB(C)" << endl;
         stream << endl;
                if(m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" <<
-                  "SPL (dB)" <<
                   "SPLa" <<
                   "SPLs" <<
                   "SPLp" <<
+                  "SPL_LE (dB)" <<
+                  "SPL (dB)" <<
                   "SPL (dB(A))" <<
                   "SPL (dB(B))" <<
                   "SPL (dB(C))" <<
-                  "SPL_LE (dB)" <<
-                  "SPL_LE (dB(A))" <<
-                  "SPL_LE (dB(B))" <<
-                  "SPL_LE (dB(C))" <<endl; //Alexandre MOD
+                  endl; //Alexandre MOD
                }
                else{
                    stream << qSetFieldWidth(14) <<
                              "Freq [Hz]" <<
-                             "SPL (dB)" <<
                              "SPLa" <<
                              "SPLs" <<
                              "SPLp" <<
+                             "SPL (dB)" <<
                              "SPL (dB(A))" <<
                              "SPL (dB(B))" <<
                              "SPL (dB(C))" <<endl; //Alexandre MOD
@@ -219,25 +204,22 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
 
  if(m_parameter.Lowson_type!=0){
             stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] <<
-                      m_calculation.SPLdB()[i][j] <<
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
                       m_calculation.SPLpdB()[i][j] <<
+                      m_calculation.SPL_LEdB()[i][j] <<
+                      m_calculation.SPLdB()[i][j] <<
                       m_calculation.SPLdBAW()[i][j] <<
                       m_calculation.SPLdBBW()[i][j] <<
                       m_calculation.SPLdBCW()[i][j] <<
-                      m_calculation.SPL_LEdB()[i][j] <<
-                      m_calculation.SPL_LEdBAW()[i][j] << //Sara
-                      m_calculation.SPL_LEdBBW()[i][j] << //Sara
-                      m_calculation.SPL_LEdBCW()[i][j] << //Sara
                       endl; //Alexandre MOD
         }
 else{
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] <<
-               m_calculation.SPLdB()[i][j] <<
                m_calculation.SPLadB()[i][j] <<
                m_calculation.SPLsdB()[i][j] <<
                m_calculation.SPLpdB()[i][j] <<
+               m_calculation.SPLdB()[i][j] <<
                m_calculation.SPLdBAW()[i][j] <<
                m_calculation.SPLdBBW()[i][j] <<
                m_calculation.SPLdBCW()[i][j] << endl;
@@ -255,54 +237,40 @@ void NoiseSimulation::exportCalculationqs3DNoise_final(QTextStream &stream) {
     stream.setRealNumberNotation(QTextStream::FixedNotation);
     stream.setRealNumberPrecision(5);
 
-    stream << "Noise prediction file export quasi 3D" << endl;
+    stream << "Noise prediction file export quasi 3D from Graphics" << endl;
     stream << endl;
     if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" <<endl;}
-    if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}//era m_calculation.m_
-//    stream << "constante D: " << m_calculation.d_const << endl;
-//        stream << endl;
-                stream << qSetFieldWidth(0);
-        //        stream << "i: " << i << endl;
-                stream << "OASPL: " << m_calculation.OASPL3d()[0] << " dB" << endl;
-                stream << "OASPL (A): " << m_calculation.OASPLA3d()[0] << " dB(A)" << endl;
-                stream << "OASPL (B): " << m_calculation.OASPLB3d()[0] << " dB(B)" << endl;
-                stream << "OASPL (C): " << m_calculation.OASPLC3d()[0] << " dB(C)" << endl;
-                stream << "SPL_a: " << m_calculation.SPLALOG3d()[0] << "" << endl;
-                stream << "SPL_s: " << m_calculation.SPLSLOG3d()[0] << "" << endl;
-                stream << "SPL_p: " << m_calculation.SPLPLOG3d()[0] << "" << endl;
-                if(m_parameter.Lowson_type!=0){
-                stream << "SPL_LE: " << m_calculation.SPLlogLE3d()[0] << " dB" << endl;
-                stream << "SPL_LE (A): " << m_calculation.SPLLEdBAW3d()[0] << " dB(A)" << endl;
-                stream << "SPL_LE (B): " << m_calculation.SPLLEdBBW3d()[0] << " dB(B)" << endl;
-                stream << "SPL_LE (C): " << m_calculation.SPLLEdBCW3d()[0] << " dB(C)" << endl;}
-                stream << endl;
+    if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}
+    stream << "Tip Speed Ratio: " << m_parameter.TSRtd << endl;
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
-//    for (int i = 0; i < noiseOpPoints.size(); ++i) {
-int i=0;
+
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    int number_of_segments = pBEM->dlg_elements;
+
+    for (int i = 0; i < number_of_segments; ++i) { //Sra urgente
 stream << qSetFieldWidth(0);
 //        stream << endl;
+stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
+        stream << endl;
                if(m_parameter.Lowson_type!=0){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
-                  "SPL (dB)" << ";" <<
                   "SPLa" << ";" <<
                   "SPLs" << ";" <<
                   "SPLp" << ";" <<
+                  "SPL_LE (dB)" << ";" <<
+                  "SPL (dB)" << ";" <<
                   "SPL (dB(A))" << ";" <<
                   "SPL (dB(B))" << ";" <<
-                  "SPL (dB(C))" << ";" <<
-                  "SPL_LE (dB)" << ";" <<
-                  "SPL_LE (dB(A))" << ";" <<
-                  "SPL_LE (dB(B))" << ";" <<
-                  "SPL_LE (dB(C))" << ";" <<endl; //Alexandre MOD
+                  "SPL (dB(C))" << ";" <<endl; //Alexandre MOD
                }
                else{
                    stream << qSetFieldWidth(14) <<
                              "Freq [Hz]" << ";" <<
-                             "SPL (dB)" << ";" <<
                              "SPLa" << ";" <<
                              "SPLs" << ";" <<
                              "SPLp" << ";" <<
+                             "SPL (dB)" << ";" <<
                              "SPL (dB(A))" << ";" <<
                              "SPL (dB(B))" << ";" <<
                              "SPL (dB(C))" <<endl; //Alexandre MOD
@@ -312,35 +280,42 @@ stream << qSetFieldWidth(0);
 
             if(m_parameter.Lowson_type!=0){
                        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                                 m_calculation.SPLdB3d_final()[i][j] << ";" <<
-                                 m_calculation.SPLadB3d_final()[i][j] << ";" <<
-                                 m_calculation.SPLsdB3d_final()[i][j] << ";" <<
-                                 m_calculation.SPLpdB3d_final()[i][j] << ";" <<
-                                 m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
-                                 m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
-                                 m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
-                                 m_calculation.SPL_LEdB3d_final()[i][j] << ";" <<
-                                 m_calculation.SPL_LEdBAW3d_final()[i][j] << ";" << //Sara
-                                 m_calculation.SPL_LEdBBW3d_final()[i][j] << ";" << //Sara_final
-                                 m_calculation.SPL_LEdBCW3d_final()[i][j] << ";" << //Sara
+                                 m_calculation.SPLadB3d()[i][j] << ";" <<
+                                 m_calculation.SPLsdB3d()[i][j] << ";" <<
+                                 m_calculation.SPLpdB3d()[i][j] << ";" <<
+                                 m_calculation.SPL_LEdB3d()[i][j] << ";" <<
+                                 m_calculation.SPLdB3d()[i][j] << ";" <<
+                                 m_calculation.SPLdBAW3d()[i][j] << ";" <<
+                                 m_calculation.SPLdBBW3d()[i][j] << ";" <<
+                                 m_calculation.SPLdBCW3d()[i][j] << ";" <<
                                  endl; //Alexandre MOD
                    }
            else{
                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                          m_calculation.SPLdB3d_final()[i][j] << ";" <<
-                          m_calculation.SPLadB3d_final()[i][j] << ";" <<
-                          m_calculation.SPLsdB3d_final()[i][j] << ";" <<
-                          m_calculation.SPLpdB3d_final()[i][j] << ";" <<
-                          m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
-                          m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
-                          m_calculation.SPLdBCW3d_final()[i][j] << ";" << endl;
+                          m_calculation.SPLadB3d()[i][j] << ";" <<
+                          m_calculation.SPLsdB3d()[i][j] << ";" <<
+                          m_calculation.SPLpdB3d()[i][j] << ";" <<
+                          m_calculation.SPLdB3d()[i][j] << ";" <<
+                          m_calculation.SPLdBAW3d()[i][j] << ";" <<
+                          m_calculation.SPLdBBW3d()[i][j] << ";" <<
+                          m_calculation.SPLdBCW3d()[i][j] << ";" << endl;
             }
         }
-//    }
         stream << endl;
-//    }
-
-    qDeleteAll(noiseOpPoints);
+        stream << qSetFieldWidth(0);
+//        stream << "i: " << i << endl;
+        stream << "SPL_a: " << m_calculation.SPLALOG3d()[i] << "" << endl;
+        stream << "SPL_s: " << m_calculation.SPLSLOG3d()[i] << "" << endl;
+        stream << "SPL_p: " << m_calculation.SPLPLOG3d()[i] << "" << endl;
+        if(m_parameter.Lowson_type!=0){
+        stream << "SPL_LE: " << m_calculation.SPLlogLE3d()[i] << " dB" << endl;}
+        stream << "OASPL: " << m_calculation.OASPL3d()[i] << " dB" << endl;
+        stream << "OASPL (A): " << m_calculation.OASPLA3d()[i] << " dB(A)" << endl;
+        stream << "OASPL (B): " << m_calculation.OASPLB3d()[i] << " dB(B)" << endl;
+        stream << "OASPL (C): " << m_calculation.OASPLC3d()[i] << " dB(C)" << endl;
+        stream << endl;
+        stream << endl;
+    }
 }
 
 void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
@@ -461,11 +436,10 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double XRT[number_of_segments];
     double YRT[number_of_segments];
     double ZRT[number_of_segments];
-    double re[number_of_segments];
     double theta[number_of_segments];
     double phi[number_of_segments];
     double calc_int_a[number_of_segments];
-    double psi_e[number_of_segments];
+    double phi_e[number_of_segments];
     double theta_e[number_of_segments];
     double r_rt[number_of_segments];
     double r_e[number_of_segments];
@@ -701,9 +675,9 @@ else {SwAlpha[i]=SwAlpha_2[i];}
 
 double EddyMach = m_parameter.eddyConvectionMach;
 
-Dh[i]=(2.*pow(sin(qDegreesToRadians(theta[i]/2.)),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi[i]))),2);
+Dh[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i]/2.)),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta_e[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi_e[i]))),2);
 
-Dl[i]=(2.*pow(sin(qDegreesToRadians(theta[i])),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta[i])))),4);
+Dl[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i])),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta_e[i])))),4);
 
 gamma[i]=27.094*Mach[i]+3.32;
 
@@ -736,11 +710,6 @@ EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
 if (m_parameter.dstar_type==0){
-    D_starred_S[i]=D_starred_N_S[i];
-    D_starred_P[i]=D_starred_N_P[i];
-}
-
-else if (m_parameter.dstar_type==1){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
     double TopTrip=pFoilPolarDlg->m_XTopTr;
@@ -756,7 +725,11 @@ else {
             D_starred_S[i]=DStarXFoilS[i];
             D_starred_P[i]=DStarXFoilP[i];
         }}
-        else if (m_parameter.dstar_type==2){
+else if (m_parameter.dstar_type==1){
+    D_starred_S[i]=D_starred_N_S[i];
+    D_starred_P[i]=D_starred_N_P[i];
+}
+else if (m_parameter.dstar_type==2){
     //user
     NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
     D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
@@ -764,64 +737,40 @@ else {
         }
 
 double B=0;
-double XB=0;
-double YB=0;
-double ZB=0;
+double XB;
+double YB;
+double ZB;
 
-//phi type, fixed 90º or free
-if (m_parameter.phi_type==0){
-    //by the quasi-3D spreadsheet
-    ri[i]=bdata->m_pos.value(i);
-    if(i>=number_of_segments-2){ri_1[i]=bdata->m_pos.value(i);} else {ri_1[i]=bdata->m_pos.value(i+1);}
-    if(i>=number_of_segments-3){ri_2[i]=bdata->m_pos.value(i);} else {ri_2[i]=bdata->m_pos.value(i+2);}
-    B=bdata->m_pos.value(number_of_segments-1)/2.;
-    A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
-    re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
-    phi_lin[i]=qRadiansToDegrees(qAsin(m_parameter.distanceObsever/re[i]));
-    phi[i]=180.-phi_lin[i];
-    theta[i]=90;
-    dist_obs[i]=ri_1[i];
-}
-else if (m_parameter.phi_type==1){
-    //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
-    //    Input X e , Y e , Z e
-    //    Attribute their respective values to X B , Y B , Z B
-        XB=m_parameter.obs_x_pos;
-        YB=m_parameter.obs_y_pos;
-        ZB=m_parameter.obs_z_pos;
+//    re phi_e and theta_e calculation p 77 C_Project_Log_Text_Jan_16.pdf
+//    Input X e , Y e , Z e
+//    Attribute their respective values to X B , Y B , Z B
+    XB=m_parameter.obs_x_pos;
+    YB=m_parameter.obs_y_pos;
+    ZB=m_parameter.obs_z_pos;
 
-    //For the blade, get the Pitch angle, θp - blade pitch
+    c_0[i]=bdata->m_c_local.value(i);
+    r_0[i]=bdata->m_pos.value(i);
 
-    //For each blade segment, get: C r i+1 , C r i , r i+1 , r i , β
-    //Cri+1 = c_1
-    //r+1 = r_1
-    //Cri = c_0
-    //ri = r_0
-    //beta = local_twist
-
-    if(i==(number_of_segments-1)){
+if(i==(number_of_segments-1)){
 c_1[i]=0;
 r_1[i]=0;
-    }
-    else
-    {
+}
+else
+{
 c_1[i]=bdata->m_c_local.value(i+1);
 r_1[i]=bdata->m_pos.value(i+1);
-    }}
-
-c_0[i]=bdata->m_c_local.value(i);
-r_0[i]=bdata->m_pos.value(i);
+}
 
 local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
 
-//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line
-    a[i]=local_twist[i]+blade_pitch;
+//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line p 75 apostila
+        a[i]=local_twist[i]+blade_pitch;
 
     XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
     YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
-    ZRS[i]=ZB-(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))/2.;
+    ZRS[i]=ZB-(r_1[i]-r_0[i])/2.;
 
 //    Calculate Y RS − 0.75 ∗ (C r i+1 − C r i )/2
     calc_int_a[i]=(YRS[i]-0.75*(c_1[i]-c_0[i])/2.);
@@ -833,10 +782,12 @@ local_twist[i]=theta_BEM[i];
     r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
     r_rt[i]=r_e[i];
     theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
+    phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+    dist_obs[i]=r_e[i];
 
-    psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
-
-    dist_obs[i]=re[i];
+    //phi type and theta type fixed 90º or calculated
+    if (m_parameter.theta_type==1){theta_e[i]=90;} else {theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));}
+    if (m_parameter.phi_type==1){phi_e[i]=90;} else {phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));}
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
@@ -1049,11 +1000,10 @@ NoiseCreatorDialog *pnoisecreatordialog = (NoiseCreatorDialog *) g_mainFrame->m_
         double XRT[number_of_segments];
         double YRT[number_of_segments];
         double ZRT[number_of_segments];
-        double re[number_of_segments];
         double theta[number_of_segments];
         double phi[number_of_segments];
         double calc_int_a[number_of_segments];
-        double psi_e[number_of_segments];
+        double phi_e[number_of_segments];
         double theta_e[number_of_segments];
         double r_rt[number_of_segments];
         double r_e[number_of_segments];
@@ -1329,12 +1279,12 @@ else {SwAlpha[i]=SwAlpha_2[i];}
 double EddyMach = m_parameter.eddyConvectionMach;
 
 if (m_parameter.lowFreq) {
-Dh[i]=(2.*pow(sin(qDegreesToRadians(theta[i]/2.)),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi[i]))),2);
+Dh[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i]/2.)),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta_e[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi_e[i]))),2);
 }
 else{Dh[i]=1;}
 
 if (m_parameter.lowFreq) {
-Dl[i]=(2.*pow(sin(qDegreesToRadians(theta[i])),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta[i])))),4);
+Dl[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i])),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta_e[i])))),4);
 }
 else{Dl[i]=1;}
 
@@ -1369,92 +1319,67 @@ EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
 if (m_parameter.dstar_type==0){
-    D_starred_S[i]=D_starred_N_S[i];
-    D_starred_P[i]=D_starred_N_P[i];
-}
-
-else if (m_parameter.dstar_type==1){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
+    if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
 }
 else {
-//heavy tripping
-    D_starred_S[i]=DStarXFoilS[i];
-    D_starred_P[i]=DStarXFoilP[i];
-}}
-else if (m_parameter.dstar_type==2){
-//user
+        //heavy tripping
+            D_starred_S[i]=DStarXFoilS[i];
+            D_starred_P[i]=DStarXFoilP[i];
+        }}
+else if (m_parameter.dstar_type==1){
+    D_starred_S[i]=D_starred_N_S[i];
+    D_starred_P[i]=D_starred_N_P[i];
+}
+        else if (m_parameter.dstar_type==2){
+    //user
     NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
     D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
     D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
-}
+        }
 
 double B=0;
-double XB=0;
-double YB=0;
-double ZB=0;
+double XB;
+double YB;
+double ZB;
 
-//phi type, fixed 90º or free
-if (m_parameter.phi_type==0){
-    //by the quasi-3D spreadsheet
-    ri[i]=bdata->m_pos.value(i);
-    if(i>=number_of_segments-2){ri_1[i]=bdata->m_pos.value(i);} else {ri_1[i]=bdata->m_pos.value(i+1);}
-    if(i>=number_of_segments-3){ri_2[i]=bdata->m_pos.value(i);} else {ri_2[i]=bdata->m_pos.value(i+2);}
-    B=bdata->m_pos.value(number_of_segments-1)/2.;
-    A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
-    re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
-    phi_lin[i]=qRadiansToDegrees(qAsin(m_parameter.distanceObsever/re[i]));
-    phi[i]=180.-phi_lin[i];
-    theta[i]=90;
-    dist_obs[i]=ri_1[i];
+//    re phi_e and theta_e calculation p 77 C_Project_Log_Text_Jan_16.pdf
+//    Input X e , Y e , Z e
+//    Attribute their respective values to X B , Y B , Z B
+    XB=m_parameter.obs_x_pos;
+    YB=m_parameter.obs_y_pos;
+    ZB=m_parameter.obs_z_pos;
+
+    c_0[i]=bdata->m_c_local.value(i);
+    r_0[i]=bdata->m_pos.value(i);
+
+if(i==(number_of_segments-1)){
+    c_1[i]=0;
+    r_1[i]=0;
 }
-else if (m_parameter.phi_type==1){
-    //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
-    //    Input X e , Y e , Z e
-    //    Attribute their respective values to X B , Y B , Z B
-        XB=m_parameter.obs_x_pos;
-        YB=m_parameter.obs_y_pos;
-        ZB=m_parameter.obs_z_pos;
-
-    //For the blade, get the Pitch angle, θp - blade pitch
-
-    //For each blade segment, get: C r i+1 , C r i , r i+1 , r i , β
-    //Cri+1 = c_1
-    //r+1 = r_1
-    //Cri = c_0
-    //ri = r_0
-    //beta = local_twist
-
-    if(i==(number_of_segments-1)){
-c_1[i]=0;
-r_1[i]=0;
-    }
-    else
-    {
+else
+{
 c_1[i]=bdata->m_c_local.value(i+1);
 r_1[i]=bdata->m_pos.value(i+1);
-    }}
-
-c_0[i]=bdata->m_c_local.value(i);
-r_0[i]=bdata->m_pos.value(i);
+}
 
 local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
 
-//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line
-    a[i]=local_twist[i]+blade_pitch;
+//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line p 75 apostila
+        a[i]=local_twist[i]+blade_pitch;
 
     XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
     YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
-    ZRS[i]=ZB-(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))/2.;
+    ZRS[i]=ZB-(r_1[i]-r_0[i])/2.;
 
 //    Calculate Y RS − 0.75 ∗ (C r i+1 − C r i )/2
     calc_int_a[i]=(YRS[i]-0.75*(c_1[i]-c_0[i])/2.);
@@ -1466,13 +1391,15 @@ local_twist[i]=theta_BEM[i];
     r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
     r_rt[i]=r_e[i];
     theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
-
-    psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
-
-    dist_obs[i]=re[i];
+    phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+    dist_obs[i]=r_e[i];
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
+
+   //phi type and theta type fixed 90º or calculated
+   if (m_parameter.theta_type==1){theta_e[i]=90;} else {theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));}
+   if (m_parameter.phi_type==1){phi_e[i]=90;} else {phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));}
 
    alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
@@ -1610,17 +1537,14 @@ if(m_parameter.Lowson_type!=0){
 //              "dB_A_P"  << ";" <<
 //              "dB_B_P"  << ";" <<
 //              "dB_C_P"  << ";" <<
-              "SPL (dB)"  << ";" <<
               "SPLa"  << ";" <<
               "SPLs"  << ";" <<
               "SPLp"  << ";" <<
+              "SPL_LE (dB) "  << ";" <<
+              "SPL (dB)"  << ";" <<
               "SPL (dB(A))"  << ";" <<
               "SPL (dB(B))"  << ";" <<
               "SPL (dB(C))"  << ";" <<
-              "SPL_LE (dB) "  << ";" <<
-              "SPL_LE ((dB(A)) "  << ";" <<
-              "SPL_LE ((dB(B)) "  << ";" <<
-              "SPL_LE (dB(C)) "  << ";" <<
 //              "s_log_SPL_alpha"  << ";" <<
 //              "s_log_SPL_S"  << ";" <<
 //              "s_log_SPL_P"  << ";" <<
@@ -1672,10 +1596,10 @@ else{
 //                  "dB_A_P"  << ";" <<
 //                  "dB_B_P"  << ";" <<
 //                  "dB_C_P"  << ";" <<
-                  "SPL (dB)"  << ";" <<
                   "SPLa"  << ";" <<
                   "SPLs"  << ";" <<
                   "SPLp"  << ";" <<
+                  "SPL (dB)"  << ";" <<
                   "SPL (dB(A))"  << ";" <<
                   "SPL (dB(B))"  << ";" <<
                   "SPL (dB(C))"  << ";" <<
@@ -1703,6 +1627,17 @@ else{
     double slog_LedBCW[w];
 
      for (int j = 0; j < m_calculation.FREQUENCY_TABLE_SIZE; ++j) {
+         splog_OASPL_alpha=0;
+         splog_OASPL_S=0;
+         splog_OASPL_P=0;
+         splog_OASPL=0;
+         splog_dBA=0;
+         splog_dBB=0;
+         splog_dBC=0;
+         splog_LedB=0;
+         splog_LedBAW=0;
+         splog_LedBBW=0;
+         splog_LedBCW=0;
 
          double Sts[w];
          Sts[j]=m_calculation.CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
@@ -1849,18 +1784,6 @@ else{
     if (alpha[i]<SwAlpha[i]){SPL_P[j]=SPL_dB_P[j];}
     else {SPL_P[j]=-999999999999.;}
 
-    double SPL_dB[w];
-    SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
-
-    double SPL_A[w];
-    SPL_A[j]=SPL_dB[j]+m_calculation.AWeighting[j];
-
-    double SPL_B[w];
-    SPL_B[j]=SPL_dB[j]+m_calculation.BWeighting[j];
-
-    double SPL_C[w];
-    SPL_C[j]=SPL_dB[j]+m_calculation.CWeighting[j];
-
     double SPL_LedB[w];
     SPL_LedB[w]=0;
 
@@ -1881,7 +1804,7 @@ else{
     beta_le=sqrt(1-pow(Mach[i],2));
     L_le=100.*L[i];
     D_L_le=0.5*Dl[i];
-    aux_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
+    aux_le=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
     K_le=M_PI*m_calculation.CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
@@ -1904,10 +1827,42 @@ aux1_le=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
 aux4_le=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le=10.*log10(aux0_le*aux4_le);
 
+double SPL_dB[w];
+if(m_parameter.Lowson_type!=0){
+SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.)));}
+else{SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));}
+
+double SPL_A[w];
+SPL_A[j]=SPL_dB[j]+m_calculation.AWeighting[j];
+
+double SPL_B[w];
+SPL_B[j]=SPL_dB[j]+m_calculation.BWeighting[j];
+
+double SPL_C[w];
+SPL_C[j]=SPL_dB[j]+m_calculation.CWeighting[j];
+
 //Validation:
+
+//BPM validation:
+//p 17 C_Project_Log_Text_15_jan_16
+//if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
+//if((alpha[i]<=19.8) & (Mach[i]<0.21) & (Reynolds[i]>0) & (Mach[i]>0)){
+BPM_validation=true;
+//}
+//else{
+//SPL_alpha[j]=-999999999999.;
+//SPL_S[j]=-999999999999.;
+//SPL_P[j]=-999999999999.;
+//SPL_dB[j]=-999999999999.;
+//SPL_A[j]=-999999999999.;
+//SPL_B[j]=-999999999999.;
+//SPL_C[j]=-999999999999.;
+//BPM_validation=false;
+//}
 
 //Lowson validation:
 //if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+//if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0)))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
 SPL_LedBAW[j]=SPL_LedB[j]+m_calculation.AWeighting[j];
 SPL_LedBBW[j]=SPL_LedB[j]+m_calculation.BWeighting[j];
@@ -1922,22 +1877,6 @@ LE_validation=true;
 //LE_validation=false;
 //}
 
-//BPM validation:
-//p 17 C_Project_Log_Text_15_jan_16
-//if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
-BPM_validation=true;
-//}
-//else{
-//SPL_alpha[j]=-999999999999.;
-//SPL_S[j]=-999999999999.;
-//SPL_P[j]=-999999999999.;
-//SPL_dB[j]=-999999999999.;
-//SPL_A[j]=-999999999999.;
-//SPL_B[j]=-999999999999.;
-//SPL_C[j]=-999999999999.;
-//BPM_validation=false;
-//}
-
     slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
     slog_SPL_S[j]=pow(10.,(SPL_S[j]/10.));
     slog_SPL_P[j]=pow(10.,(SPL_P[j]/10.));
@@ -1950,17 +1889,17 @@ BPM_validation=true;
     slog_LedBBW[j]=pow(10.,(SPL_LedBBW[j]/10.));
     slog_LedBCW[j]=pow(10.,(SPL_LedBCW[j]/10.));
 
-    if(qIsNaN(slog_SPL_alpha[j])){slog_SPL_alpha[j]=0;}
-    if(qIsNaN(slog_SPL_S[j])){slog_SPL_S[j]=0;}
-    if(qIsNaN(slog_SPL_P[j])){slog_SPL_P[j]=0;}
-    if(qIsNaN(slog_SPL[j])){slog_SPL[j]=0;}
-    if(qIsNaN(slog_dBA[j])){slog_dBA[j]=0;}
-    if(qIsNaN(slog_dBB[j])){slog_dBB[j]=0;}
-    if(qIsNaN(slog_dBC[j])){slog_dBC[j]=0;}
-    if(qIsNaN(slog_LedB[j])){slog_LedB[j]=0;}
-    if(qIsNaN(slog_LedBAW[j])){slog_LedBAW[j]=0;}
-    if(qIsNaN(slog_LedBBW[j])){slog_LedBBW[j]=0;}
-    if(qIsNaN(slog_LedBCW[j])){slog_LedBCW[j]=0;}
+    if(qIsNaN(slog_SPL_alpha[j]) || qIsInf(slog_SPL_alpha[j])){slog_SPL_alpha[j]=0;}
+    if(qIsNaN(slog_SPL_S[j]) || qIsInf(slog_SPL_S[j])){slog_SPL_S[j]=0;}
+    if(qIsNaN(slog_SPL_P[j]) || qIsInf(slog_SPL_P[j])){slog_SPL_P[j]=0;}
+    if(qIsNaN(slog_SPL[j]) || qIsInf(slog_SPL[j])){slog_SPL[j]=0;}
+    if(qIsNaN(slog_dBA[j]) || qIsInf(slog_dBA[j])){slog_dBA[j]=0;}
+    if(qIsNaN(slog_dBB[j]) || qIsInf(slog_dBB[j])){slog_dBB[j]=0;}
+    if(qIsNaN(slog_dBC[j]) || qIsInf(slog_dBC[j])){slog_dBC[j]=0;}
+    if(qIsNaN(slog_LedB[j]) || qIsInf(slog_LedB[j])){slog_LedB[j]=0;}
+    if(qIsNaN(slog_LedBAW[j]) || qIsInf(slog_LedBAW[j])){slog_LedBAW[j]=0;}
+    if(qIsNaN(slog_LedBBW[j]) || qIsInf(slog_LedBBW[j])){slog_LedBBW[j]=0;}
+    if(qIsNaN(slog_LedBCW[j]) || qIsInf(slog_LedBCW[j])){slog_LedBCW[j]=0;}
 
     splog_OASPL_alpha+=slog_SPL_alpha[j];
     splog_OASPL_S+=slog_SPL_S[j];
@@ -1974,18 +1913,6 @@ BPM_validation=true;
     splog_LedBBW+=slog_LedBBW[j];
     splog_LedBCW+=slog_LedBCW[j];
 
-    splog_OASPL_alpha_a+=slog_SPL_alpha[j];
-    splog_OASPL_S_a+=slog_SPL_S[j];
-    splog_OASPL_P_a+=slog_SPL_P[j];
-    splog_OASPL_a+=slog_SPL[j];
-    splog_dBA_a+=slog_dBA[j];
-    splog_dBB_a+=slog_dBB[j];
-    splog_dBC_a+=slog_dBC[j];
-    splog_LedB_a+=slog_LedB[j];
-    splog_LedBAW_a+=slog_LedBAW[j];
-    splog_LedBBW_a+=slog_LedBBW[j];
-    splog_LedBCW_a+=slog_LedBCW[j];
-
     sp_OASPL_alpha=10*log10(splog_OASPL_alpha);
     sp_OASPL_S=10*log10(splog_OASPL_S);
     sp_OASPL_P=10*log10(splog_OASPL_P);
@@ -1997,18 +1924,6 @@ BPM_validation=true;
     sp_LedBAW=10*log10(splog_LedBAW);
     sp_LedBBW=10*log10(splog_LedBBW);
     sp_LedBCW=10*log10(splog_LedBCW);
-
-    sp_OASPL_alpha_a=10*log10(splog_OASPL_alpha_a);
-    sp_OASPL_S_a=10*log10(splog_OASPL_S_a);
-    sp_OASPL_P_a=10*log10(splog_OASPL_P_a);
-    sp_OASPL_a=10*log10(splog_OASPL_a);
-    sp_dBA_a=10*log10(splog_dBA_a);
-    sp_dBB_a=10*log10(splog_dBB_a);
-    sp_dBC_a=10*log10(splog_dBC_a);
-    sp_LedB_a=10*log10(splog_LedB_a);
-    sp_LedBAW_a=10*log10(splog_LedBAW_a);
-    sp_LedBBW_a=10*log10(splog_LedBBW_a);
-    sp_LedBCW_a=10*log10(splog_LedBCW_a);
 
     if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
     if(qIsInf(sp_OASPL_S)){sp_OASPL_S=0;}
@@ -2022,130 +1937,6 @@ BPM_validation=true;
     if(qIsInf(sp_LedBBW)){sp_LedBBW=0;}
     if(qIsInf(sp_LedBCW)){sp_LedBCW=0;}
 
-    if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
-    if(qIsInf(splog_OASPL_S)){splog_OASPL_S=0;}
-    if(qIsInf(splog_OASPL_P)){splog_OASPL_P=0;}
-    if(qIsInf(splog_OASPL)){splog_OASPL=0;}
-    if(qIsInf(splog_dBA)){splog_dBA=0;}
-    if(qIsInf(splog_dBB)){splog_dBB=0;}
-    if(qIsInf(splog_dBC)){splog_dBC=0;}
-    if(qIsInf(splog_LedB)){splog_LedB=0;}
-    if(qIsInf(splog_LedBAW)){splog_LedBAW=0;}
-    if(qIsInf(splog_LedBBW)){splog_LedBBW=0;}
-    if(qIsInf(splog_LedBCW)){splog_LedBCW=0;}
-
-    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
-    if(qIsInf(sp_OASPL_S_a)){sp_OASPL_S_a=0;}
-    if(qIsInf(sp_OASPL_P_a)){sp_OASPL_P_a=0;}
-    if(qIsInf(sp_OASPL_a)){sp_OASPL_a=0;}
-    if(qIsInf(sp_dBA_a)){sp_dBA_a=0;}
-    if(qIsInf(sp_dBB_a)){sp_dBB_a=0;}
-    if(qIsInf(sp_dBC_a)){sp_dBC_a=0;}
-    if(qIsInf(sp_LedB_a)){sp_LedB_a=0;}
-    if(qIsInf(sp_LedBAW_a)){sp_LedBAW_a=0;}
-    if(qIsInf(sp_LedBBW_a)){sp_LedBBW_a=0;}
-    if(qIsInf(sp_LedBCW_a)){sp_LedBCW_a=0;}
-
-    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
-    if(qIsInf(splog_OASPL_S_a)){splog_OASPL_S_a=0;}
-    if(qIsInf(splog_OASPL_P_a)){splog_OASPL_P_a=0;}
-    if(qIsInf(splog_OASPL_a)){splog_OASPL_a=0;}
-    if(qIsInf(splog_dBA_a)){splog_dBA_a=0;}
-    if(qIsInf(splog_dBB_a)){splog_dBB_a=0;}
-    if(qIsInf(splog_dBC_a)){splog_dBC_a=0;}
-    if(qIsInf(splog_LedB_a)){splog_LedB_a=0;}
-    if(qIsInf(splog_LedBAW_a)){splog_LedBAW_a=0;}
-    if(qIsInf(splog_LedBBW_a)){splog_LedBBW_a=0;}
-    if(qIsInf(splog_LedBCW_a)){splog_LedBCW_a=0;}
-
-    stlog_OASPL_alpha_a+=splog_OASPL_alpha_a;
-    stlog_OASPL_S_a+=splog_OASPL_S_a;
-    stlog_OASPL_P_a+=splog_OASPL_P_a;
-    stlog_OASPL_a+=splog_OASPL_a;
-    stlog_dBA_a+=splog_dBA_a;
-    stlog_dBB_a+=splog_dBB_a;
-    stlog_dBC_a+=splog_dBC_a;
-    stlog_LedB_a+=splog_LedB_a;
-    stlog_LedBAW_a+=splog_LedBAW_a;
-    stlog_LedBBW_a+=splog_LedBBW_a;
-    stlog_LedBCW_a+=splog_LedBCW_a;
-
-    st_OASPL_alpha_a=10*log10(stlog_OASPL_alpha_a);
-    st_OASPL_S_a=10*log10(stlog_OASPL_S_a);
-    st_OASPL_P_a=10*log10(stlog_OASPL_P_a);
-    st_OASPL_a=10*log10(stlog_OASPL_a);
-    st_dBA_a=10*log10(stlog_dBA_a);
-    st_dBB_a=10*log10(stlog_dBB_a);
-    st_dBC_a=10*log10(stlog_dBC_a);
-    st_LedB_a=10*log10(stlog_LedB_a);
-    st_LedBAW_a=10*log10(stlog_LedBAW_a);
-    st_LedBBW_a=10*log10(stlog_LedBBW_a);
-    st_LedBCW_a=10*log10(stlog_LedBAW_a);
-
-    if(qIsInf(st_OASPL_alpha_a)){st_OASPL_alpha_a=0;}
-    if(qIsInf(st_OASPL_S_a)){st_OASPL_S_a=0;}
-    if(qIsInf(st_OASPL_P_a)){st_OASPL_P_a=0;}
-    if(qIsInf(st_OASPL_a)){st_OASPL_a=0;}
-    if(qIsInf(st_dBA_a)){st_dBA_a=0;}
-    if(qIsInf(st_dBB_a)){st_dBB_a=0;}
-    if(qIsInf(st_dBC_a)){st_dBC_a=0;}
-    if(qIsInf(st_LedB_a)){st_LedB_a=0;}
-    if(qIsInf(st_LedBAW_a)){st_LedBAW_a=0;}
-    if(qIsInf(st_LedBBW_a)){st_LedBBW_a=0;}
-    if(qIsInf(st_LedBCW_a)){st_LedBCW_a=0;}
-
-    stlog_OASPL_alpha+=splog_OASPL_alpha;
-    stlog_OASPL_S+=splog_OASPL_S;
-    stlog_OASPL_P+=splog_OASPL_P;
-    stlog_OASPL+=splog_OASPL;
-    stlog_dBA+=splog_dBA;
-    stlog_dBB+=splog_dBB;
-    stlog_dBC+=splog_dBC;
-    stlog_LedB+=splog_LedB;
-    stlog_LedBAW+=splog_LedBAW;
-    stlog_LedBBW+=splog_LedBBW;
-    stlog_LedBCW+=splog_LedBCW;
-
-    st_OASPL_alpha=10*log10(stlog_OASPL_alpha);
-    st_OASPL_S=10*log10(stlog_OASPL_S);
-    st_OASPL_P=10*log10(stlog_OASPL_P);
-    st_OASPL=10*log10(stlog_OASPL);
-    st_dBA=10*log10(stlog_dBA);
-    st_dBB=10*log10(stlog_dBB);
-    st_dBC=10*log10(stlog_dBC);
-    st_LedB=10*log10(stlog_LedB);
-    st_LedBAW=10*log10(stlog_LedBAW);
-    st_LedBBW=10*log10(stlog_LedBBW);
-    st_LedBCW=10*log10(stlog_LedBAW);
-
-    if(qIsInf(st_OASPL_alpha)){st_OASPL_alpha=0;}
-    if(qIsInf(st_OASPL_S)){st_OASPL_S=0;}
-    if(qIsInf(st_OASPL_P)){st_OASPL_P=0;}
-    if(qIsInf(st_OASPL)){st_OASPL=0;}
-    if(qIsInf(st_dBA)){st_dBA=0;}
-    if(qIsInf(st_dBB)){st_dBB=0;}
-    if(qIsInf(st_dBC)){st_dBC=0;}
-    if(qIsInf(st_LedB)){st_LedB=0;}
-    if(qIsInf(st_LedBAW)){st_LedBAW=0;}
-    if(qIsInf(st_LedBBW)){st_LedBBW=0;}
-    if(qIsInf(st_LedBCW)){st_LedBCW=0;}
-
-    if (m_parameter.Lowson_type==2)   {
-SPL_blade_total_aux+=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW+st_LedBCW;
-
-SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a+st_LedBCW_a;
-    }
-    else {
-SPL_blade_total_aux=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW;
-
-SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a;
-            }
-
-if (j==w){
-SPL_blade_total = 10.*log10(1./number_of_segments*(SPL_blade_total_aux));
-
-SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
-}
 
     QString observations_x("");
     if (!((Reynolds[i] >9.5*pow(10,5)) & (Reynolds[i]<2.5*pow(10,6))) || Mach[i]>=0.19 || !((alpha[i]<=0) & (alpha[i]>=0)) || !((alpha[i]<=5) & (alpha[i]>=5)) || !((alpha[i]<=10) & (alpha[i]>=10))){
@@ -2175,10 +1966,6 @@ SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
     SPL_alpha_val.append(QString::number(SPL_alpha[j], 'f', 5));
     SPL_dB_S_val.append(QString::number(SPL_dB_S[j], 'f', 5));
     SPL_dB_P_val.append(QString::number(SPL_dB_P[j], 'f', 5));
-    SPL_dB_val.append(QString::number(SPL_dB_S[j], 'f', 5));
-    SPL_A_val.append(QString::number(SPL_A[j], 'f', 5));
-    SPL_B_val.append(QString::number(SPL_B[j], 'f', 5));
-    SPL_C_val.append(QString::number(SPL_C[j], 'f', 5));
 
     if(SPL_S[j]<=-999999999999. & SPL_S[j]>=-999999999999.){SPL_S_val.append("N/A");} else {SPL_S_val.append(QString::number(SPL_S[j], 'f', 5));}
     if(SPL_P[j]<=-999999999999. & SPL_P[j]>=-999999999999.){SPL_P_val.append("N/A");} else {SPL_P_val.append(QString::number(SPL_P[j], 'f', 5));}
@@ -2250,17 +2037,14 @@ if (m_parameter.Lowson_type!=0){
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
-                  SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
+                  SPL_LedB_val  << ";" <<
+                  SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
-                  SPL_LedB_val  << ";" <<
-                  SPL_LedB_valAW  << ";" <<
-                  SPL_LedB_valBW  << ";" <<
-                  SPL_LedB_valCW  << ";" <<
 //                  slog_SPL_alpha[j]  << ";" <<
 //                  slog_SPL_S[j]  << ";" <<
 //                  slog_SPL_P[j]  << ";" <<
@@ -2314,10 +2098,10 @@ else
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
-                  SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
+                  SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
@@ -2333,60 +2117,20 @@ else
 
 if(j==(w-1)){
         stream << endl;
-        if (sp_OASPL<=0 & sp_OASPL>=0){stream << "OASPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< "dB" << endl;}
-        if (sp_dBA<=0 & sp_dBA>=0){stream << "OASPL(A): "  << "N/A"<< endl;} else {stream << "OASPL(A): "  << sp_dBA<< "dB" << endl;}
-        if (sp_dBB<=0 & sp_dBB>=0){stream << "OASPL(B): "  << "N/A"<< endl;} else {stream << "OASPL(B): "  << sp_dBB<< "dB" << endl;}
-        if (sp_dBC<=0 & sp_dBC>=0){stream << "OASPL(C): "  << "N/A"<< endl;} else {stream << "OASPL(C): "  << sp_dBC<< "dB" << endl;}
         if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_a: "  << "N/A"<< endl;} else {stream << "SPL_a: "  << sp_OASPL_alpha<< endl;}
         if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_s: "  << "N/A"<< endl;} else {stream << "SPL_s: "  << sp_OASPL_S<< endl;}
          if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_p: "  << "N/A"<< endl;} else {stream << "SPL_p: "  << sp_OASPL_P<< endl;}
           if (m_parameter.Lowson_type!=0){
         if (sp_LedB<=0 & sp_LedB>=0){stream << "SPL_LE: "  << "N/A"<< endl;} else {stream << "SPL_LE: "  << sp_LedB<< "dB" << endl;}
-        if (sp_LedBAW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBAW<< "dB" << endl;}
-        if (sp_LedBBW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBBW<< "dB" << endl;}
-        if (sp_LedBCW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBCW<< "dB" << endl;}
+//        if (sp_LedBAW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBAW<< "dB" << endl;}
+//        if (sp_LedBBW<=0 & sp_LedBAW>=0){stream << "SPL_LE(B): "  << "N/A"<< endl;} else {stream << "SPL_LE(B): "  << sp_LedBBW<< "dB" << endl;}
+//        if (sp_LedBCW<=0 & sp_LedBAW>=0){stream << "SPL_LE(C): "  << "N/A"<< endl;} else {stream << "SPL_LE(C): "  << sp_LedBCW<< "dB" << endl;}
           }
+          if (sp_OASPL<=0 & sp_OASPL>=0){stream << "OASPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< "dB" << endl;}
+          if (sp_dBA<=0 & sp_dBA>=0){stream << "OASPL(A): "  << "N/A"<< endl;} else {stream << "OASPL(A): "  << sp_dBA<< "dB" << endl;}
+          if (sp_dBB<=0 & sp_dBB>=0){stream << "OASPL(B): "  << "N/A"<< endl;} else {stream << "OASPL(B): "  << sp_dBB<< "dB" << endl;}
+          if (sp_dBC<=0 & sp_dBC>=0){stream << "OASPL(C): "  << "N/A"<< endl;} else {stream << "OASPL(C): "  << sp_dBC<< "dB" << endl;}
                 stream << endl;
-if (i>=(number_of_segments-1)){
-stream << "***********************************************************"<<endl;
-stream << "Total Blade: "  << endl;
-stream << "OASPL: "  << st_OASPL_a<< "dB" << endl;
-stream << "OASPL (A): "  << st_dBA_a<< "dB" <<  endl;
-stream << "OASPL (B): "  << st_dBB_a<< "dB" <<  endl;
-stream << "OASPL (C): "  << st_dBC_a<< "dB" <<  endl;
-stream << "SPL_a: "  << st_OASPL_alpha_a<< endl;
-stream << "SPL_s: "  << st_OASPL_S_a<< endl;
-stream << "SPL_p: "  << st_OASPL_P_a<< endl;
-if (m_parameter.Lowson_type!=0){
-stream << "SPL_LE: "  << st_LedB_a<< "dB" <<  endl;
-stream << "SPL_LE (A): "  << st_LedBAW_a<< "dB" <<  endl;
-stream << "SPL_LE (B): "  << st_LedBBW_a<< "dB" <<  endl;
-stream << "SPL_LE (C): "  << st_LedBCW_a<< "dB" <<  endl;}
-stream << "SPL_Blade_total: " << SPL_blade_total_a << "dB" <<  endl;
-stream << "***********************************************************"<<endl;
-stream << endl;}
-
-if(z>=lend & i>=(number_of_segments-1)){
-stream << "***********************************************************"<<endl;
-stream << "TOTAL COMPLETE" << endl;
-stream <<"***********************************************************"<<endl;
-                stream << "Total: "  << endl;
-                stream << "OASPL: "  << st_OASPL<< "dB" << endl;
-                stream << "OASPL (A): "  << st_dBA<< "dB" <<  endl;
-                stream << "OASPL (B): "  << st_dBB<< "dB" <<  endl;
-                stream << "OASPL (C): "  << st_dBC<< "dB" <<  endl;
-                stream << "SPL_a: "  << st_OASPL_alpha<< endl;
-                stream << "SPL_s: "  << st_OASPL_S<< endl;
-                stream << "SPL_p: "  << st_OASPL_P<< endl;
-          if (m_parameter.Lowson_type!=0){
-                stream << "SPL_LE: "  << st_LedB<< "dB" <<  endl;
-          stream << "SPL_LE (A): "  << st_LedBAW<< "dB" <<  endl;
-        stream << "SPL_LE (B): "  << st_LedBBW<< "dB" <<  endl;
-stream << "SPL_LE (C): "  << st_LedBCW<< "dB" <<  endl;}
-                stream << "SPL_Blade_total: " << SPL_blade_total << "dB" <<  endl;
-                stream << "***********************************************************"<<endl;
-stream << endl;
-}
 }}}
 z=z+ldelta;
         }}
@@ -2551,11 +2295,10 @@ void NoiseSimulation::exportqs3DCalculation(QTextStream &stream)
         double XRT[number_of_segments];
         double YRT[number_of_segments];
         double ZRT[number_of_segments];
-        double re[number_of_segments];
         double theta[number_of_segments];
         double phi[number_of_segments];
         double calc_int_a[number_of_segments];
-        double psi_e[number_of_segments];
+        double phi_e[number_of_segments];
         double theta_e[number_of_segments];
         double r_rt[number_of_segments];
         double r_e[number_of_segments];
@@ -2831,12 +2574,12 @@ else {SwAlpha[i]=SwAlpha_2[i];}
 double EddyMach = m_parameter.eddyConvectionMach;
 
 if (m_parameter.lowFreq) {
-Dh[i]=(2.*pow(sin(qDegreesToRadians(theta[i]/2.)),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi[i]))),2);
-}
-else{Dh[i]=1;}
+    Dh[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i]/2.)),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta_e[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi_e[i]))),2);
+    }
+    else{Dh[i]=1;}
 
-if (m_parameter.lowFreq) {
-Dl[i]=(2.*pow(sin(qDegreesToRadians(theta[i])),2)*pow(sin(qDegreesToRadians(phi[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta[i])))),4);
+    if (m_parameter.lowFreq) {
+    Dl[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i])),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow((1+(Mach[i]*cos(qDegreesToRadians(theta_e[i])))),4);
 }
 else{Dl[i]=1;}
 
@@ -2871,92 +2614,68 @@ EddyMach_calc[i]=Mach[i]*EddyMach_perc;
 
 //delta starred type, if natural transition or heavy-tripping
 if (m_parameter.dstar_type==0){
-    D_starred_S[i]=D_starred_N_S[i];
-    D_starred_P[i]=D_starred_N_P[i];
-}
-
-else if (m_parameter.dstar_type==1){
 FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
 
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
+    if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
 }
 else {
-//heavy tripping
-    D_starred_S[i]=DStarXFoilS[i];
-    D_starred_P[i]=DStarXFoilP[i];
-}}
-else if (m_parameter.dstar_type==2){
-//user
+        //heavy tripping
+            D_starred_S[i]=DStarXFoilS[i];
+            D_starred_P[i]=DStarXFoilP[i];
+        }}
+else if (m_parameter.dstar_type==1){
+    D_starred_S[i]=D_starred_N_S[i];
+    D_starred_P[i]=D_starred_N_P[i];
+}
+        else if (m_parameter.dstar_type==2){
+    //user
     NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
     D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
     D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
-}
+        }
 
 double B=0;
-double XB=0;
-double YB=0;
-double ZB=0;
+double XB;
+double YB;
+double ZB;
 
-//phi type, fixed 90º or free
-if (m_parameter.phi_type==0){
-    //by the quasi-3D spreadsheet
-    ri[i]=bdata->m_pos.value(i);
-    if(i>=number_of_segments-2){ri_1[i]=bdata->m_pos.value(i);} else {ri_1[i]=bdata->m_pos.value(i+1);}
-    if(i>=number_of_segments-3){ri_2[i]=bdata->m_pos.value(i);} else {ri_2[i]=bdata->m_pos.value(i+2);}
-    B=bdata->m_pos.value(number_of_segments-1)/2.;
-    A[i]=ri_1[i]+(ri_2[i]-ri_1[i])/2.;
-    re[i]=sqrt(pow((A[i]-B),2)+pow(m_parameter.distanceObsever,2));
-    phi_lin[i]=qRadiansToDegrees(qAsin(m_parameter.distanceObsever/re[i]));
-    phi[i]=180.-phi_lin[i];
-    theta[i]=90;
-    dist_obs[i]=ri_1[i];
+//    re phi_e and theta_e calculation p 77 C_Project_Log_Text_Jan_16.pdf
+//    Input X e , Y e , Z e
+//    Attribute their respective values to X B , Y B , Z B
+    XB=m_parameter.obs_x_pos;
+    YB=m_parameter.obs_y_pos;
+    ZB=m_parameter.obs_z_pos;
+
+    c_0[i]=bdata->m_c_local.value(i);
+    r_0[i]=bdata->m_pos.value(i);
+
+if(i==(number_of_segments-1)){
+    c_1[i]=0;
+    r_1[i]=0;
 }
-else if (m_parameter.phi_type==1){
-    //    re phi and theta calculation p 77 C_Project_Log_Text_Jan_16.pdf
-    //    Input X e , Y e , Z e
-    //    Attribute their respective values to X B , Y B , Z B
-        XB=m_parameter.obs_x_pos;
-        YB=m_parameter.obs_y_pos;
-        ZB=m_parameter.obs_z_pos;
-
-    //For the blade, get the Pitch angle, θp - blade pitch
-
-    //For each blade segment, get: C r i+1 , C r i , r i+1 , r i , β
-    //Cri+1 = c_1
-    //r+1 = r_1
-    //Cri = c_0
-    //ri = r_0
-    //beta = local_twist
-
-    if(i==(number_of_segments-1)){
-c_1[i]=0;
-r_1[i]=0;
-    }
-    else
-    {
+else
+{
 c_1[i]=bdata->m_c_local.value(i+1);
 r_1[i]=bdata->m_pos.value(i+1);
-    }}
-
-c_0[i]=bdata->m_c_local.value(i);
-r_0[i]=bdata->m_pos.value(i);
+}
 
 local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
 
-//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line
+
+//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line p 75 apostila
     a[i]=local_twist[i]+blade_pitch;
 
     XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
     YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
-    ZRS[i]=ZB-(bdata->m_pos.value(i)-bdata->m_pos.value(i-1))/2.;
+    ZRS[i]=ZB-(r_1[i]-r_0[i])/2.;
 
 //    Calculate Y RS − 0.75 ∗ (C r i+1 − C r i )/2
     calc_int_a[i]=(YRS[i]-0.75*(c_1[i]-c_0[i])/2.);
@@ -2968,10 +2687,12 @@ local_twist[i]=theta_BEM[i];
     r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
     r_rt[i]=r_e[i];
     theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
+    phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+    dist_obs[i]=r_e[i];
 
-    psi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
-
-    dist_obs[i]=re[i];
+    //phi type and theta type fixed 90º or calculated
+    if (m_parameter.theta_type==1){theta_e[i]=90;} else {theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));}
+    if (m_parameter.phi_type==1){phi_e[i]=90;} else {phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));}
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
@@ -3112,17 +2833,14 @@ if(m_parameter.Lowson_type!=0){
 //              "dB_A_P"  << ";" <<
 //              "dB_B_P"  << ";" <<
 //              "dB_C_P"  << ";" <<
-              "SPL (dB)"  << ";" <<
               "SPLa"  << ";" <<
               "SPLs"  << ";" <<
               "SPLp"  << ";" <<
+              "SPL_LE (dB) "  << ";" <<
+              "SPL (dB)"  << ";" <<
               "SPL (dB(A))"  << ";" <<
               "SPL (dB(B))"  << ";" <<
               "SPL (dB(C))"  << ";" <<
-              "SPL_LE (dB) "  << ";" <<
-              "SPL_LE ((dB(A)) "  << ";" <<
-              "SPL_LE ((dB(B)) "  << ";" <<
-              "SPL_LE (dB(C)) "  << ";" <<
 //              "s_log_SPL_alpha"  << ";" <<
 //              "s_log_SPL_S"  << ";" <<
 //              "s_log_SPL_P"  << ";" <<
@@ -3174,10 +2892,10 @@ else{
 //                  "dB_A_P"  << ";" <<
 //                  "dB_B_P"  << ";" <<
 //                  "dB_C_P"  << ";" <<
-                  "SPL (dB)"  << ";" <<
                   "SPLa"  << ";" <<
                   "SPLs"  << ";" <<
                   "SPLp"  << ";" <<
+                  "SPL (dB)"  << ";" <<
                   "SPL (dB(A))"  << ";" <<
                   "SPL (dB(B))"  << ";" <<
                   "SPL (dB(C))"  << ";" <<
@@ -3205,6 +2923,17 @@ else{
     double slog_LedBCW[w];
 
      for (int j = 0; j < m_calculation.FREQUENCY_TABLE_SIZE; ++j) {
+         splog_OASPL_alpha=0;
+         splog_OASPL_S=0;
+         splog_OASPL_P=0;
+         splog_OASPL=0;
+         splog_dBA=0;
+         splog_dBB=0;
+         splog_dBC=0;
+         splog_LedB=0;
+         splog_LedBAW=0;
+         splog_LedBBW=0;
+         splog_LedBCW=0;
 
          double Sts[w];
          Sts[j]=m_calculation.CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
@@ -3351,18 +3080,6 @@ else{
     if (alpha[i]<SwAlpha[i]){SPL_P[j]=SPL_dB_P[j];}
     else {SPL_P[j]=-999999999999.;}
 
-    double SPL_dB[w];
-    SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
-
-    double SPL_A[w];
-    SPL_A[j]=SPL_dB[j]+m_calculation.AWeighting[j];
-
-    double SPL_B[w];
-    SPL_B[j]=SPL_dB[j]+m_calculation.BWeighting[j];
-
-    double SPL_C[w];
-    SPL_C[j]=SPL_dB[j]+m_calculation.CWeighting[j];
-
     double SPL_LedB[w];
     SPL_LedB[w]=0;
 
@@ -3383,7 +3100,7 @@ else{
     beta_le=sqrt(1-pow(Mach[i],2));
     L_le=100.*L[i];
     D_L_le=0.5*Dl[i];
-    aux_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
+    aux_le=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
     K_le=M_PI*m_calculation.CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
@@ -3406,10 +3123,42 @@ aux1_le=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
 aux4_le=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le=10.*log10(aux0_le*aux4_le);
 
+double SPL_dB[w];
+if(m_parameter.Lowson_type!=0){
+SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.)));}
+else{SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));}
+
+double SPL_A[w];
+SPL_A[j]=SPL_dB[j]+m_calculation.AWeighting[j];
+
+double SPL_B[w];
+SPL_B[j]=SPL_dB[j]+m_calculation.BWeighting[j];
+
+double SPL_C[w];
+SPL_C[j]=SPL_dB[j]+m_calculation.CWeighting[j];
+
 //Validation:
+
+//BPM validation:
+//p 17 C_Project_Log_Text_15_jan_16
+//if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
+//if((alpha[i]<=19.8) & (Mach[i]<0.21) & (Reynolds[i]>0) & (Mach[i]>0)){
+BPM_validation=true;
+//}
+//else{
+//SPL_alpha[j]=-999999999999.;
+//SPL_S[j]=-999999999999.;
+//SPL_P[j]=-999999999999.;
+//SPL_dB[j]=-999999999999.;
+//SPL_A[j]=-999999999999.;
+//SPL_B[j]=-999999999999.;
+//SPL_C[j]=-999999999999.;
+//BPM_validation=false;
+//}
 
 //Lowson validation:
 //if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
+//if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0)))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
 SPL_LedBAW[j]=SPL_LedB[j]+m_calculation.AWeighting[j];
 SPL_LedBBW[j]=SPL_LedB[j]+m_calculation.BWeighting[j];
@@ -3424,22 +3173,6 @@ LE_validation=true;
 //LE_validation=false;
 //}
 
-//BPM validation:
-//p 17 C_Project_Log_Text_15_jan_16
-//if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
-BPM_validation=true;
-//}
-//else{
-//SPL_alpha[j]=-999999999999.;
-//SPL_S[j]=-999999999999.;
-//SPL_P[j]=-999999999999.;
-//SPL_dB[j]=-999999999999.;
-//SPL_A[j]=-999999999999.;
-//SPL_B[j]=-999999999999.;
-//SPL_C[j]=-999999999999.;
-//BPM_validation=false;
-//}
-
     slog_SPL_alpha[j]=pow(10.,(SPL_alpha[j]/10.));
     slog_SPL_S[j]=pow(10.,(SPL_S[j]/10.));
     slog_SPL_P[j]=pow(10.,(SPL_P[j]/10.));
@@ -3452,17 +3185,17 @@ BPM_validation=true;
     slog_LedBBW[j]=pow(10.,(SPL_LedBBW[j]/10.));
     slog_LedBCW[j]=pow(10.,(SPL_LedBCW[j]/10.));
 
-    if(qIsNaN(slog_SPL_alpha[j])){slog_SPL_alpha[j]=0;}
-    if(qIsNaN(slog_SPL_S[j])){slog_SPL_S[j]=0;}
-    if(qIsNaN(slog_SPL_P[j])){slog_SPL_P[j]=0;}
-    if(qIsNaN(slog_SPL[j])){slog_SPL[j]=0;}
-    if(qIsNaN(slog_dBA[j])){slog_dBA[j]=0;}
-    if(qIsNaN(slog_dBB[j])){slog_dBB[j]=0;}
-    if(qIsNaN(slog_dBC[j])){slog_dBC[j]=0;}
-    if(qIsNaN(slog_LedB[j])){slog_LedB[j]=0;}
-    if(qIsNaN(slog_LedBAW[j])){slog_LedBAW[j]=0;}
-    if(qIsNaN(slog_LedBBW[j])){slog_LedBBW[j]=0;}
-    if(qIsNaN(slog_LedBCW[j])){slog_LedBCW[j]=0;}
+    if(qIsNaN(slog_SPL_alpha[j]) || qIsInf(slog_SPL_alpha[j])){slog_SPL_alpha[j]=0;}
+    if(qIsNaN(slog_SPL_S[j]) || qIsInf(slog_SPL_S[j])){slog_SPL_S[j]=0;}
+    if(qIsNaN(slog_SPL_P[j]) || qIsInf(slog_SPL_P[j])){slog_SPL_P[j]=0;}
+    if(qIsNaN(slog_SPL[j]) || qIsInf(slog_SPL[j])){slog_SPL[j]=0;}
+    if(qIsNaN(slog_dBA[j]) || qIsInf(slog_dBA[j])){slog_dBA[j]=0;}
+    if(qIsNaN(slog_dBB[j]) || qIsInf(slog_dBB[j])){slog_dBB[j]=0;}
+    if(qIsNaN(slog_dBC[j]) || qIsInf(slog_dBC[j])){slog_dBC[j]=0;}
+    if(qIsNaN(slog_LedB[j]) || qIsInf(slog_LedB[j])){slog_LedB[j]=0;}
+    if(qIsNaN(slog_LedBAW[j]) || qIsInf(slog_LedBAW[j])){slog_LedBAW[j]=0;}
+    if(qIsNaN(slog_LedBBW[j]) || qIsInf(slog_LedBBW[j])){slog_LedBBW[j]=0;}
+    if(qIsNaN(slog_LedBCW[j]) || qIsInf(slog_LedBCW[j])){slog_LedBCW[j]=0;}
 
     splog_OASPL_alpha+=slog_SPL_alpha[j];
     splog_OASPL_S+=slog_SPL_S[j];
@@ -3476,18 +3209,6 @@ BPM_validation=true;
     splog_LedBBW+=slog_LedBBW[j];
     splog_LedBCW+=slog_LedBCW[j];
 
-    splog_OASPL_alpha_a+=slog_SPL_alpha[j];
-    splog_OASPL_S_a+=slog_SPL_S[j];
-    splog_OASPL_P_a+=slog_SPL_P[j];
-    splog_OASPL_a+=slog_SPL[j];
-    splog_dBA_a+=slog_dBA[j];
-    splog_dBB_a+=slog_dBB[j];
-    splog_dBC_a+=slog_dBC[j];
-    splog_LedB_a+=slog_LedB[j];
-    splog_LedBAW_a+=slog_LedBAW[j];
-    splog_LedBBW_a+=slog_LedBBW[j];
-    splog_LedBCW_a+=slog_LedBCW[j];
-
     sp_OASPL_alpha=10*log10(splog_OASPL_alpha);
     sp_OASPL_S=10*log10(splog_OASPL_S);
     sp_OASPL_P=10*log10(splog_OASPL_P);
@@ -3500,18 +3221,6 @@ BPM_validation=true;
     sp_LedBBW=10*log10(splog_LedBBW);
     sp_LedBCW=10*log10(splog_LedBCW);
 
-    sp_OASPL_alpha_a=10*log10(splog_OASPL_alpha_a);
-    sp_OASPL_S_a=10*log10(splog_OASPL_S_a);
-    sp_OASPL_P_a=10*log10(splog_OASPL_P_a);
-    sp_OASPL_a=10*log10(splog_OASPL_a);
-    sp_dBA_a=10*log10(splog_dBA_a);
-    sp_dBB_a=10*log10(splog_dBB_a);
-    sp_dBC_a=10*log10(splog_dBC_a);
-    sp_LedB_a=10*log10(splog_LedB_a);
-    sp_LedBAW_a=10*log10(splog_LedBAW_a);
-    sp_LedBBW_a=10*log10(splog_LedBBW_a);
-    sp_LedBCW_a=10*log10(splog_LedBCW_a);
-
     if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
     if(qIsInf(sp_OASPL_S)){sp_OASPL_S=0;}
     if(qIsInf(sp_OASPL_P)){sp_OASPL_P=0;}
@@ -3523,131 +3232,6 @@ BPM_validation=true;
     if(qIsInf(sp_LedBAW)){sp_LedBAW=0;}
     if(qIsInf(sp_LedBBW)){sp_LedBBW=0;}
     if(qIsInf(sp_LedBCW)){sp_LedBCW=0;}
-
-    if(qIsInf(sp_OASPL_alpha)){sp_OASPL_alpha=0;}
-    if(qIsInf(splog_OASPL_S)){splog_OASPL_S=0;}
-    if(qIsInf(splog_OASPL_P)){splog_OASPL_P=0;}
-    if(qIsInf(splog_OASPL)){splog_OASPL=0;}
-    if(qIsInf(splog_dBA)){splog_dBA=0;}
-    if(qIsInf(splog_dBB)){splog_dBB=0;}
-    if(qIsInf(splog_dBC)){splog_dBC=0;}
-    if(qIsInf(splog_LedB)){splog_LedB=0;}
-    if(qIsInf(splog_LedBAW)){splog_LedBAW=0;}
-    if(qIsInf(splog_LedBBW)){splog_LedBBW=0;}
-    if(qIsInf(splog_LedBCW)){splog_LedBCW=0;}
-
-    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
-    if(qIsInf(sp_OASPL_S_a)){sp_OASPL_S_a=0;}
-    if(qIsInf(sp_OASPL_P_a)){sp_OASPL_P_a=0;}
-    if(qIsInf(sp_OASPL_a)){sp_OASPL_a=0;}
-    if(qIsInf(sp_dBA_a)){sp_dBA_a=0;}
-    if(qIsInf(sp_dBB_a)){sp_dBB_a=0;}
-    if(qIsInf(sp_dBC_a)){sp_dBC_a=0;}
-    if(qIsInf(sp_LedB_a)){sp_LedB_a=0;}
-    if(qIsInf(sp_LedBAW_a)){sp_LedBAW_a=0;}
-    if(qIsInf(sp_LedBBW_a)){sp_LedBBW_a=0;}
-    if(qIsInf(sp_LedBCW_a)){sp_LedBCW_a=0;}
-
-    if(qIsInf(sp_OASPL_alpha_a)){sp_OASPL_alpha_a=0;}
-    if(qIsInf(splog_OASPL_S_a)){splog_OASPL_S_a=0;}
-    if(qIsInf(splog_OASPL_P_a)){splog_OASPL_P_a=0;}
-    if(qIsInf(splog_OASPL_a)){splog_OASPL_a=0;}
-    if(qIsInf(splog_dBA_a)){splog_dBA_a=0;}
-    if(qIsInf(splog_dBB_a)){splog_dBB_a=0;}
-    if(qIsInf(splog_dBC_a)){splog_dBC_a=0;}
-    if(qIsInf(splog_LedB_a)){splog_LedB_a=0;}
-    if(qIsInf(splog_LedBAW_a)){splog_LedBAW_a=0;}
-    if(qIsInf(splog_LedBBW_a)){splog_LedBBW_a=0;}
-    if(qIsInf(splog_LedBCW_a)){splog_LedBCW_a=0;}
-
-    stlog_OASPL_alpha_a+=splog_OASPL_alpha_a;
-    stlog_OASPL_S_a+=splog_OASPL_S_a;
-    stlog_OASPL_P_a+=splog_OASPL_P_a;
-    stlog_OASPL_a+=splog_OASPL_a;
-    stlog_dBA_a+=splog_dBA_a;
-    stlog_dBB_a+=splog_dBB_a;
-    stlog_dBC_a+=splog_dBC_a;
-    stlog_LedB_a+=splog_LedB_a;
-    stlog_LedBAW_a+=splog_LedBAW_a;
-    stlog_LedBBW_a+=splog_LedBBW_a;
-    stlog_LedBCW_a+=splog_LedBCW_a;
-
-    st_OASPL_alpha_a=10*log10(stlog_OASPL_alpha_a);
-    st_OASPL_S_a=10*log10(stlog_OASPL_S_a);
-    st_OASPL_P_a=10*log10(stlog_OASPL_P_a);
-    st_OASPL_a=10*log10(stlog_OASPL_a);
-    st_dBA_a=10*log10(stlog_dBA_a);
-    st_dBB_a=10*log10(stlog_dBB_a);
-    st_dBC_a=10*log10(stlog_dBC_a);
-    st_LedB_a=10*log10(stlog_LedB_a);
-    st_LedBAW_a=10*log10(stlog_LedBAW_a);
-    st_LedBBW_a=10*log10(stlog_LedBBW_a);
-    st_LedBCW_a=10*log10(stlog_LedBAW_a);
-
-    if(qIsInf(st_OASPL_alpha_a)){st_OASPL_alpha_a=0;}
-    if(qIsInf(st_OASPL_S_a)){st_OASPL_S_a=0;}
-    if(qIsInf(st_OASPL_P_a)){st_OASPL_P_a=0;}
-    if(qIsInf(st_OASPL_a)){st_OASPL_a=0;}
-    if(qIsInf(st_dBA_a)){st_dBA_a=0;}
-    if(qIsInf(st_dBB_a)){st_dBB_a=0;}
-    if(qIsInf(st_dBC_a)){st_dBC_a=0;}
-    if(qIsInf(st_LedB_a)){st_LedB_a=0;}
-    if(qIsInf(st_LedBAW_a)){st_LedBAW_a=0;}
-    if(qIsInf(st_LedBBW_a)){st_LedBBW_a=0;}
-    if(qIsInf(st_LedBCW_a)){st_LedBCW_a=0;}
-
-    stlog_OASPL_alpha+=splog_OASPL_alpha;
-    stlog_OASPL_S+=splog_OASPL_S;
-    stlog_OASPL_P+=splog_OASPL_P;
-    stlog_OASPL+=splog_OASPL;
-    stlog_dBA+=splog_dBA;
-    stlog_dBB+=splog_dBB;
-    stlog_dBC+=splog_dBC;
-    stlog_LedB+=splog_LedB;
-    stlog_LedBAW+=splog_LedBAW;
-    stlog_LedBBW+=splog_LedBBW;
-    stlog_LedBCW+=splog_LedBCW;
-
-    st_OASPL_alpha=10*log10(stlog_OASPL_alpha);
-    st_OASPL_S=10*log10(stlog_OASPL_S);
-    st_OASPL_P=10*log10(stlog_OASPL_P);
-    st_OASPL=10*log10(stlog_OASPL);
-    st_dBA=10*log10(stlog_dBA);
-    st_dBB=10*log10(stlog_dBB);
-    st_dBC=10*log10(stlog_dBC);
-    st_LedB=10*log10(stlog_LedB);
-    st_LedBAW=10*log10(stlog_LedBAW);
-    st_LedBBW=10*log10(stlog_LedBBW);
-    st_LedBCW=10*log10(stlog_LedBAW);
-
-    if(qIsInf(st_OASPL_alpha)){st_OASPL_alpha=0;}
-    if(qIsInf(st_OASPL_S)){st_OASPL_S=0;}
-    if(qIsInf(st_OASPL_P)){st_OASPL_P=0;}
-    if(qIsInf(st_OASPL)){st_OASPL=0;}
-    if(qIsInf(st_dBA)){st_dBA=0;}
-    if(qIsInf(st_dBB)){st_dBB=0;}
-    if(qIsInf(st_dBC)){st_dBC=0;}
-    if(qIsInf(st_LedB)){st_LedB=0;}
-    if(qIsInf(st_LedBAW)){st_LedBAW=0;}
-    if(qIsInf(st_LedBBW)){st_LedBBW=0;}
-    if(qIsInf(st_LedBCW)){st_LedBCW=0;}
-
-    if (m_parameter.Lowson_type==2)   {
-SPL_blade_total_aux+=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW+st_LedBCW;
-
-SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a+st_LedBCW_a;
-    }
-    else {
-SPL_blade_total_aux=st_OASPL_alpha+st_OASPL_S+st_OASPL_P+st_OASPL+st_dBA+st_dBB+st_dBC+st_LedB+st_LedBAW+st_LedBBW;
-
-SPL_blade_total_aux_a+=st_OASPL_alpha_a+st_OASPL_S_a+st_OASPL_P_a+st_OASPL_a+st_dBA_a+st_dBB_a+st_dBC_a+st_LedB_a+st_LedBAW_a+st_LedBBW_a;
-            }
-
-if (j==w){
-SPL_blade_total = 10.*log10(1./number_of_segments*(SPL_blade_total_aux));
-
-SPL_blade_total_a = 10.*log10(1./number_of_segments*(SPL_blade_total_aux_a));
-}
 
     QString observations_x("");
     if (!((Reynolds[i] >9.5*pow(10,5)) & (Reynolds[i]<2.5*pow(10,6))) || Mach[i]>=0.19 || !((alpha[i]<=0) & (alpha[i]>=0)) || !((alpha[i]<=5) & (alpha[i]>=5)) || !((alpha[i]<=10) & (alpha[i]>=10))){
@@ -3756,17 +3340,14 @@ if (m_parameter.Lowson_type!=0){
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
-                  SPL_dB[j] << ";" <<//SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
+                  SPL_LedB_val  << ";" <<
+                  SPL_dB[j] << ";" <<//SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
-                  SPL_LedB_val  << ";" <<
-                  SPL_LedB_valAW  << ";" <<
-                  SPL_LedB_valBW  << ";" <<
-                  SPL_LedB_valCW  << ";" <<
 //                  slog_SPL_alpha[j]  << ";" <<
 //                  slog_SPL_S[j]  << ";" <<
 //                  slog_SPL_P[j]  << ";" <<
@@ -3820,10 +3401,10 @@ else
 //                  dBA_P[j]  << ";" <<
 //                  dBB_P[j]  << ";" <<
 //                  dBC_P[j]  << ";" <<
-                  SPL_dB_val  << ";" <<
                   SPL_alpha_val  << ";" <<
                   SPL_S_val << ";" <<
                   SPL_P_val  << ";" <<
+                  SPL_dB_val  << ";" <<
                   SPL_A_val  << ";" <<
                   SPL_B_val  << ";" <<
                   SPL_C_val  << ";" <<
@@ -3839,60 +3420,20 @@ else
 
 if(j==(w-1)){
         stream << endl;
-        if (sp_OASPL<=0 & sp_OASPL>=0){stream << "OASPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< "dB" << endl;}
-        if (sp_dBA<=0 & sp_dBA>=0){stream << "OASPL(A): "  << "N/A"<< endl;} else {stream << "OASPL(A): "  << sp_dBA<< "dB" << endl;}
-        if (sp_dBB<=0 & sp_dBB>=0){stream << "OASPL(B): "  << "N/A"<< endl;} else {stream << "OASPL(B): "  << sp_dBB<< "dB" << endl;}
-        if (sp_dBC<=0 & sp_dBC>=0){stream << "OASPL(C): "  << "N/A"<< endl;} else {stream << "OASPL(C): "  << sp_dBC<< "dB" << endl;}
         if (sp_OASPL_alpha<=0 & sp_OASPL_alpha>=0){stream << "SPL_a: "  << "N/A"<< endl;} else {stream << "SPL_a: "  << sp_OASPL_alpha<< endl;}
         if (sp_OASPL_S<=0 & sp_OASPL_S>=0){stream << "SPL_s: "  << "N/A"<< endl;} else {stream << "SPL_s: "  << sp_OASPL_S<< endl;}
          if (sp_OASPL_P<=0 & sp_OASPL_P>=0){stream << "SPL_p: "  << "N/A"<< endl;} else {stream << "SPL_p: "  << sp_OASPL_P<< endl;}
           if (m_parameter.Lowson_type!=0){
         if (sp_LedB<=0 & sp_LedB>=0){stream << "SPL_LE: "  << "N/A"<< endl;} else {stream << "SPL_LE: "  << sp_LedB<< "dB" << endl;}
-        if (sp_LedBAW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBAW<< "dB" << endl;}
-        if (sp_LedBBW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBBW<< "dB" << endl;}
-        if (sp_LedBCW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBCW<< "dB" << endl;}
+//        if (sp_LedBAW<=0 & sp_LedBAW>=0){stream << "SPL_LE(A): "  << "N/A"<< endl;} else {stream << "SPL_LE(A): "  << sp_LedBAW<< "dB" << endl;}
+//        if (sp_LedBBW<=0 & sp_LedBAW>=0){stream << "SPL_LE(B): "  << "N/A"<< endl;} else {stream << "SPL_LE(B): "  << sp_LedBBW<< "dB" << endl;}
+//        if (sp_LedBCW<=0 & sp_LedBAW>=0){stream << "SPL_LE(C): "  << "N/A"<< endl;} else {stream << "SPL_LE(C): "  << sp_LedBCW<< "dB" << endl;}
           }
+          if (sp_OASPL<=0 & sp_OASPL>=0){stream << "OASPL: "  << "N/A"<< endl;} else {stream << "SPL: "  << sp_OASPL<< "dB" << endl;}
+          if (sp_dBA<=0 & sp_dBA>=0){stream << "OASPL(A): "  << "N/A"<< endl;} else {stream << "OASPL(A): "  << sp_dBA<< "dB" << endl;}
+          if (sp_dBB<=0 & sp_dBB>=0){stream << "OASPL(B): "  << "N/A"<< endl;} else {stream << "OASPL(B): "  << sp_dBB<< "dB" << endl;}
+          if (sp_dBC<=0 & sp_dBC>=0){stream << "OASPL(C): "  << "N/A"<< endl;} else {stream << "OASPL(C): "  << sp_dBC<< "dB" << endl;}
                 stream << endl;
-if (i>=(number_of_segments-1)){
-stream << "***********************************************************"<<endl;
-stream << "Total Blade: "  << endl;
-stream << "OASPL: "  << st_OASPL_a<< "dB" << endl;
-stream << "OASPL (A): "  << st_dBA_a<< "dB" <<  endl;
-stream << "OASPL (B): "  << st_dBB_a<< "dB" <<  endl;
-stream << "OASPL (C): "  << st_dBC_a<< "dB" <<  endl;
-stream << "SPL_a: "  << st_OASPL_alpha_a<< endl;
-stream << "SPL_s: "  << st_OASPL_S_a<< endl;
-stream << "SPL_p: "  << st_OASPL_P_a<< endl;
-if (m_parameter.Lowson_type!=0){
-stream << "SPL_LE: "  << st_LedB_a<< "dB" <<  endl;
-stream << "SPL_LE (A): "  << st_LedBAW_a<< "dB" <<  endl;
-stream << "SPL_LE (B): "  << st_LedBBW_a<< "dB" <<  endl;
-stream << "SPL_LE (C): "  << st_LedBCW_a<< "dB" <<  endl;}
-stream << "SPL_Blade_total: " << SPL_blade_total_a << "dB" <<  endl;
-stream << "***********************************************************"<<endl;
-stream << endl;}
-
-if(z>=lend & i>=(number_of_segments-1)){
-stream << "***********************************************************"<<endl;
-stream << "TOTAL COMPLETE" << endl;
-stream <<"***********************************************************"<<endl;
-                stream << "Total: "  << endl;
-                stream << "OASPL: "  << st_OASPL<< "dB" << endl;
-                stream << "OASPL (A): "  << st_dBA<< "dB" <<  endl;
-                stream << "OASPL (B): "  << st_dBB<< "dB" <<  endl;
-                stream << "OASPL (C): "  << st_dBC<< "dB" <<  endl;
-                stream << "SPL_a: "  << st_OASPL_alpha<< endl;
-                stream << "SPL_s: "  << st_OASPL_S<< endl;
-                stream << "SPL_p: "  << st_OASPL_P<< endl;
-          if (m_parameter.Lowson_type!=0){
-                stream << "SPL_LE: "  << st_LedB<< "dB" <<  endl;
-          stream << "SPL_LE (A): "  << st_LedBAW<< "dB" <<  endl;
-        stream << "SPL_LE (B): "  << st_LedBBW<< "dB" <<  endl;
-stream << "SPL_LE (C): "  << st_LedBCW<< "dB" <<  endl;}
-                stream << "SPL_Blade_total: " << SPL_blade_total << "dB" <<  endl;
-                stream << "***********************************************************"<<endl;
-stream << endl;
-}
 }}}}
 z=z+ldelta;
         }}
@@ -4017,6 +3558,10 @@ else {value=m_parameter.rot_speed_check;}
     case P::phi_type:
         if(set) m_parameter.phi_type = value.toInt();
         else {value = m_parameter.phi_type;}break;
+
+    case P::theta_type:
+        if(set) m_parameter.theta_type = value.toInt();
+        else {value = m_parameter.theta_type;}break;
 
     case P::obs_x_pos:
         if (m_parameter.obs_x_pos<=0 & m_parameter.obs_x_pos>=0){m_parameter.obs_x_pos=10;}

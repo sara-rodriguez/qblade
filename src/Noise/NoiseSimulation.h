@@ -80,6 +80,7 @@ private:
     double m_dstar_user;
     int m_dstar_type;
     int m_phi_type;
+    int m_theta_type;
 
     QList <double> m_pos;
     QList <double> m_c_local;       //local chord
