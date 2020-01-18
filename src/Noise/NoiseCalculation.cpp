@@ -726,7 +726,14 @@ if (m_parameter->Lowson_type!=0){
     m_SPL_LEdBAW[posOpPoint][posFreq] = aux_SPL_LEdB + AWeighting[posFreq];
     m_SPL_LEdBBW[posOpPoint][posFreq] = aux_SPL_LEdB + BWeighting[posFreq];
     m_SPL_LEdBCW[posOpPoint][posFreq] = aux_SPL_LEdB + CWeighting[posFreq];
-}}
+}
+else{
+    m_SPL_LEdB[posOpPoint][posFreq] = 0;
+    m_SPL_LEdBAW[posOpPoint][posFreq] = 0;
+    m_SPL_LEdBBW[posOpPoint][posFreq] = 0;
+    m_SPL_LEdBCW[posOpPoint][posFreq] = 0;
+}
+}
 //end Alexandre MOD
 
 void NoiseCalculation::calculate() {
@@ -939,10 +946,18 @@ m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordm
             m_SPLPLOG[posOpPoint] += pow(10,(m_SPLpdB[posOpPoint][posFreq]/10));
 
 //Sara
+            if (m_parameter->Lowson_type!=0){
             m_SPLlogLE[posOpPoint] += pow(10,(m_SPL_LEdB[posOpPoint][posFreq]/10));
             m_SPLLEdBAW[posOpPoint] += pow(10,(m_SPL_LEdBAW[posOpPoint][posFreq]/10));
             m_SPLLEdBBW[posOpPoint] +=pow(10,(m_SPL_LEdBBW[posOpPoint][posFreq]/10));
             m_SPLLEdBCW[posOpPoint] += pow(10,(m_SPL_LEdBCW[posOpPoint][posFreq]/10));
+            }
+            else{
+            m_SPLlogLE[posOpPoint] = 0;
+            m_SPLLEdBAW[posOpPoint] = 0;
+            m_SPLLEdBBW[posOpPoint] = 0;
+            m_SPLLEdBCW[posOpPoint] = 0;
+            }
 //Sara
         }
 
@@ -2218,7 +2233,7 @@ aux_m_SPLdBAW3d=0;
 aux_m_SPLdBBW3d=0;
 aux_m_SPLdBCW3d=0;
 }
-if (LE_validation){
+if (LE_validation!=0){
 aux_m_SPL_LEdB3d=SPL_LedB[j];
 aux_m_SPL_LEdBAW3d=SPL_LedBAW[j];
 aux_m_SPL_LEdBBW3d=SPL_LedBBW[j];
@@ -2251,10 +2266,18 @@ m_SPLdB3d[i][j]=aux_m_SPLdB3d;
 m_SPLdBAW3d[i][j]=aux_m_SPLdBAW3d;
 m_SPLdBBW3d[i][j]=aux_m_SPLdBBW3d;
 m_SPLdBCW3d[i][j]=aux_m_SPLdBCW3d;
+if(m_parameter->Lowson_type!=0){
 m_SPL_LEdB3d[i][j]=aux_m_SPL_LEdB3d;
 m_SPL_LEdBAW3d[i][j]=aux_m_SPL_LEdBAW3d;
 m_SPL_LEdBBW3d[i][j]=aux_m_SPL_LEdBBW3d;
 m_SPL_LEdBCW3d[i][j]=aux_m_SPL_LEdBCW3d;
+}
+else{
+m_SPL_LEdB3d[i][j]=0;
+m_SPL_LEdBAW3d[i][j]=0;
+m_SPL_LEdBBW3d[i][j]=0;
+m_SPL_LEdBCW3d[i][j]=0;
+}
 }}}
 z=z+ldelta;
 }
@@ -2366,12 +2389,20 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLpdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final[j]);
     m_SPLdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final[j]);
     m_SPLdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final[j]);
-    m_SPLdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final[j]);
-    m_SPLdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final[j]);
+    m_SPLdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final[j]);
+    m_SPLdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final[j]);
+    if (m_parameter->Lowson_type!=0){
     m_SPL_LEdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final[j]);
     m_SPL_LEdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final[j]);
     m_SPL_LEdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final[j]);
     m_SPL_LEdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final[j]);
+    }
+    else{
+    m_SPL_LEdB3d_final[i][j]=0;
+    m_SPL_LEdBAW3d_final[i][j]=0;
+    m_SPL_LEdBBW3d_final[i][j]=0;
+    m_SPL_LEdBCW3d_final[i][j]=0;
+    }
 }}}
 
 //calculation for the OASPL for the csv output file
@@ -2409,8 +2440,16 @@ m_OASPLC3d[i]=10*log10(auxa_m_OASPLC3d[i]);
 m_SPLALOG3d[i]=10*log10(auxa_m_SPLALOG3d[i]);
 m_SPLSLOG3d[i]=10*log10(auxa_m_SPLSLOG3d[i]);
 m_SPLPLOG3d[i]=10*log10(auxa_m_SPLPLOG3d[i]);
+if (m_parameter->Lowson_type!=0){
 m_SPLLEdBAW3d[i]=10*log10(auxa_m_SPLLEdBAW3d[i]);
 m_SPLLEdBBW3d[i]=10*log10(auxa_m_SPLLEdBBW3d[i]);
 m_SPLLEdBCW3d[i]=10*log10(auxa_m_SPLLEdBCW3d[i]);
 m_SPLlogLE3d[i]=10*log10(auxa_m_SPLlogLE3d[i]);
+}
+else{
+m_SPLLEdBAW3d[i]=0;
+m_SPLLEdBBW3d[i]=0;
+m_SPLLEdBCW3d[i]=0;
+m_SPLlogLE3d[i]=0;
+}
 }}
