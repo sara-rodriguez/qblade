@@ -1864,9 +1864,13 @@ double ZB;
     c_0[i]=bdata->m_c_local.value(i);
     r_0[i]=bdata->m_pos.value(i);
 
+    double hub_radius=pbem->m_pBlade->m_HubRadius;
+    double outer_radius=pbem->m_pTData->OuterRadius;
+    double blade_radius=(outer_radius-hub_radius);
+
 if(i==(number_of_segments-1)){
-c_1[i]=0;
-r_1[i]=0;
+c_1[i]=bdata->m_c_local.value(i);
+r_1[i]=blade_radius;
 }
 else
 {
@@ -1877,7 +1881,6 @@ r_1[i]=bdata->m_pos.value(i+1);
 local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
-    qDebug() << "b" << b[i];
 
 //    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line p 75 apostila
     a[i]=local_twist[i]+blade_pitch;
@@ -1900,8 +1903,8 @@ local_twist[i]=theta_BEM[i];
     dist_obs[i]=r_e[i];
 
     //phi type and theta type fixed 90º or calculated
-    if (m_parameter->theta_type==1){theta_e[i]=90;} else {theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));}
-    if (m_parameter->phi_type==1){phi_e[i]=90;} else {phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));}
+//    if (m_parameter->theta_type==1){theta_e[i]=90;}
+//    if (m_parameter->phi_type==1){phi_e[i]=90;}
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
@@ -2313,6 +2316,12 @@ QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     double auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
 
+    double Final_qs3d_alpha_aux=0;
+    double Final_qs3d_S_aux=0;
+    double Final_qs3d_P_aux=0;
+    double Final_qs3d_LE_aux=0;
+    double Final_qs3d_aux=0;
+
     // Resize vectors acording to OpPoints total
     unsigned int sizea = 0;
     int size;
@@ -2403,7 +2412,24 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPL_LEdBBW3d_final[i][j]=0;
     m_SPL_LEdBCW3d_final[i][j]=0;
     }
-}}}
+}
+}}
+
+//OASPL complete for quasi 3d
+int i=number_of_segments-1;
+for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+Final_qs3d_alpha_aux += pow(10.,(m_SPLadB3d_final[i][j])/10.);
+Final_qs3d_S_aux += pow(10.,(m_SPLsdB3d_final[i][j])/10.);
+Final_qs3d_P_aux += pow(10.,(m_SPLpdB3d_final[i][j])/10.);
+Final_qs3d_LE_aux += pow(10.,(m_SPL_LEdB3d_final[i][j])/10.);
+Final_qs3d_aux += pow(10.,(m_SPLdB3d_final[i][j])/10.);
+    }
+
+Final_qs3d_alpha = 10*log10(Final_qs3d_alpha_aux);
+Final_qs3d_S = 10*log10(Final_qs3d_S_aux);
+Final_qs3d_P = 10*log10(Final_qs3d_P_aux);
+Final_qs3d_LE =  10*log10(Final_qs3d_LE_aux);
+Final_qs3d = 10*log10(Final_qs3d_aux);
 
 //calculation for the OASPL for the csv output file
 for (int i=0;i<size;++i){
@@ -2452,4 +2478,5 @@ m_SPLLEdBBW3d[i]=0;
 m_SPLLEdBCW3d[i]=0;
 m_SPLlogLE3d[i]=0;
 }
-}}
+}
+}

@@ -224,30 +224,22 @@ pGrid->setSizeConstraint(QLayout::SetMinimumSize);
 buttonle = new QPushButton ("δ* User Input");
 buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
 buttonle->setEnabled(false);
-pGrid->addWidget(buttonle,8,2);//,9,2
+pGrid->addWidget(buttonle,9,1);//,8,2
 connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 
-QComboBox *phi_combobox = new QComboBox;
-pGrid->addEdit(P::phi_type,ComboBox, phi_combobox,"directivity ψe type:","");
-phi_combobox->insertItem(0,"calculated");
-phi_combobox->insertItem(1,"90º");
+//QComboBox *phi_combobox = new QComboBox;
+//pGrid->addEdit(P::phi_type,ComboBox, phi_combobox,"directivity ψe type:","");
+//phi_combobox->insertItem(0,"calculated");
+//phi_combobox->insertItem(1,"90º");
 
 
-QComboBox *theta_combobox = new QComboBox;
-pGrid->addEdit(P::theta_type,ComboBox, theta_combobox,"directivity θe type:","");
-theta_combobox->insertItem(0,"calculated");
-theta_combobox->insertItem(1,"90º");
-
-hBox->addLayout(vBox);
-//hBox = new QHBoxLayout;
-//widget->setLayout(hBox);
-    QLabel *imageLabela = new QLabel;
-    imageLabela->setPixmap(QPixmap(":/images/noise_3d_position.png"));
-//    pGrid->addWidget(imageLabela,0,3);//,9,2
-    vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
+//QComboBox *theta_combobox = new QComboBox;
+//pGrid->addEdit(P::theta_type,ComboBox, theta_combobox,"directivity θe type:","");
+//theta_combobox->insertItem(0,"calculated");
+//theta_combobox->insertItem(1,"90º");
 
 QLabel *labelte = new QLabel ("Observer Position:");
-pGrid->addWidget(labelte,13,0);
+pGrid->addWidget(labelte,10,0);
 pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
 pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
@@ -258,6 +250,14 @@ double blade_radius=(outer_radius-hub_radius);
 double z_pos=blade_radius/2.;
 
 pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
+
+hBox->addLayout(vBox);
+//hBox = new QHBoxLayout;
+//widget->setLayout(hBox);
+    QLabel *imageLabela = new QLabel;
+    imageLabela->setPixmap(QPixmap(":/images/noise_3d_position.png"));
+//    pGrid->addWidget(imageLabela,0,3);//,9,2
+    vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
 //Sara
 
     setUnitContainingLabels();

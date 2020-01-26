@@ -76,6 +76,12 @@ public:
     TwoDVector SPL_LEdBAW3d_final() const { return m_SPL_LEdBAW3d_final; }
     TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
     TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
+
+    double Final_qs3d_alpha;
+    double Final_qs3d_S;
+    double Final_qs3d_P;
+    double Final_qs3d_LE;
+    double Final_qs3d;
 //Sara
 	
 	// NM apparently needed for export as .txt only

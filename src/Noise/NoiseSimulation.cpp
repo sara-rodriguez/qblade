@@ -237,7 +237,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_final(QTextStream &stream) {
     stream.setRealNumberNotation(QTextStream::FixedNotation);
     stream.setRealNumberPrecision(5);
 
-    stream << "Noise prediction file export quasi 3D from Graphics" << endl;
+    stream << "Noise prediction file export quasi 3Ds" << endl;
     stream << endl;
     if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" <<endl;}
     if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}
@@ -246,6 +246,19 @@ void NoiseSimulation::exportCalculationqs3DNoise_final(QTextStream &stream) {
 
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     int number_of_segments = pBEM->dlg_elements;
+    stream << endl;
+    stream << endl;
+    stream << "*********************************************" << endl;
+    stream << "Total Values:" << endl;
+    stream << endl;
+    stream << "OASPL: " << m_calculation.Final_qs3d << endl;
+    stream << "SPL alfa: " << m_calculation.Final_qs3d_alpha << endl;
+    stream << " SPL S: " << m_calculation.Final_qs3d_S << endl;
+    stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
+    if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
+    stream << "*********************************************" << endl;
+    stream << endl;
+    stream << endl;
 
     for (int i = 0; i < number_of_segments; ++i) { //Sra urgente
 stream << qSetFieldWidth(0);
@@ -315,8 +328,66 @@ stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
         stream << "OASPL (C): " << m_calculation.OASPLC3d()[i] << " dB(C)" << endl;
         stream << endl;
         stream << endl;
-    }
+
+if(i==(number_of_segments-1)){
+stream << "********** FINAL **********" << endl;
+if(m_parameter.Lowson_type!=0){
+stream << qSetFieldWidth(14) <<
+   "Freq [Hz]" << ";" <<
+   "SPLa" << ";" <<
+   "SPLs" << ";" <<
+   "SPLp" << ";" <<
+   "SPL_LE (dB)" << ";" <<
+   "SPL (dB)" << ";" <<
+   "SPL (dB(A))" << ";" <<
+   "SPL (dB(B))" << ";" <<
+   "SPL (dB(C))" << ";" <<endl; //Alexandre MOD
 }
+else{
+    stream << qSetFieldWidth(14) <<
+              "Freq [Hz]" << ";" <<
+              "SPLa" << ";" <<
+              "SPLs" << ";" <<
+              "SPLp" << ";" <<
+              "SPL (dB)" << ";" <<
+              "SPL (dB(A))" << ";" <<
+              "SPL (dB(B))" << ";" <<
+              "SPL (dB(C))" <<endl; //Alexandre MOD
+}
+//int i=0;
+for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
+
+if(m_parameter.Lowson_type!=0){
+        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                  m_calculation.SPLadB3d_final()[i][j] << ";" <<
+                  m_calculation.SPLsdB3d_final()[i][j] << ";" <<
+                  m_calculation.SPLpdB3d_final()[i][j] << ";" <<
+                  m_calculation.SPL_LEdB3d_final()[i][j] << ";" <<
+                  m_calculation.SPLdB3d_final()[i][j] << ";" <<
+                  m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
+                  m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
+                  m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
+                  endl; //Alexandre MOD
+    }
+else{
+ stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+           m_calculation.SPLadB3d_final()[i][j] << ";" <<
+           m_calculation.SPLsdB3d_final()[i][j] << ";" <<
+           m_calculation.SPLpdB3d_final()[i][j] << ";" <<
+           m_calculation.SPLdB3d_final()[i][j] << ";" <<
+           m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
+           m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
+           m_calculation.SPLdBCW3d_final()[i][j] << ";" << endl;
+}
+}
+stream << endl;
+//stream << "Total Values" << endl;
+//stream << "OASPL: " << m_calculation.Final_qs3d << endl;
+//stream << "SPL alfa: " << m_calculation.Final_qs3d_alpha << endl;
+//stream << " SPL S: " << m_calculation.Final_qs3d_S << endl;
+//stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
+//if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
+}}}
 
 void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
 
@@ -751,9 +822,13 @@ double ZB;
     c_0[i]=bdata->m_c_local.value(i);
     r_0[i]=bdata->m_pos.value(i);
 
+    double hub_radius=pbem->m_pBlade->m_HubRadius;
+    double outer_radius=pbem->m_pTData->OuterRadius;
+    double blade_radius=(outer_radius-hub_radius);
+
 if(i==(number_of_segments-1)){
-c_1[i]=0;
-r_1[i]=0;
+c_1[i]=bdata->m_c_local.value(i);
+r_1[i]=blade_radius;
 }
 else
 {
@@ -791,8 +866,8 @@ local_twist[i]=theta_BEM[i];
     dist_obs[i]=r_e[i];
 
     //phi type and theta type fixed 90º or calculated
-    if (m_parameter.theta_type==1){theta_e[i]=90;}
-    if (m_parameter.phi_type==1){phi_e[i]=90;}
+//    if (m_parameter.theta_type==1){theta_e[i]=90;}
+//    if (m_parameter.phi_type==1){phi_e[i]=90;}
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
@@ -1365,9 +1440,13 @@ double ZB;
     c_0[i]=bdata->m_c_local.value(i);
     r_0[i]=bdata->m_pos.value(i);
 
+    double hub_radius=pbem->m_pBlade->m_HubRadius;
+    double outer_radius=pbem->m_pTData->OuterRadius;
+    double blade_radius=(outer_radius-hub_radius);
+
 if(i==(number_of_segments-1)){
-    c_1[i]=0;
-    r_1[i]=0;
+c_1[i]=bdata->m_c_local.value(i);
+r_1[i]=blade_radius;
 }
 else
 {
@@ -1409,8 +1488,8 @@ local_twist[i]=theta_BEM[i];
    theta_rad[i]=qDegreesToRadians(theta[i]);
 
    //phi type and theta type fixed 90º or calculated
-   if (m_parameter.theta_type==1){theta_e[i]=90;}
-   if (m_parameter.phi_type==1){phi_e[i]=90;}
+//   if (m_parameter.theta_type==1){theta_e[i]=90;}
+//   if (m_parameter.phi_type==1){phi_e[i]=90;}
 
    alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
@@ -2666,9 +2745,13 @@ double ZB;
     c_0[i]=bdata->m_c_local.value(i);
     r_0[i]=bdata->m_pos.value(i);
 
+    double hub_radius=pbem->m_pBlade->m_HubRadius;
+    double outer_radius=pbem->m_pTData->OuterRadius;
+    double blade_radius=(outer_radius-hub_radius);
+
 if(i==(number_of_segments-1)){
-    c_1[i]=0;
-    r_1[i]=0;
+c_1[i]=bdata->m_c_local.value(i);
+r_1[i]=blade_radius;
 }
 else
 {
@@ -2709,8 +2792,8 @@ local_twist[i]=theta_BEM[i];
     dist_obs[i]=r_e[i];
 
     //phi type and theta type fixed 90º or calculated
-    if (m_parameter.theta_type==1){theta_e[i]=90;}
-    if (m_parameter.phi_type==1){phi_e[i]=90;}
+//    if (m_parameter.theta_type==1){theta_e[i]=90;}
+//    if (m_parameter.phi_type==1){phi_e[i]=90;}
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);

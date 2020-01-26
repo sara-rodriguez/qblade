@@ -29,15 +29,15 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     connect(m_exportqs3DNoiseLog, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseLog()));
     addAction(m_exportqs3DNoiseLog);
 
-    m_exportqs3DNoiseComplete = new QAction("Export current quasi 3D Noise Complete", this);
-    connect(m_exportqs3DNoiseComplete, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseComplete()));
-    addAction(m_exportqs3DNoiseComplete);
+//    m_exportqs3DNoiseComplete = new QAction("Export current quasi 3D Noise Complete", this);
+//    connect(m_exportqs3DNoiseComplete, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseComplete()));
+//    addAction(m_exportqs3DNoiseComplete);
 
-    m_exportqs3DNoise = new QAction("Export current quasi 3D Noise", this);
-    connect(m_exportqs3DNoise, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise()));
-    addAction(m_exportqs3DNoise);
+//    m_exportqs3DNoise = new QAction("Export current quasi 3D Noise", this);
+//    connect(m_exportqs3DNoise, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise()));
+//    addAction(m_exportqs3DNoise);
 
-    m_exportqs3DNoise_final = new QAction("Export current quasi 3D Noise Graphics", this);
+    m_exportqs3DNoise_final = new QAction("Export current quasi 3D Noise", this);
     connect(m_exportqs3DNoise_final, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_final()));
     addAction(m_exportqs3DNoise_final);
     //Sara
@@ -133,9 +133,9 @@ void NoiseMenu::onExportqs3DNoiseComplete() {
 }
 
 void NoiseMenu::onExportqs3DNoise_final() {
-    QString fileName = m_module->getShownSimulation()->getName() + "-quasi_3D-graphics.csv";
+    QString fileName = m_module->getShownSimulation()->getName() + "-quasi_3D.csv";
     fileName.replace(' ', '_');
-    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Simulation from Graphics",
+    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Simulation",
                                             g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
                                             "Comma Separated Values (*.csv)");
     if (!fileName.endsWith(".csv")) {
