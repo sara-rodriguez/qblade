@@ -170,6 +170,7 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
 
 m_rot_speed_check = new QCheckBox("rot. speed set:");
 pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
+
     connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnRotSpeedCheck()));//int
 
 m_rot_speed_numberedit = new NumberEdit ();
@@ -247,8 +248,8 @@ hBox->addLayout(vBox);
 
 QLabel *labelte = new QLabel ("Observer Position:");
 pGrid->addWidget(labelte,13,0);
-pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"X:", 10);
-pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"Y:", 10);
+pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
+pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 double hub_radius=pbem->m_pBlade->m_HubRadius;
@@ -256,7 +257,7 @@ double outer_radius=pbem->m_pTData->OuterRadius;
 double blade_radius=(outer_radius-hub_radius);
 double z_pos=blade_radius/2.;
 
-pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"Z:", z_pos);
+pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
 //Sara
 
     setUnitContainingLabels();

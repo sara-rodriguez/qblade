@@ -783,11 +783,16 @@ local_twist[i]=theta_BEM[i];
     r_rt[i]=r_e[i];
     theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
     phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+
+    if(i==number_of_segments){
+        theta_e[i]=0;
+        phi_e[i]=0;
+    }
     dist_obs[i]=r_e[i];
 
     //phi type and theta type fixed 90º or calculated
-    if (m_parameter.theta_type==1){theta_e[i]=90;} else {theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));}
-    if (m_parameter.phi_type==1){phi_e[i]=90;} else {phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));}
+    if (m_parameter.theta_type==1){theta_e[i]=90;}
+    if (m_parameter.phi_type==1){phi_e[i]=90;}
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
@@ -1392,14 +1397,20 @@ local_twist[i]=theta_BEM[i];
     r_rt[i]=r_e[i];
     theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
     phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+
+    if(i==number_of_segments){
+        theta_e[i]=0;
+        phi_e[i]=0;
+    }
+
     dist_obs[i]=r_e[i];
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
 
    //phi type and theta type fixed 90º or calculated
-   if (m_parameter.theta_type==1){theta_e[i]=90;} else {theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));}
-   if (m_parameter.phi_type==1){phi_e[i]=90;} else {phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));}
+   if (m_parameter.theta_type==1){theta_e[i]=90;}
+   if (m_parameter.phi_type==1){phi_e[i]=90;}
 
    alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
@@ -2686,13 +2697,20 @@ local_twist[i]=theta_BEM[i];
 
     r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
     r_rt[i]=r_e[i];
+
     theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
     phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+
+    if(i==number_of_segments){
+        theta_e[i]=0;
+        phi_e[i]=0;
+    }
+
     dist_obs[i]=r_e[i];
 
     //phi type and theta type fixed 90º or calculated
-    if (m_parameter.theta_type==1){theta_e[i]=90;} else {theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));}
-    if (m_parameter.phi_type==1){phi_e[i]=90;} else {phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));}
+    if (m_parameter.theta_type==1){theta_e[i]=90;}
+    if (m_parameter.phi_type==1){phi_e[i]=90;}
 
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
