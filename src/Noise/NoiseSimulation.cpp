@@ -253,14 +253,15 @@ void NoiseSimulation::exportCalculationqs3DNoise_final(QTextStream &stream) {
     stream << endl;
     stream << "OASPL: " << m_calculation.Final_qs3d << endl;
     stream << "SPL alfa: " << m_calculation.Final_qs3d_alpha << endl;
-    stream << " SPL S: " << m_calculation.Final_qs3d_S << endl;
+    stream << "SPL S: " << m_calculation.Final_qs3d_S << endl;
     stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
     if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
+    stream << endl;
     stream << "*********************************************" << endl;
     stream << endl;
     stream << endl;
 
-    for (int i = 0; i < number_of_segments; ++i) { //Sra urgente
+    for (int i = 0; i < number_of_segments; ++i){
 stream << qSetFieldWidth(0);
 //        stream << endl;
 stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;

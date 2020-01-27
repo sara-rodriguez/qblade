@@ -49,8 +49,8 @@ void NoiseMenu::onAboutToShow() {
     
     //Sara
     m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
-    m_exportqs3DNoise->setEnabled(simulationAvailable);
-    m_exportqs3DNoiseComplete->setEnabled(simulationAvailable);
+//    m_exportqs3DNoise->setEnabled(simulationAvailable);
+//    m_exportqs3DNoiseComplete->setEnabled(simulationAvailable);
     m_exportqs3DNoise_final->setEnabled(simulationAvailable);
     //Sara
 }

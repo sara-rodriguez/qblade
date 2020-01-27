@@ -1336,17 +1336,12 @@ int number_of_segments = pbem->dlg_elements;
         double c_le;
         double I_le;
         double lambda_le;
-        double r_e_le;
         double beta_le;
         double L_le;
         double D_L_le;
         double K_le;
         double S_le;
         double LFC_le;
-        double aux0_le;
-        double aux1_le;
-        double aux4_le;
-        double aux5_le;
 
         //definitions
         double axial_ind_fact[number_of_segments];
@@ -1377,6 +1372,8 @@ int number_of_segments = pbem->dlg_elements;
         double D_starred_N[number_of_segments];
         double Dh[number_of_segments];
         double Dl[number_of_segments];
+        double Dl_le[number_of_segments];
+        double aux0_le[number_of_segments];
         double Mach[number_of_segments];
         double corr_fact[number_of_segments];
         double D_starred_HT_S[number_of_segments];
@@ -1387,7 +1384,6 @@ int number_of_segments = pbem->dlg_elements;
         double SwAlpha[number_of_segments];
         double SwAlpha_1[number_of_segments];
         double SwAlpha_2[number_of_segments];
-//        double observer_position = 10;
         double gamma[number_of_segments];
         double gamma0[number_of_segments];
         double beta[number_of_segments];
@@ -1397,8 +1393,6 @@ int number_of_segments = pbem->dlg_elements;
         double K1[number_of_segments];
         double K2[number_of_segments];
         double EddyMach_calc[number_of_segments];
-//        double dist_z[number_of_segments];
-//        double dist_y[number_of_segments];
         double dist_obs[number_of_segments];
         double D_starred_S[number_of_segments];
         double D_starred_P[number_of_segments];
@@ -1441,8 +1435,11 @@ int number_of_segments = pbem->dlg_elements;
         double c_1[number_of_segments];
         double r_0[number_of_segments];
         double c_0[number_of_segments];
-//        double twist[number_of_segments];
         double local_twist[number_of_segments];
+        double r_e_le[number_of_segments];
+        double aux1_le[number_of_segments];
+        double aux4_le[number_of_segments];
+        double aux5_le[number_of_segments];
 
         double ri[number_of_segments];
         double ri_1[number_of_segments];
@@ -2030,13 +2027,6 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 
     Alin_a[j]=A_min_alpha[j]+AR_ao[i]*(A_max_alpha[j]-A_min_alpha[j]);
 
-
-//    SPL_alpha_min0[j]=first_term_Dh_S[i]+K2[i]+B_b[j];
-
-
-//    SPL_alpha_big0[j]=first_term_Dl_S[i]+K2[i]+Alin_a[j];
-
-
     dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
 
 
@@ -2109,11 +2099,9 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     c_le=100.*chord[i];
     I_le=m_parameter->TurbulenceIntensity;
     lambda_le=100.*m_parameter->IntegralLengthScale;
-    r_e_le=100.*dist_obs[i];
+    r_e_le[i]=100.*dist_obs[i];
     beta_le=sqrt(1-pow(Mach[i],2));
     L_le=100.*L[i];
-    D_L_le=0.5*Dl[i];
-    aux_le=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*D_L_le)/(pow(r_e_le, 2));
     K_le=M_PI*CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
@@ -2135,16 +2123,19 @@ if (m_parameter->lowFreq) {
 Dh[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i]/2.)),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta_e[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi_e[i]))),2);
 }
 else{Dh[i]=1;}
-
 if (m_parameter->lowFreq) {
 Dl[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i])),2.)*pow(sin(qDegreesToRadians(phi_e[i])),2.))/pow((1.+(Mach[i]*cos(qDegreesToRadians(theta_e[i])))),4.);
 }
 else{Dl[i]=1;}
 
-aux0_le=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl[i])/(pow(r_e_le, 2));
-aux1_le=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
-aux4_le=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
-aux5_le=10.*log10(aux0_le*aux4_le);
+Dl_le[i]=0.5*Dl[i];
+
+//Sara urgente
+aux0_le[i]=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl_le[i])/(pow(r_e_le[i], 2));
+
+aux1_le[i]=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
+aux4_le[i]=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
+aux5_le[i]=10.*log10(aux0_le[i]*aux4_le[i]);
 
 //Validation:
 
@@ -2168,7 +2159,7 @@ BPM_validation=true;
 //Lowson validation:
 //if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
 //if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0)))){
-SPL_LedB[j]=10.*log10(pow(10,(aux1_le+aux5_le)/10.));
+SPL_LedB[j]=10.*log10(pow(10,(aux1_le[i]+aux5_le[i])/10.));
 SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
 SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
 SPL_LedBCW[j]=SPL_LedB[j]+CWeighting[j];
@@ -2187,14 +2178,6 @@ first_term_Dl_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dl[i]*D_starred_S[i]/pow(dist_o
 first_term_Dh_P[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_P[i]/pow(dist_obs[i],2));
 
 first_term_Dh_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_S[i]/pow(dist_obs[i],2));
-
-//    Sara urgente
-//qDebug() << "i: " << i;
-//qDebug() << "Mach[i]: " << Mach[i];
-//qDebug() << "Dl[i]: " << Dl[i];
-//qDebug() << "D_starred_S[i]: " << D_starred_S[i];
-//qDebug() << "D_starred_P[i]" << D_starred_P[i];
-//qDebug() << "dist_obs[i]: " << dist_obs[i];
 
 SPL_dB_P[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P[i];
 
