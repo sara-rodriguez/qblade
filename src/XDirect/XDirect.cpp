@@ -153,7 +153,7 @@ QXDirect::QXDirect(QWidget *parent)
 
     m_Alpha      = -10.0;
     m_AlphaMax   = 20.0;
-	m_AlphaDelta = 0.5;
+    m_AlphaDelta = 0.25;//Sara
 	m_Cl         = 0.0;
 	m_ClMax      = 1.0;
 	m_ClDelta    = 0.1;
@@ -1665,7 +1665,7 @@ void QXDirect::LoadSettings(QSettings *pSettings)
 		m_iPlrView       = pSettings->value("PlrView").toInt();
 		m_Alpha          = pSettings->value("AlphaMin").toDouble();
 		m_AlphaMax       = pSettings->value("AlphaMax").toDouble();
-		m_AlphaDelta     = pSettings->value("AlphaDelta").toDouble();
+        m_AlphaDelta     = pSettings->value("AlphaDelta").toDouble();
 		m_Cl             = pSettings->value("ClMin").toDouble();
 		m_ClMax          = pSettings->value("ClMax").toDouble();
 		m_ClDelta        = pSettings->value("ClDelta").toDouble();
@@ -5341,6 +5341,8 @@ void QXDirect::ReadParams()
 	m_bSequence = m_pctrlSequence->isChecked();
 	m_bInitBL   = m_pctrlInitBL->isChecked();
 	m_bViscous  = m_pctrlViscous->isChecked();
+
+    if (m_AlphaDelta>0.25){AlphaDeltaNoise=1;}else{AlphaDeltaNoise=0;} //Sara urgente
 }
 
 
@@ -5409,7 +5411,7 @@ void QXDirect::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("FullReport", m_pXFoil->m_bFullReport);
 		pSettings->setValue("NReynolds", m_NRe);
 
-		if(m_PolarType==FIXEDSPEEDPOLAR)      pSettings->setValue("Type", 1);
+        if(m_PolarType==FIXEDSPEEDPOLAR)      pSettings->setValue("Type", 1);
 		else if(m_PolarType==FIXEDSPEEDPOLAR) pSettings->setValue("Type", 2);
 		else if(m_PolarType==FIXEDAOAPOLAR)   pSettings->setValue("Type", 4);
 		else if(m_PolarType==STABILITYPOLAR)  pSettings->setValue("Type", 7);

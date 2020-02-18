@@ -35,8 +35,10 @@ public:
 	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
 	void calculate();  // can throw NoiseException
 
+    void verifydeltafor3d();//Sara new
     void calculateqs3d_2d_curves();//Sara
     void calculateqs3d_final();//Sara
+    void calculate3d();//Sara
 	
 	// NM the arrays containing the graph data
 	TwoDVector SPLadB() const { return m_SPLadB; }
@@ -239,6 +241,7 @@ private:
     double m_obs_y_pos;
     double m_obs_z_pos;
     int m_dstar_type;
+    int m_mode_type;
     int m_phi_type;
     int m_theta_type;
     //Sara

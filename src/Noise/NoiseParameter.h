@@ -73,6 +73,7 @@ public:
     int phi_type;
     int theta_type;
     int dstar_type;
+    int mode_type;
 
     double D_starred_index_user[40];
     double D_starred_S_user[40];

@@ -8,7 +8,6 @@ class QScrollArea;
 #include "../ParameterViewer.h"
 #include "../StoreAssociatedComboBox_include.h"
 #include "../XBEM/TBEMData.h" //Sara
-//#include "NoiseSimulation.h" //Sara
 #include <QCheckBox>//Sara
 #include <QComboBox>//Sara
 class NoiseModule;
@@ -23,6 +22,7 @@ public:
 //Sara
     double change_TSR;
     int phi_selection;
+    double AlphaDelta;
 
     QVector<int> a_D_starred_index_user;
     QVector<double> a_D_starred_S_user;
@@ -68,6 +68,7 @@ private:
     NumberEdit *m_u_wind_speed_numberedit;
     QPushButton *buttonle;
     QComboBox *dstar_combobox;
+    QComboBox *mode_combobox;
 //Sara
 
 	QButtonGroup *m_selectFromButtons;
@@ -93,11 +94,13 @@ private slots:
 	void onAllButtonToggled (bool pressed);
 	
 	void onCreateButtonClicked ();
+    void onVerifyDeltaFor3D();
 	void onUnitsChanged () { }  // no need for this
 
     //Sara
         void OnImportStarredD();
         void OnSetDstarButton(int index);
+        void OnModeDefine(int index);
         void OnRotSpeedCheck();
         void OnWindSpeedCheck();
         void OnTSRCheck();

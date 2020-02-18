@@ -79,6 +79,7 @@ private:
     double m_TSR;
     double m_dstar_user;
     int m_dstar_type;
+    int m_mode_type;
     int m_phi_type;
     int m_theta_type;
 

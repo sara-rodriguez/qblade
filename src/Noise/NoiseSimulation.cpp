@@ -147,6 +147,7 @@ void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
     m_calculation.calculateqs3d_2d_curves();//Sara
+    m_calculation.calculate3d();//Sara
     m_calculation.calculateqs3d_final();//Sara
 }
 
@@ -533,34 +534,18 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
 
     double sp_OASPL_alpha=0;
     double splog_OASPL_alpha=0;
-//    double st_OASPL_alpha=0;
-//    double stlog_OASPL_alpha=0;
     double sp_OASPL_S=0;
     double splog_OASPL_S=0;
-//    double st_OASPL_S=0;
-//    double stlog_OASPL_S=0;
     double sp_OASPL_P=0;
     double splog_OASPL_P=0;
-//    double st_OASPL_P=0;
-//    double stlog_OASPL_P=0;
     double sp_OASPL=0;
     double splog_OASPL=0;
-//    double st_OASPL=0;
-//    double stlog_OASPL=0;
     double sp_dBA=0;
     double splog_dBA=0;
-//    double st_dBA=0;
-//    double stlog_dBA=0;
     double sp_dBB=0;
     double splog_dBB=0;
-//    double st_dBB=0;
-//    double stlog_dBB=0;
     double sp_dBC=0;
     double splog_dBC=0;
-//    double st_dBC=0;
-//    double stlog_dBC=0;
-//    double SPL_blade_total=0;//Sara new
-//    double SPL_blade_total_aux=0;//Sara new
 
     double r_R0  =  0.05; double c_R0 = 0.05500;
     double r_R1  =  0.25; double c_R1 = 0.07500;

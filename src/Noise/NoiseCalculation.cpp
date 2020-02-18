@@ -14,6 +14,7 @@
 #include "../Graph/ShowAsGraphInterface.h"
 #include "../ParameterObject.h"
 #include "../XDirect/FoilPolarDlg.h"
+#include "../XDirect/XDirect.h"//urgente
 #include "../XBEM/BData.h"
 #include <QtMath>
 #include <cmath>
@@ -2130,7 +2131,7 @@ else{Dl[i]=1;}
 
 Dl_le[i]=0.5*Dl[i];
 
-//Sara urgente
+//Sara
 aux0_le[i]=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl_le[i])/(pow(r_e_le[i], 2));
 
 aux1_le[i]=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
@@ -2463,3 +2464,14 @@ m_SPLlogLE3d[i]=0;
 }
 }
 }
+
+//Sara new
+void NoiseCalculation::calculate3d() {
+QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+
+double blades_num = pBEM->m_pBData->blades; //number of blades
+
+//qDebug() << "number of blades 1: " << blades_num;
+
+ }
+//Sara new

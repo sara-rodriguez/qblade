@@ -16,9 +16,11 @@
 #include "../Objects/Foil.h"
 #include "NoiseException.h"
 #include "../Noise/NoiseCreatorDialog.h"
+#include "../XDirect/XDirect.h"//Sara urgente
 
 //Sara
 #include "../XBEM/BEM.h"
+#include "../XDirect/XDirect.h"
 #include "../XDirect/FoilPolarDlg.h"
 //Sara
 
@@ -152,11 +154,11 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
 
                             //Sara
                             widget = new QWidget;
-                            tabWidget->addTab(widget, "3D Analysis");
+                            tabWidget->addTab(widget, "quasi 3D Analysis");
                             vBox = new QVBoxLayout;
                             hBox = new QHBoxLayout;
                             widget->setLayout(hBox);
-                            groupBox = new QGroupBox ("3D Simulation Parameters");
+                            groupBox = new QGroupBox ("quasi 3D Simulation Parameters");
                             hBox->addWidget(groupBox);
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
@@ -258,7 +260,23 @@ hBox->addLayout(vBox);
     imageLabela->setPixmap(QPixmap(":/images/noise_3d_position.png"));
 //    pGrid->addWidget(imageLabela,0,3);//,9,2
     vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
-//Sara
+
+//Sara new
+    widget = new QWidget;
+    tabWidget->addTab(widget, "3D Analysis");
+    vBox = new QVBoxLayout;
+    hBox = new QHBoxLayout;
+    widget->setLayout(hBox);
+    groupBox = new QGroupBox ("3D Simulation Parameters");
+    hBox->addWidget(groupBox);
+    pGrid = new ParameterGrid<P>(this);
+    groupBox->setLayout(pGrid);
+    mode_combobox = new QComboBox;
+    pGrid->addEdit(P::mode_type,ComboBox, mode_combobox,"mode:","");
+    mode_combobox->insertItem(0,"steady state");
+    mode_combobox->insertItem(1,"unsteady state");
+    connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
+//Sara new
 
     setUnitContainingLabels();
     initView();
@@ -395,28 +413,6 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
                               "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
         return;
     }
-    //Sara todo criar alertas para usuario
-//    if (!hasOpPoints) {
-//		QMessageBox::critical(this, "Create Noise Simulation",
-//							  "The following error(s) occured:\n\n - Reynolds Lower 600,000", QMessageBox::Ok);
-//		return;
-//	}
-//    if (!hasOpPoints) {
-//		QMessageBox::critical(this, "Create Noise Simulation",
-//							  "Alert:\n\n - Reynolds Upper 2,400,000", QMessageBox::Ok);
-//		return;
-//	}
-//    if (!hasOpPoints) {
-//		QMessageBox::critical(this, "Create Noise Simulation",
-//							  "Alert:\n\n - Mach Upper 0.21", QMessageBox::Ok);
-//		return;
-//	}
-//    if (!hasOpPoints) {
-//		QMessageBox::critical(this, "Create Noise Simulation",
-//							  "Alert:\n\n - AOA(abs) Upper 19.8''", QMessageBox::Ok);
-//		return;
-//	}
-    //Sara
 
     /* create new simlation */
     NoiseSimulation *newSimulation = new NoiseSimulation (this);
@@ -441,7 +437,23 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
         delete newSimulation;
         QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
     }
+    onVerifyDeltaFor3D();//Sara new
 }
+
+//Sara
+void NoiseCreatorDialog::onVerifyDeltaFor3D(){
+//    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+
+    QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
+
+    if(pXDirect->AlphaDeltaNoise!=0){
+        QMessageBox::critical(this, "Step Angle Error!",
+                              "The following error(s) occured:\n\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok);
+        return;
+    }
+
+}
+//Sara
 
 void NoiseCreatorDialog::OnImportStarredD(){
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
@@ -509,6 +521,14 @@ void NoiseCreatorDialog::OnSetDstarButton(int index){
     if (index==2){
    buttonle->setEnabled(true);}
 }
+
+//Sara new
+void NoiseCreatorDialog::OnModeDefine(int index){
+//colocar aqui o que vai ser aberto qdo for unsteady
+//    if (index==2){
+//   buttonle->setEnabled(true);}
+}
+//Sara new
 
 void NoiseCreatorDialog::OnRotSpeedCheck(){
     if (!m_rot_speed_check->isChecked()){m_rot_speed_numberedit->setEnabled(false);}
