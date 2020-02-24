@@ -66,6 +66,9 @@ private:
 	NoiseCalculation m_calculation;
 
     //Sara
+    double m_Tt;
+    double m_Ts;
+    double m_As;
     double obs_x_pos;
     double obs_y_pos;
     double obs_z_pos;

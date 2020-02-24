@@ -154,11 +154,11 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
 
                             //Sara
                             widget = new QWidget;
-                            tabWidget->addTab(widget, "quasi 3D Analysis");
+                            tabWidget->addTab(widget, "quasi 3D Blade");
                             vBox = new QVBoxLayout;
                             hBox = new QHBoxLayout;
                             widget->setLayout(hBox);
-                            groupBox = new QGroupBox ("quasi 3D Simulation Parameters");
+                            groupBox = new QGroupBox ("quasi 3D Blade Simulation Parameters");
                             hBox->addWidget(groupBox);
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
@@ -177,6 +177,7 @@ pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
 
 m_rot_speed_numberedit = new NumberEdit ();
 m_rot_speed_numberedit->setAutomaticPrecision(3);
+m_rot_speed_numberedit->setEnabled(false);
 pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",1);
 
 m_u_wind_speed_check = new QCheckBox("wind speed set:");
@@ -263,11 +264,11 @@ hBox->addLayout(vBox);
 
 //Sara new
     widget = new QWidget;
-    tabWidget->addTab(widget, "3D Analysis");
+    tabWidget->addTab(widget, "quasi 3D Rotor");
     vBox = new QVBoxLayout;
     hBox = new QHBoxLayout;
     widget->setLayout(hBox);
-    groupBox = new QGroupBox ("3D Simulation Parameters");
+    groupBox = new QGroupBox ("quasi 3D Rotor Simulation Parameters");
     hBox->addWidget(groupBox);
     pGrid = new ParameterGrid<P>(this);
     groupBox->setLayout(pGrid);
@@ -276,6 +277,22 @@ hBox->addLayout(vBox);
     mode_combobox->insertItem(0,"steady state");
     mode_combobox->insertItem(1,"unsteady state");
     connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
+    Tt_numberedit = new NumberEdit ();
+    Tt_numberedit->setAutomaticPrecision(0);
+    Tt_numberedit->setEnabled(false);
+
+    Ts_numberedit = new NumberEdit ();
+    Ts_numberedit->setAutomaticPrecision(0);
+    Ts_numberedit->setEnabled(false);
+
+    As_numberedit = new NumberEdit ();
+    As_numberedit->setAutomaticPrecision(0);
+    As_numberedit->setEnabled(false);
+
+    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Total Simulation Time [s]:",1000);
+    pGrid->addEdit(P::Ts, NumberEditType, Ts_numberedit,"Simulation Time Step [ms]:",500);
+    pGrid->addEdit(P::As, NumberEditType, As_numberedit,"Simulation Angular Step [deg]:",5);
+
 //Sara new
 
     setUnitContainingLabels();
@@ -519,14 +536,25 @@ if((a_D_starred_index_user.size()==pBEM->dlg_elements) & (a_D_starred_S_user.siz
 
 void NoiseCreatorDialog::OnSetDstarButton(int index){
     if (index==2){
-   buttonle->setEnabled(true);}
+   Tt_numberedit->setEnabled(true);
+   Ts_numberedit->setEnabled(true);
+   As_numberedit->setEnabled(true);
+    }
 }
 
 //Sara new
 void NoiseCreatorDialog::OnModeDefine(int index){
 //colocar aqui o que vai ser aberto qdo for unsteady
-//    if (index==2){
-//   buttonle->setEnabled(true);}
+    if (index==1){
+    Tt_numberedit->setEnabled(true);
+    Ts_numberedit->setEnabled(true);
+    As_numberedit->setEnabled(true);
+    }
+    else {
+    Tt_numberedit->setEnabled(false);
+    Ts_numberedit->setEnabled(false);
+    As_numberedit->setEnabled(false);
+    }
 }
 //Sara new
 

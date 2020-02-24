@@ -8873,7 +8873,7 @@ void QBEM::OnExportBladeTable(){
 
     QTextStream out(&XFile);
 
-    out << "Blade Export File Created with "<< g_mainFrame->m_VersionName<<" v0.96 on "<<date.toString("dd.MM.yyyy") << " at " << time.toString("hh:mm:ss") << "\n" ;
+    out << "Blade Export File Created with "<< g_mainFrame->m_VersionName<<" v0.96 Beta on "<<date.toString("dd.MM.yyyy") << " at " << time.toString("hh:mm:ss") << "\n" ;
     out << QString(" %1 %2 %3 %4 %5 %6 %7").arg("Radial Position [m]",25).arg("Chord Length [m]",25).arg("Twist [deg]",25).arg("Pitch Axis Offset [m]",25).arg("Thread Axis in [% chord]",25).arg("Airfoil Name",25).arg("360 Polar Name",25) << endl;
     out << QString().fill('-',182) << endl;
     for (int i=0;i<=m_pBlade->m_NPanel;i++){

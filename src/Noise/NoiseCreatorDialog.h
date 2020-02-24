@@ -69,6 +69,9 @@ private:
     QPushButton *buttonle;
     QComboBox *dstar_combobox;
     QComboBox *mode_combobox;
+    NumberEdit *Tt_numberedit;
+    NumberEdit *Ts_numberedit;
+    NumberEdit *As_numberedit;
 //Sara
 
 	QButtonGroup *m_selectFromButtons;

@@ -240,6 +240,9 @@ private:
     double m_obs_x_pos;
     double m_obs_y_pos;
     double m_obs_z_pos;
+    double m_Tt;
+    double m_Ts;
+    double m_As;
     int m_dstar_type;
     int m_mode_type;
     int m_phi_type;

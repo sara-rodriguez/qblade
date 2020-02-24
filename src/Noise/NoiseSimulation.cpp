@@ -3669,6 +3669,21 @@ else {value=m_parameter.rot_speed_check;}
         if(set) m_parameter.obs_z_pos = value.toDouble();
         else {value = m_parameter.obs_z_pos;}break;
 
+    case P::Tt:
+        if (m_Tt==0) {m_Tt=100;}
+        if(set) m_parameter.Tt = value.toDouble();
+        else {value = m_Tt;}break;
+
+    case P::Ts:
+        if (m_Ts==0) {m_Ts=50;}
+        if(set) m_parameter.Ts = value.toDouble();
+        else {value = m_Ts;}break;
+
+    case P::As:
+        if (m_As==0) {m_As=5;}
+        if(set) m_parameter.As = value.toDouble();
+        else {value = m_As;}break;
+
     case P::Lowson_type:
         if(set) {m_parameter.Lowson_type = value.toInt();}
 else {value=m_parameter.Lowson_type;}
