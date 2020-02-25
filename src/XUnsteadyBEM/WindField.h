@@ -44,6 +44,8 @@ public:
 
 	~WindField();
 	static QStringList prepareMissingObjectMessage();
+
+//    void *m_pUnsteadyBEM;//Sara urgente
 	
 	float getRotorRadius () { return m_rotorRadius; }
 	float getHubheight () { return m_hubheight; }
@@ -111,8 +113,8 @@ private:
 	float m_windSpeedMeasurementHeight;  // the heigth where the wind speed was measured
 	
 	/* calculation parameters */
-	float m_simulationTime;  // simulation time in seconds
-	int m_numberOfTimesteps;  // the windField is calculated for various timesteps (unsteady)
+    float m_simulationTime;  // simulation time in seconds
+    int m_numberOfTimesteps;  // the windField is calculated for various timesteps (unsteady)
 	int m_pointsPerSide;  // number of points in y and z direction (same value due to square shape)
 		
 	/* dynamic calculation results */

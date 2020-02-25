@@ -5342,7 +5342,7 @@ void QXDirect::ReadParams()
 	m_bInitBL   = m_pctrlInitBL->isChecked();
 	m_bViscous  = m_pctrlViscous->isChecked();
 
-    if (m_AlphaDelta>0.25){AlphaDeltaNoise=1;}else{AlphaDeltaNoise=0;} //Sara urgente
+    if (m_AlphaDelta>0.25){AlphaDeltaNoise=1;}else{AlphaDeltaNoise=0;} //Sara
 }
 
 

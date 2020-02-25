@@ -16,11 +16,11 @@
 #include "../Objects/Foil.h"
 #include "NoiseException.h"
 #include "../Noise/NoiseCreatorDialog.h"
-#include "../XDirect/XDirect.h"//Sara urgente
 
 //Sara
 #include "../XBEM/BEM.h"
 #include "../XDirect/XDirect.h"
+#include "../XUnsteadyBEM/WindField.h"//urgente
 #include "../XDirect/FoilPolarDlg.h"
 //Sara
 
@@ -262,7 +262,7 @@ hBox->addLayout(vBox);
 //    pGrid->addWidget(imageLabela,0,3);//,9,2
     vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
 
-//Sara new
+//Sara
     widget = new QWidget;
     tabWidget->addTab(widget, "quasi 3D Rotor");
     vBox = new QVBoxLayout;
@@ -278,22 +278,24 @@ hBox->addLayout(vBox);
     mode_combobox->insertItem(1,"unsteady state");
     connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
     Tt_numberedit = new NumberEdit ();
-    Tt_numberedit->setAutomaticPrecision(0);
     Tt_numberedit->setEnabled(false);
 
     Ts_numberedit = new NumberEdit ();
-    Ts_numberedit->setAutomaticPrecision(0);
     Ts_numberedit->setEnabled(false);
 
     As_numberedit = new NumberEdit ();
-    As_numberedit->setAutomaticPrecision(0);
     As_numberedit->setEnabled(false);
 
-    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Total Simulation Time [s]:",1000);
-    pGrid->addEdit(P::Ts, NumberEditType, Ts_numberedit,"Simulation Time Step [ms]:",500);
-    pGrid->addEdit(P::As, NumberEditType, As_numberedit,"Simulation Angular Step [deg]:",5);
+//    Sara teste
+//    Eu queria colocar os dados de tempo de simulação e número de passos do WindField aqui
 
-//Sara new
+    WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;//urgente
+
+    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Time [s]:",pWindField->getSimulationTime());//urgente 60
+    pGrid->addEdit(P::Ts, NumberEditType, Ts_numberedit,"Timesteps:",pWindField->getNumberOfTimesteps());//urgente
+    pGrid->addEdit(P::As, NumberEditType, As_numberedit,"Simulation Angular Step [deg]:",1);
+
+//Sara
 
     setUnitContainingLabels();
     initView();
@@ -454,7 +456,7 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
         delete newSimulation;
         QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
     }
-    onVerifyDeltaFor3D();//Sara new
+    onVerifyDeltaFor3D();//Sara
 }
 
 //Sara
@@ -542,7 +544,7 @@ void NoiseCreatorDialog::OnSetDstarButton(int index){
     }
 }
 
-//Sara new
+//Sara
 void NoiseCreatorDialog::OnModeDefine(int index){
 //colocar aqui o que vai ser aberto qdo for unsteady
     if (index==1){
@@ -556,7 +558,7 @@ void NoiseCreatorDialog::OnModeDefine(int index){
     As_numberedit->setEnabled(false);
     }
 }
-//Sara new
+//Sara
 
 void NoiseCreatorDialog::OnRotSpeedCheck(){
     if (!m_rot_speed_check->isChecked()){m_rot_speed_numberedit->setEnabled(false);}

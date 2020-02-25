@@ -82,7 +82,7 @@ class QXDirect : public QWidget
 public:
 	QXDirect(QWidget *parent = NULL);
     ~QXDirect();
-    int AlphaDeltaNoise=0;//Sara urgente
+    int AlphaDeltaNoise=0;//Sara
 
 public slots:
 	void UpdateView();

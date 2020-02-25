@@ -35,7 +35,7 @@ public:
 	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
 	void calculate();  // can throw NoiseException
 
-    void verifydeltafor3d();//Sara new
+    void verifydeltafor3d();//Sara
     void calculateqs3d_2d_curves();//Sara
     void calculateqs3d_final();//Sara
     void calculate3d();//Sara
@@ -240,9 +240,9 @@ private:
     double m_obs_x_pos;
     double m_obs_y_pos;
     double m_obs_z_pos;
-    double m_Tt;
-    double m_Ts;
-    double m_As;
+    int m_Tt;
+    int m_Ts;
+    int m_As;
     int m_dstar_type;
     int m_mode_type;
     int m_phi_type;

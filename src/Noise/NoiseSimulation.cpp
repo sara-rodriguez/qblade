@@ -1,6 +1,7 @@
 #include "NoiseSimulation.h"
 #include "NoiseCalculation.h" //Sara
 #include "NoiseParameter.h" //Sara
+#include "../XUnsteadyBEM/WindField.h" //Sara urgente
 
 #include "../ParameterViewer.h"
 #include "../Store.h"
@@ -3539,6 +3540,8 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
 //Sara
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     double outer_radius=pbem->m_pTData->OuterRadius;
+
+    WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;//urgente
 //Sara
 
     typedef Parameter::NoiseSimulation P;
@@ -3669,18 +3672,15 @@ else {value=m_parameter.rot_speed_check;}
         if(set) m_parameter.obs_z_pos = value.toDouble();
         else {value = m_parameter.obs_z_pos;}break;
 
-    case P::Tt:
-        if (m_Tt==0) {m_Tt=100;}
+    case P::Tt://urgente
         if(set) m_parameter.Tt = value.toDouble();
         else {value = m_Tt;}break;
 
-    case P::Ts:
-        if (m_Ts==0) {m_Ts=50;}
+    case P::Ts://urgente
         if(set) m_parameter.Ts = value.toDouble();
         else {value = m_Ts;}break;
 
-    case P::As:
-        if (m_As==0) {m_As=5;}
+    case P::As://urgente
         if(set) m_parameter.As = value.toDouble();
         else {value = m_As;}break;
 

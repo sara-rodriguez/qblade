@@ -372,6 +372,7 @@ public:
 	ScrolledDock *m_pctrlBEMWidget, *m_pctrlSimuWidget;
 	void *m_pBEM;
 	void *m_pSimuWidget;
+//    void *m_pUnsteadyBEM;//Sara urgente
 	int m_PowerUnit;
     int m_WORK_GROUPS;
 	double m_WtoUnit;
