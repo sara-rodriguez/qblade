@@ -1,7 +1,10 @@
 #include "NoiseSimulation.h"
-#include "NoiseCalculation.h" //Sara
-#include "NoiseParameter.h" //Sara
-#include "../XUnsteadyBEM/WindField.h" //Sara urgente
+//Sara
+#include "NoiseCalculation.h"
+#include "NoiseParameter.h"
+#include "../XUnsteadyBEM/WindField.h"
+#include "../XUnsteadyBEM/WindFieldModule.h"
+//Sara
 
 #include "../ParameterViewer.h"
 #include "../Store.h"
@@ -3541,7 +3544,8 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     double outer_radius=pbem->m_pTData->OuterRadius;
 
-    WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;//urgente
+    float simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
+    float number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
 //Sara
 
     typedef Parameter::NoiseSimulation P;
@@ -3672,17 +3676,22 @@ else {value=m_parameter.rot_speed_check;}
         if(set) m_parameter.obs_z_pos = value.toDouble();
         else {value = m_parameter.obs_z_pos;}break;
 
-    case P::Tt://urgente
+    case P::Tt:
         if(set) m_parameter.Tt = value.toDouble();
-        else {value = m_Tt;}break;
+        else {value = m_parameter.Tt;}
+        if (m_parameter.Tt==0){m_parameter.Tt=simulation_time;}
+        break;
 
-    case P::Ts://urgente
+    case P::Ts:
         if(set) m_parameter.Ts = value.toDouble();
-        else {value = m_Ts;}break;
+        else {value = m_parameter.Ts;}
+        if (m_parameter.Ts==0){m_parameter.Ts=number_time_steps;}
+        break;
 
-    case P::As://urgente
+    case P::As:
+        if(m_parameter.As==0){m_parameter.As=1;}
         if(set) m_parameter.As = value.toDouble();
-        else {value = m_As;}break;
+        else {value = m_parameter.As;}break;
 
     case P::Lowson_type:
         if(set) {m_parameter.Lowson_type = value.toInt();}

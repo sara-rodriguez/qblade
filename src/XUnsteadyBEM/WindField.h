@@ -44,8 +44,6 @@ public:
 
 	~WindField();
 	static QStringList prepareMissingObjectMessage();
-
-//    void *m_pUnsteadyBEM;//Sara urgente
 	
 	float getRotorRadius () { return m_rotorRadius; }
 	float getHubheight () { return m_hubheight; }

@@ -16,7 +16,10 @@
 #include "../XDirect/FoilPolarDlg.h"
 #include "../XDirect/XDirect.h"
 #include "../XBEM/BData.h"
-#include "../XUnsteadyBEM/WindField.h" //Sara urgente
+#include "../MainFrame.h"
+#include "../XUnsteadyBEM/WindFieldModule.h"
+#include "../XUnsteadyBEM/WindField.h"
+#include "../MainFrame.h"
 #include <QtMath>
 #include <cmath>
 //Sara
@@ -2479,25 +2482,30 @@ if(m_parameter->mode_type==0){
 else{
 //    unsteady
    qDebug() << "unsteady";
-//   WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;//urgente
-//   qDebug() <<"teste Tt: " << pWindField->getSimulationTime();
-//   qDebug() <<"teste Ts: " << pWindField->getNumberOfTimesteps();
 
-int steps = m_parameter->Ts;
-double blades_angles_position[blades_num+1][steps+1];
+//   int simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
+
+//   int number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
+
+//   qDebug() <<"teste Tt: " << simulation_time;
+//   qDebug() <<"teste Ts: " << number_time_steps;
+
+int number_time_steps = m_parameter->Ts;
+int simulation_time = m_parameter->Tt;
+double blades_angles_position[blades_num+1][number_time_steps+1];
 int blade_origin=0;
 
-qDebug() << steps;
+qDebug() << "steps: " << number_time_steps;
 
 for (int i=0;i<(blades_num+1);++i){
 blades_angles_position[i][0]=360./blades_num*i+blade_origin;
 }
 
 for (int i=0;i<(blades_num+1);++i){
-for (int j=1;j<(steps+1);++j){
+for (int j=1;j<(number_time_steps+1);++j){
 blades_angles_position[i][j]=blades_angles_position[i][j-1]+m_As;
 }}
 
 //end unsteady
 }}
-//Sara new
+//Sara

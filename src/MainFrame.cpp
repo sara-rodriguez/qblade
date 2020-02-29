@@ -79,7 +79,6 @@
 #include "XUnsteadyBEM/WindFieldModule.h"
 #include "XUnsteadyBEM/FASTModule.h"
 #include "XUnsteadyBEM/AboutFAST.h"
-//#include "XUnsteadyBEM/WindField.h"//Sara urgente
 #include "XDMS/TurDmsModule.h"
 #include "XDMS/MultiDmsModule.h"
 #include "Noise/NoiseModule.h"
@@ -1046,8 +1045,6 @@ void MainFrame::CreateDockWindows()
 	SimuWidget *pSimuWidget = (SimuWidget *) m_pSimuWidget;
 	pBEM->m_pSimuWidget = pSimuWidget;
 
-//    WindField *pWindField = (WindField*) m_pUnsteadyBEM;//Sara urgente
-//    pWindField->m_pUnsteadyBEM = pWindField;//Sara urgente
 	//////////////////////////////////////end new code DM//////////////
 	
 	////////////////////////////////////////new code JW//////////////////////////////////

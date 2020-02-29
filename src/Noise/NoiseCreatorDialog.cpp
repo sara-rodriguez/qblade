@@ -20,8 +20,9 @@
 //Sara
 #include "../XBEM/BEM.h"
 #include "../XDirect/XDirect.h"
-#include "../XUnsteadyBEM/WindField.h"//urgente
-#include "../XDirect/FoilPolarDlg.h"
+#include "../XUnsteadyBEM/WindField.h"
+#include "../MainFrame.h"
+#include "../XUnsteadyBEM/WindFieldModule.h"
 //Sara
 
 typedef Parameter::NoiseSimulation P;
@@ -286,13 +287,12 @@ hBox->addLayout(vBox);
     As_numberedit = new NumberEdit ();
     As_numberedit->setEnabled(false);
 
-//    Sara teste
-//    Eu queria colocar os dados de tempo de simulação e número de passos do WindField aqui
+   float simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
 
-    WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;//urgente
+   float number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
 
-    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Time [s]:",pWindField->getSimulationTime());//urgente 60
-    pGrid->addEdit(P::Ts, NumberEditType, Ts_numberedit,"Timesteps:",pWindField->getNumberOfTimesteps());//urgente
+    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Time [s]:",simulation_time);
+    pGrid->addEdit(P::Ts, NumberEditType, Ts_numberedit,"Timesteps:",number_time_steps);
     pGrid->addEdit(P::As, NumberEditType, As_numberedit,"Simulation Angular Step [deg]:",1);
 
 //Sara
