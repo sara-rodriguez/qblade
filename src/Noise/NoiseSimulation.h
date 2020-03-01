@@ -72,6 +72,9 @@ private:
     double obs_x_pos;
     double obs_y_pos;
     double obs_z_pos;
+    double obs_x_pos_rotor;
+    double obs_y_pos_rotor;
+    double obs_z_pos_rotor;
     double m_DStarFinalS;
     double m_DStarFinalP;
     double originalMach;

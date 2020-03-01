@@ -243,7 +243,7 @@ connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 //theta_combobox->insertItem(1,"90º");
 
 QLabel *labelte = new QLabel ("Observer Position:");
-pGrid->addWidget(labelte,10,0);
+pGrid->addWidget(labelte);//,10,0
 pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
 pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
@@ -294,6 +294,21 @@ hBox->addLayout(vBox);
     pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Time [s]:",simulation_time);
     pGrid->addEdit(P::Ts, NumberEditType, Ts_numberedit,"Timesteps:",number_time_steps);
     pGrid->addEdit(P::As, NumberEditType, As_numberedit,"Simulation Angular Step [deg]:",1);
+
+    QLabel *labeltf = new QLabel ("Observer Position:");
+    double distx = 1.5*outer_radius;
+    pGrid->addWidget(labeltf);//,10,0
+    pGrid->addEdit(P::obs_x_pos_rotor, NumberEditType, new NumberEdit(),"XB:", distx);
+    pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YB:", 0);
+    pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZB:", 0);
+
+    hBox->addLayout(vBox);
+    //hBox = new QHBoxLayout;
+    //widget->setLayout(hBox);
+        QLabel *imageLabelb = new QLabel;
+        imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
+    //    pGrid->addWidget(imageLabela,0,3);//,9,2
+        vBox->addWidget(imageLabelb, 0, Qt::AlignHCenter);
 
 //Sara
 

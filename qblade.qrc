@@ -56,5 +56,6 @@
         <file>images/logo_1000.png</file>
         <file>images/3d.png</file>
         <file>images/noise_3d_position.png</file>
+        <file>images/noise_3d_position_rotor.png</file>
     </qresource>
 </RCC>

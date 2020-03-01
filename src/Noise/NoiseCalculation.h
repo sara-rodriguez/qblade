@@ -240,6 +240,9 @@ private:
     double m_obs_x_pos;
     double m_obs_y_pos;
     double m_obs_z_pos;
+    double m_obs_x_pos_rotor;
+    double m_obs_y_pos_rotor;
+    double m_obs_z_pos_rotor;
     int m_Tt;
     int m_Ts;
     int m_As;

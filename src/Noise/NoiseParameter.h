@@ -65,6 +65,9 @@ public:
     double obs_x_pos;
     double obs_y_pos;
     double obs_z_pos;
+    double obs_x_pos_rotor;
+    double obs_y_pos_rotor;
+    double obs_z_pos_rotor;
     double sects;
     double rot_speed;
     double u_wind_speed;
