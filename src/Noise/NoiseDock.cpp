@@ -21,7 +21,8 @@ NoiseDock::NoiseDock(const QString &title, QMainWindow *parent, Qt::WindowFlags 
 	
 	m_contentVBox->addStretch();	
 	
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	m_colorByOpPoint->setChecked(settings.value("modules/NoiseDock/colorByOpPoint", false).toBool());
 
 	connect(g_mainFrame, SIGNAL(unitsChanged()), this, SLOT(onUnitsChanged()));
@@ -32,7 +33,8 @@ NoiseDock::NoiseDock(const QString &title, QMainWindow *parent, Qt::WindowFlags 
 
 
 NoiseDock::~NoiseDock() {
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.setValue("modules/NoiseDock/colorByOpPoint", m_colorByOpPoint->isChecked());
 }
 

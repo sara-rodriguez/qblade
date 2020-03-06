@@ -101,7 +101,7 @@ CCurve* Graph::AddCurve()
         int nIndex = m_oaCurves.size();
 		pCurve->SetColor(m_CurveColors[nIndex%10]);
         pCurve->SetStyle(0);
-		pCurve->m_pParentGraph = this;
+        pCurve->m_pParentGraph = this;
         m_oaCurves.append(pCurve);
 	}
 	return pCurve;

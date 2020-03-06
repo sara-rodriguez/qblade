@@ -336,7 +336,7 @@ for (i=0;i<m_pos.size();i++)
     m_Roughness.append(0);
     m_Windspeed.append(pow(Vrel2,0.5));
     m_Iterations.append(count);
-    m_Mach.append(pow(Vrel2,0.5)/1235);
+    m_Mach.append(pow(Vrel2,0.5)/sqrt(k_air*r_air*temp)); //Sara
     m_circ.append(0.5*m_c_local.at(i)*m_CL.at(i)*pow(Vrel2,0.5)*rho);
 }
 
@@ -393,7 +393,7 @@ void BData::Serialize(QDataStream &ar, bool bIsStoring)
 		{
 			ar << (float) m_pos[i] << (float) m_c_local[i] << (float) m_lambda_local[i] << (float) m_p_tangential[i];
             ar << (float) m_p_normal[i] << (float) m_a_axial[i] << (float) m_a_tangential[i] << (float) m_theta[i];
-			ar << (float) m_alpha[i] << (float) m_phi[i] << (float) m_CL[i] << (float) m_CD[i] << (float) m_LD[i];
+            ar << (float) m_alpha[i] << (float) m_phi[i] << (float) m_CL[i] << (float) m_CD[i] << (float) m_LD[i];
 			ar << (float) m_Cn[i] << (float) m_Ct[i] << (float) m_F[i] << (float) m_Reynolds[i] << (float) m_DeltaReynolds[i] << (float) m_Roughness[i] << (float) m_Windspeed[i];
 			ar << (float) m_Iterations[i] << (float) m_Mach[i] << (float) m_Fa_axial[i] << (float) m_Fa_radial[i] << (float) m_circ[i];
 		}

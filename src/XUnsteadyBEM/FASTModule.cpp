@@ -53,7 +53,8 @@ FASTModule::~FASTModule() {
 		delete m_graph[2];
 		delete m_graph[3];
 		
-		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 		settings.setValue(QString("modules/FASTModule/graphArrangement"), getGraphArrangement());	
 	}
 }
@@ -93,7 +94,8 @@ void FASTModule::initView() {
 		m_graph[2] = new NewGraph ("FastGraphThree", this, {NewGraph::FastSimulation, "", "", false, false});
 		m_graph[3] = new NewGraph ("FastGraphFour", this, {NewGraph::FastSimulation, "", "", false, false});
 		
-		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 		setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
 							(settings.value("modules/FASTModule/graphArrangement", TwoDWidgetInterface::Quad).toInt()));
 	}

@@ -2186,10 +2186,3 @@ void QLLTCreatorDialog::OnImportWindFile(){
 
             m_ViewFile->setEnabled(true);
 }
-
-
-
-
-
-
-

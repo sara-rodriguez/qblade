@@ -50,13 +50,13 @@ public:
     void SetupLayout();
     void Connect();
 
-    NumberEdit *IterationsEdit, *EpsilonEdit, *ElementsEdit, *RhoEdit, *RelaxEdit, *ViscEdit, *ExpEdit, *RoughEdit;
-    QLabel *IterationsLabel, *ElementsLabel, *EpsilonLabel, *RhoEditLabel, *RelaxEditLabel, *ViscEditLabel, *ExpEditLabel, *RoughEditLabel;
+    NumberEdit *IterationsEdit, *EpsilonEdit, *ElementsEdit, *RhoEdit, *RelaxEdit, *ViscEdit, *ExpEdit, *RoughEdit, *TempEdit;//Sara Temp
+    QLabel *IterationsLabel, *ElementsLabel, *EpsilonLabel, *RhoEditLabel, *RelaxEditLabel, *ViscEditLabel, *ExpEditLabel, *RoughEditLabel, *TempEditLabel;//Sara TempEditLabel
     QRadioButton *PowerLawRadio, *ConstantRadio, *LogarithmicRadio;
     QCheckBox *TipLossBox, *VariableBox, *AspectRatioBox;//, *RootLossBox, *ThreeDBox, *InterpolationBox, *NewTipLossBox, *NewRootLossBox;
     QPushButton *OkButton;
     QLineEdit *SimName;
-    QLabel *ViscUnitLabel, *RhoUnitLabel, *RoughUnitLabel;
+    QLabel *ViscUnitLabel, *RhoUnitLabel, *RoughUnitLabel, *TempUnitLabel;//Sara Temp
     void *m_pParent;
 
 

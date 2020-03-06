@@ -2,6 +2,7 @@
 #define NOISECALCULATION_H
 
 #include <QVector>
+#include <QtMath> //Sara
 
 class NoiseParameter;
 class NoiseOpPoint;
@@ -22,7 +23,7 @@ public:
 	typedef QVector< QVector<double> > TwoDVector;
 	
 	static constexpr double SWITCHING_ANGLE2 = 12.5;
-	static constexpr int FREQUENCY_TABLE_SIZE = 30;
+    static constexpr int FREQUENCY_TABLE_SIZE = 34; //Alexandre MOD
 	static const double AWeighting[FREQUENCY_TABLE_SIZE];  // 1/3 octave band frequency
 	static const double BWeighting[FREQUENCY_TABLE_SIZE];
 	static const double CWeighting[FREQUENCY_TABLE_SIZE];
@@ -33,6 +34,11 @@ public:
 	
 	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
 	void calculate();  // can throw NoiseException
+
+    void verifydeltafor3d();//Sara
+    void calculateqs3d_2d_curves();//Sara
+    void calculateqs3d_final();//Sara
+    void calculate3d();//Sara
 	
 	// NM the arrays containing the graph data
 	TwoDVector SPLadB() const { return m_SPLadB; }
@@ -42,6 +48,43 @@ public:
 	TwoDVector SPLdBAW() const { return m_SPLdBAW; }
 	TwoDVector SPLdBBW() const { return m_SPLdBBW; }
 	TwoDVector SPLdBCW() const { return m_SPLdBCW; }
+//Alexandre MOD
+    TwoDVector SPL_LEdB() const { return m_SPL_LEdB; }
+    TwoDVector SPL_LEdBAW() const { return m_SPL_LEdBAW; }
+    TwoDVector SPL_LEdBBW() const { return m_SPL_LEdBBW; }
+    TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; }
+    //Alexandre MOD
+
+//Sara
+    TwoDVector SPLadB3d() const { return m_SPLadB3d; }
+    TwoDVector SPLsdB3d() const { return m_SPLsdB3d; }
+    TwoDVector SPLpdB3d() const { return m_SPLpdB3d; }
+    TwoDVector SPLdB3d() const { return m_SPLdB3d; }
+    TwoDVector SPLdBAW3d() const { return m_SPLdBAW3d; }
+    TwoDVector SPLdBBW3d() const { return m_SPLdBBW3d; }
+    TwoDVector SPLdBCW3d() const { return m_SPLdBCW3d; }
+    TwoDVector SPL_LEdB3d() const { return m_SPL_LEdB3d; }
+    TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW3d; }
+    TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW3d; }
+    TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW3d; }
+    TwoDVector SPLadB3d_final() const { return m_SPLadB3d_final; }
+    TwoDVector SPLsdB3d_final() const { return m_SPLsdB3d_final; }
+    TwoDVector SPLpdB3d_final() const { return m_SPLpdB3d_final; }
+    TwoDVector SPLdB3d_final() const { return m_SPLdB3d_final; }
+    TwoDVector SPLdBAW3d_final() const { return m_SPLdBAW3d_final; }
+    TwoDVector SPLdBBW3d_final() const { return m_SPLdBBW3d_final; }
+    TwoDVector SPLdBCW3d_final() const { return m_SPLdBCW3d_final; }
+    TwoDVector SPL_LEdB3d_final() const { return m_SPL_LEdB3d_final; }
+    TwoDVector SPL_LEdBAW3d_final() const { return m_SPL_LEdBAW3d_final; }
+    TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
+    TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
+
+    double Final_qs3d_alpha;
+    double Final_qs3d_S;
+    double Final_qs3d_P;
+    double Final_qs3d_LE;
+    double Final_qs3d;
+//Sara
 	
 	// NM apparently needed for export as .txt only
 	QVector<double> OASPL() const { return m_OASPL; }
@@ -51,13 +94,44 @@ public:
 	QVector<double> SPLALOG() const { return m_SPLALOG; }
 	QVector<double> SPLSLOG() const { return m_SPLSLOG; }
 	QVector<double> SPLPLOG() const { return m_SPLPLOG; }
+//Alexandre MOD
+        QVector<double> SPLLEdBAW() const { return m_SPLLEdBAW; }
+        QVector<double> SPLLEdBBW() const { return m_SPLLEdBBW; }
+        QVector<double> SPLLEdBCW() const { return m_SPLLEdBCW; }
+        QVector<double> SPLlogLE() const { return m_SPLlogLE; }
+//Alexandre MOD
+
+        //Sara
+        QVector<double> OASPL3d() const { return m_OASPL3d; }
+        QVector<double> OASPLA3d() const { return m_OASPLA3d; }
+        QVector<double> OASPLB3d() const { return m_OASPLB3d; }
+        QVector<double> OASPLC3d() const { return m_OASPLC3d; }
+        QVector<double> SPLALOG3d() const { return m_SPLALOG3d; }
+        QVector<double> SPLSLOG3d() const { return m_SPLSLOG3d; }
+        QVector<double> SPLPLOG3d() const { return m_SPLPLOG3d; }
+        QVector<double> SPLLEdBAW3d() const { return m_SPLLEdBAW3d;}
+        QVector<double> SPLLEdBBW3d() const { return m_SPLLEdBBW3d;}
+        QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW3d;}
+        QVector<double> SPLlogLE3d() const { return m_SPLlogLE3d; }
+
+        QVector<double> m_DStarInterpolatedS3d;
+        QVector<double> m_DStarInterpolatedP3d;
+        QVector<double> m_AlphaInterpolated3d;
+        QVector<double> m_ReynoldsInterpolated3d;
+        QVector<double> m_MachInterpolated3d;
+        double c_const;
+        double d_const;
+        int m_Lowson_type;
+    //Sara
 	
 private:
     void setupVectors();
+    void setupVectorsqs3d();//Sara
 
 	// calculation sub-functions
 	double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
+    double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara
     double getDH();
     double getDL();
     double getSt1();
@@ -70,22 +144,31 @@ private:
     void calcSPLa(double alpha,int posOpPoint,int posFreq);
     void calcSPLs(int posOpPoint,int posFreq);
     void calcSPLp(int posOpPoint,int posFreq);
-		
-	NoiseParameter *m_parameter;
+    void LECalc(int posOpPoint, int posFreq); //Alexandre MOD
+
+    NoiseParameter *m_parameter;
 	
     //For general
     double m_DStarInterpolatedS;
     double m_DStarInterpolatedP;
+
     double m_DStarFinalS;
     double m_DStarFinalP;
     double m_EddyMachNumber;
     double m_SwAlpha1;
     double m_SwAlpha;
     bool m_AlphaBigSw;
+    //Turbulent Inflow
+    double m_IntegralLengthScale; //Alexandre MOD
+    double m_TurbulenceIntensity; //Alexandre MOD
 
     bool m_CalcSeparatedFlow;
     bool m_CalcSuctionSide;
     bool m_CalcPressureSide;
+
+    //Sara
+    bool m_CalcLowson;
+    //Sara
 
     double m_A1Ar;
 
@@ -96,6 +179,27 @@ private:
     QVector<double> m_SPLALOG;
     QVector<double> m_SPLSLOG;
     QVector<double> m_SPLPLOG;
+
+//Sara
+    QVector<double> m_SPLLEdB;
+    QVector<double> m_SPLLEdBAW;
+    QVector<double> m_SPLLEdBBW;
+    QVector<double> m_SPLLEdBCW;
+    QVector<double> m_SPLlogLE;
+
+    QVector<double> m_OASPL3d;
+    QVector<double> m_OASPLA3d;
+    QVector<double> m_OASPLB3d;
+    QVector<double> m_OASPLC3d;
+    QVector<double> m_SPLALOG3d;
+    QVector<double> m_SPLSLOG3d;
+    QVector<double> m_SPLPLOG3d;
+    QVector<double> m_SPLLEdB3d;
+    QVector<double> m_SPLLEdBAW3d;
+    QVector<double> m_SPLLEdBBW3d;
+    QVector<double> m_SPLLEdBCW3d;
+    QVector<double> m_SPLlogLE3d;
+    //Sara
 
     //For SPLa
     TwoDVector m_SPLadB; //Store db of SPL alpha
@@ -119,6 +223,34 @@ private:
     double m_SplaAMin;
     double m_SplaAo;
     double m_ChordBasedReynolds;
+
+    //Sara
+    bool m_rot_speed_check;
+    bool m_u_wind_speed_check;
+    bool m_TSRtd_check;
+    double m_sects;
+    double m_rot_speed;
+    double m_u_wind_speed;
+    double m_TSRtd;
+    double m_dstar_user;
+    double x;
+    double m_rot_speed_calc;
+    double m_u_wind_speed_calc;
+    double m_TSR_calc;
+    double m_obs_x_pos;
+    double m_obs_y_pos;
+    double m_obs_z_pos;
+    double m_obs_x_pos_rotor;
+    double m_obs_y_pos_rotor;
+    double m_obs_z_pos_rotor;
+    int m_Tt;
+    int m_Ts;
+    int m_As;
+    int m_dstar_type;
+    int m_mode_type;
+    int m_phi_type;
+    int m_theta_type;
+    //Sara
 
     //For SPLs
     TwoDVector m_SPLsdB; //Store db of SPLs
@@ -149,6 +281,52 @@ private:
     TwoDVector m_SPLdBAW; //Store db of SPL + A-Weighting
     TwoDVector m_SPLdBBW; //Store db of SPL + B-Weighting
     TwoDVector m_SPLdBCW; //Store db of SPL + C-Weighting
+
+    //For LE - Alexandre MOD
+    TwoDVector m_SPL_LEdB; //Store db of SPL_LE
+    TwoDVector m_SPL_LEdBAW; //Store db of SPL_LE + A-Weighting
+    TwoDVector m_SPL_LEdBBW; //Store db of SPL_LE + B-Weighting
+    TwoDVector m_SPL_LEdBCW; //Store db of SPL_LE + C-Weighting
+    double m_originalVelocity;
+    double m_originalChordLength;
+    double m_distanceObserver;
+    double m_originalMach;
+    double m_wettedLength;
+
+    //Sara
+    TwoDVector m_SPLadB3d;
+    TwoDVector m_SPLadBAW3d;
+    TwoDVector m_SPLadBBW3d;
+    TwoDVector m_SPLadBCW3d;
+    TwoDVector m_SPLpdB3d;
+    TwoDVector m_SPLpdBAW3d;
+    TwoDVector m_SPLpdBBW3d;
+    TwoDVector m_SPLpdBCW3d;
+    TwoDVector m_SPLdB3d;
+    TwoDVector m_SPLdBAW3d;
+    TwoDVector m_SPLdBBW3d;
+    TwoDVector m_SPLdBCW3d;
+    TwoDVector m_SPL_LEdB3d;
+    TwoDVector m_SPL_LEdBAW3d;
+    TwoDVector m_SPL_LEdBBW3d;
+    TwoDVector m_SPL_LEdBCW3d;
+    TwoDVector m_SPLsdB3d;
+    TwoDVector m_SPLsdBAW3d;
+    TwoDVector m_SPLsdBBW3d;
+    TwoDVector m_SPLsdBCW3d;
+
+    TwoDVector m_SPLadB3d_final;
+    TwoDVector m_SPLpdB3d_final;
+    TwoDVector m_SPLdB3d_final;
+    TwoDVector m_SPLdBAW3d_final;
+    TwoDVector m_SPLdBBW3d_final;
+    TwoDVector m_SPLdBCW3d_final;
+    TwoDVector m_SPL_LEdB3d_final;
+    TwoDVector m_SPL_LEdBAW3d_final;
+    TwoDVector m_SPL_LEdBBW3d_final;
+    TwoDVector m_SPL_LEdBCW3d_final;
+    TwoDVector m_SPLsdB3d_final;
+    //Sara
 };
 
 #endif // NOISECALCULATION_H

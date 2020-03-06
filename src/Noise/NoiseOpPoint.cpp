@@ -27,6 +27,12 @@ double NoiseOpPoint::getAlphaDegree() {
 	return (m_opPoint ? m_opPoint->Alpha : m_alpha);
 }
 
+//Sara
+double NoiseOpPoint::getMach() {
+    return (m_opPoint ? m_opPoint->Mach : m_mach);
+}
+//Sara
+
 double NoiseOpPoint::getAlphaDegreeAbsolute() {
 	return fabs(getAlphaDegree());
 }
@@ -46,3 +52,17 @@ double NoiseOpPoint::getXValue(int index, int topOrBot) {
 double NoiseOpPoint::getDstrAt(int index,int topOrBot) {
 	return (topOrBot == 1 ? m_opPoint->topDStar.second[index] : m_opPoint->botDStar.second[index]);	
 }
+
+//Sara
+//double NoiseOpPoint::getAlphaAt(int index,int topOrBot) {
+//    return (topOrBot == 1 ? m_opPoint->topAlpha.second[index] : m_opPoint->botAlpha.second[index]);
+//}
+
+//double NoiseOpPoint::getReynoldsAt(int index,int topOrBot) {
+//    return (topOrBot == 1 ? m_opPoint->topReynolds.second[index] : m_opPoint->botReynolds.second[index]);
+//}
+
+//double NoiseOpPoint::getMachAt(int index,int topOrBot) {
+//    return (topOrBot == 1 ? m_opPoint->topMach.second[index] : m_opPoint->botMach.second[index]);
+//}
+//Sara

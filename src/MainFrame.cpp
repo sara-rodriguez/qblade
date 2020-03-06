@@ -100,7 +100,7 @@ MainFrame::MainFrame (QWidget *parent, Qt::WindowFlags flags)
 	setContextMenuPolicy(Qt::NoContextMenu);  // NM deactivate the default context menu
 	/////////// end new NM ///////////////
 	
-    m_VersionName = QString::fromLatin1("QBlade v0.96 64bit");
+    m_VersionName = QString::fromLatin1("QBlade v0.96 Beta 32bits");
 	
 	setWindowTitle(m_VersionName);
 	setWindowIcon(QIcon(":/images/blank_logo.png"));
@@ -160,7 +160,8 @@ MainFrame::MainFrame (QWidget *parent, Qt::WindowFlags flags)
 	////////////end new code JW/////////
 	
 	if(LoadSettings()) {
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 		
 		m_RefGraph.LoadSettings(&settings);
 		
@@ -1043,6 +1044,7 @@ void MainFrame::CreateDockWindows()
 	pBEM->m_p2DWidget = m_twoDWidget;
 	SimuWidget *pSimuWidget = (SimuWidget *) m_pSimuWidget;
 	pBEM->m_pSimuWidget = pSimuWidget;
+
 	//////////////////////////////////////end new code DM//////////////
 	
 	////////////////////////////////////////new code JW//////////////////////////////////
@@ -3141,8 +3143,9 @@ bool MainFrame::LoadSettings()
 	int SettingsFormat;
 	QSize size;
 	
-	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
-	
+    //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+
 	settings.beginGroup("MainFrame");
 	{
 		SettingsFormat = settings.value("SettingsFormat").toInt();
@@ -3817,9 +3820,11 @@ void MainFrame::OnResetSettings()
 	{
 		QMessageBox::warning(this,tr("Default Settings"), tr("The settings will be reset at the next session."));
 #ifdef Q_WS_MAC
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #else
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #endif
 		settings.clear();
 		m_LastDirName = QDir::homePath();
@@ -4543,9 +4548,11 @@ void MainFrame::SaveSettings()
 	
 	if(!m_bSaveSettings) return;
 #ifdef Q_WS_MAC
-	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #else
-	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    //QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 #endif
 	settings.beginGroup("MainFrame");
 	{

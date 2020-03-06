@@ -30,7 +30,7 @@ class NewGraph : public QObject
 public:
 	enum GraphType {None, FastSimulation, BladeGraph, QFEMSimulation, QLLTTimeGraph, QLLTBladeGraph, TurbineRotor,
 					TurbineBlade, TurbineAzimuthal, TurbineWeibull, TurbineLegend, MultiWindspeed, MultiRotational,
-					MultiPitch, Noise, RotorTipSpeed, RotorAllSimulations, RotorLegend};
+                    MultiPitch, Noise, RotorTipSpeed, RotorAllSimulations, RotorLegend};
 	enum ExportType {HumanReadable, CSV};
 	
 	struct GraphDefaults { GraphType graphType; QString xTitle, yTitle; bool xLogarithmic, yLogarithmic; };

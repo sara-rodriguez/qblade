@@ -16,23 +16,23 @@ struct Parameter {
 				  RotorSweptArea, LossFactor, FixedLosses, RotationalSpeed, RotationalSpeedMin, RotationalSpeedMax, TSR};
 	};
 	struct DMSData {
-		enum Key {Name, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
-				  TipSpeedFrom, TipSpeedTo, TipSpeedDelta, Windspeed};
+        enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
+                  TipSpeedFrom, TipSpeedTo, TipSpeedDelta, Windspeed};//Sara
 	};
 
 	struct CDMSData {
-		enum Key {Name, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
+        enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, TipLoss, VariableInduction,
 				  WindspeedFrom, WindspeedTo, WindspeedDelta, RotationalFrom, RotationalTo, RotationalDelta, PitchFrom,
-				  PitchTo, PitchDelta};
+                  PitchTo, PitchDelta};//Sara
 	};
 	struct TDMSData {
-		enum Key {Name, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, WindspeedFrom, WindspeedTo,
-				  WindspeedDelta, TipLoss, VariableInduction, AnnualYield};
+        enum Key {Name, Temperature, Rho, Viscosity, Discretize, MaxIterations, MaxEpsilon, RelaxFactor, WindspeedFrom, WindspeedTo,
+                  WindspeedDelta, TipLoss, VariableInduction, AnnualYield};//Sara
 	};
 	struct NoiseSimulation {
-		enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,
-				  DStarChordStation, DStarScalingFactor, EddyConvectionMach, DirectivityTheta, DirectivityPhi,
-				  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition};
+        enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,
+                  DStarChordStation, DStarScalingFactor, EddyConvectionMach, DirectivityTheta, DirectivityPhi,
+                  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition, sects, rot_speed, u_wind_speed, TSRtd, dstar_type, mode_type, dstar_user, phi_type, theta_type, IntegralLengthScale, TurbulenceIntensity,rot_speed_calc, u_wind_speed_calc, TSR_calc,rot_speed_check, u_wind_speed_check, TSR_check, Lowson_type, obs_x_pos, obs_y_pos, obs_z_pos, obs_x_pos_rotor, obs_y_pos_rotor, obs_z_pos_rotor, Tt, Ts, As}; //Sara and Alexandre MOD
 	};
 };
 

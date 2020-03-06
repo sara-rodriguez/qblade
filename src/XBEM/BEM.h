@@ -507,6 +507,7 @@ public:
         double dlg_epsilon;
         int dlg_iterations;
         int dlg_elements;
+        double dlg_temp;//Sara
         double dlg_rho;
         bool dlg_tiploss;
         bool dlg_aspectratio;

@@ -153,7 +153,7 @@ QXDirect::QXDirect(QWidget *parent)
 
     m_Alpha      = -10.0;
     m_AlphaMax   = 20.0;
-	m_AlphaDelta = 0.5;
+    m_AlphaDelta = 0.25;//Sara
 	m_Cl         = 0.0;
 	m_ClMax      = 1.0;
 	m_ClDelta    = 0.1;
@@ -464,7 +464,7 @@ void QXDirect::AddOpData(OpPoint *pOpPoint)
 	pOpPoint->topShearEq.first = offset;
 	pOpPoint->topShearEq.second.resize(nside1-offset);
 	pOpPoint->topDStar.first = offset;
-	pOpPoint->topDStar.second.resize(nside1-offset);
+    pOpPoint->topDStar.second.resize(nside1-offset);
 	pOpPoint->topTheta.first = offset;
 	pOpPoint->topTheta.second.resize(nside1-offset);
 	pOpPoint->reThetaTop.first = offset;
@@ -1665,7 +1665,7 @@ void QXDirect::LoadSettings(QSettings *pSettings)
 		m_iPlrView       = pSettings->value("PlrView").toInt();
 		m_Alpha          = pSettings->value("AlphaMin").toDouble();
 		m_AlphaMax       = pSettings->value("AlphaMax").toDouble();
-		m_AlphaDelta     = pSettings->value("AlphaDelta").toDouble();
+        m_AlphaDelta     = pSettings->value("AlphaDelta").toDouble();
 		m_Cl             = pSettings->value("ClMin").toDouble();
 		m_ClMax          = pSettings->value("ClMax").toDouble();
 		m_ClDelta        = pSettings->value("ClDelta").toDouble();
@@ -3454,7 +3454,7 @@ void QXDirect::OnImportXFoilPolar()
 {
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
 	CPolar *pPolar = new CPolar;
-	double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom;
+    double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom, Ma;//Sara
 	QString FoilName, PathName, strong, str;
 
 	QByteArray textline;
@@ -3597,11 +3597,11 @@ void QXDirect::OnImportXFoilPolar()
 
 				if (res == 7)
 				{
-					pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);
-				}
-				else if(res == 9)
-				{
-					pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);
+                    pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);//Sara Ma
+                }
+                else if(res == 9)
+                {
+                    pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);//Sara ,Ma
 				}
 				else
 				{
@@ -5341,6 +5341,8 @@ void QXDirect::ReadParams()
 	m_bSequence = m_pctrlSequence->isChecked();
 	m_bInitBL   = m_pctrlInitBL->isChecked();
 	m_bViscous  = m_pctrlViscous->isChecked();
+
+    if (m_AlphaDelta>0.25){AlphaDeltaNoise=1;}else{AlphaDeltaNoise=0;} //Sara
 }
 
 
@@ -5409,7 +5411,7 @@ void QXDirect::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("FullReport", m_pXFoil->m_bFullReport);
 		pSettings->setValue("NReynolds", m_NRe);
 
-		if(m_PolarType==FIXEDSPEEDPOLAR)      pSettings->setValue("Type", 1);
+        if(m_PolarType==FIXEDSPEEDPOLAR)      pSettings->setValue("Type", 1);
 		else if(m_PolarType==FIXEDSPEEDPOLAR) pSettings->setValue("Type", 2);
 		else if(m_PolarType==FIXEDAOAPOLAR)   pSettings->setValue("Type", 4);
 		else if(m_PolarType==STABILITYPOLAR)  pSettings->setValue("Type", 7);
@@ -6098,7 +6100,7 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 			break;
 		case 14:
 			pGraph->SetXTitle(tr("XCp"));
-			break;
+            break;
 		default:
 			pGraph->SetXTitle(tr("Alpha"));
 			break;

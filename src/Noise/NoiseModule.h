@@ -18,7 +18,7 @@ public:
 	~NoiseModule();
 	
 	void addMainMenuEntries();
-	QList<NewCurve*> prepareCurves (QString xAxis, QString yAxis, NewGraph::GraphType graphType,
+    QList<NewCurve*> prepareCurves (QString xAxis, QString yAxis, NewGraph::GraphType graphType,
 									NewGraph::GraphType graphTypeMulti);
 	QStringList getAvailableGraphVariables(bool xAxis);  // override from TwoDWidgetInterface
 	QPair<ShowAsGraphInterface*,int> getHighlightDot(NewGraph::GraphType graphType);
@@ -40,6 +40,7 @@ public slots:
 	virtual void onActivationActionTriggered();  // override from ModuleBase
 	virtual void onModuleChanged();  // override from ModuleBase
 	void onHideDocks(bool hide);
+    void on3dGraphs(bool graphs);//Sara
 	void setShownSimulation(NoiseSimulation *newSimulation, bool forceReload = false);
 	NoiseSimulation* getShownSimulation() { return m_shownSimulation; }
 
