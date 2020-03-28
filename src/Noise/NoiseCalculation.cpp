@@ -19,6 +19,8 @@
 #include "../MainFrame.h"
 #include "../XUnsteadyBEM/WindFieldModule.h"
 #include "../XUnsteadyBEM/WindField.h"
+#include "../XLLT/QLLTSimulation.h"
+#include "../XUnsteadyBEM/FASTSimulation.h"
 #include "../MainFrame.h"
 #include <QtMath>
 #include <cmath>
@@ -2473,39 +2475,52 @@ m_SPLlogLE3d[i]=0;
 void NoiseCalculation::calculate3d() {
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
+int TSR = m_parameter->TSRtd;
 int blades_num = pBEM->m_pBData->blades; //number of blades
+double rot_speed = m_parameter->rot_speed;
+double omega;
+int As;
+omega = 2.*M_PI*rot_speed/60.;
 
-if(m_parameter->mode_type==0){
+if(m_parameter->state_ss_us==0){
 //    steady
-    qDebug() << "steady";
 }
 else{
 //    unsteady
-   qDebug() << "unsteady";
+//      int simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
+//      int number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
 
-//   int simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
-
-//   int number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
-
-//   qDebug() <<"teste Tt: " << simulation_time;
-//   qDebug() <<"teste Ts: " << number_time_steps;
-
-int number_time_steps = m_parameter->Ts;
 int simulation_time = m_parameter->Tt;
-double blades_angles_position[blades_num+1][number_time_steps+1];
+int number_time_steps;
+double time_steps;
+
+if (m_parameter->step_type==0){
+number_time_steps = m_parameter->timesteps;
+time_steps=1.0*simulation_time/(1.0*number_time_steps);}
+else {
+As=m_parameter->anglesteps;
+time_steps = 2.*M_PI*As/(360.*omega);
+number_time_steps = 1.0*simulation_time/(1.0*time_steps);
+}
+
+double blades_angles_position[blades_num][number_time_steps+1]; //está errado pq é relacionado com o w
 int blade_origin=0;
+int angle_steps;
 
-qDebug() << "steps: " << number_time_steps;
-
-for (int i=0;i<(blades_num+1);++i){
+for (int i=0;i<blades_num;++i){
 blades_angles_position[i][0]=360./blades_num*i+blade_origin;
 }
 
-for (int i=0;i<(blades_num+1);++i){
+for (int i=0;i<blades_num;++i){
 for (int j=1;j<(number_time_steps+1);++j){
-blades_angles_position[i][j]=blades_angles_position[i][j-1]+m_As;
+blades_angles_position[i][j]=360.*omega*(j*time_steps)/(2.*M_PI)+blades_angles_position[i][j-1];
 }}
 
+//for (int i=0;i<blades_num;++i){
+//for (int j=0;j<(number_time_steps+1);++j){
+//qDebug() << i <<  j << "posição angular: " << blades_angles_position[i][j];
+//}}
+}
 //end unsteady
-}}
+}
 //Sara

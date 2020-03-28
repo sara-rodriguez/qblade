@@ -59,7 +59,7 @@ private:
 	NoiseSimulation *m_editedSimulation;
 	QList<OpPointRecord> m_opPointRecords;  // store a sorted list of all OpPoints
 
-    //Sara
+    //Sara begin
     QCheckBox *m_rot_speed_check;
     NumberEdit *m_rot_speed_numberedit;
     QCheckBox *m_TSR_check;
@@ -69,27 +69,28 @@ private:
     QPushButton *buttonle;
     QComboBox *dstar_combobox;
     QComboBox *mode_combobox;
+    QComboBox *step_combobox;
     NumberEdit *Tt_numberedit;
-    NumberEdit *Ts_numberedit;
-    NumberEdit *As_numberedit;
-//Sara
+    NumberEdit *timesteps_numberedit;
+    NumberEdit *anglesteps_numberedit;
+//Sara end
 
 	QButtonGroup *m_selectFromButtons;
-    QButtonGroup *m_selectFromButtonsLE;//Sara
+    QButtonGroup *m_selectFromButtonsLE;
 	FoilComboBox *m_airfoilComboBox;
-    FoilComboBox *m_airfoilComboBoxtd;//Sara
-    FoilComboBox *m_airfoilComboBoxte;//Sara
+    FoilComboBox *m_airfoilComboBoxtd;
+    FoilComboBox *m_airfoilComboBoxte;
 	PolarComboBox *m_polarComboBox;
 	QScrollArea *m_opPointScrollArea;
 	QWidget *m_opPointViewWidget;
 	QWidget *m_originalBpmWidget;
 	
-    //Sara
+    //Sara begin
     QList< QList<double> > m_CsvParameters;
     QList<QString> m_CsvFileHeader;
     QLabel *m_CsvFileLabel, *m_StarredDLabel;
     int m_StarredDType;
-//Sara
+//Sara end
 
 private slots:
 	void onSelectButtonsClicked (int id);
@@ -97,18 +98,20 @@ private slots:
 	void onAllButtonToggled (bool pressed);
 	
 	void onCreateButtonClicked ();
-    void onVerifyDeltaFor3D();
+    void onVerifyDeltaFor3D(); //Sara
+    void onVerifyWindfield(); //Sara
 	void onUnitsChanged () { }  // no need for this
 
-    //Sara
+    //Sara begin
         void OnImportStarredD();
         void OnSetDstarButton(int index);
         void OnModeDefine(int index);
+        void OnStepTypeDefine(int index);
         void OnRotSpeedCheck();
         void OnWindSpeedCheck();
         void OnTSRCheck();
         void OnWarningSet3();
-        //Sara
+        //Sara end
 };
 
 #endif // NOISECREATORDIALOG_H

@@ -67,8 +67,6 @@ private:
 
     //Sara
     int m_Tt;
-    int m_Ts;
-    int m_As;
     double obs_x_pos;
     double obs_y_pos;
     double obs_z_pos;
@@ -85,7 +83,10 @@ private:
     double m_TSR;
     double m_dstar_user;
     int m_dstar_type;
-    int m_mode_type;
+    int m_state_ss_us;
+    int m_step_type;//Sara
+    int m_timesteps;//Sara
+    int m_anglesteps;//Sara
     int m_phi_type;
     int m_theta_type;
 

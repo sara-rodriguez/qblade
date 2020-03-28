@@ -274,33 +274,44 @@ hBox->addLayout(vBox);
     pGrid = new ParameterGrid<P>(this);
     groupBox->setLayout(pGrid);
     mode_combobox = new QComboBox;
-    pGrid->addEdit(P::mode_type,ComboBox, mode_combobox,"mode:","");
-    mode_combobox->insertItem(0,"steady state");
-    mode_combobox->insertItem(1,"unsteady state");
+    pGrid->addEdit(P::state_ss_us,ComboBox, mode_combobox,"State:","");
+    mode_combobox->insertItem(0,"Steady");
+    mode_combobox->insertItem(1,"Unsteady");
     connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
     Tt_numberedit = new NumberEdit ();
     Tt_numberedit->setEnabled(false);
 
-    Ts_numberedit = new NumberEdit ();
-    Ts_numberedit->setEnabled(false);
+    float simulation_time=0;
+    float number_time_steps=0;
 
-    As_numberedit = new NumberEdit ();
-    As_numberedit->setEnabled(false);
-
+    if(g_windFieldStore.size() != 0){
    float simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
-
    float number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
+    }
 
-    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Time [s]:",simulation_time);
-    pGrid->addEdit(P::Ts, NumberEditType, Ts_numberedit,"Timesteps:",number_time_steps);
-    pGrid->addEdit(P::As, NumberEditType, As_numberedit,"Simulation Angular Step [deg]:",1);
+    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Simulation Time [s]:",simulation_time);
+
+    step_combobox = new QComboBox;
+    pGrid->addEdit(P::step_type,ComboBox, step_combobox,"Step type:","");
+    step_combobox->insertItem(0,"Time");
+    step_combobox->insertItem(1,"Angular");
+    connect(step_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnStepTypeDefine(int)));
+    step_combobox->setEnabled(false);
+
+    timesteps_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::timesteps, NumberEditType, timesteps_numberedit,"Timesteps:",number_time_steps);
+    timesteps_numberedit->setEnabled(false);
+
+    anglesteps_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::anglesteps, NumberEditType, anglesteps_numberedit,"Anglesteps [deg]:",45);
+    anglesteps_numberedit->setEnabled(false);
 
     QLabel *labeltf = new QLabel ("Observer Position:");
     double distx = 1.5*outer_radius;
     pGrid->addWidget(labeltf);//,10,0
-    pGrid->addEdit(P::obs_x_pos_rotor, NumberEditType, new NumberEdit(),"XB:", distx);
-    pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YB:", 0);
-    pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZB:", 0);
+    pGrid->addEdit(P::obs_x_pos_rotor, NumberEditType, new NumberEdit(),"XF:", distx);
+    pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YF:", 0);
+    pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZF:", 0);
 
     hBox->addLayout(vBox);
     //hBox = new QHBoxLayout;
@@ -474,7 +485,7 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
     onVerifyDeltaFor3D();//Sara
 }
 
-//Sara
+//Sara begin
 void NoiseCreatorDialog::onVerifyDeltaFor3D(){
 //    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
@@ -487,7 +498,18 @@ void NoiseCreatorDialog::onVerifyDeltaFor3D(){
     }
 
 }
-//Sara
+
+void NoiseCreatorDialog::onVerifyWindfield(){
+//    QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
+
+    if(g_windFieldStore.size() == 0){
+        QMessageBox::critical(this, "Wind Field Error!",
+                              "The following error(s) occured:\n\n - Define Windfield.", QMessageBox::Ok);
+        return;
+    }
+
+}
+//Sara end
 
 void NoiseCreatorDialog::OnImportStarredD(){
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
@@ -554,23 +576,34 @@ if((a_D_starred_index_user.size()==pBEM->dlg_elements) & (a_D_starred_S_user.siz
 void NoiseCreatorDialog::OnSetDstarButton(int index){
     if (index==2){
    Tt_numberedit->setEnabled(true);
-   Ts_numberedit->setEnabled(true);
-   As_numberedit->setEnabled(true);
     }
 }
 
 //Sara
 void NoiseCreatorDialog::OnModeDefine(int index){
-//colocar aqui o que vai ser aberto qdo for unsteady
+//when unsteady state
     if (index==1){
     Tt_numberedit->setEnabled(true);
-    Ts_numberedit->setEnabled(true);
-    As_numberedit->setEnabled(true);
+    step_combobox->setEnabled(true);
+    timesteps_numberedit->setEnabled(true);
+    onVerifyWindfield();
     }
     else {
     Tt_numberedit->setEnabled(false);
-    Ts_numberedit->setEnabled(false);
-    As_numberedit->setEnabled(false);
+    step_combobox->setEnabled(false);
+    timesteps_numberedit->setEnabled(false);
+    }
+}
+
+void NoiseCreatorDialog::OnStepTypeDefine(int index){
+//    float number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
+    if (index==0){
+        timesteps_numberedit->setEnabled(true);
+        anglesteps_numberedit->setEnabled(false);
+    }
+    if (index==1){
+        timesteps_numberedit->setEnabled(false);
+        anglesteps_numberedit->setEnabled(true);
     }
 }
 //Sara

@@ -141,6 +141,9 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
             }
         }
         message.prepend("- No Noise Simulation in Database");
+        if (g_windFieldStore.size() == 0) {
+            message.prepend(tr("- No Windfield in Database to Quasi 3D Rotor Noise Simulation"));//Sara
+        }
         return message;
     } else {
         return QStringList();
@@ -3658,23 +3661,40 @@ else {value=m_parameter.rot_speed_check;}
         else {value = m_parameter.theta_type;}break;
 
     case P::obs_x_pos:
-        if (m_parameter.obs_x_pos<=0 & m_parameter.obs_x_pos>=0){m_parameter.obs_x_pos=10;}
+        if (m_parameter.obs_x_pos<=0 & m_parameter.obs_x_pos>=0 & m_parameter.obs_y_pos<=0 & m_parameter.obs_y_pos>=0 & m_parameter.obs_z_pos<=0 & m_parameter.obs_z_pos>=0){
+        m_parameter.obs_x_pos=10;
+        m_parameter.obs_y_pos=10;
+        double hub_radius=pbem->m_pBlade->m_HubRadius;
+        double blade_radius=(outer_radius-hub_radius);
+        m_parameter.obs_z_pos=blade_radius/2.;
+        }
         if(set) m_parameter.obs_x_pos = value.toDouble();
         else {value = m_parameter.obs_x_pos;}break;
 
     case P::obs_y_pos:
-        if (m_parameter.obs_y_pos<=0 & m_parameter.obs_y_pos>=0){m_parameter.obs_y_pos=10;}
         if(set) m_parameter.obs_y_pos = value.toDouble();
         else {value = m_parameter.obs_y_pos;}break;
 
     case P::obs_z_pos:
-        if (m_parameter.obs_z_pos<=0 & m_parameter.obs_z_pos>=0){
-            double hub_radius=pbem->m_pBlade->m_HubRadius;
-            double blade_radius=(outer_radius-hub_radius);
-            m_parameter.obs_z_pos=blade_radius/2.;
-        }
         if(set) m_parameter.obs_z_pos = value.toDouble();
         else {value = m_parameter.obs_z_pos;}break;
+
+    case P::obs_x_pos_rotor:
+        if(m_parameter.obs_x_pos_rotor<=0 & m_parameter.obs_x_pos_rotor>=0 & m_parameter.obs_y_pos_rotor<=0 & m_parameter.obs_y_pos_rotor>=0 & m_parameter.obs_z_pos_rotor<=0 & m_parameter.obs_z_pos_rotor>=0){
+          m_parameter.obs_x_pos_rotor=0;
+          m_parameter.obs_y_pos_rotor=0;
+          m_parameter.obs_z_pos_rotor=1,5*outer_radius;
+        }
+        if(set) m_parameter.obs_x_pos_rotor = value.toDouble();
+        else {value = m_parameter.obs_x_pos_rotor;}break;
+
+    case P::obs_y_pos_rotor:
+        if(set) m_parameter.obs_y_pos_rotor = value.toDouble();
+        else {value = m_parameter.obs_y_pos_rotor;}break;
+
+    case P::obs_z_pos_rotor:
+        if(set) m_parameter.obs_z_pos_rotor = value.toDouble();
+        else {value = m_parameter.obs_z_pos_rotor;}break;
 
     case P::Tt:
         if(set) m_parameter.Tt = value.toDouble();
@@ -3682,20 +3702,29 @@ else {value=m_parameter.rot_speed_check;}
         if (m_parameter.Tt==0){m_parameter.Tt=simulation_time;}
         break;
 
-    case P::Ts:
-        if(set) m_parameter.Ts = value.toDouble();
-        else {value = m_parameter.Ts;}
-        if (m_parameter.Ts==0){m_parameter.Ts=number_time_steps;}
+    case P::step_type:
+        if(set) m_parameter.step_type = value.toDouble();
+        else {value = m_parameter.step_type;}
         break;
 
-    case P::As:
-        if(m_parameter.As==0){m_parameter.As=1;}
-        if(set) m_parameter.As = value.toDouble();
-        else {value = m_parameter.As;}break;
+    case P::timesteps:
+        if(set) m_parameter.timesteps = value.toInt();
+        else {value = m_parameter.timesteps;}
+        break;
+
+    case P::anglesteps:
+        if(set) m_parameter.anglesteps = value.toInt();
+        else {value = m_parameter.anglesteps;}
+        break;
 
     case P::Lowson_type:
         if(set) {m_parameter.Lowson_type = value.toInt();}
 else {value=m_parameter.Lowson_type;}
+        break;
+
+    case P::state_ss_us:
+        if(set) {m_parameter.state_ss_us = value.toInt();}
+else {value=m_parameter.state_ss_us;}
         break;
 
     }

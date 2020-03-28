@@ -244,10 +244,11 @@ private:
     double m_obs_y_pos_rotor;
     double m_obs_z_pos_rotor;
     int m_Tt;
-    int m_Ts;
-    int m_As;
     int m_dstar_type;
-    int m_mode_type;
+    int m_state_ss_us;
+    int m_step_type;
+    int m_timesteps;
+    int m_anglesteps;
     int m_phi_type;
     int m_theta_type;
     //Sara
