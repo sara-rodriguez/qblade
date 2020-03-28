@@ -278,18 +278,14 @@ hBox->addLayout(vBox);
     mode_combobox->insertItem(0,"Steady");
     mode_combobox->insertItem(1,"Unsteady");
     connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
-    Tt_numberedit = new NumberEdit ();
-    Tt_numberedit->setEnabled(false);
 
     float simulation_time=0;
     float number_time_steps=0;
 
     if(g_windFieldStore.size() != 0){
-   float simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
-   float number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
+   simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
+   number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
     }
-
-    pGrid->addEdit(P::Tt, NumberEditType, Tt_numberedit,"Simulation Time [s]:",simulation_time);
 
     step_combobox = new QComboBox;
     pGrid->addEdit(P::step_type,ComboBox, step_combobox,"Step type:","");
@@ -507,7 +503,6 @@ void NoiseCreatorDialog::onVerifyWindfield(){
                               "The following error(s) occured:\n\n - Define Windfield.", QMessageBox::Ok);
         return;
     }
-
 }
 //Sara end
 
@@ -575,21 +570,18 @@ if((a_D_starred_index_user.size()==pBEM->dlg_elements) & (a_D_starred_S_user.siz
 
 void NoiseCreatorDialog::OnSetDstarButton(int index){
     if (index==2){
-   Tt_numberedit->setEnabled(true);
-    }
+   buttonle->setEnabled(true);}
 }
 
 //Sara
 void NoiseCreatorDialog::OnModeDefine(int index){
 //when unsteady state
     if (index==1){
-    Tt_numberedit->setEnabled(true);
     step_combobox->setEnabled(true);
     timesteps_numberedit->setEnabled(true);
     onVerifyWindfield();
     }
     else {
-    Tt_numberedit->setEnabled(false);
     step_combobox->setEnabled(false);
     timesteps_numberedit->setEnabled(false);
     }

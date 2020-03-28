@@ -36,9 +36,14 @@ public:
 	void calculate();  // can throw NoiseException
 
     void verifydeltafor3d();//Sara
-    void calculateqs3d_2d_curves();//Sara
-    void calculateqs3d_final();//Sara
-    void calculate3d();//Sara
+    void calculateqs3d_blade_graphics();//Sara
+    void calculateqs3d_blade();//Sara
+    void unsteady_angles_calc();//Sara
+
+    //Sara
+    //for quasi 3d rotor
+    TwoDVector unsteady_angles() const { return m_unsteady_angles; }
+    //Sara
 	
 	// NM the arrays containing the graph data
 	TwoDVector SPLadB() const { return m_SPLadB; }
@@ -243,7 +248,6 @@ private:
     double m_obs_x_pos_rotor;
     double m_obs_y_pos_rotor;
     double m_obs_z_pos_rotor;
-    int m_Tt;
     int m_dstar_type;
     int m_state_ss_us;
     int m_step_type;
@@ -327,6 +331,9 @@ private:
     TwoDVector m_SPL_LEdBBW3d_final;
     TwoDVector m_SPL_LEdBCW3d_final;
     TwoDVector m_SPLsdB3d_final;
+
+    //for quasi 3d rotor
+    TwoDVector m_unsteady_angles;
     //Sara
 };
 

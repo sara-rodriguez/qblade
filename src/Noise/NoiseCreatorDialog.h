@@ -70,7 +70,6 @@ private:
     QComboBox *dstar_combobox;
     QComboBox *mode_combobox;
     QComboBox *step_combobox;
-    NumberEdit *Tt_numberedit;
     NumberEdit *timesteps_numberedit;
     NumberEdit *anglesteps_numberedit;
 //Sara end

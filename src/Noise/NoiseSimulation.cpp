@@ -153,9 +153,9 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
-    m_calculation.calculateqs3d_2d_curves();//Sara
-    m_calculation.calculate3d();//Sara
-    m_calculation.calculateqs3d_final();//Sara
+    m_calculation.calculateqs3d_blade_graphics();//Sara
+    m_calculation.unsteady_angles_calc();//Sara
+    m_calculation.calculateqs3d_blade();//Sara
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -3696,13 +3696,7 @@ else {value=m_parameter.rot_speed_check;}
         if(set) m_parameter.obs_z_pos_rotor = value.toDouble();
         else {value = m_parameter.obs_z_pos_rotor;}break;
 
-    case P::Tt:
-        if(set) m_parameter.Tt = value.toDouble();
-        else {value = m_parameter.Tt;}
-        if (m_parameter.Tt==0){m_parameter.Tt=simulation_time;}
-        break;
-
-    case P::step_type:
+     case P::step_type:
         if(set) m_parameter.step_type = value.toDouble();
         else {value = m_parameter.step_type;}
         break;

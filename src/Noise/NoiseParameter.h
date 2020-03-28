@@ -77,10 +77,9 @@ public:
     int theta_type;
     int dstar_type;
     int state_ss_us;
-    int step_type;//Sara
-    int timesteps;//Sara
-    int anglesteps;//Sara
-    int Tt;
+    int step_type;
+    int timesteps;
+    int anglesteps;
 
     double D_starred_index_user[40];
     double D_starred_S_user[40];
