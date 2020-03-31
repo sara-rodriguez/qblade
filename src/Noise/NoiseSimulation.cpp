@@ -108,6 +108,14 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 22: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
         case 23: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
         case 24: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
+        case 25: *vector = m_calculation.SPLadB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 26: *vector = m_calculation.SPLsdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 27: *vector = m_calculation.SPLpdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 28: *vector = m_calculation.SPL_LEdB3d_final_rotor()[opPointIndex]; break;
+        case 29: *vector = m_calculation.SPLdB3d_final_rotor()[opPointIndex]; break;
+        case 30: *vector = m_calculation.SPLdBAW3d_final_rotor()[opPointIndex]; break;
+        case 31: *vector = m_calculation.SPLdBBW3d_final_rotor()[opPointIndex]; break;
+        case 32: *vector = m_calculation.SPLdBCW3d_final_rotor()[opPointIndex]; break;
             //Sara
         default: return nullptr;
         }
@@ -396,10 +404,11 @@ stream << endl;
 //stream << " SPL S: " << m_calculation.Final_qs3d_S << endl;
 //stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
 //if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
+
+//urgente resultados do rotor
 }}}
 
 void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
-
     stream.setRealNumberNotation(QTextStream::FixedNotation);
     stream.setRealNumberPrecision(5);
 
@@ -570,6 +579,9 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
                   "Radius [m]"  << ";" <<
                   "r/R"  << ";" <<
                   "Chord [m]" << ";" <<
+                  "Wind Speed [m/s]" << ";" <<
+                  "Rotational Speed [rpm]" << ";" <<
+                  "Tip Speed Ratio" << ";" <<
                   "Re polar"  << ";" <<
                   "Re calc"  << ";" <<
                   "Re error [%]"  << ";" <<
@@ -859,9 +871,6 @@ local_twist[i]=theta_BEM[i];
     dist_obs[i]=r_e[i];
 
     //phi type and theta type fixed 90º or calculated
-//    if (m_parameter.theta_type==1){theta_e[i]=90;}
-//    if (m_parameter.phi_type==1){phi_e[i]=90;}
-
    phi_rad[i]=qDegreesToRadians(phi[i]);
    theta_rad[i]=qDegreesToRadians(theta[i]);
 
@@ -889,22 +898,24 @@ if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0))) & (Reyn
 //uncomment to input data
  if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
         stream << qSetFieldWidth(14)  <<
-                      (i+1) << ";" <<
-                      bdata->m_pos.value(i) << ";" <<
-                      r_R[i] << ";" <<
-                      chord[i] << ";" <<
-                      Reynolds_polar[i] << ";" <<
-                      Reynolds_BEM[i]  << ";" <<
-                      Reynolds_error_x  << ";" <<
-                      Mach_polar[i] << ";" <<
-                      Mach_BEM[i]  <<  ";" <<
-                      Mach_error_x  << ";" <<
-                      alpha_polar[i] << ";" <<
-                      alpha_BEM[i]   <<  ";" <<
-                      alpha_error_x    <<  ";" <<
-                  observations_x   <<  ";" <<
-                      endl;
-
+                  (i+1) << ";" <<
+                  bdata->m_pos.value(i) << ";" <<
+                                        r_R[i] << ";" <<
+                                        chord[i] << ";" <<
+                                        bdata->m_Windspeed.value(i) << ";" <<
+                                        m_parameter.rot_speed << ";" <<
+                                        m_parameter.TSRtd << ";" <<
+                                        Reynolds_polar[i] << ";" <<
+                                        Reynolds_BEM[i]  << ";" <<
+                                        Reynolds_error_x  << ";" <<
+                                        Mach_polar[i] << ";" <<
+                                        Mach_BEM[i]  <<  ";" <<
+                                        Mach_error_x  << ";" <<
+                                        alpha_polar[i] << ";" <<
+                                        alpha_BEM[i]   <<  ";" <<
+                                        alpha_error_x    <<  ";" <<
+                                    observations_x   <<  ";" <<
+                                        endl;
 }}
          z=z+ldelta;
 

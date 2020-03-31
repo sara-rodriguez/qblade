@@ -27,7 +27,7 @@ public:
 	static const double AWeighting[FREQUENCY_TABLE_SIZE];  // 1/3 octave band frequency
 	static const double BWeighting[FREQUENCY_TABLE_SIZE];
 	static const double CWeighting[FREQUENCY_TABLE_SIZE];
-	static const QVector<double> CENTRAL_BAND_FREQUENCY;
+    static const QVector<double> CENTRAL_BAND_FREQUENCY;
 	
 	NoiseCalculation();
 	void serialize ();
@@ -83,12 +83,24 @@ public:
     TwoDVector SPL_LEdBAW3d_final() const { return m_SPL_LEdBAW3d_final; }
     TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
     TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
+    TwoDVector SPLadB3d_final_rotor() const { return m_SPLadB3d_final_rotor; }
+    TwoDVector SPLsdB3d_final_rotor() const { return m_SPLsdB3d_final_rotor; }
+    TwoDVector SPLpdB3d_final_rotor() const { return m_SPLpdB3d_final_rotor; }
+    TwoDVector SPLdB3d_final_rotor() const { return m_SPLdB3d_final_rotor; }
+    TwoDVector SPLdBAW3d_final_rotor() const { return m_SPLdBAW3d_final_rotor; }
+    TwoDVector SPLdBBW3d_final_rotor() const { return m_SPLdBBW3d_final_rotor; }
+    TwoDVector SPLdBCW3d_final_rotor() const { return m_SPLdBCW3d_final_rotor; }
+    TwoDVector SPL_LEdB3d_final_rotor() const { return m_SPL_LEdB3d_final_rotor; }
+    TwoDVector SPL_LEdBAW3d_final_rotor() const { return m_SPL_LEdBAW3d_final_rotor; }
+    TwoDVector SPL_LEdBBW3d_final_rotor() const { return m_SPL_LEdBBW3d_final_rotor; }
+    TwoDVector SPL_LEdBCW3d_final_rotor() const { return m_SPL_LEdBCW3d_final_rotor; }
 
     double Final_qs3d_alpha;
     double Final_qs3d_S;
     double Final_qs3d_P;
     double Final_qs3d_LE;
     double Final_qs3d;
+
 //Sara
 	
 	// NM apparently needed for export as .txt only
@@ -331,6 +343,18 @@ private:
     TwoDVector m_SPL_LEdBBW3d_final;
     TwoDVector m_SPL_LEdBCW3d_final;
     TwoDVector m_SPLsdB3d_final;
+
+    TwoDVector m_SPLadB3d_final_rotor;
+    TwoDVector m_SPLpdB3d_final_rotor;
+    TwoDVector m_SPLdB3d_final_rotor;
+    TwoDVector m_SPLdBAW3d_final_rotor;
+    TwoDVector m_SPLdBBW3d_final_rotor;
+    TwoDVector m_SPLdBCW3d_final_rotor;
+    TwoDVector m_SPL_LEdB3d_final_rotor;
+    TwoDVector m_SPL_LEdBAW3d_final_rotor;
+    TwoDVector m_SPL_LEdBBW3d_final_rotor;
+    TwoDVector m_SPL_LEdBCW3d_final_rotor;
+    TwoDVector m_SPLsdB3d_final_rotor;
 
     //for quasi 3d rotor
     TwoDVector m_unsteady_angles;

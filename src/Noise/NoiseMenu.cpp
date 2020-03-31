@@ -76,7 +76,7 @@ void NoiseMenu::onExportNoise() {
 
 //Sara
 void NoiseMenu::onExportqs3DNoiseLog() {
-    QString fileName = m_module->getShownSimulation()->getName() + "-3D-log.csv";
+    QString fileName = m_module->getShownSimulation()->getName() + "-qs3D-log.csv";
     fileName.replace(' ', '_');
     fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export Quasi 3D Noise Log",
                                             g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
