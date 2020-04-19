@@ -3454,7 +3454,7 @@ void QXDirect::OnImportXFoilPolar()
 {
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
 	CPolar *pPolar = new CPolar;
-    double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom, Ma;//Sara
+    double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom;
 	QString FoilName, PathName, strong, str;
 
 	QByteArray textline;

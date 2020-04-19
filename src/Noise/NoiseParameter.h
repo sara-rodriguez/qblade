@@ -68,18 +68,21 @@ public:
     double obs_x_pos_rotor;
     double obs_y_pos_rotor;
     double obs_z_pos_rotor;
+    double tower_height;
     double sects;
     double rot_speed;
     double u_wind_speed;
     double TSRtd;
     double dstar_user;
+    double tower_to_hub_distance;
     int phi_type;
     int theta_type;
     int dstar_type;
     int state_ss_us;
     int step_type;
-    int timesteps;
     int anglesteps;
+    int initial_azimuth;
+    int yaw_angle;
 
     double D_starred_index_user[40];
     double D_starred_S_user[40];

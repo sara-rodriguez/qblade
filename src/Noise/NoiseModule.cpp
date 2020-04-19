@@ -19,7 +19,7 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
     m_globalModuleIndentifier = NOISEMODULE;
     m_shownSimulation = nullptr;
 
-    on3dGraphs(false);
+    onqs3dGraphs(false);//Sara
 	
 //Sara
     //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
@@ -139,41 +139,51 @@ void NoiseModule::onHideDocks(bool hide) {
 }
 
 //Sara
-void NoiseModule::on3dGraphs(bool graphs){
+int index_qs3d=-1;
+void NoiseModule::onqs3dGraphs(bool graphs){
+++index_qs3d;
+if(index_qs3d==3){index_qs3d=0;}
+qDebug() << "index: " << index_qs3d;
 
-//QMainWindow *mainWindow;
-//QToolBar *toolbar;
 m_globalModuleIndentifier = NOISEMODULE;
 m_shownSimulation = nullptr;
 
-if (graphs)	{
-    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha[3D]", true, false});
-    m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S[3D]", true, false});
-    m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P[3D]", true, false});
-    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE[3D] (dB)", true, false});//Alexandre MOD
-    m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL[3D] (dB)", true, false});
-
-} else {
-    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
-    m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
-    m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
-    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
-    m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
-}
+if(index_qs3d==0){onqs3dGraph2d();}
+if(index_qs3d==1){onqs3dGraphBlade();}
+if(index_qs3d==2){onqs3dGraphRotor();}
 
 QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 
 setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>(settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quint).toInt()));//Sara
 
-//m_menu = new NoiseMenu (mainWindow, this);
-
-//m_toolBar = new NoiseToolBar (mainWindow, this);
-//m_dock = new NoiseDock ("Noise Simulation", mainWindow, 0, this);
-
 m_contextMenu = new NoiseContextMenu (m_twoDWidget, this);  // NM TODO move this up to TwoDInterface?
 setContextMenu(m_contextMenu);
 
 connect(&g_noiseSimulationStore, SIGNAL(objectListChanged(bool)), this, SLOT(reloadAllGraphs()));
+}
+
+void NoiseModule::onqs3dGraph2d(){
+        m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
+        m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
+        m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
+        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
+        m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
+}
+
+void NoiseModule::onqs3dGraphBlade(){
+        m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_blade[qs3D]", true, false});
+        m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_blade[qs3D]", true, false});
+        m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_blade[qs3D]", true, false});
+        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_blade[qs3D] (dB)", true, false});//Alexandre MOD
+        m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_blade[qs3D] (dB)", true, false});
+}
+
+void NoiseModule::onqs3dGraphRotor(){
+        m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_rotor[qs3D]", true, false});
+        m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_rotor[qs3D]", true, false});
+        m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_rotor[qs3D]", true, false});
+        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_rotor[qs3D] (dB)", true, false});//Alexandre MOD
+        m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_rotor[qs3D] (dB)", true, false});
 }
 //Sara
 

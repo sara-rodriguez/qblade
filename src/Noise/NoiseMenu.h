@@ -16,15 +16,14 @@ public:
 	
 private:
 	NoiseModule *m_module;
-    QAction *m_exportNoise, *m_modelValidityHint, *m_exportqs3DNoiseLog, *m_exportqs3DNoise_final, *m_exportqs3DNoiseComplete, *m_exportqs3DNoise; //Sara
+    QAction *m_exportNoise, *m_modelValidityHint, *m_exportqs3DNoiseLog, *m_exportqs3DNoise_blade, *m_exportqs3DNoise_rotor; //Sara
 	
 private slots:
 	void onAboutToShow ();
 	void onExportNoise ();
-    void onExportqs3DNoise_final ();//Sara
+    void onExportqs3DNoise_blade ();//Sara
+    void onExportqs3DNoise_rotor ();//Sara
     void onExportqs3DNoiseLog  (); //Sara
-    void onExportqs3DNoiseComplete (); //Sara
-    void onExportqs3DNoise (); //Sara
 //    void onExportqs3DNoiseGraphs (); //Sara
 	void onModelValidityHint ();
 };

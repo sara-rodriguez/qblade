@@ -31,11 +31,11 @@ NoiseToolBar::NoiseToolBar(QMainWindow *parent, NoiseModule *module) {
 	addAction(hideDocksAction);
 
     //    Sara
-    QAction *m_3dAction = new QAction(QIcon(":/images/3d.png"), tr("3D Noise"), this);
+    QAction *m_3dAction = new QAction(QIcon(":/images/3d.png"), tr("View 2D/qs3D blade/qs3D rotor"), this);
 
-   m_3dAction->setCheckable(true);
-    m_3dAction->setStatusTip(tr("3D Noise"));
-        connect(m_3dAction, SIGNAL(toggled(bool)), module, SLOT(on3dGraphs(bool)));
+    m_3dAction->setCheckable(true);
+    m_3dAction->setStatusTip(tr("View 2D/qs3D blade/qs3D rotor"));
+        connect(m_3dAction, SIGNAL(toggled(bool)), module, SLOT(onqs3dGraphs(bool)));
         addAction(m_3dAction);
     //    Sara
 	

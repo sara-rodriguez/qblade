@@ -34,9 +34,8 @@ public:
 
 	void simulate();  // can throw NoiseException
 	void exportCalculation (QTextStream &stream);
-    void exportCalculationqs3DNoise_final (QTextStream &stream); //Sara
-    void exportqs3DCalculationComplete (QTextStream &stream);//Sara
-    void exportqs3DCalculation (QTextStream &stream);//Sara
+    void exportCalculationqs3DNoise_blade (QTextStream &stream); //Sara
+    void exportCalculationqs3DNoise_rotor (QTextStream &stream); //Sara
     void exportqs3DLog (QTextStream &stream);//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
@@ -82,11 +81,11 @@ private:
     double m_u_wind_speed;
     double m_TSR;
     double m_dstar_user;
+    double m_tower_height;
     int m_dstar_type;
     int m_state_ss_us;
-    int m_step_type;//Sara
-    int m_timesteps;//Sara
-    int m_anglesteps;//Sara
+    int m_step_type;
+    int m_anglesteps;
     int m_phi_type;
     int m_theta_type;
 

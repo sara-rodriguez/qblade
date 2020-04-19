@@ -119,7 +119,7 @@ QVariant DMSData::accessParameter(Parameter::DMSData::Key key, QVariant value) {
 	const bool set = value.isValid();
 	switch (key) {
 	case P::Name: if(set) setName(value.toString()); else value = getName(); break;
-//case P::Temperature: if(set) temp = value.toDouble(); else {temp = 188.15;value = temp;} break;//Sara
+    case P::Temperature: if(set) temp = value.toDouble(); else value = temp; break;//Sara
 	case P::Rho: if(set) rho = value.toDouble(); else value = rho; break;
 	case P::Viscosity: if(set) visc = value.toDouble(); else value = visc; break;
 	case P::Discretize: if(set) elements = value.toDouble(); else value = elements; break;

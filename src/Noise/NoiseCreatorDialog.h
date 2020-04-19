@@ -62,16 +62,19 @@ private:
     //Sara begin
     QCheckBox *m_rot_speed_check;
     NumberEdit *m_rot_speed_numberedit;
+    NumberEdit *m_anglesteps_numberedit;
+    NumberEdit *m_tower_height_numberedit;
+    NumberEdit *m_u_wind_speed_numberedit;
+    NumberEdit *m_tower_to_hub_distance_numberedit;
     QCheckBox *m_TSR_check;
     QDoubleSpinBox *m_TSR_spinbox;
+    QDoubleSpinBox *m_initial_azimuth_spinbox;
+    QDoubleSpinBox *m_yaw_angle_spinbox;
     QCheckBox *m_u_wind_speed_check;
-    NumberEdit *m_u_wind_speed_numberedit;
     QPushButton *buttonle;
     QComboBox *dstar_combobox;
     QComboBox *mode_combobox;
     QComboBox *step_combobox;
-    NumberEdit *timesteps_numberedit;
-    NumberEdit *anglesteps_numberedit;
 //Sara end
 
 	QButtonGroup *m_selectFromButtons;

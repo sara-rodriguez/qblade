@@ -36,9 +36,11 @@ public:
 	void calculate();  // can throw NoiseException
 
     void verifydeltafor3d();//Sara
-    void calculateqs3d_blade_graphics();//Sara
+    void calculateqs3d_graphics();//Sara
     void calculateqs3d_blade();//Sara
+    void calculateqs3d_rotor();//Sara
     void unsteady_angles_calc();//Sara
+    void positive_graphs();//Sara urgente
 
     //Sara
     //for quasi 3d rotor
@@ -83,6 +85,18 @@ public:
     TwoDVector SPL_LEdBAW3d_final() const { return m_SPL_LEdBAW3d_final; }
     TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
     TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
+
+    TwoDVector SPLadB3d_rotor() const { return m_SPLadB3d_rotor; }
+    TwoDVector SPLsdB3d_rotor() const { return m_SPLsdB3d_rotor; }
+    TwoDVector SPLpdB3d_rotor() const { return m_SPLpdB3d_rotor; }
+    TwoDVector SPLdB3d_rotor() const { return m_SPLdB3d_rotor; }
+    TwoDVector SPLdBAW3d_rotor() const { return m_SPLdBAW3d_rotor; }
+    TwoDVector SPLdBBW3d_rotor() const { return m_SPLdBBW3d_rotor; }
+    TwoDVector SPLdBCW3d_rotor() const { return m_SPLdBCW3d_rotor; }
+    TwoDVector SPL_LEdB3d_rotor() const { return m_SPL_LEdB3d_rotor; }
+    TwoDVector SPL_LEdBAW3d_rotor() const { return m_SPL_LEdBAW3d_rotor; }
+    TwoDVector SPL_LEdBBW3d_rotor() const { return m_SPL_LEdBBW3d_rotor; }
+    TwoDVector SPL_LEdBCW3d_rotor() const { return m_SPL_LEdBCW3d_rotor; }
     TwoDVector SPLadB3d_final_rotor() const { return m_SPLadB3d_final_rotor; }
     TwoDVector SPLsdB3d_final_rotor() const { return m_SPLsdB3d_final_rotor; }
     TwoDVector SPLpdB3d_final_rotor() const { return m_SPLpdB3d_final_rotor; }
@@ -100,6 +114,11 @@ public:
     double Final_qs3d_P;
     double Final_qs3d_LE;
     double Final_qs3d;
+    double Final_qs3d_alpha_rotor;
+    double Final_qs3d_S_rotor;
+    double Final_qs3d_P_rotor;
+    double Final_qs3d_LE_rotor;
+    double Final_qs3d_rotor;
 
 //Sara
 	
@@ -130,6 +149,18 @@ public:
         QVector<double> SPLLEdBBW3d() const { return m_SPLLEdBBW3d;}
         QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW3d;}
         QVector<double> SPLlogLE3d() const { return m_SPLlogLE3d; }
+
+        QVector<double> OASPL3d_rotor() const { return m_OASPL3d_rotor; }
+        QVector<double> OASPLA3d_rotor() const { return m_OASPLA3d_rotor; }
+        QVector<double> OASPLB3d_rotor() const { return m_OASPLB3d_rotor; }
+        QVector<double> OASPLC3d_rotor() const { return m_OASPLC3d_rotor; }
+        QVector<double> SPLALOG3d_rotor() const { return m_SPLALOG3d_rotor; }
+        QVector<double> SPLSLOG3d_rotor() const { return m_SPLSLOG3d_rotor; }
+        QVector<double> SPLPLOG3d_rotor() const { return m_SPLPLOG3d_rotor; }
+        QVector<double> SPLLEdBAW3d_rotor() const { return m_SPLLEdBAW3d;}
+        QVector<double> SPLLEdBBW3d_rotor() const { return m_SPLLEdBBW3d;}
+        QVector<double> SPLLEdBCW3d_rotor() const { return m_SPLLEdBCW3d;}
+        QVector<double> SPLlogLE3d_rotor() const { return m_SPLlogLE3d_rotor; }
 
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
@@ -162,6 +193,21 @@ private:
     void calcSPLs(int posOpPoint,int posFreq);
     void calcSPLp(int posOpPoint,int posFreq);
     void LECalc(int posOpPoint, int posFreq); //Alexandre MOD
+    //Sara
+    double calcXRS(double a, double XB, double YB);
+    double calcYRS(double a, double XB, double YB);
+    double calcZRS(double ZB, double r_0, double r_1);
+    double calcInt_a(double YRS, double c_0, double c_1);
+    double calcXRT(double XRS);
+    double calcYRT(double b, double calc_int_a, double ZRS);
+    double calcZRT(double b, double calc_int_a, double ZRS);
+    double calcR_e(double XRT, double YRT, double ZRT);
+    double calcTheta_e(double XRT, double YRT, double ZRT);
+    double calcPhi_e(double XRT, double ZRT);
+    double calcFirstTerm(double Mach, double L, double D, double D_starred, double dist_obs);
+    double calcDh(double Mach, double theta_e, double phi_e,double EddyMach);
+    double calcDl(double Mach, double theta_e, double phi_e);
+    //Sara
 
     NoiseParameter *m_parameter;
 	
@@ -204,6 +250,12 @@ private:
     QVector<double> m_SPLLEdBCW;
     QVector<double> m_SPLlogLE;
 
+    QVector<double> m_SPLLEdB_rotor;
+    QVector<double> m_SPLLEdBAW_rotor;
+    QVector<double> m_SPLLEdBBW_rotor;
+    QVector<double> m_SPLLEdBCW_rotor;
+    QVector<double> m_SPLlogLE_rotor;
+
     QVector<double> m_OASPL3d;
     QVector<double> m_OASPLA3d;
     QVector<double> m_OASPLB3d;
@@ -216,6 +268,19 @@ private:
     QVector<double> m_SPLLEdBBW3d;
     QVector<double> m_SPLLEdBCW3d;
     QVector<double> m_SPLlogLE3d;
+
+    QVector<double> m_OASPL3d_rotor;
+    QVector<double> m_OASPLA3d_rotor;
+    QVector<double> m_OASPLB3d_rotor;
+    QVector<double> m_OASPLC3d_rotor;
+    QVector<double> m_SPLALOG3d_rotor;
+    QVector<double> m_SPLSLOG3d_rotor;
+    QVector<double> m_SPLPLOG3d_rotor;
+    QVector<double> m_SPLLEdB3d_rotor;
+    QVector<double> m_SPLLEdBAW3d_rotor;
+    QVector<double> m_SPLLEdBBW3d_rotor;
+    QVector<double> m_SPLLEdBCW3d_rotor;
+    QVector<double> m_SPLlogLE3d_rotor;
     //Sara
 
     //For SPLa
@@ -260,10 +325,13 @@ private:
     double m_obs_x_pos_rotor;
     double m_obs_y_pos_rotor;
     double m_obs_z_pos_rotor;
+    double m_tower_height;
+    double m_tower_to_hub_distance;
+    int m_initial_azimuth;
+    int m_yaw_angle;
     int m_dstar_type;
     int m_state_ss_us;
     int m_step_type;
-    int m_timesteps;
     int m_anglesteps;
     int m_phi_type;
     int m_theta_type;
@@ -331,6 +399,27 @@ private:
     TwoDVector m_SPLsdBAW3d;
     TwoDVector m_SPLsdBBW3d;
     TwoDVector m_SPLsdBCW3d;
+
+    TwoDVector m_SPLadB3d_rotor;
+    TwoDVector m_SPLadBAW3d_rotor;
+    TwoDVector m_SPLadBBW3d_rotor;
+    TwoDVector m_SPLadBCW3d_rotor;
+    TwoDVector m_SPLpdB3d_rotor;
+    TwoDVector m_SPLpdBAW3d_rotor;
+    TwoDVector m_SPLpdBBW3d_rotor;
+    TwoDVector m_SPLpdBCW3d_rotor;
+    TwoDVector m_SPLdB3d_rotor;
+    TwoDVector m_SPLdBAW3d_rotor;
+    TwoDVector m_SPLdBBW3d_rotor;
+    TwoDVector m_SPLdBCW3d_rotor;
+    TwoDVector m_SPL_LEdB3d_rotor;
+    TwoDVector m_SPL_LEdBAW3d_rotor;
+    TwoDVector m_SPL_LEdBBW3d_rotor;
+    TwoDVector m_SPL_LEdBCW3d_rotor;
+    TwoDVector m_SPLsdB3d_rotor;
+    TwoDVector m_SPLsdBAW3d_rotor;
+    TwoDVector m_SPLsdBBW3d_rotor;
+    TwoDVector m_SPLsdBCW3d_rotor;
 
     TwoDVector m_SPLadB3d_final;
     TwoDVector m_SPLpdB3d_final;

@@ -32,7 +32,7 @@ struct Parameter {
 	struct NoiseSimulation {
         enum Key {Name, WettedLength, DistanceObsever, OriginalVelocity, OriginalChordLength, OriginalMach,
                   DStarChordStation, DStarScalingFactor, EddyConvectionMach, DirectivityTheta, DirectivityPhi,
-                  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition, sects, rot_speed, u_wind_speed, TSRtd, dstar_type, state_ss_us, step_type, timesteps, anglesteps, dstar_user, phi_type, theta_type, IntegralLengthScale, TurbulenceIntensity,rot_speed_calc, u_wind_speed_calc, TSR_calc,rot_speed_check, u_wind_speed_check, TSR_check, Lowson_type, obs_x_pos, obs_y_pos, obs_z_pos, obs_x_pos_rotor, obs_y_pos_rotor, obs_z_pos_rotor}; //Sara and Alexandre MOD
+                  SeparatedFlow, SuctionSide, PressureSide, Aoa, ChordBasedReynolds, Transition, sects, rot_speed, u_wind_speed, TSRtd, dstar_type, state_ss_us, step_type, anglesteps, dstar_user, phi_type, theta_type, IntegralLengthScale, TurbulenceIntensity,rot_speed_calc, u_wind_speed_calc, TSR_calc,rot_speed_check, u_wind_speed_check, TSR_check, Lowson_type, obs_x_pos, obs_y_pos, obs_z_pos, obs_x_pos_rotor, obs_y_pos_rotor, obs_z_pos_rotor, tower_height, initial_azimuth, yaw_angle, tower_to_hub_distance}; //Sara and Alexandre MOD
 	};
 };
 

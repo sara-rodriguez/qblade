@@ -279,13 +279,27 @@ hBox->addLayout(vBox);
     mode_combobox->insertItem(1,"Unsteady");
     connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
 
-    float simulation_time=0;
-    float number_time_steps=0;
+    double tower_height_in;
+if(g_windFieldStore.size() == 0){tower_height_in=100;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight();}
+    m_tower_height_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
 
-    if(g_windFieldStore.size() != 0){
-   simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
-   number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
-    }
+    m_initial_azimuth_spinbox = new QDoubleSpinBox;
+    m_initial_azimuth_spinbox->setLocale(QLocale("en_us"));
+    pGrid->addEdit(P::initial_azimuth,DoubleSpinBox, m_initial_azimuth_spinbox,"Initial Azimuth:", 0);
+    m_initial_azimuth_spinbox->setRange(0, 360);
+    m_initial_azimuth_spinbox->setSingleStep(1);
+    m_initial_azimuth_spinbox->setDecimals(0);
+
+    m_yaw_angle_spinbox = new QDoubleSpinBox;
+    m_yaw_angle_spinbox->setLocale(QLocale("en_us"));
+    pGrid->addEdit(P::yaw_angle,DoubleSpinBox, m_yaw_angle_spinbox,"Yaw Angle:", 0);
+    m_yaw_angle_spinbox->setRange(0, 360);
+    m_yaw_angle_spinbox->setSingleStep(1);
+    m_yaw_angle_spinbox->setDecimals(0);
+
+    m_tower_to_hub_distance_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::tower_to_hub_distance, NumberEditType, m_tower_to_hub_distance_numberedit,"Tower To Hub Distance []:",4,LENGTH);
 
     step_combobox = new QComboBox;
     pGrid->addEdit(P::step_type,ComboBox, step_combobox,"Step type:","");
@@ -294,13 +308,13 @@ hBox->addLayout(vBox);
     connect(step_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnStepTypeDefine(int)));
     step_combobox->setEnabled(false);
 
-    timesteps_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::timesteps, NumberEditType, timesteps_numberedit,"Timesteps:",number_time_steps);
-    timesteps_numberedit->setEnabled(false);
+//    timesteps_numberedit = new NumberEdit ();
+//    pGrid->addEdit(P::timesteps, NumberEditType, timesteps_numberedit,"Timesteps:",number_time_steps);
+//    timesteps_numberedit->setEnabled(false);
 
-    anglesteps_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::anglesteps, NumberEditType, anglesteps_numberedit,"Anglesteps [deg]:",45);
-    anglesteps_numberedit->setEnabled(false);
+    m_anglesteps_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::anglesteps, NumberEditType, m_anglesteps_numberedit,"Anglesteps [deg]:",45);
+    m_anglesteps_numberedit->setEnabled(false);
 
     QLabel *labeltf = new QLabel ("Observer Position:");
     double distx = 1.5*outer_radius;
@@ -314,9 +328,7 @@ hBox->addLayout(vBox);
     //widget->setLayout(hBox);
         QLabel *imageLabelb = new QLabel;
         imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
-    //    pGrid->addWidget(imageLabela,0,3);//,9,2
         vBox->addWidget(imageLabelb, 0, Qt::AlignHCenter);
-
 //Sara
 
     setUnitContainingLabels();
@@ -578,24 +590,21 @@ void NoiseCreatorDialog::OnModeDefine(int index){
 //when unsteady state
     if (index==1){
     step_combobox->setEnabled(true);
-    timesteps_numberedit->setEnabled(true);
+//    timesteps_numberedit->setEnabled(true);
     onVerifyWindfield();
     }
     else {
     step_combobox->setEnabled(false);
-    timesteps_numberedit->setEnabled(false);
+//    timesteps_numberedit->setEnabled(false);
     }
 }
 
 void NoiseCreatorDialog::OnStepTypeDefine(int index){
-//    float number_time_steps = g_windFieldModule->getShownWindField()->getNumberOfTimesteps();
     if (index==0){
-        timesteps_numberedit->setEnabled(true);
-        anglesteps_numberedit->setEnabled(false);
+        m_anglesteps_numberedit->setEnabled(false);
     }
     if (index==1){
-        timesteps_numberedit->setEnabled(false);
-        anglesteps_numberedit->setEnabled(true);
+        m_anglesteps_numberedit->setEnabled(true);
     }
 }
 //Sara

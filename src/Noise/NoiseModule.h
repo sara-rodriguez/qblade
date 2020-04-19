@@ -40,7 +40,10 @@ public slots:
 	virtual void onActivationActionTriggered();  // override from ModuleBase
 	virtual void onModuleChanged();  // override from ModuleBase
 	void onHideDocks(bool hide);
-    void on3dGraphs(bool graphs);//Sara
+    void onqs3dGraphs(bool graphs);//Sara
+    void onqs3dGraph2d();//Sara
+    void onqs3dGraphBlade();//Sara
+    void onqs3dGraphRotor();//Sara
 	void setShownSimulation(NoiseSimulation *newSimulation, bool forceReload = false);
 	NoiseSimulation* getShownSimulation() { return m_shownSimulation; }
 

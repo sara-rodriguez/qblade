@@ -20,8 +20,10 @@
 #include "../XUnsteadyBEM/WindFieldModule.h"
 #include "../XUnsteadyBEM/WindField.h"
 #include "../XLLT/QLLTSimulation.h"
+#include "../XLLT/QLLTCreatorDialog.h"
 #include "../XUnsteadyBEM/FASTSimulation.h"
 #include "../MainFrame.h"
+#include "../XWidgets.h"
 #include <QtMath>
 #include <cmath>
 //Sara
@@ -35,7 +37,7 @@ NoiseCalculation::NoiseCalculation() {
     m_parameter = nullptr; //Alexandre MOD - changed NULL for nullptr
     m_CalcSeparatedFlow = false;
     m_CalcPressureSide = false;
-	m_CalcSuctionSide = false;
+    m_CalcSuctionSide = false;
 }
 
 void NoiseCalculation::serialize() {
@@ -68,6 +70,14 @@ void NoiseCalculation::serialize() {
     g_serializer.readOrWriteDoubleVector1D(&m_SPLALOG3d);
     g_serializer.readOrWriteDoubleVector1D(&m_SPLSLOG3d);
     g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG3d);
+
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPL3d_rotor);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLA3d_rotor);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLB3d_rotor);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLC3d_rotor);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLALOG3d_rotor);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLSLOG3d_rotor);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG3d_rotor);
 //Sara
 }
 
@@ -112,7 +122,7 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
 //			qDebug() << "Chord DownStream: " << chordDownStream;
 //			qDebug() << "D* UpStream: " << dStarUpStream;
 //			qDebug() << "D* DownStream: " << dStarDownStream;
-			
+
             upDownFind = true;
             break;
         }
@@ -120,10 +130,10 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
 
     if (!upDownFind) {
         qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
-				   << m_parameter->dStarChordStation << " - Last found X ( "<<currentChord<<" ) D* ("
-				   << currentDStar <<")";
+                   << m_parameter->dStarChordStation << " - Last found X ( "<<currentChord<<" ) D* ("
+                   << currentDStar <<")";
         throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
-							 "specified chord station");
+                             "specified chord station");
     }
 
 //    qDebug() << ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /                                       (chordUpStream-chordDownStream)) + dStarDownStream;
@@ -248,10 +258,10 @@ double NoiseCalculation::getBPMThickness(NoiseOpPoint *nop, AirfoilSide as) {
         }
         dStar = dStarCF * m_parameter->originalChordLength;
 //		qDebug() << "BPM FullyTurbulent dStarCF: " << dStarCF;
-	} else {
+    } else {
         dStarCT = pow(10,(3.0187-1.5397*log10(nop->getReynolds())+0.1059* pow(log10(nop->getReynolds()),2)));
 //		qDebug() << "BPM TransitionFlow dStarCT: " << dStarCT;
-		dStar = dStarCT * m_parameter->originalChordLength;
+        dStar = dStarCT * m_parameter->originalChordLength;
     }
 
     if ((nop->getAlphaDegreeAbsolute() <= 0) & (nop->getAlphaDegreeAbsolute() >= 0)) {
@@ -284,13 +294,13 @@ double NoiseCalculation::getBPMThickness(NoiseOpPoint *nop, AirfoilSide as) {
         }
     }
 //	qDebug() << "BPM D*: " << bpm;
-	
+
     return bpm;
 }
 
 double NoiseCalculation::getK1(NoiseOpPoint* nop) {
     double k1;
-	
+
     if (nop->getReynolds() < 247000) {
         k1 = -4.31 * log10(nop->getReynolds()) + 156.3;
     } else if (nop->getReynolds() > 800000) {
@@ -311,7 +321,7 @@ void NoiseCalculation::preCalcA1(NoiseOpPoint* nop) {
 
 //	m_A1FirstTerm = 10 * log10(pow(m_parameter->m_OriginalMach, 5) * m_parameter->m_WettedLength * getDL() *
 //							   m_DStarFinalS / pow(m_parameter->m_DistanceObsever, 2));
-	m_A1ChordBasedReynolds = nop->getReynolds() * 3;
+    m_A1ChordBasedReynolds = nop->getReynolds() * 3;
 
     if(m_A1ChordBasedReynolds < 95200){
         m_A1Ao = 0.57;
@@ -355,8 +365,8 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
     //use dH and B else use dL and A1
     if (nop->getAlphaDegree() <= m_SwAlpha) {
 //		qDebug() << "SPLa dH: " << getDH();
-		m_SplaFirstTerm = 10 * log10(pow(m_parameter->originalMach, 5) * m_parameter->wettedLength * getDH() *
-									 m_DStarFinalS / pow(m_parameter->distanceObsever, 2));
+        m_SplaFirstTerm = 10 * log10(pow(m_parameter->originalMach, 5) * m_parameter->wettedLength * getDH() *
+                                     m_DStarFinalS / pow(m_parameter->distanceObsever, 2));
 
         if(nop->getReynolds() < 95200){
             m_SplaBo = 0.3;
@@ -388,10 +398,10 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
 //		qDebug() << "SPLA bMin " << m_SplaBMin;
 //		qDebug() << "SPLA bMax " << m_SplaBMax;
 //		qDebug() << "SPLA Br " << m_SplaBr;
-	} else {
+    } else {
 //		qDebug() << "SPLa dL: " << getDL();
-		m_SplaFirstTerm = 10 * log10(pow(m_parameter->originalMach, 5) * m_parameter->wettedLength *
-									 getDL() * m_DStarFinalS / pow(m_parameter->distanceObsever, 2));
+        m_SplaFirstTerm = 10 * log10(pow(m_parameter->originalMach, 5) * m_parameter->wettedLength *
+                                     getDL() * m_DStarFinalS / pow(m_parameter->distanceObsever, 2));
         m_ChordBasedReynolds = nop->getReynolds() * 3;
 
         if(m_ChordBasedReynolds < 95200){
@@ -425,8 +435,8 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
 //		qDebug() << "SPLA aMin " << m_SplaAMin;
 //		qDebug() << "SPLA aMax " << m_SplaAMax;
 //		qDebug() << "SPLA Ar " << m_SplaAr;
-	}
-	
+    }
+
     m_SplaSt1 = getSt1();
     m_SplaSt2 = getSt2(nop);
 
@@ -442,8 +452,8 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
     }else if(nop->getAlphaDegreeAbsolute() > (m_SwAlpha1+m_SplaGamma)){
         m_SplaK2 = m_SplaK1 - 12;
     }else{
-        m_SplaK2 = m_SplaK1 + (sqrt( pow(m_SplaBeta,2)-pow((m_SplaBeta/m_SplaGamma),2) * 
-									 pow((nop->getAlphaDegreeAbsolute()-m_SwAlpha1),2) ) + m_SplaBetaZero);
+        m_SplaK2 = m_SplaK1 + (sqrt( pow(m_SplaBeta,2)-pow((m_SplaBeta/m_SplaGamma),2) *
+                                     pow((nop->getAlphaDegreeAbsolute()-m_SwAlpha1),2) ) + m_SplaBetaZero);
     }
 
 //	qDebug() << "SPLa firstTerm: " << m_SplaFirstTerm;
@@ -462,11 +472,11 @@ void NoiseCalculation::preCalcSPLs(NoiseOpPoint *nop) {
 //	qDebug() << "---> SPLs CALCULATION";
     m_SplsFirstTerm = 0;
     m_SplsFirstTerm = 10 * log10(pow(m_parameter->originalMach,5) * m_parameter->wettedLength * getDH() *
-								 m_DStarFinalS / pow(m_parameter->distanceObsever,2));
+                                 m_DStarFinalS / pow(m_parameter->distanceObsever,2));
 
 //	qDebug() << "SPLs dH: " << getDH();
 //	qDebug() << "SPLs firstTerm: " << m_SplsFirstTerm;
-	
+
     m_SplsSt1 = getSt1();
     m_SplsSt2 = getSt2(nop);
     m_SplsK1 = getK1(nop);
@@ -484,7 +494,7 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
 //    qDebug() << "---> SPLp CALCULATION";
     m_SplpFirstTerm=0;
     m_SplpFirstTerm = 10 * log10(pow(m_parameter->originalMach,5) * m_parameter->wettedLength * getDH() *
-								 m_DStarFinalP / pow(m_parameter->distanceObsever,2));
+                                 m_DStarFinalP / pow(m_parameter->distanceObsever,2));
 
 //    qDebug() << "SPLp dH: " << getDH();
 //    qDebug() << "SPLp firstTerm: " << m_SplpFirstTerm;
@@ -498,15 +508,15 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     double rho=pBEM->dlg_rho;
 
-    m_ReynoldsBasedDisplacement = rho * m_parameter->originalVelocity * m_DStarFinalP / 0.0000178;// Sara correção rho
-    //Sara
+    m_ReynoldsBasedDisplacement = rho * m_parameter->originalVelocity * m_DStarFinalP / 0.0000178;
+    // Sara
 
     if (m_ReynoldsBasedDisplacement > 5000) {
         m_SplpDeltaK1 = 0;
     } else {
         m_SplpDeltaK1 = nop->getAlphaDegreeAbsolute() * (1.43*log10(m_ReynoldsBasedDisplacement)-5.29);
     }
-	
+
 //	qDebug() << "Reynolds Based Displacement: " << m_ReynoldsBasedDisplacement;
 //	qDebug() << "SPLp st1: " << m_SplpSt1;
 //	qDebug() << "SPLp k1: " << m_SplpK1;
@@ -589,7 +599,7 @@ void NoiseCalculation::calcSPLa(double alpha, int posOpPoint, int posFreq) {
 //				 << ")\t"<< "a1("<< a1 <<")\t"<< "splDb("<< splDb <<")\t"<< "splDb-AW("
 //				 << m_SPLadBAW[posOpPoint][posFreq] <<")\t"<< "splDb-BW("<< m_SPLadBBW[posOpPoint][posFreq] <<")\t"
 //				 << "splDb-CW("<< m_SPLadBCW[posOpPoint][posFreq] <<")\t";
-	}
+    }
 }
 
 void NoiseCalculation::calcSPLs(int posOpPoint,int posFreq) {
@@ -624,7 +634,7 @@ void NoiseCalculation::calcSPLs(int posOpPoint,int posFreq) {
         splDb = m_SplsFirstTerm +a1+m_SplsK13;
 
     } else {
-		splDb = std::numeric_limits<long>::lowest();
+        splDb = std::numeric_limits<long>::lowest();
     }
 
     m_SPLsdB[posOpPoint][posFreq] = splDb;
@@ -669,8 +679,8 @@ void NoiseCalculation::calcSPLp(int posOpPoint,int posFreq) {
         a1 =aMin+ m_A1Ar *(aMax-aMin);
         splDb = m_SplpFirstTerm +a1+m_SplpK13+m_SplpDeltaK1;
 
-	} else {
-		splDb = std::numeric_limits<long>::lowest();
+    } else {
+        splDb = std::numeric_limits<long>::lowest();
     }
 
     m_SPLpdB[posOpPoint][posFreq] = splDb;
@@ -746,11 +756,11 @@ else{
 void NoiseCalculation::calculate() {
     setupVectors();
 
-	QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-		NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
+        NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
 
-		m_OASPL[posOpPoint] = 0;
+        m_OASPL[posOpPoint] = 0;
         m_OASPLA[posOpPoint] = 0;
         m_OASPLB[posOpPoint] = 0;
         m_OASPLC[posOpPoint] = 0;
@@ -779,8 +789,8 @@ void NoiseCalculation::calculate() {
 
 
         if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
-			m_parameter->opPointSource == NoiseParameter::MultiplePolars)
-		{
+            m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+        {
 
             //For XFoil model
 
@@ -820,7 +830,7 @@ m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordm
             m_DStarInterpolatedP = 0;
 
             //For BPM model
-			
+
             m_DStarFinalS = getBPMThickness(nop, SuctionSide) * m_parameter->dStarScalingFactor;
             m_DStarFinalP = getBPMThickness(nop, PressureSide) * m_parameter->dStarScalingFactor;
 
@@ -900,7 +910,7 @@ m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordm
 //			qDebug() << "Freq: [" << (posFreq+1) << "] " << Noise::CENTRAL_BAND_FREQUENCY[posFreq] ;
 
             LECalc(posOpPoint, posFreq); //Alexandre MOD
-			
+
             if (m_CalcSeparatedFlow) {
                 calcSPLa(nop->getAlphaDegree(),posOpPoint,posFreq);
             }
@@ -984,8 +994,8 @@ m_SPLLEdBBW[posOpPoint] = 10*log10(m_SPLLEdBBW[posOpPoint]);
 m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
 //Sara
     }
-	qDeleteAll(noiseOpPoints);
-	
+    qDeleteAll(noiseOpPoints);
+
 //	// transform negative values to zero  // NM this apparently wasn't intended...
 //	for (TwoDVector *vector2d : {&m_SPLadB, &m_SPLsdB, &m_SPLpdB}) {
 //		for (int i = 0; i < vector2d->size(); ++i) {
@@ -1047,9 +1057,9 @@ void NoiseCalculation::setupVectors() {
 
     //Sara
   QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-  int number_of_segments = pBEM->dlg_elements;
+  unsigned int number_of_segments = pBEM->dlg_elements;
 
-  int size;
+  unsigned int size;
 
   if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     //Sara
@@ -1117,7 +1127,7 @@ void NoiseCalculation::setupVectors() {
 
 //Sara
     if (sizea<size){
-        for (int i=sizea;i<size;++i){
+        for (unsigned int i=sizea;i<size;++i){
             for (unsigned int w = 0; w < FREQUENCY_TABLE_SIZE; ++w){
                 m_SPLdB[i][w]=0;
                 m_SPLdBAW[i][w]=0;
@@ -1191,7 +1201,39 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBBW3d_final.clear();
     m_SPL_LEdBCW3d_final.clear();
 
-    //urgente
+    m_SPLdB3d_rotor.clear();
+    m_SPLdBAW3d_rotor.clear();
+    m_SPLdBBW3d_rotor.clear();
+    m_SPLdBCW3d_rotor.clear();
+    m_SPLpdB3d_rotor.clear();
+    m_SPLpdBAW3d_rotor.clear();
+    m_SPLpdBBW3d_rotor.clear();
+    m_SPLpdBCW3d_rotor.clear();
+    m_SPLsdB3d_rotor.clear();
+    m_SPLsdBAW3d_rotor.clear();
+    m_SPLsdBBW3d_rotor.clear();
+    m_SPLsdBCW3d_rotor.clear();
+    m_SPLadB3d_rotor.clear();
+    m_SPLadBAW3d_rotor.clear();
+    m_SPLadBBW3d_rotor.clear();
+    m_SPLadBCW3d_rotor.clear();
+    m_SPL_LEdB3d_rotor.clear();
+    m_SPL_LEdBAW3d_rotor.clear();
+    m_SPL_LEdBBW3d_rotor.clear();
+    m_SPL_LEdBCW3d_rotor.clear();
+    m_SPLLEdB3d_rotor.clear();
+    m_SPLLEdBAW3d_rotor.clear();
+    m_SPLLEdBBW3d_rotor.clear();
+    m_SPLLEdBCW3d_rotor.clear();
+    m_SPLlogLE3d_rotor.clear();
+    m_OASPL3d_rotor.clear();
+    m_OASPLA3d_rotor.clear();
+    m_OASPLB3d_rotor.clear();
+    m_OASPLC3d_rotor.clear();
+    m_SPLALOG3d_rotor.clear();
+    m_SPLSLOG3d_rotor.clear();
+    m_SPLPLOG3d_rotor.clear();
+
     m_SPLdB3d_final_rotor.clear();
     m_SPLdBAW3d_final_rotor.clear();
     m_SPLdBBW3d_final_rotor.clear();
@@ -1203,7 +1245,6 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBAW3d_final_rotor.clear();
     m_SPL_LEdBBW3d_final_rotor.clear();
     m_SPL_LEdBCW3d_final_rotor.clear();
-    //urgente
 
     // Resize vectors acording to OpPoints total
     unsigned int sizea = 0;
@@ -1216,9 +1257,9 @@ void NoiseCalculation::setupVectorsqs3d() {
     }
 
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-int number_of_segments = pBEM->dlg_elements;
+unsigned int number_of_segments = pBEM->dlg_elements;
 
-int size;
+unsigned int size;
 
 if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPLadB3d.resize(size);
@@ -1243,17 +1284,6 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdBAW3d_final.resize(size);
     m_SPL_LEdBBW3d_final.resize(size);
     m_SPL_LEdBCW3d_final.resize(size);
-    m_SPLdB3d_final_rotor.resize(size);
-    m_SPLdBAW3d_final_rotor.resize(size);
-    m_SPLdBBW3d_final_rotor.resize(size);
-    m_SPLdBCW3d_final_rotor.resize(size);
-    m_SPLpdB3d_final_rotor.resize(size);
-    m_SPLsdB3d_final_rotor.resize(size);
-    m_SPLadB3d_final_rotor.resize(size);
-    m_SPL_LEdB3d_final_rotor.resize(size);
-    m_SPL_LEdBAW3d_final_rotor.resize(size);
-    m_SPL_LEdBBW3d_final_rotor.resize(size);
-    m_SPL_LEdBCW3d_final_rotor.resize(size);
     m_SPLLEdB3d.resize(size);
     m_SPLLEdBAW3d.resize(size);
     m_SPLLEdBBW3d.resize(size);
@@ -1266,6 +1296,41 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPLALOG3d.resize(size);
     m_SPLSLOG3d.resize(size);
     m_SPLPLOG3d.resize(size);
+
+    m_SPLadB3d_rotor.resize(size);
+    m_SPLsdB3d_rotor.resize(size);
+    m_SPLpdB3d_rotor.resize(size);
+    m_SPLdB3d_rotor.resize(size);
+    m_SPLdBAW3d_rotor.resize(size);
+    m_SPLdBBW3d_rotor.resize(size);
+    m_SPLdBCW3d_rotor.resize(size);
+    m_SPL_LEdB3d_rotor.resize(size);
+    m_SPL_LEdBAW3d_rotor.resize(size);
+    m_SPL_LEdBBW3d_rotor.resize(size);
+    m_SPL_LEdBCW3d_rotor.resize(size);
+    m_SPLdB3d_final_rotor.resize(size);
+    m_SPLdBAW3d_final_rotor.resize(size);
+    m_SPLdBBW3d_final_rotor.resize(size);
+    m_SPLdBCW3d_final_rotor.resize(size);
+    m_SPLpdB3d_final_rotor.resize(size);
+    m_SPLsdB3d_final_rotor.resize(size);
+    m_SPLadB3d_final_rotor.resize(size);
+    m_SPL_LEdB3d_final_rotor.resize(size);
+    m_SPL_LEdBAW3d_final_rotor.resize(size);
+    m_SPL_LEdBBW3d_final_rotor.resize(size);
+    m_SPL_LEdBCW3d_final_rotor.resize(size);
+    m_SPLLEdB3d_rotor.resize(size);
+    m_SPLLEdBAW3d_rotor.resize(size);
+    m_SPLLEdBBW3d_rotor.resize(size);
+    m_SPLLEdBCW3d_rotor.resize(size);
+    m_SPLlogLE3d_rotor.resize(size);
+    m_OASPL3d_rotor.resize(size);
+    m_OASPLA3d_rotor.resize(size);
+    m_OASPLB3d_rotor.resize(size);
+    m_OASPLC3d_rotor.resize(size);
+    m_SPLALOG3d_rotor.resize(size);
+    m_SPLSLOG3d_rotor.resize(size);
+    m_SPLPLOG3d_rotor.resize(size);
 
     for (unsigned int w = 0; w < size; ++w){
         m_SPLadB3d[w].resize(FREQUENCY_TABLE_SIZE);
@@ -1290,6 +1355,18 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdBAW3d_final[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_final[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_final[w].resize(FREQUENCY_TABLE_SIZE);
+
+        m_SPLadB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPLdB3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPLdBAW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPLdBBW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
@@ -1304,7 +1381,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     }
 
 if (sizea<size){
-    for (int i=sizea;i<size;++i){
+    for (unsigned int i=sizea;i<size;++i){
         for (unsigned int w = 0; w < FREQUENCY_TABLE_SIZE; ++w){
             m_SPLadB3d[i][w]=0;
             m_SPLsdB3d[i][w]=0;
@@ -1328,6 +1405,18 @@ if (sizea<size){
             m_SPL_LEdBAW3d_final[i][w]=0;
             m_SPL_LEdBBW3d_final[i][w]=0;
             m_SPL_LEdBCW3d_final[i][w]=0;
+
+            m_SPLadB3d_rotor[i][w]=0;
+            m_SPLsdB3d_rotor[i][w]=0;
+            m_SPLpdB3d_rotor[i][w]=0;
+            m_SPLdB3d_rotor[i][w]=0;
+            m_SPLdBAW3d_rotor[i][w]=0;
+            m_SPLdBBW3d_rotor[i][w]=0;
+            m_SPLdBCW3d_rotor[i][w]=0;
+            m_SPL_LEdB3d_rotor[i][w]=0;
+            m_SPL_LEdBAW3d_rotor[i][w]=0;
+            m_SPL_LEdBBW3d_rotor[i][w]=0;
+            m_SPL_LEdBCW3d_rotor[i][w]=0;
             m_SPLdB3d_final_rotor[i][w]=0;
             m_SPLdBAW3d_final_rotor[i][w]=0;
             m_SPLdBBW3d_final_rotor[i][w]=0;
@@ -1343,7 +1432,74 @@ if (sizea<size){
     }
 }}
 
-void NoiseCalculation::calculateqs3d_blade_graphics() {
+//Sara
+double NoiseCalculation::calcXRS(double a, double XB, double YB){
+double XRS = XB*cos(qDegreesToRadians(a))+YB*sin(qDegreesToRadians(a));
+return XRS;
+}
+
+double NoiseCalculation::calcYRS(double a, double XB, double YB){
+double YRS = -XB*sin(qDegreesToRadians(a))+YB*cos(qDegreesToRadians(a));
+return YRS;
+}
+
+double NoiseCalculation::calcZRS(double ZB, double r_0, double r_1){
+double ZRS = ZB-(r_1-r_0)/2.;
+return ZRS;
+}
+
+double NoiseCalculation::calcInt_a(double YRS, double c_0, double c_1){
+double calc_int_a = YRS-0.75*(c_1-c_0)/2.;
+return calc_int_a;
+}
+
+double NoiseCalculation::calcXRT(double XRS){
+double XRT = XRS;
+return XRT;
+}
+
+double NoiseCalculation::calcYRT(double b, double calc_int_a, double ZRS){
+double YRT = cos(qDegreesToRadians(b))*calc_int_a+sin(qDegreesToRadians(b))*ZRS;
+return YRT;
+}
+
+double NoiseCalculation::calcZRT(double b, double calc_int_a, double ZRS){
+double ZRT = -sin(qDegreesToRadians(b))*calc_int_a+cos(qDegreesToRadians(b))*ZRS;
+return ZRT;
+}
+
+double NoiseCalculation::calcR_e(double XRT, double YRT, double ZRT){
+double r_e=sqrt(pow(XRT,2)+pow(YRT,2)+pow(ZRT,2));
+return r_e;
+}
+
+double NoiseCalculation::calcTheta_e(double XRT, double YRT, double ZRT){
+double theta_e=qRadiansToDegrees(qAtan(ZRT/YRT));
+return theta_e;
+}
+
+double NoiseCalculation::calcPhi_e(double XRT, double ZRT){
+double phi_e=qRadiansToDegrees(qAtan(XRT/ZRT));
+return phi_e;
+}
+
+double NoiseCalculation::calcFirstTerm(double Mach, double L, double D, double D_starred, double dist_obs){
+double first_term=10.*log10(pow(Mach,5)*L*D*D_starred/pow(dist_obs,2));
+return first_term;
+}
+
+double NoiseCalculation::calcDh(double Mach, double theta_e, double phi_e,double EddyMach){
+double Dh=(2.*pow(sin(qDegreesToRadians(theta_e/2.)),2)*pow(sin(qDegreesToRadians(phi_e)),2))/pow(1+Mach*cos(qDegreesToRadians(theta_e))*(1.+(Mach-Mach*EddyMach)*cos(qDegreesToRadians(phi_e))),2);
+return Dh;
+}
+
+double NoiseCalculation::calcDl(double Mach, double theta_e, double phi_e){
+double Dl=(2.*pow(sin(qDegreesToRadians(theta_e)),2.)*pow(sin(qDegreesToRadians(phi_e)),2.))/pow((1.+(Mach*cos(qDegreesToRadians(theta_e)))),4.);
+return Dl;
+}
+//Sara
+
+void NoiseCalculation::calculateqs3d_graphics() {
     setupVectorsqs3d();
 
   QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
@@ -1358,7 +1514,7 @@ QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
-    if (z<=m_parameter->TSRtd & z>=m_parameter->TSRtd){
+    if ((z<=m_parameter->TSRtd) & (z>=m_parameter->TSRtd)){
 
 //BData *bdata = (BData *) g_mainFrame->m_pBEM;
 int number_of_segments = pbem->dlg_elements;
@@ -1397,6 +1553,21 @@ int number_of_segments = pbem->dlg_elements;
         double S_le;
         double LFC_le;
 
+        //quasi 3d rotor calculation
+        int TSR = m_parameter->TSRtd;
+        int blades_num = pbem->m_pBData->blades; //number of blades
+        double rot_speed = m_parameter->rot_speed;
+        double omega_rotor;
+        int As;
+        double XLT = m_parameter->obs_x_pos_rotor;
+        double YLT = m_parameter->obs_y_pos_rotor;
+        double ZLT = m_parameter->obs_z_pos_rotor;
+        double HR=pbem->m_pBlade->m_HubRadius; //hub radius
+        double outer_radius=pbem->m_pTData->OuterRadius;
+        double RD=2*outer_radius;////rotor diameter
+        double H=m_parameter->tower_height;//tower height
+        double Y=m_parameter->yaw_angle;//yaw angle
+
         //definitions
         double axial_ind_fact[number_of_segments];
         double axial_ind_fact_n[number_of_segments];
@@ -1427,7 +1598,11 @@ int number_of_segments = pbem->dlg_elements;
         double Dh[number_of_segments];
         double Dl[number_of_segments];
         double Dl_le[number_of_segments];
+        double Dh_rotor[number_of_segments];
+        double Dl_rotor[number_of_segments];
+        double Dl_le_rotor[number_of_segments];
         double aux0_le[number_of_segments];
+        double aux0_le_rotor[number_of_segments];
         double Mach[number_of_segments];
         double corr_fact[number_of_segments];
         double D_starred_HT_S[number_of_segments];
@@ -1448,11 +1623,15 @@ int number_of_segments = pbem->dlg_elements;
         double K2[number_of_segments];
         double EddyMach_calc[number_of_segments];
         double dist_obs[number_of_segments];
+        double dist_obs_rotor[number_of_segments];
         double D_starred_S[number_of_segments];
         double D_starred_P[number_of_segments];
         double first_term_Dh_S[number_of_segments];
         double first_term_Dl_S[number_of_segments];
         double first_term_Dh_P[number_of_segments];
+        double first_term_Dh_S_rotor[number_of_segments];
+        double first_term_Dl_S_rotor[number_of_segments];
+        double first_term_Dh_P_rotor[number_of_segments];
         double St1[number_of_segments];
         double St2[number_of_segments];
         double b0[number_of_segments];
@@ -1468,23 +1647,33 @@ int number_of_segments = pbem->dlg_elements;
         double St1_bar[number_of_segments];
         double Re_disp_thick[number_of_segments];
         double delta_K1[number_of_segments];
-        double phi_rad[number_of_segments];
-        double theta_rad[number_of_segments];
         double b[number_of_segments];
         double a[number_of_segments];
+        double XRS_rotor[number_of_segments];
+        double YRS_rotor[number_of_segments];
+        double ZRS_rotor[number_of_segments];
         double XRS[number_of_segments];
         double YRS[number_of_segments];
         double ZRS[number_of_segments];
         double XRT[number_of_segments];
         double YRT[number_of_segments];
         double ZRT[number_of_segments];
+        double XRT_rotor[number_of_segments];
+        double YRT_rotor[number_of_segments];
+        double ZRT_rotor[number_of_segments];
+        double XHF[number_of_segments];
+        double YHF[number_of_segments];
+        double ZHF[number_of_segments];
         double theta[number_of_segments];
         double phi[number_of_segments];
         double theta_e[number_of_segments];
+        double theta_e_rotor[number_of_segments];
         double phi_e[number_of_segments];
+        double phi_e_rotor[number_of_segments];
         double calc_int_a[number_of_segments];
-        double r_rt[number_of_segments];
+        double calc_int_a_rotor[number_of_segments];
         double r_e[number_of_segments];
+        double r_e_rotor[number_of_segments];
         double r_1[number_of_segments];
         double c_1[number_of_segments];
         double r_0[number_of_segments];
@@ -1494,6 +1683,10 @@ int number_of_segments = pbem->dlg_elements;
         double aux1_le[number_of_segments];
         double aux4_le[number_of_segments];
         double aux5_le[number_of_segments];
+        double r_e_le_rotor[number_of_segments];
+        double aux1_le_rotor[number_of_segments];
+        double aux4_le_rotor[number_of_segments];
+        double aux5_le_rotor[number_of_segments];
 
         double ri[number_of_segments];
         double ri_1[number_of_segments];
@@ -1515,6 +1708,18 @@ int number_of_segments = pbem->dlg_elements;
         double aux_m_SPL_LEdBAW3d;
         double aux_m_SPL_LEdBBW3d;
         double aux_m_SPL_LEdBCW3d;
+
+        double aux_m_SPLadB3d_rotor;
+        double aux_m_SPLsdB3d_rotor;
+        double aux_m_SPLpdB3d_rotor;
+        double aux_m_SPLdB3d_rotor;
+        double aux_m_SPLdBAW3d_rotor;
+        double aux_m_SPLdBBW3d_rotor;
+        double aux_m_SPLdBCW3d_rotor;
+        double aux_m_SPL_LEdB3d_rotor;
+        double aux_m_SPL_LEdBAW3d_rotor;
+        double aux_m_SPL_LEdBBW3d_rotor;
+        double aux_m_SPL_LEdBCW3d_rotor;
 
         double sp_OASPL_alpha=0;
         double splog_OASPL_alpha=0;
@@ -1640,17 +1845,17 @@ int number_of_segments = pbem->dlg_elements;
 
             int w=FREQUENCY_TABLE_SIZE;
 
-                double slog_SPL_alpha[w];
-                double slog_SPL_S[w];
-                double slog_SPL_P[w];
-                double slog_SPL[w];
-                double slog_dBA[w];
-                double slog_dBB[w];
-                double slog_dBC[w];
-                double slog_LedB[w];
-                double slog_LedBAW[w];
-                double slog_LedBBW[w];
-                double slog_LedBCW[w];
+//                double slog_SPL_alpha[w];
+//                double slog_SPL_S[w];
+//                double slog_SPL_P[w];
+//                double slog_SPL[w];
+//                double slog_dBA[w];
+//                double slog_dBB[w];
+//                double slog_dBC[w];
+//                double slog_LedB[w];
+//                double slog_LedBAW[w];
+//                double slog_LedBBW[w];
+//                double slog_LedBCW[w];
 
                 double SPL_LedBCW[w];
                 double SPL_LedBBW[w];
@@ -1667,6 +1872,21 @@ int number_of_segments = pbem->dlg_elements;
                 double dBB_P[w];
                 double dBA_P[w];
                 double SPL_dB_P[w];
+                double SPL_LedBCW_rotor[w];
+                double SPL_LedBBW_rotor[w];
+                double SPL_LedBAW_rotor[w];
+                double SPL_LedB_rotor[w];
+                double SPL_C_rotor[w];
+                double SPL_B_rotor[w];
+                double SPL_A_rotor[w];
+                double SPL_dB_rotor[w];
+                double SPL_P_rotor[w];
+                double SPL_S_rotor[w];
+                double SPL_alpha_rotor[w];
+                double dBC_P_rotor[w];
+                double dBB_P_rotor[w];
+                double dBA_P_rotor[w];
+                double SPL_dB_P_rotor[w];
                 double A_a_P[w];
                 double A_max_P[w];
                 double A_min_P[w];
@@ -1688,12 +1908,24 @@ int number_of_segments = pbem->dlg_elements;
                 double dBC_alpha_big0[w];
                 double dBC_alpha_min0[w];
                 double dBB_alpha_big0[w];
+                double SPL_alpha_min0_rotor[w];
+                double SPL_alpha_big0_rotor[w];
+                double dBA_alpha_min0_rotor[w];
+                double dBA_alpha_big0_rotor[w];
+                double dBB_alpha_min0_rotor[w];
+                double dBC_alpha_big0_rotor[w];
+                double dBC_alpha_min0_rotor[w];
+                double dBB_alpha_big0_rotor[w];
                 double Stp_P[w];
                 double Sts_St1_bar[w];
                 double dBC_S[w];
                 double dBB_S[w];
                 double dBA_S[w];
+                double dBC_S_rotor[w];
+                double dBB_S_rotor[w];
+                double dBA_S_rotor[w];
                 double SPL_dB_S[w];
+                double SPL_dB_S_rotor[w];
                 double A_a_S[w];
                 double A_max_S[w];
                 double A_min_S[w];
@@ -1765,7 +1997,7 @@ else {D_starred_C_HT[i]=0.0601*(pow(Reynolds[i],(-0.114)));}
 D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
 
 //natural transition
-    D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
+D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
 
 D_starred_N[i]=D_starred_C_N[i]*chord[i];
 
@@ -1816,7 +2048,6 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 }}
 
 //For D* Xfoil
-
 DStarXFoilS[i]=m_DStarInterpolatedS3d[i];
 DStarXFoilP[i]=m_DStarInterpolatedP3d[i];
 
@@ -1879,7 +2110,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget
     double TopTrip=pFoilPolarDlg->m_XTopTr;
     double BotTrip=pFoilPolarDlg->m_XBotTr;
 
-if((TopTrip<=0 & TopTrip>=0) & (BotTrip<=0 & BotTrip>=0)) {
+if((TopTrip<=0) & (TopTrip>=0) & (BotTrip<=0) & (BotTrip>=0)) {
 //        natural transition
     D_starred_S[i]=D_starred_HT_S[i];
     D_starred_P[i]=D_starred_HT_P[i];
@@ -1900,7 +2131,7 @@ else if (m_parameter->dstar_type==2){
     D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
 }
 
-double B=0;
+//double B=0;
 double XB;
 double YB;
 double ZB;
@@ -1911,6 +2142,33 @@ double ZB;
     XB=m_parameter->obs_x_pos;
     YB=m_parameter->obs_y_pos;
     ZB=m_parameter->obs_z_pos;
+
+//rotor
+    omega_rotor = 2.*M_PI*rot_speed/60.; //rotor
+    double XUT=XLT;
+    double YUT=YLT;
+    double ZUT=ZLT+H;
+
+    double XYB=XUT*cos(Y)+YUT*sin(Y);
+    double YYB=XUT*-sin(Y)+YUT*cos(Y);
+    double ZYB=ZUT;
+
+    double TTH=m_parameter->tower_to_hub_distance;//tower to hub distance
+
+    double XHF=XYB-TTH;
+    double YHF=YYB;
+    double ZHF=ZYB;
+
+    int E=m_parameter->initial_azimuth; //initial azimuth
+
+    double XRR=XHF;
+    double YRR=YHF*cos(E)+XHF*sin(E);
+    double ZRR=YHF*(-sin(E))+ZHF*cos(E);
+
+    double XB_rotor=XRR;
+    double YB_rotor=YRR;
+    double ZB_rotor=ZRR+HR;
+//rotor
 
     c_0[i]=bdata->m_c_local.value(i);
     r_0[i]=bdata->m_pos.value(i);
@@ -1936,31 +2194,43 @@ local_twist[i]=theta_BEM[i];
 //    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line p 75 apostila
     a[i]=local_twist[i]+blade_pitch;
 
-    XRS[i]=XB*cos(qDegreesToRadians(a[i]))+YB*sin(qDegreesToRadians(a[i]));
-    YRS[i]=-XB*sin(qDegreesToRadians(a[i]))+YB*cos(qDegreesToRadians(a[i]));
-    ZRS[i]=ZB-(r_1[i]-r_0[i])/2.;
+    XRS[i]=calcXRS(a[i],XB,YB);
+    YRS[i]=calcYRS(a[i],XB,YB);
+    ZRS[i]=calcZRS(ZB,r_0[i],r_1[i]);
 
-//    Calculate Y RS − 0.75 ∗ (C r i+1 − C r i )/2
-    calc_int_a[i]=(YRS[i]-0.75*(c_1[i]-c_0[i])/2.);
+//rotor
+    XRS_rotor[i]=calcXRS(a[i],XB_rotor,YB_rotor);
+    YRS_rotor[i]=calcYRS(a[i],XB_rotor,YB_rotor);
+    ZRS_rotor[i]=calcZRS(ZB_rotor,r_0[i],r_1[i]);
+//rotor
 
-    XRT[i]=XRS[i];
-    YRT[i]=cos(qDegreesToRadians(b[i]))*calc_int_a[i]+sin(qDegreesToRadians(b[i]))*ZRS[i];
-    ZRT[i]=-sin(qDegreesToRadians(b[i]))*calc_int_a[i]+cos(qDegreesToRadians(b[i]))*ZRS[i];
+    calc_int_a[i]=calcInt_a(YRS[i],c_0[i],c_1[i]);
 
-    r_e[i]=sqrt(pow(XRT[i],2)+pow(YRT[i],2)+pow(ZRT[i],2));
-    r_rt[i]=r_e[i];
-    theta_e[i]=qRadiansToDegrees(qAtan(ZRT[i]/YRT[i]));
-    phi_e[i]=qRadiansToDegrees(qAtan(XRT[i]/ZRT[i]));
+    calc_int_a_rotor[i]=calcInt_a(YRS_rotor[i],c_0[i],c_1[i]);//rotor
+
+    XRT[i]=calcXRT(XRS[i]);
+    YRT[i]=calcYRT(b[i],calc_int_a[i],ZRS[i]);
+    ZRT[i]=calcZRT(b[i],calc_int_a[i],ZRS[i]);
+
+//rotor
+    XRT_rotor[i]=calcXRT(XRS_rotor[i]);
+    YRT_rotor[i]=calcYRT(b[i],calc_int_a_rotor[i],ZRS_rotor[i]);
+    ZRT_rotor[i]=calcZRT(b[i],calc_int_a_rotor[i],ZRS_rotor[i]);
+//rotor
+
+    r_e[i]=calcR_e(XRT[i],YRT[i],ZRT[i]);
+    theta_e[i]=calcTheta_e(XRT[i],YRT[i],ZRT[i]);
+    phi_e[i]=calcPhi_e(XRT[i], ZRT[i]);
     dist_obs[i]=r_e[i];
 
-    //phi type and theta type fixed 90º or calculated
-//    if (m_parameter->theta_type==1){theta_e[i]=90;}
-//    if (m_parameter->phi_type==1){phi_e[i]=90;}
+//rotor
+    r_e_rotor[i]=calcR_e(XRT_rotor[i],YRT_rotor[i],ZRT_rotor[i]);
+    theta_e_rotor[i]=calcTheta_e(XRT_rotor[i],YRT_rotor[i],ZRT_rotor[i]);
+    phi_e_rotor[i]=calcPhi_e(XRT_rotor[i], ZRT_rotor[i]);
+    dist_obs_rotor[i]=r_e_rotor[i];
+//rotor
 
-   phi_rad[i]=qDegreesToRadians(phi[i]);
-   theta_rad[i]=qDegreesToRadians(theta[i]);
-
-   alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
 St1[i]=0.02*(pow(Mach[i],-0.6));
 
@@ -2027,13 +2297,11 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     {B_min_b0[i]=-817.81*pow(b0[i],3)+335.21*pow(b0[i],2)-135.024*b0[i]+10.619;}
     else{B_min_b0[i]=-83.607*b0[i]+8.138;}
 
-
     if (b0[i]<0.1)
     {B_max_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
     else if (b0[i]>0.187)
     {B_max_b0[i]=-80.541*pow(b0[i],3)+44.174*pow(b0[i],2)-39.381*b0[i]+2.344;}
     else {B_max_b0[i]=-31.33*b0[i]+1.854;}
-
 
     BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
 
@@ -2082,25 +2350,20 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     Alin_a[j]=A_min_alpha[j]+AR_ao[i]*(A_max_alpha[j]-A_min_alpha[j]);
 
     dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
-
-
     dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
-
-
     dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
-
-
     dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
-
-
     dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
-
-
     dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
 
+    dBA_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+AWeighting[j];
+    dBA_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+AWeighting[j];
+    dBB_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+BWeighting[j];
+    dBC_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+CWeighting[j];
+    dBC_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+CWeighting[j];
+    dBB_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+BWeighting[j];
 
     St1_bar[j]=(St1[i]+St2[i])/2.;
-
 
     a_S[j]=qFabs(log10(Sts[j]/St1_bar[j]));
 
@@ -2117,10 +2380,12 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     A_a_S[j]=A_min_S[j]+AR_ao[i]*(A_max_S[j]-A_min_S[j]);
 
     dBA_S[j]=SPL_dB_S[j]+AWeighting[j];
-
     dBB_S[j]=SPL_dB_S[j]+BWeighting[j];
-
     dBC_S[j]=SPL_dB_S[j]+CWeighting[j];
+
+    dBA_S_rotor[j]=SPL_dB_S_rotor[j]+AWeighting[j];
+    dBB_S_rotor[j]=SPL_dB_S_rotor[j]+BWeighting[j];
+    dBC_S_rotor[j]=SPL_dB_S_rotor[j]+CWeighting[j];
 
     Sts_St1_bar[j]=Sts[j]/St1_bar[i];
 
@@ -2149,11 +2414,26 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     SPL_LedBBW[w]=0;
     SPL_LedBCW[w]=0;
 
+    //rotor
+    SPL_A_rotor[j]=0;
+    SPL_B_rotor[j]=0;
+    SPL_C_rotor[j]=0;
+    dBA_P_rotor[j]=SPL_dB_P_rotor[j]+AWeighting[j];
+    dBB_P_rotor[j]=SPL_dB_P_rotor[j]+BWeighting[j];
+    dBC_P_rotor[j]=SPL_dB_P_rotor[j]+CWeighting[j];
+    SPL_LedB_rotor[w]=0;
+    SPL_LedBAW_rotor[w]=0;
+    SPL_LedBBW_rotor[w]=0;
+    SPL_LedBCW_rotor[w]=0;
+    //rotor
+
     u_le=m_parameter->u_wind_speed*100.;
     c_le=100.*chord[i];
     I_le=m_parameter->TurbulenceIntensity;
     lambda_le=100.*m_parameter->IntegralLengthScale;
     r_e_le[i]=100.*dist_obs[i];
+    r_e_le_rotor[i]=100.*dist_obs_rotor[i];//rotor
+
     beta_le=sqrt(1-pow(Mach[i],2));
     L_le=100.*L[i];
     K_le=M_PI*CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
@@ -2174,22 +2454,31 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
         }
 
 if (m_parameter->lowFreq) {
-Dh[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i]/2.)),2)*pow(sin(qDegreesToRadians(phi_e[i])),2))/pow(1+Mach[i]*cos(qDegreesToRadians(theta_e[i]))*(1.+(Mach[i]-Mach[i]*EddyMach)*cos(qDegreesToRadians(phi_e[i]))),2);
+Dh[i]=calcDh(Mach[i],theta_e[i],phi_e[i],EddyMach);
+Dh_rotor[i]=calcDh(Mach[i],theta_e_rotor[i],phi_e_rotor[i],EddyMach);
 }
-else{Dh[i]=1;}
+else{Dh[i]=1; Dh_rotor[i]=1;}
 if (m_parameter->lowFreq) {
-Dl[i]=(2.*pow(sin(qDegreesToRadians(theta_e[i])),2.)*pow(sin(qDegreesToRadians(phi_e[i])),2.))/pow((1.+(Mach[i]*cos(qDegreesToRadians(theta_e[i])))),4.);
+Dl[i]=calcDl(Mach[i],theta_e[i],phi_e[i]);
+Dl_rotor[i]=calcDl(Mach[i],theta_e_rotor[i],phi_e_rotor[i]);
 }
-else{Dl[i]=1;}
+else{Dl[i]=1; Dl_rotor[i]=1;}
 
 Dl_le[i]=0.5*Dl[i];
 
-//Sara
-aux0_le[i]=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl_le[i])/(pow(r_e_le[i], 2));
+Dl_le_rotor[i]=0.5*Dl_rotor[i];
 
+aux0_le[i]=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl_le[i])/(pow(r_e_le[i], 2));
 aux1_le[i]=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
 aux4_le[i]=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le[i]=10.*log10(aux0_le[i]*aux4_le[i]);
+
+//rotor
+aux0_le_rotor[i]=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl_le_rotor[i])/(pow(r_e_le_rotor[i], 2));
+aux1_le_rotor[i]=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
+aux4_le_rotor[i]=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
+aux5_le_rotor[i]=10.*log10(aux0_le_rotor[i]*aux4_le_rotor[i]);
+//rotor
 
 //Validation:
 
@@ -2217,7 +2506,14 @@ SPL_LedB[j]=10.*log10(pow(10,(aux1_le[i]+aux5_le[i])/10.));
 SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
 SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
 SPL_LedBCW[j]=SPL_LedB[j]+CWeighting[j];
+//rotor
+SPL_LedB_rotor[j]=10.*log10(pow(10,(aux1_le_rotor[i]+aux5_le_rotor[i])/10.));
+SPL_LedBAW_rotor[j]=SPL_LedB_rotor[j]+AWeighting[j];
+SPL_LedBBW_rotor[j]=SPL_LedB_rotor[j]+BWeighting[j];
+SPL_LedBCW_rotor[j]=SPL_LedB_rotor[j]+CWeighting[j];
+//rotor
 LE_validation=true;
+
 //}
 //else{
 //SPL_LedB[j]=-999999999999.;
@@ -2227,34 +2523,53 @@ LE_validation=true;
 //LE_validation=false;
 //}
 
-first_term_Dl_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dl[i]*D_starred_S[i]/pow(dist_obs[i],2));
+first_term_Dl_S[i]=calcFirstTerm(Mach[i],L[i],Dl[i],D_starred_S[i],dist_obs[i]);
+first_term_Dh_P[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_P[i],dist_obs[i]);
+first_term_Dh_S[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_S[i],dist_obs[i]);
 
-first_term_Dh_P[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_P[i]/pow(dist_obs[i],2));
-
-first_term_Dh_S[i]=10.*log10(pow(Mach[i],5)*L[i]*Dh[i]*D_starred_S[i]/pow(dist_obs[i],2));
+//rotor
+first_term_Dl_S_rotor[i]=calcFirstTerm(Mach[i],L[i],Dl_rotor[i],D_starred_S[i],dist_obs_rotor[i]);
+first_term_Dh_P_rotor[i]=calcFirstTerm(Mach[i],L[i],Dh_rotor[i],D_starred_P[i],dist_obs_rotor[i]);
+first_term_Dh_S_rotor[i]=calcFirstTerm(Mach[i],L[i],Dh_rotor[i],D_starred_S[i],dist_obs_rotor[i]);
+//rotor
 
 SPL_dB_P[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P[i];
 
-if (alpha[i]<SwAlpha[i]){SPL_P[j]=SPL_dB_P[j];}
-else {SPL_P[j]=-999999999999.;}
+SPL_dB_P_rotor[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P_rotor[i];
+
+if (alpha[i]<SwAlpha[i]){SPL_P[j]=SPL_dB_P[j]; SPL_P_rotor[j]=SPL_dB_P_rotor[j];}
+else {SPL_P[j]=-999999999999.; SPL_P_rotor[j]=-999999999999.;}
+
 
 SPL_dB_S[j]=first_term_Dh_S[i]+A_a_S[j]+K1_3[i];
+SPL_dB_S_rotor[j]=first_term_Dh_S_rotor[i]+A_a_S[j]+K1_3[i];
 
-if (alpha[i]<SwAlpha[i]){SPL_S[j]=SPL_dB_S[j];}
-else {SPL_S[j]=-999999999999.;}
+if (alpha[i]<SwAlpha[i]){SPL_S[j]=SPL_dB_S[j]; SPL_S_rotor[j]=SPL_dB_S_rotor[j];}
+else {SPL_S[j]=-999999999999.; SPL_S_rotor[j]=-999999999999.;}
 
 SPL_alpha_min0[j]=first_term_Dh_S[i]+K2[i]+B_b[j];
 SPL_alpha_big0[j]=first_term_Dl_S[i]+K2[i]+Alin_a[j];
 
-if (alpha[i]<SwAlpha[i]){SPL_alpha[j]=SPL_alpha_min0[j];}
-else {SPL_alpha[j]=SPL_alpha_big0[j];}
+SPL_alpha_min0_rotor[j]=first_term_Dh_S_rotor[i]+K2[i]+B_b[j];
+SPL_alpha_big0_rotor[j]=first_term_Dl_S_rotor[i]+K2[i]+Alin_a[j];
 
-if(m_parameter->Lowson_type!=0){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.)));}
-else{SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));}
+if (alpha[i]<SwAlpha[i]){SPL_alpha[j]=SPL_alpha_min0[j]; SPL_alpha_rotor[j]=SPL_alpha_min0_rotor[j];}
+else {SPL_alpha[j]=SPL_alpha_big0[j]; SPL_alpha_rotor[j]=SPL_alpha_big0_rotor[j];}
+
+if(m_parameter->Lowson_type!=0){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.)));
+SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.)));
+}
+else{SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
+SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.)));
+}
 
 SPL_A[j]=SPL_dB[j]+AWeighting[j];
 SPL_B[j]=SPL_dB[j]+BWeighting[j];
 SPL_C[j]=SPL_dB[j]+CWeighting[j];
+
+SPL_A_rotor[j]=SPL_dB_rotor[j]+AWeighting[j];
+SPL_B_rotor[j]=SPL_dB_rotor[j]+BWeighting[j];
+SPL_C_rotor[j]=SPL_dB_rotor[j]+CWeighting[j];
 
 if(BPM_validation){
 aux_m_SPLadB3d=SPL_alpha[j];
@@ -2264,6 +2579,14 @@ aux_m_SPLdB3d=SPL_dB[j];
 aux_m_SPLdBAW3d=SPL_A[j];
 aux_m_SPLdBBW3d=SPL_B[j];
 aux_m_SPLdBCW3d=SPL_C[j];
+
+aux_m_SPLadB3d_rotor=SPL_alpha_rotor[j];
+aux_m_SPLsdB3d_rotor=SPL_S_rotor[j];
+aux_m_SPLpdB3d_rotor=SPL_P_rotor[j];
+aux_m_SPLdB3d_rotor=SPL_dB_rotor[j];
+aux_m_SPLdBAW3d_rotor=SPL_A_rotor[j];
+aux_m_SPLdBBW3d_rotor=SPL_B_rotor[j];
+aux_m_SPLdBCW3d_rotor=SPL_C_rotor[j];
 }else{
 aux_m_SPLadB3d=0;
 aux_m_SPLsdB3d=0;
@@ -2272,18 +2595,36 @@ aux_m_SPLdB3d=0;
 aux_m_SPLdBAW3d=0;
 aux_m_SPLdBBW3d=0;
 aux_m_SPLdBCW3d=0;
+
+aux_m_SPLadB3d_rotor=0;
+aux_m_SPLsdB3d_rotor=0;
+aux_m_SPLpdB3d_rotor=0;
+aux_m_SPLdB3d_rotor=0;
+aux_m_SPLdBAW3d_rotor=0;
+aux_m_SPLdBBW3d_rotor=0;
+aux_m_SPLdBCW3d_rotor=0;
 }
 if (LE_validation!=0){
 aux_m_SPL_LEdB3d=SPL_LedB[j];
 aux_m_SPL_LEdBAW3d=SPL_LedBAW[j];
 aux_m_SPL_LEdBBW3d=SPL_LedBBW[j];
 aux_m_SPL_LEdBCW3d=SPL_LedBCW[j];
+
+aux_m_SPL_LEdB3d_rotor=SPL_LedB_rotor[j];
+aux_m_SPL_LEdBAW3d_rotor=SPL_LedBAW_rotor[j];
+aux_m_SPL_LEdBBW3d_rotor=SPL_LedBBW_rotor[j];
+aux_m_SPL_LEdBCW3d_rotor=SPL_LedBCW_rotor[j];
     }
     else{
 aux_m_SPL_LEdB3d=0;
 aux_m_SPL_LEdBAW3d=0;
 aux_m_SPL_LEdBBW3d=0;
 aux_m_SPL_LEdBCW3d=0;
+
+aux_m_SPL_LEdB3d_rotor=0;
+aux_m_SPL_LEdBAW3d_rotor=0;
+aux_m_SPL_LEdBBW3d_rotor=0;
+aux_m_SPL_LEdBCW3d_rotor=0;
     }
 
 if(qIsInf(aux_m_SPLadB3d) || qIsNaN(aux_m_SPLadB3d)){aux_m_SPLadB3d=0;}
@@ -2298,6 +2639,18 @@ if(qIsInf(aux_m_SPL_LEdBAW3d) || qIsNaN(aux_m_SPL_LEdBAW3d)){aux_m_SPL_LEdBAW3d=
 if(qIsInf(aux_m_SPL_LEdBBW3d) || qIsNaN(aux_m_SPL_LEdBBW3d)){aux_m_SPL_LEdBBW3d=0;}
 if(qIsInf(aux_m_SPL_LEdBCW3d) || qIsNaN(aux_m_SPL_LEdBCW3d)){aux_m_SPL_LEdBCW3d=0;}
 
+if(qIsInf(aux_m_SPLadB3d_rotor) || qIsNaN(aux_m_SPLadB3d_rotor)){aux_m_SPLadB3d_rotor=0;}
+if(qIsInf(aux_m_SPLsdB3d_rotor) || qIsNaN(aux_m_SPLsdB3d_rotor)){aux_m_SPLsdB3d_rotor=0;}
+if(qIsInf(aux_m_SPLpdB3d_rotor) || qIsNaN(aux_m_SPLpdB3d_rotor)){aux_m_SPLpdB3d_rotor=0;}
+if(qIsInf(aux_m_SPLdB3d_rotor) || qIsNaN(aux_m_SPLdB3d_rotor)){aux_m_SPLdB3d_rotor=0;}
+if(qIsInf(aux_m_SPLdBAW3d_rotor) || qIsNaN(aux_m_SPLdBAW3d_rotor)){aux_m_SPLdBAW3d_rotor=0;}
+if(qIsInf(aux_m_SPLdBBW3d_rotor) || qIsNaN(aux_m_SPLdBBW3d_rotor)){aux_m_SPLdBBW3d_rotor=0;}
+if(qIsInf(aux_m_SPLdBCW3d_rotor) || qIsNaN(aux_m_SPLdBCW3d_rotor)){aux_m_SPLdBCW3d_rotor=0;}
+if(qIsInf(aux_m_SPL_LEdB3d_rotor) || qIsNaN(aux_m_SPL_LEdB3d_rotor)){aux_m_SPL_LEdB3d_rotor=0;}
+if(qIsInf(aux_m_SPL_LEdBAW3d_rotor) || qIsNaN(aux_m_SPL_LEdBAW3d_rotor)){aux_m_SPL_LEdBAW3d_rotor=0;}
+if(qIsInf(aux_m_SPL_LEdBBW3d_rotor) || qIsNaN(aux_m_SPL_LEdBBW3d_rotor)){aux_m_SPL_LEdBBW3d_rotor=0;}
+if(qIsInf(aux_m_SPL_LEdBCW3d_rotor) || qIsNaN(aux_m_SPL_LEdBCW3d_rotor)){aux_m_SPL_LEdBCW3d_rotor=0;}
+
 //multi 3D curves
 m_SPLadB3d[i][j]=aux_m_SPLadB3d;
 m_SPLsdB3d[i][j]=aux_m_SPLsdB3d;
@@ -2306,19 +2659,73 @@ m_SPLdB3d[i][j]=aux_m_SPLdB3d;
 m_SPLdBAW3d[i][j]=aux_m_SPLdBAW3d;
 m_SPLdBBW3d[i][j]=aux_m_SPLdBBW3d;
 m_SPLdBCW3d[i][j]=aux_m_SPLdBCW3d;
+
+m_SPLadB3d_rotor[i][j]=aux_m_SPLadB3d_rotor;
+m_SPLsdB3d_rotor[i][j]=aux_m_SPLsdB3d_rotor;
+m_SPLpdB3d_rotor[i][j]=aux_m_SPLpdB3d_rotor;
+m_SPLdB3d_rotor[i][j]=aux_m_SPLdB3d_rotor;
+m_SPLdBAW3d_rotor[i][j]=aux_m_SPLdBAW3d_rotor;
+m_SPLdBBW3d_rotor[i][j]=aux_m_SPLdBBW3d_rotor;
+m_SPLdBCW3d_rotor[i][j]=aux_m_SPLdBCW3d_rotor;
+
 if(m_parameter->Lowson_type!=0){
 m_SPL_LEdB3d[i][j]=aux_m_SPL_LEdB3d;
 m_SPL_LEdBAW3d[i][j]=aux_m_SPL_LEdBAW3d;
 m_SPL_LEdBBW3d[i][j]=aux_m_SPL_LEdBBW3d;
 m_SPL_LEdBCW3d[i][j]=aux_m_SPL_LEdBCW3d;
+
+m_SPL_LEdB3d_rotor[i][j]=aux_m_SPL_LEdB3d_rotor;
+m_SPL_LEdBAW3d_rotor[i][j]=aux_m_SPL_LEdBAW3d_rotor;
+m_SPL_LEdBBW3d_rotor[i][j]=aux_m_SPL_LEdBBW3d_rotor;
+m_SPL_LEdBCW3d_rotor[i][j]=aux_m_SPL_LEdBCW3d_rotor;
 }
 else{
 m_SPL_LEdB3d[i][j]=0;
 m_SPL_LEdBAW3d[i][j]=0;
 m_SPL_LEdBBW3d[i][j]=0;
 m_SPL_LEdBCW3d[i][j]=0;
+
+m_SPL_LEdB3d_rotor[i][j]=0;
+m_SPL_LEdBAW3d_rotor[i][j]=0;
+m_SPL_LEdBBW3d_rotor[i][j]=0;
+m_SPL_LEdBCW3d_rotor[i][j]=0;
 }
-}}}
+
+if(m_parameter->state_ss_us==1){
+        //    unsteady urgente
+        int simulation_time;
+        int number_time_steps;
+        double time_steps;
+        if(g_windFieldStore.size() == 0){
+        simulation_time=0;
+                }else{
+        simulation_time=g_windFieldModule->getShownWindField()->getSimulationTime();
+                }
+
+        if (m_parameter->step_type==0){
+if(g_windFieldStore.size() == 0){number_time_steps=0;}else{number_time_steps=g_windFieldModule->getShownWindField()->getNumberOfTimesteps();}
+        time_steps=1.0*simulation_time/(1.0*number_time_steps);}
+        else {
+        As=m_parameter->anglesteps;
+        time_steps = 2.*M_PI*As/(360.*omega);
+        number_time_steps = 1.0*simulation_time/(1.0*time_steps);
+        }
+
+        double m_unsteady_angles[blades_num][number_time_steps+1];
+//        int angle_steps;
+
+        for (int i=0;i<blades_num;++i){
+        m_unsteady_angles[i][0]=360./blades_num*i+E;
+        }
+
+        for (int i=0;i<blades_num;++i){
+        for (int j=1;j<(number_time_steps+1);++j){
+        m_unsteady_angles[i][j]=360.*omega*(j*time_steps)/(2.*M_PI)+m_unsteady_angles[i][j-1];
+        }}
+}
+//**********************************************************************************************************************************************
+//urgente
+     }}}
 z=z+ldelta;
 }
 }
@@ -2328,7 +2735,7 @@ void NoiseCalculation::calculateqs3d_blade() {
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-    int number_of_segments = pbem->dlg_elements;
+unsigned int number_of_segments = pbem->dlg_elements;
 
     double aux_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
     double aux_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
@@ -2353,29 +2760,6 @@ QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     double auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
 
-    double aux_m_SPLadB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLsdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLpdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLadB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLsdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLpdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-
     double Final_qs3d_alpha_aux=0;
     double Final_qs3d_S_aux=0;
     double Final_qs3d_P_aux=0;
@@ -2384,7 +2768,7 @@ QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 
     // Resize vectors acording to OpPoints total
     unsigned int sizea = 0;
-    int size;
+    unsigned int size;
     if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
         m_parameter->opPointSource == NoiseParameter::MultiplePolars)
     {
@@ -2431,29 +2815,6 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     auxa_m_SPL_LEdBBW3d_final[j]=0;
     auxa_m_SPL_LEdBCW3d_final[j]=0;
 
-    aux_m_SPLadB3d_final_rotor[j]=0;
-    aux_m_SPLsdB3d_final_rotor[j]=0;
-    aux_m_SPLpdB3d_final_rotor[j]=0;
-    aux_m_SPLdB3d_final_rotor[j]=0;
-    aux_m_SPLdBAW3d_final_rotor[j]=0;
-    aux_m_SPLdBBW3d_final_rotor[j]=0;
-    aux_m_SPLdBCW3d_final_rotor[j]=0;
-    aux_m_SPL_LEdB3d_final_rotor[j]=0;
-    aux_m_SPL_LEdBAW3d_final_rotor[j]=0;
-    aux_m_SPL_LEdBBW3d_final_rotor[j]=0;
-    aux_m_SPL_LEdBCW3d_final_rotor[j]=0;
-    auxa_m_SPLadB3d_final_rotor[j]=0;
-    auxa_m_SPLsdB3d_final_rotor[j]=0;
-    auxa_m_SPLpdB3d_final_rotor[j]=0;
-    auxa_m_SPLdB3d_final_rotor[j]=0;
-    auxa_m_SPLdBAW3d_final_rotor[j]=0;
-    auxa_m_SPLdBBW3d_final_rotor[j]=0;
-    auxa_m_SPLdBCW3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdB3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdBAW3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdBBW3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdBCW3d_final_rotor[j]=0;
-
 for (int i = 0; i < number_of_segments; ++i) {
 if ((SPLadB3d()[i][j]<=0) & (SPLadB3d()[i][j]>=0)){auxa_m_SPLadB3d_final[j] += 0;} else {auxa_m_SPLadB3d_final[j] += pow(10.,(SPLadB3d()[i][j]/10.));}
 if ((SPLsdB3d()[i][j]<=0) & (SPLsdB3d()[i][j]>=0)){auxa_m_SPLsdB3d_final[j] += 0;} else {auxa_m_SPLsdB3d_final[j] += pow(10.,(SPLsdB3d()[i][j]/10.));}
@@ -2469,7 +2830,7 @@ if ((SPL_LEdBCW3d()[i][j]<=0) & (SPL_LEdBCW3d()[i][j]>=0)){auxa_m_SPL_LEdBCW3d_f
 }
 
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-int number_of_segments = pBEM->dlg_elements;
+unsigned int number_of_segments = pBEM->dlg_elements;
 
 if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
@@ -2564,43 +2925,199 @@ m_SPLlogLE3d[i]=0;
 }
 }
 
-void NoiseCalculation::unsteady_angles_calc() {
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+void NoiseCalculation::calculateqs3d_rotor() {
 
-int TSR = m_parameter->TSRtd;
-int blades_num = pBEM->m_pBData->blades; //number of blades
-double rot_speed = m_parameter->rot_speed;
-double omega;
-int As;
-omega = 2.*M_PI*rot_speed/60.;
+QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+unsigned int number_of_segments = pbem->dlg_elements;
 
-if(m_parameter->state_ss_us==1){
-//    unsteady
-int simulation_time = g_windFieldModule->getShownWindField()->getSimulationTime();
-int number_time_steps;
-double time_steps;
+    double aux_m_SPLadB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLsdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLpdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLadB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLsdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLpdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
 
-if (m_parameter->step_type==0){
-number_time_steps = m_parameter->timesteps;
-time_steps=1.0*simulation_time/(1.0*number_time_steps);}
-else {
-As=m_parameter->anglesteps;
-time_steps = 2.*M_PI*As/(360.*omega);
-number_time_steps = 1.0*simulation_time/(1.0*time_steps);
-}
+    double Final_qs3d_alpha_aux_rotor=0;
+    double Final_qs3d_S_aux_rotor=0;
+    double Final_qs3d_P_aux_rotor=0;
+    double Final_qs3d_LE_aux_rotor=0;
+    double Final_qs3d_aux_rotor=0;
 
-double m_unsteady_angles[blades_num][number_time_steps+1];
-int blade_origin=0;
-int angle_steps;
+    // Resize vectors acording to OpPoints total
+    unsigned int sizea = 0;
+    unsigned int size;
+    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+    {
+        sizea = m_parameter->analyzedOpPoints.size();
+     } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
+        sizea = 1;
+    }
 
-for (int i=0;i<blades_num;++i){
-m_unsteady_angles[i][0]=360./blades_num*i+blade_origin;
-}
+if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
-for (int i=0;i<blades_num;++i){
-for (int j=1;j<(number_time_steps+1);++j){
-m_unsteady_angles[i][j]=360.*omega*(j*time_steps)/(2.*M_PI)+m_unsteady_angles[i][j-1];
-}}
-}}
+    double auxa_m_OASPL3d_rotor[size];
+    double auxa_m_OASPLA3d_rotor[size];
+    double auxa_m_OASPLB3d_rotor[size];
+    double auxa_m_OASPLC3d_rotor[size];
+    double auxa_m_SPLALOG3d_rotor[size];
+    double auxa_m_SPLSLOG3d_rotor[size];
+    double auxa_m_SPLPLOG3d_rotor[size];
+    double auxa_m_SPLLEdBAW3d_rotor[size];
+    double auxa_m_SPLLEdBBW3d_rotor[size];
+    double auxa_m_SPLLEdBCW3d_rotor[size];
+    double auxa_m_SPLlogLE3d_rotor[size];
 
-//Sara
+for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+    aux_m_SPLadB3d_final_rotor[j]=0;
+    aux_m_SPLsdB3d_final_rotor[j]=0;
+    aux_m_SPLpdB3d_final_rotor[j]=0;
+    aux_m_SPLdB3d_final_rotor[j]=0;
+    aux_m_SPLdBAW3d_final_rotor[j]=0;
+    aux_m_SPLdBBW3d_final_rotor[j]=0;
+    aux_m_SPLdBCW3d_final_rotor[j]=0;
+    aux_m_SPL_LEdB3d_final_rotor[j]=0;
+    aux_m_SPL_LEdBAW3d_final_rotor[j]=0;
+    aux_m_SPL_LEdBBW3d_final_rotor[j]=0;
+    aux_m_SPL_LEdBCW3d_final_rotor[j]=0;
+    auxa_m_SPLadB3d_final_rotor[j]=0;
+    auxa_m_SPLsdB3d_final_rotor[j]=0;
+    auxa_m_SPLpdB3d_final_rotor[j]=0;
+    auxa_m_SPLdB3d_final_rotor[j]=0;
+    auxa_m_SPLdBAW3d_final_rotor[j]=0;
+    auxa_m_SPLdBBW3d_final_rotor[j]=0;
+    auxa_m_SPLdBCW3d_final_rotor[j]=0;
+    auxa_m_SPL_LEdB3d_final_rotor[j]=0;
+    auxa_m_SPL_LEdBAW3d_final_rotor[j]=0;
+    auxa_m_SPL_LEdBBW3d_final_rotor[j]=0;
+    auxa_m_SPL_LEdBCW3d_final_rotor[j]=0;
+
+    for (int i = 0; i < number_of_segments; ++i) {
+    if ((SPLadB3d_rotor()[i][j]<=0) & (SPLadB3d_rotor()[i][j]>=0)){auxa_m_SPLadB3d_final_rotor[j] += 0;} else {auxa_m_SPLadB3d_final_rotor[j] += pow(10.,(SPLadB3d_rotor()[i][j]/10.));}
+    if ((SPLsdB3d_rotor()[i][j]<=0) & (SPLsdB3d_rotor()[i][j]>=0)){auxa_m_SPLsdB3d_final_rotor[j] += 0;} else {auxa_m_SPLsdB3d_final_rotor[j] += pow(10.,(SPLsdB3d_rotor()[i][j]/10.));}
+    if ((SPLpdB3d_rotor()[i][j]<=0) & (SPLpdB3d_rotor()[i][j]>=0)){auxa_m_SPLpdB3d_final_rotor[j] += 0;} else {auxa_m_SPLpdB3d_final_rotor[j] += pow(10.,(SPLpdB3d_rotor()[i][j]/10.));}
+    if ((SPLdB3d_rotor()[i][j]<=0) & (SPLdB3d_rotor()[i][j]>=0)){auxa_m_SPLdB3d_final_rotor[j] += 0;} else {auxa_m_SPLdB3d_final_rotor[j] += pow(10.,(SPLdB3d_rotor()[i][j]/10.));}
+    if ((SPLdBAW3d_rotor()[i][j]<=0) & (SPLdBAW3d_rotor()[i][j]>=0)){auxa_m_SPLdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBAW3d_final_rotor[j] += pow(10.,(SPLdBAW3d_rotor()[i][j]/10.));}
+    if ((SPLdBBW3d_rotor()[i][j]<=0) & (SPLdBBW3d_rotor()[i][j]>=0)){auxa_m_SPLdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBBW3d_final_rotor[j] += pow(10.,(SPLdBBW3d_rotor()[i][j]/10.));}
+    if ((SPLdBCW3d_rotor()[i][j]<=0) & (SPLdBCW3d_rotor()[i][j]>=0)){auxa_m_SPLdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBCW3d_final_rotor[j] += pow(10.,(SPLdBCW3d_rotor()[i][j]/10.));}
+    if ((SPL_LEdB3d_rotor()[i][j]<=0) & (SPL_LEdB3d_rotor()[i][j]>=0)){auxa_m_SPL_LEdB3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdB3d_final_rotor[j] += pow(10.,(SPL_LEdB3d_rotor()[i][j]/10.));}
+    if ((SPL_LEdBAW3d_rotor()[i][j]<=0) & (SPL_LEdBAW3d_rotor()[i][j]>=0)){auxa_m_SPL_LEdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final_rotor[j] += pow(10.,(SPL_LEdBAW3d_rotor()[i][j]/10.));}
+    if ((SPL_LEdBBW3d_rotor()[i][j]<=0) & (SPL_LEdBBW3d_rotor()[i][j]>=0)){auxa_m_SPL_LEdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final_rotor[j] += pow(10.,(SPL_LEdBBW3d_rotor()[i][j]/10.));}
+    if ((SPL_LEdBCW3d_rotor()[i][j]<=0) & (SPL_LEdBCW3d_rotor()[i][j]>=0)){auxa_m_SPL_LEdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final_rotor[j] += pow(10.,(SPL_LEdBCW3d_rotor()[i][j]/10.));}
+    }
+
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    unsigned int number_of_segments = pBEM->dlg_elements;
+
+    if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+
+    for (int i=0;i<size;++i){
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+    //    3d curves
+        m_SPLadB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final_rotor[j]);
+        m_SPLsdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final_rotor[j]);
+        m_SPLpdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final_rotor[j]);
+        m_SPLdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final_rotor[j]);
+        m_SPLdBAW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final_rotor[j]);
+        m_SPLdBBW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final_rotor[j]);
+        m_SPLdBCW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final_rotor[j]);
+        if (m_parameter->Lowson_type!=0){
+        m_SPL_LEdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final_rotor[j]);
+        m_SPL_LEdBAW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final_rotor[j]);
+        m_SPL_LEdBBW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final_rotor[j]);
+        m_SPL_LEdBCW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final_rotor[j]);
+        }
+        else{
+        m_SPL_LEdB3d_final_rotor[i][j]=0;
+        m_SPL_LEdBAW3d_final_rotor[i][j]=0;
+        m_SPL_LEdBBW3d_final_rotor[i][j]=0;
+        m_SPL_LEdBCW3d_final_rotor[i][j]=0;
+        }
+    }
+    }}
+
+    //OASPL complete for quasi 3d
+    int i=number_of_segments-1;
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+    Final_qs3d_alpha_aux_rotor += pow(10.,(m_SPLadB3d_final_rotor[i][j])/10.);
+    Final_qs3d_S_aux_rotor += pow(10.,(m_SPLsdB3d_final_rotor[i][j])/10.);
+    Final_qs3d_P_aux_rotor += pow(10.,(m_SPLpdB3d_final_rotor[i][j])/10.);
+    Final_qs3d_LE_aux_rotor += pow(10.,(m_SPL_LEdB3d_final_rotor[i][j])/10.);
+    Final_qs3d_aux_rotor += pow(10.,(m_SPLdB3d_final_rotor[i][j])/10.);
+        }
+
+    Final_qs3d_alpha_rotor = 10*log10(Final_qs3d_alpha_aux_rotor);
+    Final_qs3d_S_rotor = 10*log10(Final_qs3d_S_aux_rotor);
+    Final_qs3d_P_rotor = 10*log10(Final_qs3d_P_aux_rotor);
+    Final_qs3d_LE_rotor =  10*log10(Final_qs3d_LE_aux_rotor);
+    Final_qs3d_rotor = 10*log10(Final_qs3d_aux_rotor);
+
+    //calculation for the OASPL for the csv output file
+    for (int i=0;i<size;++i){
+        auxa_m_OASPL3d_rotor[i]=0;
+        auxa_m_OASPLA3d_rotor[i]=0;
+        auxa_m_OASPLB3d_rotor[i]=0;
+        auxa_m_OASPLC3d_rotor[i]=0;
+        auxa_m_SPLALOG3d_rotor[i]=0;
+        auxa_m_SPLSLOG3d_rotor[i]=0;
+        auxa_m_SPLPLOG3d_rotor[i]=0;
+        auxa_m_SPLLEdBAW3d_rotor[i]=0;
+        auxa_m_SPLLEdBBW3d_rotor[i]=0;
+        auxa_m_SPLLEdBCW3d_rotor[i]=0;
+        auxa_m_SPLlogLE3d_rotor[i]=0;
+
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+
+        if ((SPLadB3d_rotor()[i][j]<=0) & (SPLadB3d_rotor()[i][j]>=0)){auxa_m_SPLALOG3d_rotor[i] += 0;} else {auxa_m_SPLALOG3d_rotor[i] += pow(10.,(SPLadB3d_rotor()[i][j]/10.));}
+        if ((SPLsdB3d_rotor()[i][j]<=0) & (SPLsdB3d_rotor()[i][j]>=0)){auxa_m_SPLSLOG3d_rotor[i] += 0;} else {auxa_m_SPLSLOG3d_rotor[i] += pow(10.,(SPLsdB3d_rotor()[i][j]/10.));}
+        if ((SPLpdB3d_rotor()[i][j]<=0) & (SPLpdB3d_rotor()[i][j]>=0)){auxa_m_SPLPLOG3d_rotor[i] += 0;} else {auxa_m_SPLPLOG3d_rotor[i] += pow(10.,(SPLpdB3d_rotor()[i][j]/10.));}
+        if ((SPLdB3d_rotor()[i][j]<=0) & (SPLdB3d_rotor()[i][j]>=0)){auxa_m_OASPL3d_rotor[i] += 0;} else {auxa_m_OASPL3d_rotor[i]+= pow(10.,(SPLdB3d_rotor()[i][j]/10.));}
+        if ((SPLdBAW3d_rotor()[i][j]<=0) & (SPLdBAW3d_rotor()[i][j]>=0)){auxa_m_OASPLA3d_rotor[i] += 0;} else {auxa_m_OASPLA3d_rotor[i] += pow(10.,(SPLdBAW3d_rotor()[i][j]/10.));}
+        if ((SPLdBBW3d_rotor()[i][j]<=0) & (SPLdBBW3d_rotor()[i][j]>=0)){auxa_m_OASPLB3d_rotor[i] += 0;} else {auxa_m_OASPLB3d_rotor[i] += pow(10.,(SPLdBBW3d_rotor()[i][j]/10.));}
+        if ((SPLdBCW3d_rotor()[i][j]<=0) & (SPLdBCW3d_rotor()[i][j]>=0)){auxa_m_OASPLC3d_rotor[i] += 0;} else {auxa_m_OASPLC3d_rotor[i] += pow(10.,(SPLdBCW3d_rotor()[i][j]/10.));}
+        if ((SPL_LEdB3d_rotor()[i][j]<=0) & (SPL_LEdB3d_rotor()[i][j]>=0)){auxa_m_SPLlogLE3d_rotor[i] += 0;} else {auxa_m_SPLlogLE3d_rotor[i] += pow(10.,(SPL_LEdB3d_rotor()[i][j]/10.));}
+        if ((SPL_LEdBAW3d_rotor()[i][j]<=0) & (SPL_LEdBAW3d_rotor()[i][j]>=0)){auxa_m_SPLLEdBAW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBAW3d_rotor[i] += pow(10.,(SPL_LEdBAW3d_rotor()[i][j]/10.));}
+        if ((SPL_LEdBBW3d_rotor()[i][j]<=0) & (SPL_LEdBBW3d_rotor()[i][j]>=0)){auxa_m_SPLLEdBBW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBBW3d_rotor[i] += pow(10.,(SPL_LEdBBW3d_rotor()[i][j]/10.));}
+        if ((SPL_LEdBCW3d_rotor()[i][j]<=0) & (SPL_LEdBCW3d_rotor()[i][j]>=0)){auxa_m_SPLLEdBCW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBCW3d_rotor[i] += pow(10.,(SPL_LEdBCW3d_rotor()[i][j]/10.));}
+    }
+    m_OASPL3d_rotor[i]=10*log10(auxa_m_OASPL3d_rotor[i]);
+    m_OASPLA3d_rotor[i]=10*log10(auxa_m_OASPLA3d_rotor[i]);
+    m_OASPLB3d_rotor[i]=10*log10(auxa_m_OASPLB3d_rotor[i]);
+    m_OASPLC3d_rotor[i]=10*log10(auxa_m_OASPLC3d_rotor[i]);
+    m_SPLALOG3d_rotor[i]=10*log10(auxa_m_SPLALOG3d_rotor[i]);
+    m_SPLSLOG3d_rotor[i]=10*log10(auxa_m_SPLSLOG3d_rotor[i]);
+    m_SPLPLOG3d_rotor[i]=10*log10(auxa_m_SPLPLOG3d_rotor[i]);
+    if (m_parameter->Lowson_type!=0){
+    m_SPLLEdBAW3d_rotor[i]=10*log10(auxa_m_SPLLEdBAW3d_rotor[i]);
+    m_SPLLEdBBW3d_rotor[i]=10*log10(auxa_m_SPLLEdBBW3d_rotor[i]);
+    m_SPLLEdBCW3d_rotor[i]=10*log10(auxa_m_SPLLEdBCW3d_rotor[i]);
+    m_SPLlogLE3d_rotor[i]=10*log10(auxa_m_SPLlogLE3d_rotor[i]);
+    }
+    else{
+    m_SPLLEdBAW3d_rotor[i]=0;
+    m_SPLLEdBBW3d_rotor[i]=0;
+    m_SPLLEdBCW3d_rotor[i]=0;
+    m_SPLlogLE3d_rotor[i]=0;
+    }}}
+
+//urgente
+void NoiseCalculation::positive_graphs() {
+ }
+    //Sara
