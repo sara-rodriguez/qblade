@@ -143,7 +143,6 @@ int index_qs3d=-1;
 void NoiseModule::onqs3dGraphs(bool graphs){
 ++index_qs3d;
 if(index_qs3d==3){index_qs3d=0;}
-qDebug() << "index: " << index_qs3d;
 
 m_globalModuleIndentifier = NOISEMODULE;
 m_shownSimulation = nullptr;

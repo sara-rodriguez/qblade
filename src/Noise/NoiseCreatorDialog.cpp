@@ -39,12 +39,13 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
     if(Mach_initial<0.01){Mach_initial=0.18;}
 //Sara
 
-    QTabWidget *tabWidget = new QTabWidget;
+    QTabWidget *tabWidget = new QTabWidget;  
     m_contentVBox->insertWidget(0, tabWidget);
 
     QWidget *widget = new QWidget;
     tabWidget->addTab(widget, "Parameters");
         QHBoxLayout *hBox = new QHBoxLayout;
+        setMinimumSize(950,540);//Sara
         widget->setLayout(hBox);
             QGroupBox *groupBox = new QGroupBox ("Simulation Parameters");
             hBox->addWidget(groupBox);
