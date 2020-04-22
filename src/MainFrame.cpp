@@ -407,8 +407,8 @@ void MainFrame::onAboutPnoise() {
 						"inflow noise source and a quasi-3D rotor noise tool.\n"
 						"\n"
 						"List of Contributors:\n"
-						"Development: Joseph Saab, Marcos Pimenta, David Marten, George Pechlivanoglou.\n"
-						"Programming: Ricardo Marques Augusto, Nikolai Moesus.");
+                        "Development: Joseph Saab, Marcos Pimenta, Sara Rodriguez, Alexandre Martuscelli Faria, David Marten, George Pechlivanoglou.\n"//Sara
+                        "Programming: Sara Rodriguez, Alexandre Martuscelli Faria, Ricardo Marques Augusto, Nikolai Moesus.");//Sara
 	label->setWordWrap(true);
 	scroll->setWidget(label);
 	
