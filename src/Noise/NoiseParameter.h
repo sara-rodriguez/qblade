@@ -75,13 +75,13 @@ public:
     double TSRtd;
     double dstar_user;
     double tower_to_hub_distance;
+    double initial_azimuth;
     int phi_type;
     int theta_type;
     int dstar_type;
     int state_ss_us;
     int step_type;
     int anglesteps;
-    int initial_azimuth;
     int yaw_angle;
 
     double D_starred_index_user[40];

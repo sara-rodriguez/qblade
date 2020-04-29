@@ -2,8 +2,9 @@
 //Sara
 #include "NoiseCalculation.h"
 #include "NoiseParameter.h"
-#include "../XUnsteadyBEM/WindField.h"
 #include "../XUnsteadyBEM/WindFieldModule.h"
+#include "../XLLT/QLLTSimulation.h"
+#include "../XLLT/QLLTCreatorDialog.h"
 //Sara
 
 #include "../ParameterViewer.h"
@@ -77,6 +78,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         return NULL;
 
     bool zeroY = false;
+    double E=m_parameter.initial_azimuth;
     QVector<double> xVector, yVector;  // because QVector is internally shared there should be no copying
     for (int i = 0; i < 2; ++i) {
         const int index = getAvailableVariables().indexOf(i == 0 ? xAxis : yAxis);
@@ -108,14 +110,14 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 22: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
         case 23: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
         case 24: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
-        case 25: *vector = m_calculation.SPLadB3d_final_rotor()[opPointIndex]; zeroY = true; break;
-        case 26: *vector = m_calculation.SPLsdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
-        case 27: *vector = m_calculation.SPLpdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
-        case 28: *vector = m_calculation.SPL_LEdB3d_final_rotor()[opPointIndex]; break;
-        case 29: *vector = m_calculation.SPLdB3d_final_rotor()[opPointIndex]; break;
-        case 30: *vector = m_calculation.SPLdBAW3d_final_rotor()[opPointIndex]; break;
-        case 31: *vector = m_calculation.SPLdBBW3d_final_rotor()[opPointIndex]; break;
-        case 32: *vector = m_calculation.SPLdBCW3d_final_rotor()[opPointIndex]; break;
+        case 25: *vector = m_calculation.SPLadB3d_final_rotor(0,E)[opPointIndex]; zeroY = true; break;
+        case 26: *vector = m_calculation.SPLsdB3d_final_rotor(0,E)[opPointIndex]; zeroY = true; break;
+        case 27: *vector = m_calculation.SPLpdB3d_final_rotor(0,E)[opPointIndex]; zeroY = true; break;
+        case 28: *vector = m_calculation.SPL_LEdB3d_final_rotor(0,E)[opPointIndex]; break;
+        case 29: *vector = m_calculation.SPLdB3d_final_rotor(0,E)[opPointIndex]; break;
+        case 30: *vector = m_calculation.SPLdBAW3d_final_rotor(0,E)[opPointIndex]; break;
+        case 31: *vector = m_calculation.SPLdBBW3d_final_rotor(0,E)[opPointIndex]; break;
+        case 32: *vector = m_calculation.SPLdBCW3d_final_rotor(0,E)[opPointIndex]; break;
             //Sara
         default: return nullptr;
         }
@@ -148,11 +150,22 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
                 message = QStringList(">>> unknown hint");
             }
         }
-        message.prepend("- No Noise Simulation in Database");
-        if (g_windFieldStore.size() == 0) {
-            message.prepend(tr("- No Windfield in Database (for Unsteady Only)"));//Sara
+        //Sara begin
+        if (g_360PolarStore.isEmpty() && g_qbem->m_pCur360Polar == NULL) {
+            message.prepend(tr("- No 360 Polar in Database"));
+            }
+        if (g_rotorStore.isEmpty() && g_qbem->m_pBlade == NULL) {
+            message.prepend(tr("- No HAWT Blade in Database"));
         }
-        return message;
+        if (g_windFieldStore.size() == 0) {
+            message.prepend(tr("- No Windfield in Database (Unsteady Case)"));
+        }
+        if (!g_QLLTModule->m_bisVAWT && g_QLLTHAWTSimulationStore.isEmpty()) {
+            message.prepend(tr("- No LLT HAWT in Database (Unsteady Case)"));//urgente
+        }
+        message.prepend("- No Noise Simulation in Database");
+            //Sara end
+            return message;
     } else {
         return QStringList();
     }
@@ -161,9 +174,9 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
-    m_calculation.calculateqs3d_graphics();//Sara
+    m_calculation.calculateqs3d_graphics_rotation();//Sara
     m_calculation.calculateqs3d_blade();//Sara
-    m_calculation.calculateqs3d_rotor();//Sara
+    m_calculation.calculateqs3d_rotor(0,m_parameter.initial_azimuth);//Sara
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -407,6 +420,8 @@ stream << endl;
 }}}
 
 void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
+    double E=m_parameter.initial_azimuth;
+
     stream.setRealNumberNotation(QTextStream::FixedNotation);
     stream.setRealNumberPrecision(5);
 
@@ -467,39 +482,39 @@ stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
 
             if(m_parameter.Lowson_type!=0){
                        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                                 m_calculation.SPLadB3d_rotor()[i][j] << ";" <<
-                                 m_calculation.SPLsdB3d_rotor()[i][j] << ";" <<
-                                 m_calculation.SPLpdB3d_rotor()[i][j] << ";" <<
-                                 m_calculation.SPL_LEdB3d_rotor()[i][j] << ";" <<
-                                 m_calculation.SPLdB3d_rotor()[i][j] << ";" <<
-                                 m_calculation.SPLdBAW3d_rotor()[i][j] << ";" <<
-                                 m_calculation.SPLdBBW3d_rotor()[i][j] << ";" <<
-                                 m_calculation.SPLdBCW3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPLadB3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPLsdB3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPLpdB3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPL_LEdB3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPLdB3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPLdBAW3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPLdBBW3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPLdBCW3d_rotor(0,E)[i][j] << ";" <<
                                  endl; //Alexandre MOD
                    }
            else{
                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                          m_calculation.SPLadB3d_rotor()[i][j] << ";" <<
-                          m_calculation.SPLsdB3d_rotor()[i][j] << ";" <<
-                          m_calculation.SPLpdB3d_rotor()[i][j] << ";" <<
-                          m_calculation.SPLdB3d_rotor()[i][j] << ";" <<
-                          m_calculation.SPLdBAW3d_rotor()[i][j] << ";" <<
-                          m_calculation.SPLdBBW3d_rotor()[i][j] << ";" <<
-                          m_calculation.SPLdBCW3d_rotor()[i][j] << ";" << endl;
+                          m_calculation.SPLadB3d_rotor(0,E)[i][j] << ";" <<
+                          m_calculation.SPLsdB3d_rotor(0,E)[i][j] << ";" <<
+                          m_calculation.SPLpdB3d_rotor(0,E)[i][j] << ";" <<
+                          m_calculation.SPLdB3d_rotor(0,E)[i][j] << ";" <<
+                          m_calculation.SPLdBAW3d_rotor(0,E)[i][j] << ";" <<
+                          m_calculation.SPLdBBW3d_rotor(0,E)[i][j] << ";" <<
+                          m_calculation.SPLdBCW3d_rotor(0,E)[i][j] << ";" << endl;
             }
         }
         stream << endl;
         stream << qSetFieldWidth(0);
 //        stream << "i: " << i << endl;
-        stream << "SPL_a: " << m_calculation.SPLALOG3d_rotor()[i] << "" << endl;
-        stream << "SPL_s: " << m_calculation.SPLSLOG3d_rotor()[i] << "" << endl;
-        stream << "SPL_p: " << m_calculation.SPLPLOG3d_rotor()[i] << "" << endl;
+        stream << "SPL_a: " << m_calculation.SPLALOG3d_rotor(0,E)[i] << "" << endl;
+        stream << "SPL_s: " << m_calculation.SPLSLOG3d_rotor(0,E)[i] << "" << endl;
+        stream << "SPL_p: " << m_calculation.SPLPLOG3d_rotor(0,E)[i] << "" << endl;
         if(m_parameter.Lowson_type!=0){
-        stream << "SPL_LE: " << m_calculation.SPLlogLE3d_rotor()[i] << " dB" << endl;}
-        stream << "OASPL: " << m_calculation.OASPL3d_rotor()[i] << " dB" << endl;
-        stream << "OASPL (A): " << m_calculation.OASPLA3d_rotor()[i] << " dB(A)" << endl;
-        stream << "OASPL (B): " << m_calculation.OASPLB3d_rotor()[i] << " dB(B)" << endl;
-        stream << "OASPL (C): " << m_calculation.OASPLC3d_rotor()[i] << " dB(C)" << endl;
+        stream << "SPL_LE: " << m_calculation.SPLlogLE3d_rotor(0,E)[i] << " dB" << endl;}
+        stream << "OASPL: " << m_calculation.OASPL3d_rotor(0,E)[i] << " dB" << endl;
+        stream << "OASPL (A): " << m_calculation.OASPLA3d_rotor(0,E)[i] << " dB(A)" << endl;
+        stream << "OASPL (B): " << m_calculation.OASPLB3d_rotor(0,E)[i] << " dB(B)" << endl;
+        stream << "OASPL (C): " << m_calculation.OASPLC3d_rotor(0,E)[i] << " dB(C)" << endl;
         stream << endl;
         stream << endl;
 
@@ -533,25 +548,25 @@ for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
 if(m_parameter.Lowson_type!=0){
         stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                  m_calculation.SPLadB3d_final_rotor()[i][j] << ";" <<
-                  m_calculation.SPLsdB3d_final_rotor()[i][j] << ";" <<
-                  m_calculation.SPLpdB3d_final_rotor()[i][j] << ";" <<
-                  m_calculation.SPL_LEdB3d_final_rotor()[i][j] << ";" <<
-                  m_calculation.SPLdB3d_final_rotor()[i][j] << ";" <<
-                  m_calculation.SPLdBAW3d_final_rotor()[i][j] << ";" <<
-                  m_calculation.SPLdBBW3d_final_rotor()[i][j] << ";" <<
-                  m_calculation.SPLdBCW3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPLadB3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPLsdB3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPLpdB3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPL_LEdB3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPLdB3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPLdBAW3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPLdBBW3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPLdBCW3d_final_rotor(0,E)[i][j] << ";" <<
                   endl; //Alexandre MOD
     }
 else{
  stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-           m_calculation.SPLadB3d_final_rotor()[i][j] << ";" <<
-           m_calculation.SPLsdB3d_final_rotor()[i][j] << ";" <<
-           m_calculation.SPLpdB3d_final_rotor()[i][j] << ";" <<
-           m_calculation.SPLdB3d_final_rotor()[i][j] << ";" <<
-           m_calculation.SPLdBAW3d_final_rotor()[i][j] << ";" <<
-           m_calculation.SPLdBBW3d_final_rotor()[i][j] << ";" <<
-           m_calculation.SPLdBCW3d_final_rotor()[i][j] << ";" << endl;
+           m_calculation.SPLadB3d_final_rotor(0,E)[i][j] << ";" <<
+           m_calculation.SPLsdB3d_final_rotor(0,E)[i][j] << ";" <<
+           m_calculation.SPLpdB3d_final_rotor(0,E)[i][j] << ";" <<
+           m_calculation.SPLdB3d_final_rotor(0,E)[i][j] << ";" <<
+           m_calculation.SPLdBAW3d_final_rotor(0,E)[i][j] << ";" <<
+           m_calculation.SPLdBBW3d_final_rotor(0,E)[i][j] << ";" <<
+           m_calculation.SPLdBCW3d_final_rotor(0,E)[i][j] << ";" << endl;
 }
 }
 stream << endl;

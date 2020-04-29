@@ -36,11 +36,11 @@ public:
 	void calculate();  // can throw NoiseException
 
     void verifydeltafor3d();//Sara
-    void calculateqs3d_graphics();//Sara
+    void calculateqs3d_graphics(int blade, double E);//Sara
+    void calculateqs3d_graphics_rotation();//Sara urgente
     void calculateqs3d_blade();//Sara
-    void calculateqs3d_rotor();//Sara
+    void calculateqs3d_rotor(int blade,double E);//Sara
     void unsteady_angles_calc();//Sara
-    void positive_graphs();//Sara urgente
 
     //Sara
     //for quasi 3d rotor
@@ -86,28 +86,28 @@ public:
     TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
     TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
 
-    TwoDVector SPLadB3d_rotor() const { return m_SPLadB3d_rotor; }
-    TwoDVector SPLsdB3d_rotor() const { return m_SPLsdB3d_rotor; }
-    TwoDVector SPLpdB3d_rotor() const { return m_SPLpdB3d_rotor; }
-    TwoDVector SPLdB3d_rotor() const { return m_SPLdB3d_rotor; }
-    TwoDVector SPLdBAW3d_rotor() const { return m_SPLdBAW3d_rotor; }
-    TwoDVector SPLdBBW3d_rotor() const { return m_SPLdBBW3d_rotor; }
-    TwoDVector SPLdBCW3d_rotor() const { return m_SPLdBCW3d_rotor; }
-    TwoDVector SPL_LEdB3d_rotor() const { return m_SPL_LEdB3d_rotor; }
-    TwoDVector SPL_LEdBAW3d_rotor() const { return m_SPL_LEdBAW3d_rotor; }
-    TwoDVector SPL_LEdBBW3d_rotor() const { return m_SPL_LEdBBW3d_rotor; }
-    TwoDVector SPL_LEdBCW3d_rotor() const { return m_SPL_LEdBCW3d_rotor; }
-    TwoDVector SPLadB3d_final_rotor() const { return m_SPLadB3d_final_rotor; }
-    TwoDVector SPLsdB3d_final_rotor() const { return m_SPLsdB3d_final_rotor; }
-    TwoDVector SPLpdB3d_final_rotor() const { return m_SPLpdB3d_final_rotor; }
-    TwoDVector SPLdB3d_final_rotor() const { return m_SPLdB3d_final_rotor; }
-    TwoDVector SPLdBAW3d_final_rotor() const { return m_SPLdBAW3d_final_rotor; }
-    TwoDVector SPLdBBW3d_final_rotor() const { return m_SPLdBBW3d_final_rotor; }
-    TwoDVector SPLdBCW3d_final_rotor() const { return m_SPLdBCW3d_final_rotor; }
-    TwoDVector SPL_LEdB3d_final_rotor() const { return m_SPL_LEdB3d_final_rotor; }
-    TwoDVector SPL_LEdBAW3d_final_rotor() const { return m_SPL_LEdBAW3d_final_rotor; }
-    TwoDVector SPL_LEdBBW3d_final_rotor() const { return m_SPL_LEdBBW3d_final_rotor; }
-    TwoDVector SPL_LEdBCW3d_final_rotor() const { return m_SPL_LEdBCW3d_final_rotor; }
+    TwoDVector SPLadB3d_rotor(int blade, double E) const { return m_SPLadB3d_rotor; }
+    TwoDVector SPLsdB3d_rotor(int blade, double E) const { return m_SPLsdB3d_rotor; }
+    TwoDVector SPLpdB3d_rotor(int blade, double E) const { return m_SPLpdB3d_rotor; }
+    TwoDVector SPLdB3d_rotor(int blade, double E) const { return m_SPLdB3d_rotor; }
+    TwoDVector SPLdBAW3d_rotor(int blade, double E) const { return m_SPLdBAW3d_rotor; }
+    TwoDVector SPLdBBW3d_rotor(int blade, double E) const { return m_SPLdBBW3d_rotor; }
+    TwoDVector SPLdBCW3d_rotor(int blade, double E) const { return m_SPLdBCW3d_rotor; }
+    TwoDVector SPL_LEdB3d_rotor(int blade, double E) const { return m_SPL_LEdB3d_rotor; }
+    TwoDVector SPL_LEdBAW3d_rotor(int blade, double E) const { return m_SPL_LEdBAW3d_rotor; }
+    TwoDVector SPL_LEdBBW3d_rotor(int blade, double E) const { return m_SPL_LEdBBW3d_rotor; }
+    TwoDVector SPL_LEdBCW3d_rotor(int blade, double E) const { return m_SPL_LEdBCW3d_rotor; }
+    TwoDVector SPLadB3d_final_rotor(int blade, double E) const { return m_SPLadB3d_final_rotor; }
+    TwoDVector SPLsdB3d_final_rotor(int blade, double E) const { return m_SPLsdB3d_final_rotor; }
+    TwoDVector SPLpdB3d_final_rotor(int blade, double E) const { return m_SPLpdB3d_final_rotor; }
+    TwoDVector SPLdB3d_final_rotor(int blade, double E) const { return m_SPLdB3d_final_rotor; }
+    TwoDVector SPLdBAW3d_final_rotor(int blade, double E) const { return m_SPLdBAW3d_final_rotor; }
+    TwoDVector SPLdBBW3d_final_rotor(int blade, double E) const { return m_SPLdBBW3d_final_rotor; }
+    TwoDVector SPLdBCW3d_final_rotor(int blade, double E) const { return m_SPLdBCW3d_final_rotor; }
+    TwoDVector SPL_LEdB3d_final_rotor(int blade, double E) const { return m_SPL_LEdB3d_final_rotor; }
+    TwoDVector SPL_LEdBAW3d_final_rotor(int blade, double E) const { return m_SPL_LEdBAW3d_final_rotor; }
+    TwoDVector SPL_LEdBBW3d_final_rotor(int blade, double E) const { return m_SPL_LEdBBW3d_final_rotor; }
+    TwoDVector SPL_LEdBCW3d_final_rotor(int blade, double E) const { return m_SPL_LEdBCW3d_final_rotor; }
 
     double Final_qs3d_alpha;
     double Final_qs3d_S;
@@ -150,17 +150,17 @@ public:
         QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW3d;}
         QVector<double> SPLlogLE3d() const { return m_SPLlogLE3d; }
 
-        QVector<double> OASPL3d_rotor() const { return m_OASPL3d_rotor; }
-        QVector<double> OASPLA3d_rotor() const { return m_OASPLA3d_rotor; }
-        QVector<double> OASPLB3d_rotor() const { return m_OASPLB3d_rotor; }
-        QVector<double> OASPLC3d_rotor() const { return m_OASPLC3d_rotor; }
-        QVector<double> SPLALOG3d_rotor() const { return m_SPLALOG3d_rotor; }
-        QVector<double> SPLSLOG3d_rotor() const { return m_SPLSLOG3d_rotor; }
-        QVector<double> SPLPLOG3d_rotor() const { return m_SPLPLOG3d_rotor; }
-        QVector<double> SPLLEdBAW3d_rotor() const { return m_SPLLEdBAW3d;}
-        QVector<double> SPLLEdBBW3d_rotor() const { return m_SPLLEdBBW3d;}
-        QVector<double> SPLLEdBCW3d_rotor() const { return m_SPLLEdBCW3d;}
-        QVector<double> SPLlogLE3d_rotor() const { return m_SPLlogLE3d_rotor; }
+        QVector<double> OASPL3d_rotor(double blade,int E) const { return m_OASPL3d_rotor; }
+        QVector<double> OASPLA3d_rotor(double blade,int E) const { return m_OASPLA3d_rotor; }
+        QVector<double> OASPLB3d_rotor(double blade,int E) const { return m_OASPLB3d_rotor; }
+        QVector<double> OASPLC3d_rotor(double blade,int E) const { return m_OASPLC3d_rotor; }
+        QVector<double> SPLALOG3d_rotor(double blade,int E) const { return m_SPLALOG3d_rotor; }
+        QVector<double> SPLSLOG3d_rotor(double blade,int E) const { return m_SPLSLOG3d_rotor; }
+        QVector<double> SPLPLOG3d_rotor(double blade,int E) const { return m_SPLPLOG3d_rotor; }
+        QVector<double> SPLLEdBAW3d_rotor(double blade,int E) const { return m_SPLLEdBAW3d;}
+        QVector<double> SPLLEdBBW3d_rotor(double blade,int E) const { return m_SPLLEdBBW3d;}
+        QVector<double> SPLLEdBCW3d_rotor(double blade,int E) const { return m_SPLLEdBCW3d;}
+        QVector<double> SPLlogLE3d_rotor(double blade,int E) const { return m_SPLlogLE3d_rotor; }
 
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
@@ -327,7 +327,7 @@ private:
     double m_obs_z_pos_rotor;
     double m_tower_height;
     double m_tower_to_hub_distance;
-    int m_initial_azimuth;
+    double m_initial_azimuth;
     int m_yaw_angle;
     int m_dstar_type;
     int m_state_ss_us;

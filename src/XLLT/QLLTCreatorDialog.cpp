@@ -47,6 +47,7 @@ QLLTCreatorDialog::QLLTCreatorDialog(QLLTSimulation *presetSimulation, QLLTModul
     int EditWidth = 200;
 
     setWindowTitle(tr("LLT Simulation"));
+    setMinimumSize(1014,863);//Sara
 
     QVBoxLayout *dialogVBox = new QVBoxLayout ();
     setLayout(dialogVBox);

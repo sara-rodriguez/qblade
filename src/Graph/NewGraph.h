@@ -61,7 +61,7 @@ public:
 	void setYTickSize (double tickSize) { m_yAxis.setTickSize(tickSize); }
 	void setNoAutoResize (bool autoResize) { m_noAutoResize = autoResize; }
 	
-	GraphType getGraphType () { return m_graphType; }
+    GraphType getGraphType () { return m_graphType; }
 	GraphType getGraphTypeMulti () { return m_graphTypeMulti; }
 	QStringList getAvailableVariables (bool xAxis);
 	QString getTitle () { return m_title; }

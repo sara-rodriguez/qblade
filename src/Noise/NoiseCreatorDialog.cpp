@@ -35,11 +35,12 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
     setWindowTitle("Noise Simulation");	//Sara
     //Sara
     FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
-    double Mach_initial = pFoilPolarDlg->m_pctrlMach->getValue();
+    double Mach_initial=pFoilPolarDlg->m_pctrlMach->getValue();
     if(Mach_initial<0.01){Mach_initial=0.18;}
+
 //Sara
 
-    QTabWidget *tabWidget = new QTabWidget;  
+    QTabWidget *tabWidget = new QTabWidget;
     m_contentVBox->insertWidget(0, tabWidget);
 
     QWidget *widget = new QWidget;
@@ -57,6 +58,7 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                                   "Length of wetted Trailing-Edge (L) []:", 1, LENGTH);
                     pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
+
                     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
                     double u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();
 
@@ -203,7 +205,6 @@ pGrid->addEdit(P::TSR_check, CheckBox, m_TSR_check,"", 1);
 connect(m_TSR_check,SIGNAL(clicked()),this,SLOT(OnTSRCheck()));
 
 pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 7);
-
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
 double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
@@ -302,6 +303,11 @@ if(g_windFieldStore.size() == 0){tower_height_in=100;}else{tower_height_in=g_win
     m_tower_to_hub_distance_numberedit = new NumberEdit ();
     pGrid->addEdit(P::tower_to_hub_distance, NumberEditType, m_tower_to_hub_distance_numberedit,"Tower To Hub Distance []:",4,LENGTH);
 
+    m_anglesteps_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::anglesteps, NumberEditType, m_anglesteps_numberedit,"Anglesteps [deg]:",45);
+    m_anglesteps_numberedit->setMinimum(0.1);
+    m_anglesteps_numberedit->setMaximum(45);
+
     step_combobox = new QComboBox;
     pGrid->addEdit(P::step_type,ComboBox, step_combobox,"Step type:","");
     step_combobox->insertItem(0,"Time");
@@ -312,10 +318,6 @@ if(g_windFieldStore.size() == 0){tower_height_in=100;}else{tower_height_in=g_win
 //    timesteps_numberedit = new NumberEdit ();
 //    pGrid->addEdit(P::timesteps, NumberEditType, timesteps_numberedit,"Timesteps:",number_time_steps);
 //    timesteps_numberedit->setEnabled(false);
-
-    m_anglesteps_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::anglesteps, NumberEditType, m_anglesteps_numberedit,"Anglesteps [deg]:",45);
-    m_anglesteps_numberedit->setEnabled(false);
 
     QLabel *labeltf = new QLabel ("Observer Position:");
     double distx = 1.5*outer_radius;
