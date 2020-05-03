@@ -66,6 +66,9 @@ private:
     NumberEdit *m_tower_height_numberedit;
     NumberEdit *m_u_wind_speed_numberedit;
     NumberEdit *m_tower_to_hub_distance_numberedit;
+    NumberEdit *m_number_loops_numberedit;
+    NumberEdit *m_time_numberedit;
+    NumberEdit *m_timesteps_numberedit;
     QCheckBox *m_TSR_check;
     QDoubleSpinBox *m_TSR_spinbox;
     QDoubleSpinBox *m_initial_azimuth_spinbox;
@@ -74,7 +77,7 @@ private:
     QPushButton *buttonle;
     QComboBox *dstar_combobox;
     QComboBox *mode_combobox;
-    QComboBox *step_combobox;
+    QComboBox *rotation_combobox;
 //Sara end
 
 	QButtonGroup *m_selectFromButtons;
@@ -108,7 +111,8 @@ private slots:
         void OnImportStarredD();
         void OnSetDstarButton(int index);
         void OnModeDefine(int index);
-        void OnStepTypeDefine(int index);
+//        void OnStepTypeDefine(int index);
+        void OnRotationDefine(int index);
         void OnRotSpeedCheck();
         void OnWindSpeedCheck();
         void OnTSRCheck();

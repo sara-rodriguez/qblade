@@ -36,6 +36,7 @@ public:
 	void exportCalculation (QTextStream &stream);
     void exportCalculationqs3DNoise_blade (QTextStream &stream); //Sara
     void exportCalculationqs3DNoise_rotor (QTextStream &stream); //Sara
+    void exportCalculationqs3DNoise_rotor_loops (QTextStream &stream); //Sara
     void exportqs3DLog (QTextStream &stream);//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
@@ -84,10 +85,11 @@ private:
     double m_tower_height;
     int m_dstar_type;
     int m_state_ss_us;
-    int m_step_type;
+//    int m_step_type;
     int m_anglesteps;
     int m_phi_type;
     int m_theta_type;
+    int m_rotation_type;
 
     QList <double> m_pos;
     QList <double> m_c_local;       //local chord

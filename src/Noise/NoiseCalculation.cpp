@@ -64,6 +64,105 @@ void NoiseCalculation::serialize() {
     g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG);
 
 //Sara
+//    multi graphs
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLsdB3d);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLpdB3d);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdB3d);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW3d);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW3d);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW3d);
+
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdB3d); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW3d); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW3d); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBCW3d); //Alexandre MOD
+
+//    blade
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_final);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLsdB3d_final);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLpdB3d_final);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdB3d_final);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW3d_final);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW3d_final);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW3d_final);
+
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdB3d_final); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW3d_final); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW3d_final); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBCW3d_final); //Alexandre MOD
+
+//    rotor
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_rotor);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLsdB3d_rotor);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLpdB3d_rotor);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdB3d_rotor);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW3d_rotor);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW3d_rotor);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW3d_rotor);
+
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdB3d_rotor); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW3d_rotor); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW3d_rotor); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBCW3d_rotor); //Alexandre MOD
+
+    //    rotor loops
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLsdB3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLpdB3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdB3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW3d_rotor_loops);
+
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdB3d_rotor_loops); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW3d_rotor_loops); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW3d_rotor_loops); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBCW3d_rotor_loops); //Alexandre MOD
+
+    //    final rotor loops
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_final_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLsdB3d_final_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLpdB3d_final_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdB3d_final_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBAW3d_final_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBBW3d_final_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPLdBCW3d_final_rotor_loops);
+
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdB3d_final_rotor_loops); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBAW3d_final_rotor_loops); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBBW3d_final_rotor_loops); //Alexandre MOD
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_LEdBCW3d_final_rotor_loops); //Alexandre MOD
+
+//4d
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLadB3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLsdB3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLpdB3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdB3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdBAW3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdBBW3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdBCW3d_4d);
+
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdB3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdBAW3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdBBW3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdBCW3d_4d);
+
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLadB3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLsdB3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLpdB3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdB3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdBAW3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdBBW3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPLdBCW3d_4d_blade);
+
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdB3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdBAW3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdBBW3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_LEdBCW3d_4d_blade);
+
+//OASPLs
+
     g_serializer.readOrWriteDoubleVector1D(&m_OASPL3d);
     g_serializer.readOrWriteDoubleVector1D(&m_OASPLA3d);
     g_serializer.readOrWriteDoubleVector1D(&m_OASPLB3d);
@@ -79,6 +178,15 @@ void NoiseCalculation::serialize() {
     g_serializer.readOrWriteDoubleVector1D(&m_SPLALOG3d_rotor);
     g_serializer.readOrWriteDoubleVector1D(&m_SPLSLOG3d_rotor);
     g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG3d_rotor);
+
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPL3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLA3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLB3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector1D(&m_OASPLC3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLALOG3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLSLOG3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector1D(&m_SPLPLOG3d_rotor_loops);
+
 //Sara
 }
 
@@ -754,6 +862,7 @@ else{
 }
 //end Alexandre MOD
 
+//calculation for 2D noise
 void NoiseCalculation::calculate() {
     setupVectors();
 
@@ -1007,6 +1116,7 @@ m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
 //	}
 }
 
+//setup 2D vectors
 void NoiseCalculation::setupVectors() {
     // Clear all results is case of simulation edition
     m_SPLdB.clear();
@@ -1156,6 +1266,7 @@ void NoiseCalculation::setupVectors() {
 //Sara
 }
 
+//setup qs3D vectors
 void NoiseCalculation::setupVectorsqs3d() {
     m_SPLdB3d.clear();
     m_SPLdBAW3d.clear();
@@ -1247,6 +1358,93 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBBW3d_final_rotor.clear();
     m_SPL_LEdBCW3d_final_rotor.clear();
 
+    m_SPLdB3d_rotor_loops.clear();
+    m_SPLdBAW3d_rotor_loops.clear();
+    m_SPLdBBW3d_rotor_loops.clear();
+    m_SPLdBCW3d_rotor_loops.clear();
+    m_SPLpdB3d_rotor_loops.clear();
+    m_SPLpdBAW3d_rotor_loops.clear();
+    m_SPLpdBBW3d_rotor_loops.clear();
+    m_SPLpdBCW3d_rotor_loops.clear();
+    m_SPLsdB3d_rotor_loops.clear();
+    m_SPLsdBAW3d_rotor_loops.clear();
+    m_SPLsdBBW3d_rotor_loops.clear();
+    m_SPLsdBCW3d_rotor_loops.clear();
+    m_SPLadB3d_rotor_loops.clear();
+    m_SPLadBAW3d_rotor_loops.clear();
+    m_SPLadBBW3d_rotor_loops.clear();
+    m_SPLadBCW3d_rotor_loops.clear();
+    m_SPL_LEdB3d_rotor_loops.clear();
+    m_SPL_LEdBAW3d_rotor_loops.clear();
+    m_SPL_LEdBBW3d_rotor_loops.clear();
+    m_SPL_LEdBCW3d_rotor_loops.clear();
+    m_SPLLEdB3d_rotor_loops.clear();
+    m_SPLLEdBAW3d_rotor_loops.clear();
+    m_SPLLEdBBW3d_rotor_loops.clear();
+    m_SPLLEdBCW3d_rotor_loops.clear();
+    m_SPLlogLE3d_rotor_loops.clear();
+    m_OASPL3d_rotor_loops.clear();
+    m_OASPLA3d_rotor_loops.clear();
+    m_OASPLB3d_rotor_loops.clear();
+    m_OASPLC3d_rotor_loops.clear();
+    m_SPLALOG3d_rotor_loops.clear();
+    m_SPLSLOG3d_rotor_loops.clear();
+    m_SPLPLOG3d_rotor_loops.clear();
+
+    m_SPLdB3d_final_rotor_loops.clear();
+    m_SPLdBAW3d_final_rotor_loops.clear();
+    m_SPLdBBW3d_final_rotor_loops.clear();
+    m_SPLdBCW3d_final_rotor_loops.clear();
+    m_SPLpdB3d_final_rotor_loops.clear();
+    m_SPLsdB3d_final_rotor_loops.clear();
+    m_SPLadB3d_final_rotor_loops.clear();
+    m_SPL_LEdB3d_final_rotor_loops.clear();
+    m_SPL_LEdBAW3d_final_rotor_loops.clear();
+    m_SPL_LEdBBW3d_final_rotor_loops.clear();
+    m_SPL_LEdBCW3d_final_rotor_loops.clear();
+
+    m_SPLdB3d_4d.clear();
+    m_SPLdBAW3d_4d.clear();
+    m_SPLdBBW3d_4d.clear();
+    m_SPLdBCW3d_4d.clear();
+    m_SPLpdB3d_4d.clear();
+    m_SPLpdBAW3d_4d.clear();
+    m_SPLpdBBW3d_4d.clear();
+    m_SPLpdBCW3d_4d.clear();
+    m_SPLsdB3d_4d.clear();
+    m_SPLsdBAW3d_4d.clear();
+    m_SPLsdBBW3d_4d.clear();
+    m_SPLsdBCW3d_4d.clear();
+    m_SPLadB3d_4d.clear();
+    m_SPLadBAW3d_4d.clear();
+    m_SPLadBBW3d_4d.clear();
+    m_SPLadBCW3d_4d.clear();
+    m_SPL_LEdB3d_4d.clear();
+    m_SPL_LEdBAW3d_4d.clear();
+    m_SPL_LEdBBW3d_4d.clear();
+    m_SPL_LEdBCW3d_4d.clear();
+
+    m_SPLdB3d_4d_blade.clear();
+    m_SPLdBAW3d_4d_blade.clear();
+    m_SPLdBBW3d_4d_blade.clear();
+    m_SPLdBCW3d_4d_blade.clear();
+    m_SPLpdB3d_4d_blade.clear();
+    m_SPLpdBAW3d_4d_blade.clear();
+    m_SPLpdBBW3d_4d_blade.clear();
+    m_SPLpdBCW3d_4d_blade.clear();
+    m_SPLsdB3d_4d_blade.clear();
+    m_SPLsdBAW3d_4d_blade.clear();
+    m_SPLsdBBW3d_4d_blade.clear();
+    m_SPLsdBCW3d_4d_blade.clear();
+    m_SPLadB3d_4d_blade.clear();
+    m_SPLadBAW3d_4d_blade.clear();
+    m_SPLadBBW3d_4d_blade.clear();
+    m_SPLadBCW3d_4d_blade.clear();
+    m_SPL_LEdB3d_4d_blade.clear();
+    m_SPL_LEdBAW3d_4d_blade.clear();
+    m_SPL_LEdBBW3d_4d_blade.clear();
+    m_SPL_LEdBCW3d_4d_blade.clear();
+
     // Resize vectors acording to OpPoints total
     unsigned int sizea = 0;
     if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
@@ -1333,6 +1531,65 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPLSLOG3d_rotor.resize(size);
     m_SPLPLOG3d_rotor.resize(size);
 
+    m_SPLadB3d_rotor_loops.resize(size);
+    m_SPLsdB3d_rotor_loops.resize(size);
+    m_SPLpdB3d_rotor_loops.resize(size);
+    m_SPLdB3d_rotor_loops.resize(size);
+    m_SPLdBAW3d_rotor_loops.resize(size);
+    m_SPLdBBW3d_rotor_loops.resize(size);
+    m_SPLdBCW3d_rotor_loops.resize(size);
+    m_SPL_LEdB3d_rotor_loops.resize(size);
+    m_SPL_LEdBAW3d_rotor_loops.resize(size);
+    m_SPL_LEdBBW3d_rotor_loops.resize(size);
+    m_SPL_LEdBCW3d_rotor_loops.resize(size);
+    m_SPLdB3d_final_rotor_loops.resize(size);
+    m_SPLdBAW3d_final_rotor_loops.resize(size);
+    m_SPLdBBW3d_final_rotor_loops.resize(size);
+    m_SPLdBCW3d_final_rotor_loops.resize(size);
+    m_SPLpdB3d_final_rotor_loops.resize(size);
+    m_SPLsdB3d_final_rotor_loops.resize(size);
+    m_SPLadB3d_final_rotor_loops.resize(size);
+    m_SPL_LEdB3d_final_rotor_loops.resize(size);
+    m_SPL_LEdBAW3d_final_rotor_loops.resize(size);
+    m_SPL_LEdBBW3d_final_rotor_loops.resize(size);
+    m_SPL_LEdBCW3d_final_rotor_loops.resize(size);
+    m_SPLLEdB3d_rotor_loops.resize(size);
+    m_SPLLEdBAW3d_rotor_loops.resize(size);
+    m_SPLLEdBBW3d_rotor_loops.resize(size);
+    m_SPLLEdBCW3d_rotor_loops.resize(size);
+    m_SPLlogLE3d_rotor_loops.resize(size);
+    m_OASPL3d_rotor_loops.resize(size);
+    m_OASPLA3d_rotor_loops.resize(size);
+    m_OASPLB3d_rotor_loops.resize(size);
+    m_OASPLC3d_rotor_loops.resize(size);
+    m_SPLALOG3d_rotor_loops.resize(size);
+    m_SPLSLOG3d_rotor_loops.resize(size);
+    m_SPLPLOG3d_rotor_loops.resize(size);
+
+    m_SPLadB3d_4d.resize(size);
+    m_SPLsdB3d_4d.resize(size);
+    m_SPLpdB3d_4d.resize(size);
+    m_SPLdB3d_4d.resize(size);
+    m_SPLdBAW3d_4d.resize(size);
+    m_SPLdBBW3d_4d.resize(size);
+    m_SPLdBCW3d_4d.resize(size);
+    m_SPL_LEdB3d_4d.resize(size);
+    m_SPL_LEdBAW3d_4d.resize(size);
+    m_SPL_LEdBBW3d_4d.resize(size);
+    m_SPL_LEdBCW3d_4d.resize(size);
+
+    m_SPLadB3d_4d_blade.resize(size);
+    m_SPLsdB3d_4d_blade.resize(size);
+    m_SPLpdB3d_4d_blade.resize(size);
+    m_SPLdB3d_4d_blade.resize(size);
+    m_SPLdBAW3d_4d_blade.resize(size);
+    m_SPLdBBW3d_4d_blade.resize(size);
+    m_SPLdBCW3d_4d_blade.resize(size);
+    m_SPL_LEdB3d_4d_blade.resize(size);
+    m_SPL_LEdBAW3d_4d_blade.resize(size);
+    m_SPL_LEdBBW3d_4d_blade.resize(size);
+    m_SPL_LEdBCW3d_4d_blade.resize(size);
+
     for (unsigned int w = 0; w < size; ++w){
         m_SPLadB3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPLsdB3d[w].resize(FREQUENCY_TABLE_SIZE);
@@ -1379,7 +1636,128 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdBAW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+
+        m_SPLadB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLadB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+
+        m_SPLadB3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d_4d[w].resize(FREQUENCY_TABLE_SIZE);
+
+        m_SPLadB3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d_4d_blade[w].resize(FREQUENCY_TABLE_SIZE);
     }
+
+QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+unsigned int blades_num = pbem->m_pBData->blades; //number of blades
+
+for (unsigned int w = 0; w < size; ++w){
+for (unsigned int s = 0; s < FREQUENCY_TABLE_SIZE; ++s){
+        m_SPLadB3d_4d[w][s].resize(blades_num);
+        m_SPLsdB3d_4d[w][s].resize(blades_num);
+        m_SPLpdB3d_4d[w][s].resize(blades_num);
+        m_SPLdB3d_4d[w][s].resize(blades_num);
+        m_SPLdBAW3d_4d[w][s].resize(blades_num);
+        m_SPLdBBW3d_4d[w][s].resize(blades_num);
+        m_SPLdBCW3d_4d[w][s].resize(blades_num);
+        m_SPL_LEdB3d_4d[w][s].resize(blades_num);
+        m_SPL_LEdBAW3d_4d[w][s].resize(blades_num);
+        m_SPL_LEdBBW3d_4d[w][s].resize(blades_num);
+        m_SPL_LEdBCW3d_4d[w][s].resize(blades_num);
+
+        m_SPLadB3d_4d_blade[w][s].resize(blades_num);
+        m_SPLsdB3d_4d_blade[w][s].resize(blades_num);
+        m_SPLpdB3d_4d_blade[w][s].resize(blades_num);
+        m_SPLdB3d_4d_blade[w][s].resize(blades_num);
+        m_SPLdBAW3d_4d_blade[w][s].resize(blades_num);
+        m_SPLdBBW3d_4d_blade[w][s].resize(blades_num);
+        m_SPLdBCW3d_4d_blade[w][s].resize(blades_num);
+        m_SPL_LEdB3d_4d_blade[w][s].resize(blades_num);
+        m_SPL_LEdBAW3d_4d_blade[w][s].resize(blades_num);
+        m_SPL_LEdBBW3d_4d_blade[w][s].resize(blades_num);
+        m_SPL_LEdBCW3d_4d_blade[w][s].resize(blades_num);
+}}
+
+int angles_num;
+int anglesteps;
+int number_of_rotations;
+
+if (m_parameter->rotation_type==0){
+//    angle based
+number_of_rotations = m_parameter->number_loops;
+anglesteps=m_parameter->anglesteps;
+}else{
+//    time based
+number_of_rotations = m_parameter->time/(60./m_parameter->rot_speed);
+anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
+}
+
+angles_num = 360./anglesteps*number_of_rotations;
+
+for (unsigned int w = 0; w < size; ++w){
+for (unsigned int s = 0; s < FREQUENCY_TABLE_SIZE; ++s){
+for (unsigned int x = 0; x < blades_num; ++x){
+    m_SPLadB3d_4d[w][s][x].resize(angles_num);
+    m_SPLsdB3d_4d[w][s][x].resize(angles_num);
+    m_SPLpdB3d_4d[w][s][x].resize(angles_num);
+    m_SPLdB3d_4d[w][s][x].resize(angles_num);
+    m_SPLdBAW3d_4d[w][s][x].resize(angles_num);
+    m_SPLdBBW3d_4d[w][s][x].resize(angles_num);
+    m_SPLdBCW3d_4d[w][s][x].resize(angles_num);
+    m_SPL_LEdB3d_4d[w][s][x].resize(angles_num);
+    m_SPL_LEdBAW3d_4d[w][s][x].resize(angles_num);
+    m_SPL_LEdBBW3d_4d[w][s][x].resize(angles_num);
+    m_SPL_LEdBCW3d_4d[w][s][x].resize(angles_num);
+
+    m_SPLadB3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPLsdB3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPLpdB3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPLdB3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPLdBAW3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPLdBBW3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPLdBCW3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPL_LEdB3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPL_LEdBAW3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPL_LEdBBW3d_4d_blade[w][s][x].resize(angles_num);
+    m_SPL_LEdBCW3d_4d_blade[w][s][x].resize(angles_num);
+}}
 
 if (sizea<size){
     for (unsigned int i=sizea;i<size;++i){
@@ -1429,9 +1807,61 @@ if (sizea<size){
             m_SPL_LEdBAW3d_final_rotor[i][w]=0;
             m_SPL_LEdBBW3d_final_rotor[i][w]=0;
             m_SPL_LEdBCW3d_final_rotor[i][w]=0;
+
+            m_SPLadB3d_rotor_loops[i][w]=0;
+            m_SPLsdB3d_rotor_loops[i][w]=0;
+            m_SPLpdB3d_rotor_loops[i][w]=0;
+            m_SPLdB3d_rotor_loops[i][w]=0;
+            m_SPLdBAW3d_rotor_loops[i][w]=0;
+            m_SPLdBBW3d_rotor_loops[i][w]=0;
+            m_SPLdBCW3d_rotor_loops[i][w]=0;
+            m_SPL_LEdB3d_rotor_loops[i][w]=0;
+            m_SPL_LEdBAW3d_rotor_loops[i][w]=0;
+            m_SPL_LEdBBW3d_rotor_loops[i][w]=0;
+            m_SPL_LEdBCW3d_rotor_loops[i][w]=0;
+            m_SPLdB3d_final_rotor_loops[i][w]=0;
+            m_SPLdBAW3d_final_rotor_loops[i][w]=0;
+            m_SPLdBBW3d_final_rotor_loops[i][w]=0;
+            m_SPLdBCW3d_final_rotor_loops[i][w]=0;
+            m_SPLpdB3d_final_rotor_loops[i][w]=0;
+            m_SPLsdB3d_final_rotor_loops[i][w]=0;
+            m_SPLadB3d_final_rotor_loops[i][w]=0;
+            m_SPL_LEdB3d_final_rotor_loops[i][w]=0;
+            m_SPL_LEdBAW3d_final_rotor_loops[i][w]=0;
+            m_SPL_LEdBBW3d_final_rotor_loops[i][w]=0;
+            m_SPL_LEdBCW3d_final_rotor_loops[i][w]=0;
+
+
+
+            for (unsigned int j = 0; j < blades_num; ++j){
+                for (unsigned int k = 0; k < angles_num; ++k){
+                    m_SPLadB3d_4d[i][w][j][k]=0;
+                    m_SPLsdB3d_4d[i][w][j][k]=0;
+                    m_SPLpdB3d_4d[i][w][j][k]=0;
+                    m_SPLdB3d_4d[i][w][j][k]=0;
+                    m_SPLdBAW3d_4d[i][w][j][k]=0;
+                    m_SPLdBBW3d_4d[i][w][j][k]=0;
+                    m_SPLdBCW3d_4d[i][w][j][k]=0;
+                    m_SPL_LEdB3d_4d[i][w][j][k]=0;
+                    m_SPL_LEdBAW3d_4d[i][w][j][k]=0;
+                    m_SPL_LEdBBW3d_4d[i][w][j][k]=0;
+                    m_SPL_LEdBCW3d_4d[i][w][j][k]=0;
+
+                    m_SPLadB3d_4d_blade[i][w][j][k]=0;
+                    m_SPLsdB3d_4d_blade[i][w][j][k]=0;
+                    m_SPLpdB3d_4d_blade[i][w][j][k]=0;
+                    m_SPLdB3d_4d_blade[i][w][j][k]=0;
+                    m_SPLdBAW3d_4d_blade[i][w][j][k]=0;
+                    m_SPLdBBW3d_4d_blade[i][w][j][k]=0;
+                    m_SPLdBCW3d_4d_blade[i][w][j][k]=0;
+                    m_SPL_LEdB3d_4d_blade[i][w][j][k]=0;
+                    m_SPL_LEdBAW3d_4d_blade[i][w][j][k]=0;
+                    m_SPL_LEdBBW3d_4d_blade[i][w][j][k]=0;
+                    m_SPL_LEdBCW3d_4d_blade[i][w][j][k]=0;
+            }}
         }
     }
-}}
+}}}
 
 //Sara
 double NoiseCalculation::calcXRS(double a, double XB, double YB){
@@ -1499,9 +1929,8 @@ double Dl=(2.*pow(sin(qDegreesToRadians(theta_e)),2.)*pow(sin(qDegreesToRadians(
 return Dl;
 }
 
-void NoiseCalculation::calculateqs3d_graphics(int blade, double E) {
-    setupVectorsqs3d();
-
+//vector for blade
+void NoiseCalculation::calculateqs3d_graphics(int blade, int E) {
   QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
@@ -1541,24 +1970,24 @@ int number_of_segments = pbem->dlg_elements;
         double d_const_vk_le = 58.4;
         double c_const_le=0;
         double d_const_le=0;
-        double aux_le;
-        double u_le;
-        double c_le;
-        double I_le;
-        double lambda_le;
-        double beta_le;
-        double L_le;
-        double D_L_le;
-        double K_le;
-        double S_le;
-        double LFC_le;
+        double aux_le=0;
+        double u_le=0;
+        double c_le=0;
+        double I_le=0;
+        double lambda_le=0;
+        double beta_le=0;
+        double L_le=0;
+        double D_L_le=0;
+        double K_le=0;
+        double S_le=0;
+        double LFC_le=0;
 
         //quasi 3d rotor calculation
         int TSR = m_parameter->TSRtd;
         int blades_num = pbem->m_pBData->blades; //number of blades
         double rot_speed = m_parameter->rot_speed;
-        double omega_rotor;
-        int As;
+        double omega_rotor=0;
+        int As=0;
         double XLT = m_parameter->obs_x_pos_rotor;
         double YLT = m_parameter->obs_y_pos_rotor;
         double ZLT = m_parameter->obs_z_pos_rotor;
@@ -1697,29 +2126,29 @@ int number_of_segments = pbem->dlg_elements;
         double DStarXFoilS[number_of_segments];
         double DStarXFoilP[number_of_segments];
 
-        double aux_m_SPLadB3d;
-        double aux_m_SPLsdB3d;
-        double aux_m_SPLpdB3d;
-        double aux_m_SPLdB3d;
-        double aux_m_SPLdBAW3d;
-        double aux_m_SPLdBBW3d;
-        double aux_m_SPLdBCW3d;
-        double aux_m_SPL_LEdB3d;
-        double aux_m_SPL_LEdBAW3d;
-        double aux_m_SPL_LEdBBW3d;
-        double aux_m_SPL_LEdBCW3d;
+        double aux_m_SPLadB3d=0;
+        double aux_m_SPLsdB3d=0;
+        double aux_m_SPLpdB3d=0;
+        double aux_m_SPLdB3d=0;
+        double aux_m_SPLdBAW3d=0;
+        double aux_m_SPLdBBW3d=0;
+        double aux_m_SPLdBCW3d=0;
+        double aux_m_SPL_LEdB3d=0;
+        double aux_m_SPL_LEdBAW3d=0;
+        double aux_m_SPL_LEdBBW3d=0;
+        double aux_m_SPL_LEdBCW3d=0;
 
-        double aux_m_SPLadB3d_rotor;
-        double aux_m_SPLsdB3d_rotor;
-        double aux_m_SPLpdB3d_rotor;
-        double aux_m_SPLdB3d_rotor;
-        double aux_m_SPLdBAW3d_rotor;
-        double aux_m_SPLdBBW3d_rotor;
-        double aux_m_SPLdBCW3d_rotor;
-        double aux_m_SPL_LEdB3d_rotor;
-        double aux_m_SPL_LEdBAW3d_rotor;
-        double aux_m_SPL_LEdBBW3d_rotor;
-        double aux_m_SPL_LEdBCW3d_rotor;
+        double aux_m_SPLadB3d_rotor=0;
+        double aux_m_SPLsdB3d_rotor=0;
+        double aux_m_SPLpdB3d_rotor=0;
+        double aux_m_SPLdB3d_rotor=0;
+        double aux_m_SPLdBAW3d_rotor=0;
+        double aux_m_SPLdBBW3d_rotor=0;
+        double aux_m_SPLdBCW3d_rotor=0;
+        double aux_m_SPL_LEdB3d_rotor=0;
+        double aux_m_SPL_LEdBAW3d_rotor=0;
+        double aux_m_SPL_LEdBBW3d_rotor=0;
+        double aux_m_SPL_LEdBCW3d_rotor=0;
 
         double sp_OASPL_alpha=0;
         double splog_OASPL_alpha=0;
@@ -1844,18 +2273,6 @@ int number_of_segments = pbem->dlg_elements;
         for (int i = 0; i < number_of_segments; ++i) {
 
             int w=FREQUENCY_TABLE_SIZE;
-
-//                double slog_SPL_alpha[w];
-//                double slog_SPL_S[w];
-//                double slog_SPL_P[w];
-//                double slog_SPL[w];
-//                double slog_dBA[w];
-//                double slog_dBB[w];
-//                double slog_dBC[w];
-//                double slog_LedB[w];
-//                double slog_LedBAW[w];
-//                double slog_LedBBW[w];
-//                double slog_LedBCW[w];
 
                 double SPL_LedBCW[w];
                 double SPL_LedBBW[w];
@@ -2132,9 +2549,9 @@ else if (m_parameter->dstar_type==2){
 }
 
 //double B=0;
-double XB;
-double YB;
-double ZB;
+double XB=0;
+double YB=0;
+double ZB=0;
 
 //    re phi_e and theta_e calculation p 77 C_Project_Log_Text_Jan_16.pdf
 //    Input X e , Y e , Z e
@@ -2159,12 +2576,30 @@ double ZB;
     double YHF=YYB;
     double ZHF=ZYB;
 
-//    double E=m_parameter->initial_azimuth; //initial azimuth
-//    double anglesteps=m_parameter->anglesteps;
+    int blades_num = pbem->m_pBData->blades;
+    double anglesteps;
+    double angle_between_blades=360./blades_num;
+    double initial_azimuth=m_parameter->initial_azimuth; //initial azimuth;
+    double E_o=initial_azimuth;
+    double E_f;
+    int number_of_rotations;
+
+    if (m_parameter->rotation_type==0){
+    //    angle based
+    number_of_rotations = m_parameter->number_loops;
+    anglesteps=m_parameter->anglesteps;
+    }else{
+    //    time based
+    number_of_rotations = m_parameter->time/(60./m_parameter->rot_speed);
+    anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
+    }
+
+    E_o=E_o+anglesteps;
+    double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
 
     double XRR=XHF;
-    double YRR=YHF*cos(qDegreesToRadians(E))+XHF*sin(qDegreesToRadians(E));
-    double ZRR=YHF*(-sin(qDegreesToRadians(E)))+ZHF*cos(qDegreesToRadians(E));
+    double YRR=YHF*cos(qDegreesToRadians(azimuthal))+XHF*sin(qDegreesToRadians(azimuthal));
+    double ZRR=YHF*(-sin(qDegreesToRadians(azimuthal)))+ZHF*cos(qDegreesToRadians(azimuthal));
 
     double XB_rotor=XRR;
     double YB_rotor=YRR;
@@ -2707,6 +3142,8 @@ if(qIsInf(aux_m_SPL_LEdBBW3d_rotor) || qIsNaN(aux_m_SPL_LEdBBW3d_rotor)){aux_m_S
 if(qIsInf(aux_m_SPL_LEdBCW3d_rotor) || qIsNaN(aux_m_SPL_LEdBCW3d_rotor)){aux_m_SPL_LEdBCW3d_rotor=0;}
 
 //multi 3D curves
+//urgente
+if((blade==0) & (E==0)){
 m_SPLadB3d[i][j]=aux_m_SPLadB3d;
 m_SPLsdB3d[i][j]=aux_m_SPLsdB3d;
 m_SPLpdB3d[i][j]=aux_m_SPLpdB3d;
@@ -2745,6 +3182,47 @@ m_SPL_LEdBAW3d_rotor[i][j]=0;
 m_SPL_LEdBBW3d_rotor[i][j]=0;
 m_SPL_LEdBCW3d_rotor[i][j]=0;
 }
+}
+
+m_SPLadB3d_4d_blade[i][j][blade][E]=aux_m_SPLadB3d;
+m_SPLsdB3d_4d_blade[i][j][blade][E]=aux_m_SPLsdB3d;
+m_SPLpdB3d_4d_blade[i][j][blade][E]=aux_m_SPLpdB3d;
+m_SPLdB3d_4d_blade[i][j][blade][E]=aux_m_SPLdB3d;
+m_SPLdBAW3d_4d_blade[i][j][blade][E]=aux_m_SPLdBAW3d;
+m_SPLdBBW3d_4d_blade[i][j][blade][E]=aux_m_SPLdBBW3d;
+m_SPLdBCW3d_4d_blade[i][j][blade][E]=aux_m_SPLdBCW3d;
+
+m_SPLadB3d_4d[i][j][blade][E]=aux_m_SPLadB3d_rotor;
+m_SPLsdB3d_4d[i][j][blade][E]=aux_m_SPLsdB3d_rotor;
+m_SPLpdB3d_4d[i][j][blade][E]=aux_m_SPLpdB3d_rotor;
+m_SPLdB3d_4d[i][j][blade][E]=aux_m_SPLdB3d_rotor;
+m_SPLdBAW3d_4d[i][j][blade][E]=aux_m_SPLdBAW3d_rotor;
+m_SPLdBBW3d_4d[i][j][blade][E]=aux_m_SPLdBBW3d_rotor;
+m_SPLdBCW3d_4d[i][j][blade][E]=aux_m_SPLdBCW3d_rotor;
+
+if(m_parameter->Lowson_type!=0){
+m_SPL_LEdB3d_4d_blade[i][j][blade][E]=aux_m_SPL_LEdB3d;
+m_SPL_LEdBAW3d_4d_blade[i][j][blade][E]=aux_m_SPL_LEdBAW3d;
+m_SPL_LEdBBW3d_4d_blade[i][j][blade][E]=aux_m_SPL_LEdBBW3d;
+m_SPL_LEdBCW3d_4d_blade[i][j][blade][E]=aux_m_SPL_LEdBCW3d;
+
+m_SPL_LEdB3d_4d[i][j][blade][E]=aux_m_SPL_LEdB3d_rotor;
+m_SPL_LEdBAW3d_4d[i][j][blade][E]=aux_m_SPL_LEdBAW3d_rotor;
+m_SPL_LEdBBW3d_4d[i][j][blade][E]=aux_m_SPL_LEdBBW3d_rotor;
+m_SPL_LEdBCW3d_4d[i][j][blade][E]=aux_m_SPL_LEdBCW3d_rotor;
+}
+else{
+m_SPL_LEdB3d_4d[i][j][blade][E]=0;
+m_SPL_LEdBAW3d_4d[i][j][blade][E]=0;
+m_SPL_LEdBBW3d_4d[i][j][blade][E]=0;
+m_SPL_LEdBCW3d_4d[i][j][blade][E]=0;
+
+m_SPL_LEdB3d_4d_blade[i][j][blade][E]=0;
+m_SPL_LEdBAW3d_4d_blade[i][j][blade][E]=0;
+m_SPL_LEdBBW3d_4d_blade[i][j][blade][E]=0;
+m_SPL_LEdBCW3d_4d_blade[i][j][blade][E]=0;
+}
+//urgente
 
 if(m_parameter->state_ss_us==1){
         //    unsteady urgente
@@ -2757,14 +3235,14 @@ if(m_parameter->state_ss_us==1){
         simulation_time=g_windFieldModule->getShownWindField()->getSimulationTime();
                 }
 
-        if (m_parameter->step_type==0){
-if(g_windFieldStore.size() == 0){number_time_steps=0;}else{number_time_steps=g_windFieldModule->getShownWindField()->getNumberOfTimesteps();}
-        time_steps=1.0*simulation_time/(1.0*number_time_steps);}
-        else {
-        As=m_parameter->anglesteps;
-        time_steps = 2.*M_PI*As/(360.*omega);
-        number_time_steps = 1.0*simulation_time/(1.0*time_steps);
-        }
+//        if (m_parameter->step_type==0){
+//if(g_windFieldStore.size() == 0){number_time_steps=0;}else{number_time_steps=g_windFieldModule->getShownWindField()->getNumberOfTimesteps();}
+//        time_steps=1.0*simulation_time/(1.0*number_time_steps);}
+//        else {
+//        As=m_parameter->anglesteps;
+//        time_steps = 2.*M_PI*As/(360.*omega_rotor);
+//        number_time_steps = 1.0*simulation_time/(1.0*time_steps);
+//        }
 
         double m_unsteady_angles[blades_num][number_time_steps+1];
 //        int angle_steps;
@@ -2775,239 +3253,243 @@ if(g_windFieldStore.size() == 0){number_time_steps=0;}else{number_time_steps=g_w
 
         for (int i=0;i<blades_num;++i){
         for (int j=1;j<(number_time_steps+1);++j){
-        m_unsteady_angles[i][j]=360.*omega*(j*time_steps)/(2.*M_PI)+m_unsteady_angles[i][j-1];
+        m_unsteady_angles[i][j]=360.*omega_rotor*(j*time_steps)/(2.*M_PI)+m_unsteady_angles[i][j-1];
         }}
 }}}}
 z=z+ldelta;
 }}
 
-//urgente todo
-void NoiseCalculation::calculateqs3d_graphics_rotation(){
+//calculation for rotor in loop
+void NoiseCalculation::calculateqs3d_graphics_loops(){
+
+    setupVectorsqs3d();
+
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 int blades_num = pbem->m_pBData->blades;
-double anglesteps=m_parameter->anglesteps;
+double anglesteps;
 double angle_between_blades=360./blades_num;
-int blade[blades_num];
-double XRR;
-double YRR;
-double ZRR;
-double XB_rotor;
-double YB_rotor;
-double ZB_rotor;
+unsigned int blade[blades_num];
 double initial_azimuth=m_parameter->initial_azimuth; //initial azimuth;
-double first_loop=initial_azimuth+360.;
-double E_o;
-double E;
+int number_of_rotations;
+int E=0;
+
+if (m_parameter->rotation_type==0){
+//    angle based
+number_of_rotations = m_parameter->number_loops;
+anglesteps=m_parameter->anglesteps;
+}else{
+//    time based
+number_of_rotations = m_parameter->time/(60./m_parameter->rot_speed);
+anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
+}
+
+int angles_num=360./anglesteps*number_of_rotations;
+double last_angle=initial_azimuth+number_of_rotations*360;
 
 for (int blade=0;blade<blades_num;++blade){
-E_o=initial_azimuth;
-E=E_o+angle_between_blades*blade;
+for (E=0;E<angles_num;++E){
 
-while (E_o<first_loop){
+        calculateqs3d_graphics(blade,E);//urgente
 
-        calculateqs3d_graphics(blade,E);
-
-    E_o=E_o+anglesteps;
-    E=E_o+angle_between_blades*blade;
 }}
 }
-//urgente
 
+//calculation for blade
 void NoiseCalculation::calculateqs3d_blade() {
 
-QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
-QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-unsigned int number_of_segments = pbem->dlg_elements;
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+    unsigned int number_of_segments = pbem->dlg_elements;
 
-    double aux_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLpdB3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdB3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBAW3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBBW3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBCW3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdB3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBAW3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLpdB3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdB3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBAW3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBBW3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBCW3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdB3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBAW3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPLpdB3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPLdB3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPLdBAW3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPLdBBW3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPLdBCW3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPL_LEdB3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPL_LEdBAW3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPLpdB3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPLdB3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPLdBAW3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPLdBBW3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPLdBCW3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPL_LEdB3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPL_LEdBAW3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
 
-    double Final_qs3d_alpha_aux=0;
-    double Final_qs3d_S_aux=0;
-    double Final_qs3d_P_aux=0;
-    double Final_qs3d_LE_aux=0;
-    double Final_qs3d_aux=0;
+        double Final_qs3d_alpha_aux=0;
+        double Final_qs3d_S_aux=0;
+        double Final_qs3d_P_aux=0;
+        double Final_qs3d_LE_aux=0;
+        double Final_qs3d_aux=0;
 
-    // Resize vectors acording to OpPoints total
-    unsigned int sizea = 0;
-    unsigned int size;
-    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
-        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
-    {
-        sizea = m_parameter->analyzedOpPoints.size();
-     } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
-        sizea = 1;
+        // Resize vectors acording to OpPoints total
+        unsigned int sizea = 0;
+        unsigned int size;
+        if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+            m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+        {
+            sizea = m_parameter->analyzedOpPoints.size();
+         } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
+            sizea = 1;
+        }
+
+    if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+
+        double auxa_m_OASPL3d[size];
+        double auxa_m_OASPLA3d[size];
+        double auxa_m_OASPLB3d[size];
+        double auxa_m_OASPLC3d[size];
+        double auxa_m_SPLALOG3d[size];
+        double auxa_m_SPLSLOG3d[size];
+        double auxa_m_SPLPLOG3d[size];
+        double auxa_m_SPLLEdBAW3d[size];
+        double auxa_m_SPLLEdBBW3d[size];
+        double auxa_m_SPLLEdBCW3d[size];
+        double auxa_m_SPLlogLE3d[size];
+
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+        aux_m_SPLadB3d_final[j]=0;
+        aux_m_SPLsdB3d_final[j]=0;
+        aux_m_SPLpdB3d_final[j]=0;
+        aux_m_SPLdB3d_final[j]=0;
+        aux_m_SPLdBAW3d_final[j]=0;
+        aux_m_SPLdBBW3d_final[j]=0;
+        aux_m_SPLdBCW3d_final[j]=0;
+        aux_m_SPL_LEdB3d_final[j]=0;
+        aux_m_SPL_LEdBAW3d_final[j]=0;
+        aux_m_SPL_LEdBBW3d_final[j]=0;
+        aux_m_SPL_LEdBCW3d_final[j]=0;
+        auxa_m_SPLadB3d_final[j]=0;
+        auxa_m_SPLsdB3d_final[j]=0;
+        auxa_m_SPLpdB3d_final[j]=0;
+        auxa_m_SPLdB3d_final[j]=0;
+        auxa_m_SPLdBAW3d_final[j]=0;
+        auxa_m_SPLdBBW3d_final[j]=0;
+        auxa_m_SPLdBCW3d_final[j]=0;
+        auxa_m_SPL_LEdB3d_final[j]=0;
+        auxa_m_SPL_LEdBAW3d_final[j]=0;
+        auxa_m_SPL_LEdBBW3d_final[j]=0;
+        auxa_m_SPL_LEdBCW3d_final[j]=0;
+
+    for (int i = 0; i < number_of_segments; ++i) {
+        if ((SPLadB3d_4d_blade()[i][j][0][0]<=0) & (SPLadB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLadB3d_final[j] += 0;} else {auxa_m_SPLadB3d_final[j] += pow(10.,(SPLadB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLsdB3d_4d_blade()[i][j][0][0]<=0) & (SPLsdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLsdB3d_final[j] += 0;} else {auxa_m_SPLsdB3d_final[j] += pow(10.,(SPLsdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLpdB3d_4d_blade()[i][j][0][0]<=0) & (SPLpdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLpdB3d_final[j] += 0;} else {auxa_m_SPLpdB3d_final[j] += pow(10.,(SPLpdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdB3d_4d_blade()[i][j][0][0]<=0) & (SPLdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLdB3d_final[j] += 0;} else {auxa_m_SPLdB3d_final[j] += pow(10.,(SPLdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdBAW3d_4d_blade()[i][j][0][0]<=0) & (SPLdBAW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLdBAW3d_final[j] += 0;} else {auxa_m_SPLdBAW3d_final[j] += pow(10.,(SPLdBAW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdBBW3d_4d_blade()[i][j][0][0]<=0) & (SPLdBBW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLdBBW3d_final[j] += 0;} else {auxa_m_SPLdBBW3d_final[j] += pow(10.,(SPLdBBW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdBCW3d_4d_blade()[i][j][0][0]<=0) & (SPLdBCW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLdBCW3d_final[j] += 0;} else {auxa_m_SPLdBCW3d_final[j] += pow(10.,(SPLdBCW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdB3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPL_LEdB3d_final[j] += 0;} else {auxa_m_SPL_LEdB3d_final[j] += pow(10.,(SPL_LEdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdBAW3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdBAW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPL_LEdBAW3d_final[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final[j] += pow(10.,(SPL_LEdBAW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdBBW3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdBBW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPL_LEdBBW3d_final[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final[j] += pow(10.,(SPL_LEdBBW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdBCW3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdBCW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPL_LEdBCW3d_final[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final[j] += pow(10.,(SPL_LEdBCW3d_4d_blade()[i][j][0][0]/10.));}
     }
 
-if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    unsigned int number_of_segments = pBEM->dlg_elements;
 
-    double auxa_m_OASPL3d[size];
-    double auxa_m_OASPLA3d[size];
-    double auxa_m_OASPLB3d[size];
-    double auxa_m_OASPLC3d[size];
-    double auxa_m_SPLALOG3d[size];
-    double auxa_m_SPLSLOG3d[size];
-    double auxa_m_SPLPLOG3d[size];
-    double auxa_m_SPLLEdBAW3d[size];
-    double auxa_m_SPLLEdBBW3d[size];
-    double auxa_m_SPLLEdBCW3d[size];
-    double auxa_m_SPLlogLE3d[size];
+    if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
-for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-    aux_m_SPLadB3d_final[j]=0;
-    aux_m_SPLsdB3d_final[j]=0;
-    aux_m_SPLpdB3d_final[j]=0;
-    aux_m_SPLdB3d_final[j]=0;
-    aux_m_SPLdBAW3d_final[j]=0;
-    aux_m_SPLdBBW3d_final[j]=0;
-    aux_m_SPLdBCW3d_final[j]=0;
-    aux_m_SPL_LEdB3d_final[j]=0;
-    aux_m_SPL_LEdBAW3d_final[j]=0;
-    aux_m_SPL_LEdBBW3d_final[j]=0;
-    aux_m_SPL_LEdBCW3d_final[j]=0;
-    auxa_m_SPLadB3d_final[j]=0;
-    auxa_m_SPLsdB3d_final[j]=0;
-    auxa_m_SPLpdB3d_final[j]=0;
-    auxa_m_SPLdB3d_final[j]=0;
-    auxa_m_SPLdBAW3d_final[j]=0;
-    auxa_m_SPLdBBW3d_final[j]=0;
-    auxa_m_SPLdBCW3d_final[j]=0;
-    auxa_m_SPL_LEdB3d_final[j]=0;
-    auxa_m_SPL_LEdBAW3d_final[j]=0;
-    auxa_m_SPL_LEdBBW3d_final[j]=0;
-    auxa_m_SPL_LEdBCW3d_final[j]=0;
+    for (int i=0;i<size;++i){
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+    //    3d curves
+        m_SPLadB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final[j]);
+        m_SPLsdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final[j]);
+        m_SPLpdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final[j]);
+        m_SPLdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final[j]);
+        m_SPLdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final[j]);
+        m_SPLdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final[j]);
+        m_SPLdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final[j]);
+        if (m_parameter->Lowson_type!=0){
+        m_SPL_LEdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final[j]);
+        m_SPL_LEdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final[j]);
+        m_SPL_LEdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final[j]);
+        m_SPL_LEdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final[j]);
+        }
+        else{
+        m_SPL_LEdB3d_final[i][j]=0;
+        m_SPL_LEdBAW3d_final[i][j]=0;
+        m_SPL_LEdBBW3d_final[i][j]=0;
+        m_SPL_LEdBCW3d_final[i][j]=0;
+        }
+    }
+    }}
 
-for (int i = 0; i < number_of_segments; ++i) {
-if ((SPLadB3d()[i][j]<=0) & (SPLadB3d()[i][j]>=0)){auxa_m_SPLadB3d_final[j] += 0;} else {auxa_m_SPLadB3d_final[j] += pow(10.,(SPLadB3d()[i][j]/10.));}
-if ((SPLsdB3d()[i][j]<=0) & (SPLsdB3d()[i][j]>=0)){auxa_m_SPLsdB3d_final[j] += 0;} else {auxa_m_SPLsdB3d_final[j] += pow(10.,(SPLsdB3d()[i][j]/10.));}
-if ((SPLpdB3d()[i][j]<=0) & (SPLpdB3d()[i][j]>=0)){auxa_m_SPLpdB3d_final[j] += 0;} else {auxa_m_SPLpdB3d_final[j] += pow(10.,(SPLpdB3d()[i][j]/10.));}
-if ((SPLdB3d()[i][j]<=0) & (SPLdB3d()[i][j]>=0)){auxa_m_SPLdB3d_final[j] += 0;} else {auxa_m_SPLdB3d_final[j] += pow(10.,(SPLdB3d()[i][j]/10.));}
-if ((SPLdBAW3d()[i][j]<=0) & (SPLdBAW3d()[i][j]>=0)){auxa_m_SPLdBAW3d_final[j] += 0;} else {auxa_m_SPLdBAW3d_final[j] += pow(10.,(SPLdBAW3d()[i][j]/10.));}
-if ((SPLdBBW3d()[i][j]<=0) & (SPLdBBW3d()[i][j]>=0)){auxa_m_SPLdBBW3d_final[j] += 0;} else {auxa_m_SPLdBBW3d_final[j] += pow(10.,(SPLdBBW3d()[i][j]/10.));}
-if ((SPLdBCW3d()[i][j]<=0) & (SPLdBCW3d()[i][j]>=0)){auxa_m_SPLdBCW3d_final[j] += 0;} else {auxa_m_SPLdBCW3d_final[j] += pow(10.,(SPLdBCW3d()[i][j]/10.));}
-if ((SPL_LEdB3d()[i][j]<=0) & (SPL_LEdB3d()[i][j]>=0)){auxa_m_SPL_LEdB3d_final[j] += 0;} else {auxa_m_SPL_LEdB3d_final[j] += pow(10.,(SPL_LEdB3d()[i][j]/10.));}
-if ((SPL_LEdBAW3d()[i][j]<=0) & (SPL_LEdBAW3d()[i][j]>=0)){auxa_m_SPL_LEdBAW3d_final[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final[j] += pow(10.,(SPL_LEdBAW3d()[i][j]/10.));}
-if ((SPL_LEdBBW3d()[i][j]<=0) & (SPL_LEdBBW3d()[i][j]>=0)){auxa_m_SPL_LEdBBW3d_final[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final[j] += pow(10.,(SPL_LEdBBW3d()[i][j]/10.));}
-if ((SPL_LEdBCW3d()[i][j]<=0) & (SPL_LEdBCW3d()[i][j]>=0)){auxa_m_SPL_LEdBCW3d_final[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final[j] += pow(10.,(SPL_LEdBCW3d()[i][j]/10.));}
-}
+    //OASPL complete for quasi 3d
+    int i=number_of_segments-1;
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+    Final_qs3d_alpha_aux += pow(10.,(m_SPLadB3d_final[i][j])/10.);
+    Final_qs3d_S_aux += pow(10.,(m_SPLsdB3d_final[i][j])/10.);
+    Final_qs3d_P_aux += pow(10.,(m_SPLpdB3d_final[i][j])/10.);
+    Final_qs3d_LE_aux += pow(10.,(m_SPL_LEdB3d_final[i][j])/10.);
+    Final_qs3d_aux += pow(10.,(m_SPLdB3d_final[i][j])/10.);
+        }
 
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-unsigned int number_of_segments = pBEM->dlg_elements;
+    Final_qs3d_alpha = 10*log10(Final_qs3d_alpha_aux);
+    Final_qs3d_S = 10*log10(Final_qs3d_S_aux);
+    Final_qs3d_P = 10*log10(Final_qs3d_P_aux);
+    Final_qs3d_LE =  10*log10(Final_qs3d_LE_aux);
+    Final_qs3d = 10*log10(Final_qs3d_aux);
 
-if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+    //calculation for the OASPL for the csv output file
+    for (int i=0;i<size;++i){
+        auxa_m_OASPL3d[i]=0;
+        auxa_m_OASPLA3d[i]=0;
+        auxa_m_OASPLB3d[i]=0;
+        auxa_m_OASPLC3d[i]=0;
+        auxa_m_SPLALOG3d[i]=0;
+        auxa_m_SPLSLOG3d[i]=0;
+        auxa_m_SPLPLOG3d[i]=0;
+        auxa_m_SPLLEdBAW3d[i]=0;
+        auxa_m_SPLLEdBBW3d[i]=0;
+        auxa_m_SPLLEdBCW3d[i]=0;
+        auxa_m_SPLlogLE3d[i]=0;
 
-for (int i=0;i<size;++i){
-for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-//    3d curves
-    m_SPLadB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final[j]);
-    m_SPLsdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final[j]);
-    m_SPLpdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final[j]);
-    m_SPLdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final[j]);
-    m_SPLdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final[j]);
-    m_SPLdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final[j]);
-    m_SPLdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final[j]);
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+        if ((SPLadB3d_4d_blade()[i][j][0][0]<=0) & (SPLadB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLALOG3d[i] += 0;} else {auxa_m_SPLALOG3d[i] += pow(10.,(SPLadB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLsdB3d_4d_blade()[i][j][0][0]<=0) & (SPLsdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLSLOG3d[i] += 0;} else {auxa_m_SPLSLOG3d[i] += pow(10.,(SPLsdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLpdB3d_4d_blade()[i][j][0][0]<=0) & (SPLpdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLPLOG3d[i] += 0;} else {auxa_m_SPLPLOG3d[i] += pow(10.,(SPLpdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdB3d_4d_blade()[i][j][0][0]<=0) & (SPLdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_OASPL3d[i] += 0;} else {auxa_m_OASPL3d[i]+= pow(10.,(SPLdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdBAW3d_4d_blade()[i][j][0][0]<=0) & (SPLdBAW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_OASPLA3d[i] += 0;} else {auxa_m_OASPLA3d[i] += pow(10.,(SPLdBAW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdBBW3d_4d_blade()[i][j][0][0]<=0) & (SPLdBBW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_OASPLB3d[i] += 0;} else {auxa_m_OASPLB3d[i] += pow(10.,(SPLdBBW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPLdBCW3d_4d_blade()[i][j][0][0]<=0) & (SPLdBCW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_OASPLC3d[i] += 0;} else {auxa_m_OASPLC3d[i] += pow(10.,(SPLdBCW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdB3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdB3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLlogLE3d[i] += 0;} else {auxa_m_SPLlogLE3d[i] += pow(10.,(SPL_LEdB3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdBAW3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdBAW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLLEdBAW3d[i] += 0;} else {auxa_m_SPLLEdBAW3d[i] += pow(10.,(SPL_LEdBAW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdBBW3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdBBW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLLEdBBW3d[i] += 0;} else {auxa_m_SPLLEdBBW3d[i] += pow(10.,(SPL_LEdBBW3d_4d_blade()[i][j][0][0]/10.));}
+        if ((SPL_LEdBCW3d_4d_blade()[i][j][0][0]<=0) & (SPL_LEdBCW3d_4d_blade()[i][j][0][0]>=0)){auxa_m_SPLLEdBCW3d[i] += 0;} else {auxa_m_SPLLEdBCW3d[i] += pow(10.,(SPL_LEdBCW3d_4d_blade()[i][j][0][0]/10.));}
+    }
+    m_OASPL3d[i]=10*log10(auxa_m_OASPL3d[i]);
+    m_OASPLA3d[i]=10*log10(auxa_m_OASPLA3d[i]);
+    m_OASPLB3d[i]=10*log10(auxa_m_OASPLB3d[i]);
+    m_OASPLC3d[i]=10*log10(auxa_m_OASPLC3d[i]);
+    m_SPLALOG3d[i]=10*log10(auxa_m_SPLALOG3d[i]);
+    m_SPLSLOG3d[i]=10*log10(auxa_m_SPLSLOG3d[i]);
+    m_SPLPLOG3d[i]=10*log10(auxa_m_SPLPLOG3d[i]);
     if (m_parameter->Lowson_type!=0){
-    m_SPL_LEdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final[j]);
-    m_SPL_LEdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final[j]);
-    m_SPL_LEdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final[j]);
-    m_SPL_LEdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final[j]);
+    m_SPLLEdBAW3d[i]=10*log10(auxa_m_SPLLEdBAW3d[i]);
+    m_SPLLEdBBW3d[i]=10*log10(auxa_m_SPLLEdBBW3d[i]);
+    m_SPLLEdBCW3d[i]=10*log10(auxa_m_SPLLEdBCW3d[i]);
+    m_SPLlogLE3d[i]=10*log10(auxa_m_SPLlogLE3d[i]);
     }
     else{
-    m_SPL_LEdB3d_final[i][j]=0;
-    m_SPL_LEdBAW3d_final[i][j]=0;
-    m_SPL_LEdBBW3d_final[i][j]=0;
-    m_SPL_LEdBCW3d_final[i][j]=0;
+    m_SPLLEdBAW3d[i]=0;
+    m_SPLLEdBBW3d[i]=0;
+    m_SPLLEdBCW3d[i]=0;
+    m_SPLlogLE3d[i]=0;
     }
-}
-}}
-
-//OASPL complete for quasi 3d
-int i=number_of_segments-1;
-for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-Final_qs3d_alpha_aux += pow(10.,(m_SPLadB3d_final[i][j])/10.);
-Final_qs3d_S_aux += pow(10.,(m_SPLsdB3d_final[i][j])/10.);
-Final_qs3d_P_aux += pow(10.,(m_SPLpdB3d_final[i][j])/10.);
-Final_qs3d_LE_aux += pow(10.,(m_SPL_LEdB3d_final[i][j])/10.);
-Final_qs3d_aux += pow(10.,(m_SPLdB3d_final[i][j])/10.);
+    }
     }
 
-Final_qs3d_alpha = 10*log10(Final_qs3d_alpha_aux);
-Final_qs3d_S = 10*log10(Final_qs3d_S_aux);
-Final_qs3d_P = 10*log10(Final_qs3d_P_aux);
-Final_qs3d_LE =  10*log10(Final_qs3d_LE_aux);
-Final_qs3d = 10*log10(Final_qs3d_aux);
-
-//calculation for the OASPL for the csv output file
-for (int i=0;i<size;++i){
-    auxa_m_OASPL3d[i]=0;
-    auxa_m_OASPLA3d[i]=0;
-    auxa_m_OASPLB3d[i]=0;
-    auxa_m_OASPLC3d[i]=0;
-    auxa_m_SPLALOG3d[i]=0;
-    auxa_m_SPLSLOG3d[i]=0;
-    auxa_m_SPLPLOG3d[i]=0;
-    auxa_m_SPLLEdBAW3d[i]=0;
-    auxa_m_SPLLEdBBW3d[i]=0;
-    auxa_m_SPLLEdBCW3d[i]=0;
-    auxa_m_SPLlogLE3d[i]=0;
-
-for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-
-    if ((SPLadB3d()[i][j]<=0) & (SPLadB3d()[i][j]>=0)){auxa_m_SPLALOG3d[i] += 0;} else {auxa_m_SPLALOG3d[i] += pow(10.,(SPLadB3d()[i][j]/10.));}
-    if ((SPLsdB3d()[i][j]<=0) & (SPLsdB3d()[i][j]>=0)){auxa_m_SPLSLOG3d[i] += 0;} else {auxa_m_SPLSLOG3d[i] += pow(10.,(SPLsdB3d()[i][j]/10.));}
-    if ((SPLpdB3d()[i][j]<=0) & (SPLpdB3d()[i][j]>=0)){auxa_m_SPLPLOG3d[i] += 0;} else {auxa_m_SPLPLOG3d[i] += pow(10.,(SPLpdB3d()[i][j]/10.));}
-    if ((SPLdB3d()[i][j]<=0) & (SPLdB3d()[i][j]>=0)){auxa_m_OASPL3d[i] += 0;} else {auxa_m_OASPL3d[i]+= pow(10.,(SPLdB3d()[i][j]/10.));}
-    if ((SPLdBAW3d()[i][j]<=0) & (SPLdBAW3d()[i][j]>=0)){auxa_m_OASPLA3d[i] += 0;} else {auxa_m_OASPLA3d[i] += pow(10.,(SPLdBAW3d()[i][j]/10.));}
-    if ((SPLdBBW3d()[i][j]<=0) & (SPLdBBW3d()[i][j]>=0)){auxa_m_OASPLB3d[i] += 0;} else {auxa_m_OASPLB3d[i] += pow(10.,(SPLdBBW3d()[i][j]/10.));}
-    if ((SPLdBCW3d()[i][j]<=0) & (SPLdBCW3d()[i][j]>=0)){auxa_m_OASPLC3d[i] += 0;} else {auxa_m_OASPLC3d[i] += pow(10.,(SPLdBCW3d()[i][j]/10.));}
-    if ((SPL_LEdB3d()[i][j]<=0) & (SPL_LEdB3d()[i][j]>=0)){auxa_m_SPLlogLE3d[i] += 0;} else {auxa_m_SPLlogLE3d[i] += pow(10.,(SPL_LEdB3d()[i][j]/10.));}
-    if ((SPL_LEdBAW3d()[i][j]<=0) & (SPL_LEdBAW3d()[i][j]>=0)){auxa_m_SPLLEdBAW3d[i] += 0;} else {auxa_m_SPLLEdBAW3d[i] += pow(10.,(SPL_LEdBAW3d()[i][j]/10.));}
-    if ((SPL_LEdBBW3d()[i][j]<=0) & (SPL_LEdBBW3d()[i][j]>=0)){auxa_m_SPLLEdBBW3d[i] += 0;} else {auxa_m_SPLLEdBBW3d[i] += pow(10.,(SPL_LEdBBW3d()[i][j]/10.));}
-    if ((SPL_LEdBCW3d()[i][j]<=0) & (SPL_LEdBCW3d()[i][j]>=0)){auxa_m_SPLLEdBCW3d[i] += 0;} else {auxa_m_SPLLEdBCW3d[i] += pow(10.,(SPL_LEdBCW3d()[i][j]/10.));}
-}
-m_OASPL3d[i]=10*log10(auxa_m_OASPL3d[i]);
-m_OASPLA3d[i]=10*log10(auxa_m_OASPLA3d[i]);
-m_OASPLB3d[i]=10*log10(auxa_m_OASPLB3d[i]);
-m_OASPLC3d[i]=10*log10(auxa_m_OASPLC3d[i]);
-m_SPLALOG3d[i]=10*log10(auxa_m_SPLALOG3d[i]);
-m_SPLSLOG3d[i]=10*log10(auxa_m_SPLSLOG3d[i]);
-m_SPLPLOG3d[i]=10*log10(auxa_m_SPLPLOG3d[i]);
-if (m_parameter->Lowson_type!=0){
-m_SPLLEdBAW3d[i]=10*log10(auxa_m_SPLLEdBAW3d[i]);
-m_SPLLEdBBW3d[i]=10*log10(auxa_m_SPLLEdBBW3d[i]);
-m_SPLLEdBCW3d[i]=10*log10(auxa_m_SPLLEdBCW3d[i]);
-m_SPLlogLE3d[i]=10*log10(auxa_m_SPLlogLE3d[i]);
-}
-else{
-m_SPLLEdBAW3d[i]=0;
-m_SPLLEdBBW3d[i]=0;
-m_SPLLEdBCW3d[i]=0;
-m_SPLlogLE3d[i]=0;
-}
-}
-}
-
-void NoiseCalculation::calculateqs3d_rotor(int blade, double E) {
+//calculation for one blade placed in rotor coordinates
+void NoiseCalculation::calculateqs3d_rotor() {
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
@@ -3092,17 +3574,17 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     auxa_m_SPL_LEdBCW3d_final_rotor[j]=0;
 
     for (int i = 0; i < number_of_segments; ++i) {
-    if ((SPLadB3d_rotor(blade,E)[i][j]<=0) & (SPLadB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLadB3d_final_rotor[j] += 0;} else {auxa_m_SPLadB3d_final_rotor[j] += pow(10.,(SPLadB3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPLsdB3d_rotor(blade,E)[i][j]<=0) & (SPLsdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLsdB3d_final_rotor[j] += 0;} else {auxa_m_SPLsdB3d_final_rotor[j] += pow(10.,(SPLsdB3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPLpdB3d_rotor(blade,E)[i][j]<=0) & (SPLpdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLpdB3d_final_rotor[j] += 0;} else {auxa_m_SPLpdB3d_final_rotor[j] += pow(10.,(SPLpdB3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPLdB3d_rotor(blade,E)[i][j]<=0) & (SPLdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLdB3d_final_rotor[j] += 0;} else {auxa_m_SPLdB3d_final_rotor[j] += pow(10.,(SPLdB3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPLdBAW3d_rotor(blade,E)[i][j]<=0) & (SPLdBAW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBAW3d_final_rotor[j] += pow(10.,(SPLdBAW3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPLdBBW3d_rotor(blade,E)[i][j]<=0) & (SPLdBBW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBBW3d_final_rotor[j] += pow(10.,(SPLdBBW3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPLdBCW3d_rotor(blade,E)[i][j]<=0) & (SPLdBCW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBCW3d_final_rotor[j] += pow(10.,(SPLdBCW3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPL_LEdB3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPL_LEdB3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdB3d_final_rotor[j] += pow(10.,(SPL_LEdB3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPL_LEdBAW3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdBAW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPL_LEdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final_rotor[j] += pow(10.,(SPL_LEdBAW3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPL_LEdBBW3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdBBW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPL_LEdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final_rotor[j] += pow(10.,(SPL_LEdBBW3d_rotor(blade,E)[i][j]/10.));}
-    if ((SPL_LEdBCW3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdBCW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPL_LEdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final_rotor[j] += pow(10.,(SPL_LEdBCW3d_rotor(blade,E)[i][j]/10.));}
+        if ((SPLadB3d_4d()[i][j][0][0]<=0) & (SPLadB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLadB3d_final_rotor[j] += 0;} else {auxa_m_SPLadB3d_final_rotor[j] += pow(10.,(SPLadB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLsdB3d_4d()[i][j][0][0]<=0) & (SPLsdB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLsdB3d_final_rotor[j] += 0;} else {auxa_m_SPLsdB3d_final_rotor[j] += pow(10.,(SPLsdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLpdB3d_4d()[i][j][0][0]<=0) & (SPLpdB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLpdB3d_final_rotor[j] += 0;} else {auxa_m_SPLpdB3d_final_rotor[j] += pow(10.,(SPLpdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdB3d_4d()[i][j][0][0]<=0) & (SPLdB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLdB3d_final_rotor[j] += 0;} else {auxa_m_SPLdB3d_final_rotor[j] += pow(10.,(SPLdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdBAW3d_4d()[i][j][0][0]<=0) & (SPLdBAW3d_4d()[i][j][0][0]>=0)){auxa_m_SPLdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBAW3d_final_rotor[j] += pow(10.,(SPLdBAW3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdBBW3d_4d()[i][j][0][0]<=0) & (SPLdBBW3d_4d()[i][j][0][0]>=0)){auxa_m_SPLdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBBW3d_final_rotor[j] += pow(10.,(SPLdBBW3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdBCW3d_4d()[i][j][0][0]<=0) & (SPLdBCW3d_4d()[i][j][0][0]>=0)){auxa_m_SPLdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBCW3d_final_rotor[j] += pow(10.,(SPLdBCW3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdB3d_4d()[i][j][0][0]<=0) & (SPL_LEdB3d_4d()[i][j][0][0]>=0)){auxa_m_SPL_LEdB3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdB3d_final_rotor[j] += pow(10.,(SPL_LEdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdBAW3d_4d()[i][j][0][0]<=0) & (SPL_LEdBAW3d_4d()[i][j][0][0]>=0)){auxa_m_SPL_LEdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final_rotor[j] += pow(10.,(SPL_LEdBAW3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdBBW3d_4d()[i][j][0][0]<=0) & (SPL_LEdBBW3d_4d()[i][j][0][0]>=0)){auxa_m_SPL_LEdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final_rotor[j] += pow(10.,(SPL_LEdBBW3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdBCW3d_4d()[i][j][0][0]<=0) & (SPL_LEdBCW3d_4d()[i][j][0][0]>=0)){auxa_m_SPL_LEdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final_rotor[j] += pow(10.,(SPL_LEdBCW3d_4d()[i][j][0][0]/10.));}
     }
 
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
@@ -3166,18 +3648,17 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
         auxa_m_SPLlogLE3d_rotor[i]=0;
 
     for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-
-        if ((SPLadB3d_rotor(blade,E)[i][j]<=0) & (SPLadB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLALOG3d_rotor[i] += 0;} else {auxa_m_SPLALOG3d_rotor[i] += pow(10.,(SPLadB3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPLsdB3d_rotor(blade,E)[i][j]<=0) & (SPLsdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLSLOG3d_rotor[i] += 0;} else {auxa_m_SPLSLOG3d_rotor[i] += pow(10.,(SPLsdB3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPLpdB3d_rotor(blade,E)[i][j]<=0) & (SPLpdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLPLOG3d_rotor[i] += 0;} else {auxa_m_SPLPLOG3d_rotor[i] += pow(10.,(SPLpdB3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPLdB3d_rotor(blade,E)[i][j]<=0) & (SPLdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_OASPL3d_rotor[i] += 0;} else {auxa_m_OASPL3d_rotor[i]+= pow(10.,(SPLdB3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPLdBAW3d_rotor(blade,E)[i][j]<=0) & (SPLdBAW3d_rotor(blade,E)[i][j]>=0)){auxa_m_OASPLA3d_rotor[i] += 0;} else {auxa_m_OASPLA3d_rotor[i] += pow(10.,(SPLdBAW3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPLdBBW3d_rotor(blade,E)[i][j]<=0) & (SPLdBBW3d_rotor(blade,E)[i][j]>=0)){auxa_m_OASPLB3d_rotor[i] += 0;} else {auxa_m_OASPLB3d_rotor[i] += pow(10.,(SPLdBBW3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPLdBCW3d_rotor(blade,E)[i][j]<=0) & (SPLdBCW3d_rotor(blade,E)[i][j]>=0)){auxa_m_OASPLC3d_rotor[i] += 0;} else {auxa_m_OASPLC3d_rotor[i] += pow(10.,(SPLdBCW3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPL_LEdB3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdB3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLlogLE3d_rotor[i] += 0;} else {auxa_m_SPLlogLE3d_rotor[i] += pow(10.,(SPL_LEdB3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPL_LEdBAW3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdBAW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLLEdBAW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBAW3d_rotor[i] += pow(10.,(SPL_LEdBAW3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPL_LEdBBW3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdBBW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLLEdBBW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBBW3d_rotor[i] += pow(10.,(SPL_LEdBBW3d_rotor(blade,E)[i][j]/10.));}
-        if ((SPL_LEdBCW3d_rotor(blade,E)[i][j]<=0) & (SPL_LEdBCW3d_rotor(blade,E)[i][j]>=0)){auxa_m_SPLLEdBCW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBCW3d_rotor[i] += pow(10.,(SPL_LEdBCW3d_rotor(blade,E)[i][j]/10.));}
+        if ((SPLadB3d_4d()[i][j][0][0]<=0) & (SPLadB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLALOG3d_rotor[i] += 0;} else {auxa_m_SPLALOG3d_rotor[i] += pow(10.,(SPLadB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLsdB3d_4d()[i][j][0][0]<=0) & (SPLsdB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLSLOG3d_rotor[i] += 0;} else {auxa_m_SPLSLOG3d_rotor[i] += pow(10.,(SPLsdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLpdB3d_4d()[i][j][0][0]<=0) & (SPLpdB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLPLOG3d_rotor[i] += 0;} else {auxa_m_SPLPLOG3d_rotor[i] += pow(10.,(SPLpdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdB3d_4d()[i][j][0][0]<=0) & (SPLdB3d_4d()[i][j][0][0]>=0)){auxa_m_OASPL3d_rotor[i] += 0;} else {auxa_m_OASPL3d_rotor[i]+= pow(10.,(SPLdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdBAW3d_4d()[i][j][0][0]<=0) & (SPLdBAW3d_4d()[i][j][0][0]>=0)){auxa_m_OASPLA3d_rotor[i] += 0;} else {auxa_m_OASPLA3d_rotor[i] += pow(10.,(SPLdBAW3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdBBW3d_4d()[i][j][0][0]<=0) & (SPLdBBW3d_4d()[i][j][0][0]>=0)){auxa_m_OASPLB3d_rotor[i] += 0;} else {auxa_m_OASPLB3d_rotor[i] += pow(10.,(SPLdBBW3d_4d()[i][j][0][0]/10.));}
+        if ((SPLdBCW3d_4d()[i][j][0][0]<=0) & (SPLdBCW3d_4d()[i][j][0][0]>=0)){auxa_m_OASPLC3d_rotor[i] += 0;} else {auxa_m_OASPLC3d_rotor[i] += pow(10.,(SPLdBCW3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdB3d_4d()[i][j][0][0]<=0) & (SPL_LEdB3d_4d()[i][j][0][0]>=0)){auxa_m_SPLlogLE3d_rotor[i] += 0;} else {auxa_m_SPLlogLE3d_rotor[i] += pow(10.,(SPL_LEdB3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdBAW3d_4d()[i][j][0][0]<=0) & (SPL_LEdBAW3d_4d()[i][j][0][0]>=0)){auxa_m_SPLLEdBAW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBAW3d_rotor[i] += pow(10.,(SPL_LEdBAW3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdBBW3d_4d()[i][j][0][0]<=0) & (SPL_LEdBBW3d_4d()[i][j][0][0]>=0)){auxa_m_SPLLEdBBW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBBW3d_rotor[i] += pow(10.,(SPL_LEdBBW3d_4d()[i][j][0][0]/10.));}
+        if ((SPL_LEdBCW3d_4d()[i][j][0][0]<=0) & (SPL_LEdBCW3d_4d()[i][j][0][0]>=0)){auxa_m_SPLLEdBCW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBCW3d_rotor[i] += pow(10.,(SPL_LEdBCW3d_4d()[i][j][0][0]/10.));}
     }
     m_OASPL3d_rotor[i]=10*log10(auxa_m_OASPL3d_rotor[i]);
     m_OASPLA3d_rotor[i]=10*log10(auxa_m_OASPLA3d_rotor[i]);
@@ -3198,4 +3679,223 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLLEdBCW3d_rotor[i]=0;
     m_SPLlogLE3d_rotor[i]=0;
     }}}
+
+//urgente
+//calculation for all blades in rotation movement
+void NoiseCalculation::calculateqs3d_rotor_loops() {
+    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+    int blades_num = pbem->m_pBData->blades;
+    double anglesteps;
+    double angle_between_blades=360./blades_num;
+    unsigned int blade[blades_num];
+    double initial_azimuth=m_parameter->initial_azimuth; //initial azimuth;
+    int number_of_rotations;
+    int E=0;
+
+    if (m_parameter->rotation_type==0){
+    //    angle based
+    number_of_rotations = m_parameter->number_loops;
+    anglesteps=m_parameter->anglesteps;
+    }else{
+    //    time based
+    number_of_rotations = m_parameter->time/(60./m_parameter->rot_speed);
+    anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
+    }
+
+    int angles_num=360./anglesteps*number_of_rotations;
+    double last_angle=initial_azimuth+number_of_rotations*360;
+
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+    unsigned int number_of_segments = pbem->dlg_elements;
+
+    double aux_m_SPLadB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLsdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLpdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdBAW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdBBW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPLdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdBAW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdBBW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_LEdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLadB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLsdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLpdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdBAW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdBBW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPLdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdBAW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdBBW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_LEdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
+
+    double Final_qs3d_alpha_aux_4d=0;
+    double Final_qs3d_S_aux_4d=0;
+    double Final_qs3d_P_aux_4d=0;
+    double Final_qs3d_LE_aux_4d=0;
+    double Final_qs3d_aux_4d=0;
+
+        // Resize vectors acording to OpPoints total
+        unsigned int sizea = 0;
+        unsigned int size;
+        if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+            m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+        {
+            sizea = m_parameter->analyzedOpPoints.size();
+         } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
+            sizea = 1;
+        }
+
+    if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+
+    double auxa_m_OASPL3d_rotor_loops[size];
+    double auxa_m_OASPLA3d_rotor_loops[size];
+    double auxa_m_OASPLB3d_rotor_loops[size];
+    double auxa_m_OASPLC3d_rotor_loops[size];
+    double auxa_m_SPLALOG3d_rotor_loops[size];
+    double auxa_m_SPLSLOG3d_rotor_loops[size];
+    double auxa_m_SPLPLOG3d_rotor_loops[size];
+    double auxa_m_SPLLEdBAW3d_rotor_loops[size];
+    double auxa_m_SPLLEdBBW3d_rotor_loops[size];
+    double auxa_m_SPLLEdBCW3d_rotor_loops[size];
+    double auxa_m_SPLlogLE3d_rotor_loops[size];
+
+    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+        aux_m_SPLadB3d_final_4d[j]=0;
+        aux_m_SPLsdB3d_final_4d[j]=0;
+        aux_m_SPLpdB3d_final_4d[j]=0;
+        aux_m_SPLdB3d_final_4d[j]=0;
+        aux_m_SPLdBAW3d_final_4d[j]=0;
+        aux_m_SPLdBBW3d_final_4d[j]=0;
+        aux_m_SPLdBCW3d_final_4d[j]=0;
+        aux_m_SPL_LEdB3d_final_4d[j]=0;
+        aux_m_SPL_LEdBAW3d_final_4d[j]=0;
+        aux_m_SPL_LEdBBW3d_final_4d[j]=0;
+        aux_m_SPL_LEdBCW3d_final_4d[j]=0;
+        auxa_m_SPLadB3d_final_4d[j]=0;
+        auxa_m_SPLsdB3d_final_4d[j]=0;
+        auxa_m_SPLpdB3d_final_4d[j]=0;
+        auxa_m_SPLdB3d_final_4d[j]=0;
+        auxa_m_SPLdBAW3d_final_4d[j]=0;
+        auxa_m_SPLdBBW3d_final_4d[j]=0;
+        auxa_m_SPLdBCW3d_final_4d[j]=0;
+        auxa_m_SPL_LEdB3d_final_4d[j]=0;
+        auxa_m_SPL_LEdBAW3d_final_4d[j]=0;
+        auxa_m_SPL_LEdBBW3d_final_4d[j]=0;
+        auxa_m_SPL_LEdBCW3d_final_4d[j]=0;
+
+        for (int blade=0;blade<blades_num;++blade){
+        for (E=0;E<angles_num;++E){
+       for (int i = 0; i < number_of_segments; ++i) {
+           if ((SPLadB3d_4d()[i][j][blade][E]<=0) & (SPLadB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLadB3d_final_4d[j] += 0;} else {auxa_m_SPLadB3d_final_4d[j] += pow(10.,(SPLadB3d_4d()[i][j][blade][E]/10.));}
+           if ((SPLsdB3d_4d()[i][j][blade][E]<=0) & (SPLsdB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLsdB3d_final_4d[j] += 0;} else {auxa_m_SPLsdB3d_final_4d[j] += pow(10.,(SPLsdB3d_4d()[i][j][blade][E]/10.));}
+           if ((SPLpdB3d_4d()[i][j][blade][E]<=0) & (SPLpdB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLpdB3d_final_4d[j] += 0;} else {auxa_m_SPLpdB3d_final_4d[j] += pow(10.,(SPLpdB3d_4d()[i][j][blade][E]/10.));}
+           if ((SPLdB3d_4d()[i][j][blade][E]<=0) & (SPLdB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLdB3d_final_4d[j] += 0;} else {auxa_m_SPLdB3d_final_4d[j] += pow(10.,(SPLdB3d_4d()[i][j][blade][E]/10.));}
+           if ((SPLdBAW3d_4d()[i][j][blade][E]<=0) & (SPLdBAW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLdBAW3d_final_4d[j] += 0;} else {auxa_m_SPLdBAW3d_final_4d[j] += pow(10.,(SPLdBAW3d_4d()[i][j][blade][E]/10.));}
+           if ((SPLdBBW3d_4d()[i][j][blade][E]<=0) & (SPLdBBW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLdBBW3d_final_4d[j] += 0;} else {auxa_m_SPLdBBW3d_final_4d[j] += pow(10.,(SPLdBBW3d_4d()[i][j][blade][E]/10.));}
+           if ((SPLdBCW3d_4d()[i][j][blade][E]<=0) & (SPLdBCW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLdBCW3d_final_4d[j] += 0;} else {auxa_m_SPLdBCW3d_final_4d[j] += pow(10.,(SPLdBCW3d_4d()[i][j][blade][E]/10.));}
+           if ((SPL_LEdB3d_4d()[i][j][blade][E]<=0) & (SPL_LEdB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPL_LEdB3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdB3d_final_4d[j] += pow(10.,(SPL_LEdB3d_4d()[i][j][blade][E]/10.));}
+           if ((SPL_LEdBAW3d_4d()[i][j][blade][E]<=0) & (SPL_LEdBAW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPL_LEdBAW3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final_4d[j] += pow(10.,(SPL_LEdBAW3d_4d()[i][j][blade][E]/10.));}
+           if ((SPL_LEdBBW3d_4d()[i][j][blade][E]<=0) & (SPL_LEdBBW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPL_LEdBBW3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final_4d[j] += pow(10.,(SPL_LEdBBW3d_4d()[i][j][blade][E]/10.));}
+           if ((SPL_LEdBCW3d_4d()[i][j][blade][E]<=0) & (SPL_LEdBCW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPL_LEdBCW3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final_4d[j] += pow(10.,(SPL_LEdBCW3d_4d()[i][j][blade][E]/10.));}
+        }}}}
+
+//        QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+//        unsigned int number_of_segments = pBEM->dlg_elements;
+
+        if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+
+        for (int i=0;i<size;++i){
+        for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+        //    3d curves
+            m_SPLadB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final_4d[j]);
+            m_SPLsdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final_4d[j]);
+            m_SPLpdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final_4d[j]);
+            m_SPLdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final_4d[j]);
+            m_SPLdBAW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final_4d[j]);
+            m_SPLdBBW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final_4d[j]);
+            m_SPLdBCW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final_4d[j]);
+            if (m_parameter->Lowson_type!=0){
+            m_SPL_LEdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final_4d[j]);
+            m_SPL_LEdBAW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final_4d[j]);
+            m_SPL_LEdBBW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final_4d[j]);
+            m_SPL_LEdBCW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final_4d[j]);
+            }
+            else{
+            m_SPL_LEdB3d_final_rotor_loops[i][j]=0;
+            m_SPL_LEdBAW3d_final_rotor_loops[i][j]=0;
+            m_SPL_LEdBBW3d_final_rotor_loops[i][j]=0;
+            m_SPL_LEdBCW3d_final_rotor_loops[i][j]=0;
+            }
+        }
+        }
+
+        //OASPL complete for quasi 3d
+        int i=number_of_segments-1;
+        for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+            Final_qs3d_alpha_aux_4d += pow(10.,(m_SPLadB3d_final_rotor_loops[i][j])/10.);
+            Final_qs3d_S_aux_4d += pow(10.,(m_SPLsdB3d_final_rotor_loops[i][j])/10.);
+            Final_qs3d_P_aux_4d += pow(10.,(m_SPLpdB3d_final_rotor_loops[i][j])/10.);
+            Final_qs3d_LE_aux_4d += pow(10.,(m_SPL_LEdB3d_final_rotor_loops[i][j])/10.);
+            Final_qs3d_aux_4d += pow(10.,(m_SPLdB3d_final_rotor_loops[i][j])/10.);
+                }
+
+            Final_qs3d_alpha_rotor_loops = 10*log10(Final_qs3d_alpha_aux_4d);
+            Final_qs3d_S_rotor_loops = 10*log10(Final_qs3d_S_aux_4d);
+            Final_qs3d_P_rotor_loops = 10*log10(Final_qs3d_P_aux_4d);
+            Final_qs3d_LE_rotor_loops =  10*log10(Final_qs3d_LE_aux_4d);
+            Final_qs3d_rotor_loops = 10*log10(Final_qs3d_aux_4d);
+
+        //calculation for the OASPL for the csv output file
+        for (int i=0;i<size;++i){
+            auxa_m_OASPL3d_rotor_loops[i]=0;
+            auxa_m_OASPLA3d_rotor_loops[i]=0;
+            auxa_m_OASPLB3d_rotor_loops[i]=0;
+            auxa_m_OASPLC3d_rotor_loops[i]=0;
+            auxa_m_SPLALOG3d_rotor_loops[i]=0;
+            auxa_m_SPLSLOG3d_rotor_loops[i]=0;
+            auxa_m_SPLPLOG3d_rotor_loops[i]=0;
+            auxa_m_SPLLEdBAW3d_rotor_loops[i]=0;
+            auxa_m_SPLLEdBBW3d_rotor_loops[i]=0;
+            auxa_m_SPLLEdBCW3d_rotor_loops[i]=0;
+            auxa_m_SPLlogLE3d_rotor_loops[i]=0;
+
+            for (int blade=0;blade<blades_num;++blade){
+            for (E=0;E<angles_num;++E){
+        for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+            if ((SPLadB3d_4d()[i][j][blade][E]<=0) & (SPLadB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLALOG3d_rotor_loops[i] += 0;} else {auxa_m_SPLALOG3d_rotor_loops[i] += pow(10.,(SPLadB3d_4d()[i][j][blade][E]/10.));}
+            if ((SPLsdB3d_4d()[i][j][blade][E]<=0) & (SPLsdB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLSLOG3d_rotor_loops[i] += 0;} else {auxa_m_SPLSLOG3d_rotor_loops[i] += pow(10.,(SPLsdB3d_4d()[i][j][blade][E]/10.));}
+            if ((SPLpdB3d_4d()[i][j][blade][E]<=0) & (SPLpdB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLPLOG3d_rotor_loops[i] += 0;} else {auxa_m_SPLPLOG3d_rotor_loops[i] += pow(10.,(SPLpdB3d_4d()[i][j][blade][E]/10.));}
+            if ((SPLdB3d_4d()[i][j][blade][E]<=0) & (SPLdB3d_4d()[i][j][blade][E]>=0)){auxa_m_OASPL3d_rotor_loops[i] += 0;} else {auxa_m_OASPL3d_rotor_loops[i]+= pow(10.,(SPLdB3d_4d()[i][j][blade][E]/10.));}
+            if ((SPLdBAW3d_4d()[i][j][blade][E]<=0) & (SPLdBAW3d_4d()[i][j][blade][E]>=0)){auxa_m_OASPLA3d_rotor_loops[i] += 0;} else {auxa_m_OASPLA3d_rotor_loops[i] += pow(10.,(SPLdBAW3d_4d()[i][j][blade][E]/10.));}
+            if ((SPLdBBW3d_4d()[i][j][blade][E]<=0) & (SPLdBBW3d_4d()[i][j][blade][E]>=0)){auxa_m_OASPLB3d_rotor_loops[i] += 0;} else {auxa_m_OASPLB3d_rotor_loops[i] += pow(10.,(SPLdBBW3d_4d()[i][j][blade][E]/10.));}
+            if ((SPLdBCW3d_4d()[i][j][blade][E]<=0) & (SPLdBCW3d_4d()[i][j][blade][E]>=0)){auxa_m_OASPLC3d_rotor_loops[i] += 0;} else {auxa_m_OASPLC3d_rotor_loops[i] += pow(10.,(SPLdBCW3d_4d()[i][j][blade][E]/10.));}
+            if ((SPL_LEdB3d_4d()[i][j][blade][E]<=0) & (SPL_LEdB3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLlogLE3d_rotor_loops[i] += 0;} else {auxa_m_SPLlogLE3d_rotor_loops[i] += pow(10.,(SPL_LEdB3d_4d()[i][j][blade][E]/10.));}
+            if ((SPL_LEdBAW3d_4d()[i][j][blade][E]<=0) & (SPL_LEdBAW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLLEdBAW3d_rotor_loops[i] += 0;} else {auxa_m_SPLLEdBAW3d_rotor_loops[i] += pow(10.,(SPL_LEdBAW3d_4d()[i][j][blade][E]/10.));}
+            if ((SPL_LEdBBW3d_4d()[i][j][blade][E]<=0) & (SPL_LEdBBW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLLEdBBW3d_rotor_loops[i] += 0;} else {auxa_m_SPLLEdBBW3d_rotor_loops[i] += pow(10.,(SPL_LEdBBW3d_4d()[i][j][blade][E]/10.));}
+            if ((SPL_LEdBCW3d_4d()[i][j][blade][E]<=0) & (SPL_LEdBCW3d_4d()[i][j][blade][E]>=0)){auxa_m_SPLLEdBCW3d_rotor_loops[i] += 0;} else {auxa_m_SPLLEdBCW3d_rotor_loops[i] += pow(10.,(SPL_LEdBCW3d_4d()[i][j][blade][E]/10.));}
+        }}}
+            m_OASPL3d_rotor_loops[i]=10*log10(auxa_m_OASPL3d_rotor_loops[i]);
+            m_OASPLA3d_rotor_loops[i]=10*log10(auxa_m_OASPLA3d_rotor_loops[i]);
+            m_OASPLB3d_rotor_loops[i]=10*log10(auxa_m_OASPLB3d_rotor_loops[i]);
+            m_OASPLC3d_rotor_loops[i]=10*log10(auxa_m_OASPLC3d_rotor_loops[i]);
+            m_SPLALOG3d_rotor_loops[i]=10*log10(auxa_m_SPLALOG3d_rotor_loops[i]);
+            m_SPLSLOG3d_rotor_loops[i]=10*log10(auxa_m_SPLSLOG3d_rotor_loops[i]);
+            m_SPLPLOG3d_rotor_loops[i]=10*log10(auxa_m_SPLPLOG3d_rotor_loops[i]);
+            if (m_parameter->Lowson_type!=0){
+            m_SPLLEdBAW3d_rotor_loops[i]=10*log10(auxa_m_SPLLEdBAW3d_rotor_loops[i]);
+            m_SPLLEdBBW3d_rotor_loops[i]=10*log10(auxa_m_SPLLEdBBW3d_rotor_loops[i]);
+            m_SPLLEdBCW3d_rotor_loops[i]=10*log10(auxa_m_SPLLEdBCW3d_rotor_loops[i]);
+            m_SPLlogLE3d_rotor_loops[i]=10*log10(auxa_m_SPLlogLE3d_rotor_loops[i]);
+            }
+            else{
+            m_SPLLEdBAW3d_rotor_loops[i]=0;
+            m_SPLLEdBBW3d_rotor_loops[i]=0;
+            m_SPLLEdBCW3d_rotor_loops[i]=0;
+            m_SPLlogLE3d_rotor_loops[i]=0;
+        }}
+}
+//urgente
     //Sara

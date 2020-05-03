@@ -44,6 +44,7 @@ public slots:
     void onqs3dGraph2d();//Sara
     void onqs3dGraphBlade();//Sara
     void onqs3dGraphRotor();//Sara
+    void onqs3dGraphRotorLoops();//Sara
 	void setShownSimulation(NoiseSimulation *newSimulation, bool forceReload = false);
 	NoiseSimulation* getShownSimulation() { return m_shownSimulation; }
 

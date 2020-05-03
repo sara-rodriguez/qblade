@@ -88,7 +88,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 1: *vector = m_calculation.SPLadB()[opPointIndex]; zeroY = true; break;
         case 2: *vector = m_calculation.SPLsdB()[opPointIndex]; zeroY = true; break;
         case 3: *vector = m_calculation.SPLpdB()[opPointIndex]; zeroY = true; break;
-        case 4: *vector = m_calculation.SPL_LEdB()[opPointIndex]; break; //Alexandre MOD
+        case 4: *vector = m_calculation.SPL_LEdB()[opPointIndex]; zeroY = true; break; //Alexandre MOD
             //Sara
         case 5: *vector = m_calculation.SPLdB()[opPointIndex]; break;
         case 6: *vector = m_calculation.SPLdBAW()[opPointIndex]; break;
@@ -97,27 +97,35 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
         case 9: *vector = m_calculation.SPLadB3d()[opPointIndex]; zeroY = true; break;
         case 10: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
         case 11: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
-        case 12: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; break;
-        case 13: *vector = m_calculation.SPLdB3d()[opPointIndex]; break;
+        case 12: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; zeroY = true; break;
+        case 13: *vector = m_calculation.SPLdB3d()[opPointIndex]; zeroY = true; break;
         case 14: *vector = m_calculation.SPLdBAW3d()[opPointIndex]; break;
         case 15: *vector = m_calculation.SPLdBBW3d()[opPointIndex]; break;
         case 16: *vector = m_calculation.SPLdBCW3d()[opPointIndex]; break;
         case 17: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
         case 18: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
         case 19: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
-        case 20: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; break;
-        case 21: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; break;
+        case 20: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; zeroY = true; break;
+        case 21: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; zeroY = true; break;
         case 22: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
         case 23: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
         case 24: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
-        case 25: *vector = m_calculation.SPLadB3d_final_rotor(0,E)[opPointIndex]; zeroY = true; break;
-        case 26: *vector = m_calculation.SPLsdB3d_final_rotor(0,E)[opPointIndex]; zeroY = true; break;
-        case 27: *vector = m_calculation.SPLpdB3d_final_rotor(0,E)[opPointIndex]; zeroY = true; break;
-        case 28: *vector = m_calculation.SPL_LEdB3d_final_rotor(0,E)[opPointIndex]; break;
-        case 29: *vector = m_calculation.SPLdB3d_final_rotor(0,E)[opPointIndex]; break;
-        case 30: *vector = m_calculation.SPLdBAW3d_final_rotor(0,E)[opPointIndex]; break;
-        case 31: *vector = m_calculation.SPLdBBW3d_final_rotor(0,E)[opPointIndex]; break;
-        case 32: *vector = m_calculation.SPLdBCW3d_final_rotor(0,E)[opPointIndex]; break;
+        case 25: *vector = m_calculation.SPLadB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 26: *vector = m_calculation.SPLsdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 27: *vector = m_calculation.SPLpdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 28: *vector = m_calculation.SPL_LEdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 29: *vector = m_calculation.SPLdB3d_final_rotor()[opPointIndex]; zeroY = true; break;
+        case 30: *vector = m_calculation.SPLdBAW3d_final_rotor()[opPointIndex]; break;
+        case 31: *vector = m_calculation.SPLdBBW3d_final_rotor()[opPointIndex]; break;
+        case 32: *vector = m_calculation.SPLdBCW3d_final_rotor()[opPointIndex]; break;
+        case 33: *vector = m_calculation.SPLadB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+        case 34: *vector = m_calculation.SPLsdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+        case 35: *vector = m_calculation.SPLpdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+        case 36: *vector = m_calculation.SPL_LEdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+        case 37: *vector = m_calculation.SPLdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+        case 38: *vector = m_calculation.SPLdBAW3d_final_rotor_loops()[opPointIndex]; break;
+        case 39: *vector = m_calculation.SPLdBBW3d_final_rotor_loops()[opPointIndex]; break;
+        case 40: *vector = m_calculation.SPLdBCW3d_final_rotor_loops()[opPointIndex]; break;
             //Sara
         default: return nullptr;
         }
@@ -135,7 +143,7 @@ QStringList NoiseSimulation::getAvailableVariables(NewGraph::GraphType /*graphTy
     QStringList variables;
 
     // WARNING: when changing any variables list, change newCurve as well!
-    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" <<  "SPL_alpha[multi]" << "SPL_S[multi]" << "SPL_P[multi]" << "SPL_LE[multi] (dB)" << "SPL[multi] (dB)" << "SPL[multi] (dB(A))" << "SPL[multi] (dB(B))" << "SPL[multi] (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" << "SPL_alpha_rotor[qs3D]" << "SPL_S_rotor[qs3D]" << "SPL_P_rotor[qs3D]" << "SPL_LE_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB(A))" << "SPL_rotor[qs3D] (dB(B))" << "SPL_rotor[qs3D] (dB(C))"; //Alexandre MOD Sara
+    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" <<  "SPL_alpha[multi]" << "SPL_S[multi]" << "SPL_P[multi]" << "SPL_LE[multi] (dB)" << "SPL[multi] (dB)" << "SPL[multi] (dB(A))" << "SPL[multi] (dB(B))" << "SPL[multi] (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" << "SPL_alpha_rotor[qs3D]" << "SPL_S_rotor[qs3D]" << "SPL_P_rotor[qs3D]" << "SPL_LE_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB(A))" << "SPL_rotor[qs3D] (dB(B))" << "SPL_rotor[qs3D] (dB(C))" << "SPL_alpha_rotor_loops[qs3D]" << "SPL_S_rotor_loops[qs3D]" << "SPL_P_rotor_loops[qs3D]" << "SPL_LE_rotor_loops[qs3D] (dB)" << "SPL_rotor_loops[qs3D] (dB)" << "SPL_rotor_loops[qs3D] (dB(A))" << "SPL_rotor_loops[qs3D] (dB(B))" << "SPL_rotor_loops[qs3D] (dB(C))"; //Alexandre MOD Sara
 
     return variables;
 }
@@ -174,9 +182,10 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
-    m_calculation.calculateqs3d_graphics_rotation();//Sara
+    m_calculation.calculateqs3d_graphics_loops();//Sara urgente
     m_calculation.calculateqs3d_blade();//Sara
-    m_calculation.calculateqs3d_rotor(0,m_parameter.initial_azimuth);//Sara
+    m_calculation.calculateqs3d_rotor();//Sara
+    m_calculation.calculateqs3d_rotor_loops();//Sara urgente
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -482,39 +491,39 @@ stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
 
             if(m_parameter.Lowson_type!=0){
                        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                                 m_calculation.SPLadB3d_rotor(0,E)[i][j] << ";" <<
-                                 m_calculation.SPLsdB3d_rotor(0,E)[i][j] << ";" <<
-                                 m_calculation.SPLpdB3d_rotor(0,E)[i][j] << ";" <<
-                                 m_calculation.SPL_LEdB3d_rotor(0,E)[i][j] << ";" <<
-                                 m_calculation.SPLdB3d_rotor(0,E)[i][j] << ";" <<
-                                 m_calculation.SPLdBAW3d_rotor(0,E)[i][j] << ";" <<
-                                 m_calculation.SPLdBBW3d_rotor(0,E)[i][j] << ";" <<
-                                 m_calculation.SPLdBCW3d_rotor(0,E)[i][j] << ";" <<
+                                 m_calculation.SPLadB3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPLsdB3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPLpdB3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPL_LEdB3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPLdB3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPLdBAW3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPLdBBW3d_rotor()[i][j] << ";" <<
+                                 m_calculation.SPLdBCW3d_rotor()[i][j] << ";" <<
                                  endl; //Alexandre MOD
                    }
            else{
                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                          m_calculation.SPLadB3d_rotor(0,E)[i][j] << ";" <<
-                          m_calculation.SPLsdB3d_rotor(0,E)[i][j] << ";" <<
-                          m_calculation.SPLpdB3d_rotor(0,E)[i][j] << ";" <<
-                          m_calculation.SPLdB3d_rotor(0,E)[i][j] << ";" <<
-                          m_calculation.SPLdBAW3d_rotor(0,E)[i][j] << ";" <<
-                          m_calculation.SPLdBBW3d_rotor(0,E)[i][j] << ";" <<
-                          m_calculation.SPLdBCW3d_rotor(0,E)[i][j] << ";" << endl;
+                          m_calculation.SPLadB3d_rotor()[i][j] << ";" <<
+                          m_calculation.SPLsdB3d_rotor()[i][j] << ";" <<
+                          m_calculation.SPLpdB3d_rotor()[i][j] << ";" <<
+                          m_calculation.SPLdB3d_rotor()[i][j] << ";" <<
+                          m_calculation.SPLdBAW3d_rotor()[i][j] << ";" <<
+                          m_calculation.SPLdBBW3d_rotor()[i][j] << ";" <<
+                          m_calculation.SPLdBCW3d_rotor()[i][j] << ";" << endl;
             }
         }
         stream << endl;
         stream << qSetFieldWidth(0);
 //        stream << "i: " << i << endl;
-        stream << "SPL_a: " << m_calculation.SPLALOG3d_rotor(0,E)[i] << "" << endl;
-        stream << "SPL_s: " << m_calculation.SPLSLOG3d_rotor(0,E)[i] << "" << endl;
-        stream << "SPL_p: " << m_calculation.SPLPLOG3d_rotor(0,E)[i] << "" << endl;
+        stream << "SPL_a: " << m_calculation.SPLALOG3d_rotor()[i] << "" << endl;
+        stream << "SPL_s: " << m_calculation.SPLSLOG3d_rotor()[i] << "" << endl;
+        stream << "SPL_p: " << m_calculation.SPLPLOG3d_rotor()[i] << "" << endl;
         if(m_parameter.Lowson_type!=0){
-        stream << "SPL_LE: " << m_calculation.SPLlogLE3d_rotor(0,E)[i] << " dB" << endl;}
-        stream << "OASPL: " << m_calculation.OASPL3d_rotor(0,E)[i] << " dB" << endl;
-        stream << "OASPL (A): " << m_calculation.OASPLA3d_rotor(0,E)[i] << " dB(A)" << endl;
-        stream << "OASPL (B): " << m_calculation.OASPLB3d_rotor(0,E)[i] << " dB(B)" << endl;
-        stream << "OASPL (C): " << m_calculation.OASPLC3d_rotor(0,E)[i] << " dB(C)" << endl;
+        stream << "SPL_LE: " << m_calculation.SPLlogLE3d_rotor()[i] << " dB" << endl;}
+        stream << "OASPL: " << m_calculation.OASPL3d_rotor()[i] << " dB" << endl;
+        stream << "OASPL (A): " << m_calculation.OASPLA3d_rotor()[i] << " dB(A)" << endl;
+        stream << "OASPL (B): " << m_calculation.OASPLB3d_rotor()[i] << " dB(B)" << endl;
+        stream << "OASPL (C): " << m_calculation.OASPLC3d_rotor()[i] << " dB(C)" << endl;
         stream << endl;
         stream << endl;
 
@@ -548,25 +557,25 @@ for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
 if(m_parameter.Lowson_type!=0){
         stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                  m_calculation.SPLadB3d_final_rotor(0,E)[i][j] << ";" <<
-                  m_calculation.SPLsdB3d_final_rotor(0,E)[i][j] << ";" <<
-                  m_calculation.SPLpdB3d_final_rotor(0,E)[i][j] << ";" <<
-                  m_calculation.SPL_LEdB3d_final_rotor(0,E)[i][j] << ";" <<
-                  m_calculation.SPLdB3d_final_rotor(0,E)[i][j] << ";" <<
-                  m_calculation.SPLdBAW3d_final_rotor(0,E)[i][j] << ";" <<
-                  m_calculation.SPLdBBW3d_final_rotor(0,E)[i][j] << ";" <<
-                  m_calculation.SPLdBCW3d_final_rotor(0,E)[i][j] << ";" <<
+                  m_calculation.SPLadB3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPLsdB3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPLpdB3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPL_LEdB3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPLdB3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPLdBAW3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPLdBBW3d_final_rotor()[i][j] << ";" <<
+                  m_calculation.SPLdBCW3d_final_rotor()[i][j] << ";" <<
                   endl; //Alexandre MOD
     }
 else{
  stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-           m_calculation.SPLadB3d_final_rotor(0,E)[i][j] << ";" <<
-           m_calculation.SPLsdB3d_final_rotor(0,E)[i][j] << ";" <<
-           m_calculation.SPLpdB3d_final_rotor(0,E)[i][j] << ";" <<
-           m_calculation.SPLdB3d_final_rotor(0,E)[i][j] << ";" <<
-           m_calculation.SPLdBAW3d_final_rotor(0,E)[i][j] << ";" <<
-           m_calculation.SPLdBBW3d_final_rotor(0,E)[i][j] << ";" <<
-           m_calculation.SPLdBCW3d_final_rotor(0,E)[i][j] << ";" << endl;
+           m_calculation.SPLadB3d_final_rotor()[i][j] << ";" <<
+           m_calculation.SPLsdB3d_final_rotor()[i][j] << ";" <<
+           m_calculation.SPLpdB3d_final_rotor()[i][j] << ";" <<
+           m_calculation.SPLdB3d_final_rotor()[i][j] << ";" <<
+           m_calculation.SPLdBAW3d_final_rotor()[i][j] << ";" <<
+           m_calculation.SPLdBBW3d_final_rotor()[i][j] << ";" <<
+           m_calculation.SPLdBCW3d_final_rotor()[i][j] << ";" << endl;
 }
 }
 stream << endl;
@@ -577,6 +586,167 @@ stream << endl;
 //stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
 //if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
 }}}
+
+//urgente
+void NoiseSimulation::exportCalculationqs3DNoise_rotor_loops(QTextStream &stream) {
+    double E=m_parameter.initial_azimuth;
+
+    stream.setRealNumberNotation(QTextStream::FixedNotation);
+    stream.setRealNumberPrecision(5);
+
+    stream << "Noise prediction file export quasi 3D for rotor in rotation movement" << endl;
+    stream << endl;
+    if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" <<endl;}
+    if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" <<endl;}
+    stream << "Tip Speed Ratio: " << m_parameter.TSRtd << endl;
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
+
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+     int number_of_segments = pBEM->dlg_elements;
+     stream << endl;
+     stream << endl;
+     stream << "*********************************************" << endl;
+     stream << "Total Values:" << endl;
+     stream << endl;
+     stream << "OASPL: " << m_calculation.Final_qs3d_rotor_loops << endl;
+     stream << "SPL alfa: " << m_calculation.Final_qs3d_alpha_rotor_loops << endl;
+     stream << "SPL S: " << m_calculation.Final_qs3d_S_rotor_loops << endl;
+     stream << "SPL P: " << m_calculation.Final_qs3d_P_rotor_loops << endl;
+     if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE_rotor_loops;}
+     stream << endl;
+     stream << "*********************************************" << endl;
+     stream << endl;
+     stream << endl;
+
+     for (int i = 0; i < number_of_segments; ++i){
+ stream << qSetFieldWidth(0);
+ //        stream << endl;
+// stream << "Section: " << (i+1)<<"/"<<number_of_segments << endl;
+//         stream << endl;
+//                if(m_parameter.Lowson_type!=0){
+//         stream << qSetFieldWidth(14) <<
+//                   "Freq [Hz]" << ";" <<
+//                   "SPLa" << ";" <<
+//                   "SPLs" << ";" <<
+//                   "SPLp" << ";" <<
+//                   "SPL_LE (dB)" << ";" <<
+//                   "SPL (dB)" << ";" <<
+//                   "SPL (dB(A))" << ";" <<
+//                   "SPL (dB(B))" << ";" <<
+//                   "SPL (dB(C))" << ";" <<endl; //Alexandre MOD
+//                }
+//                else{
+//                    stream << qSetFieldWidth(14) <<
+//                              "Freq [Hz]" << ";" <<
+//                              "SPLa" << ";" <<
+//                              "SPLs" << ";" <<
+//                              "SPLp" << ";" <<
+//                              "SPL (dB)" << ";" <<
+//                              "SPL (dB(A))" << ";" <<
+//                              "SPL (dB(B))" << ";" <<
+//                              "SPL (dB(C))" <<endl; //Alexandre MOD
+//                }
+// //int i=0;
+//         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
+
+//             if(m_parameter.Lowson_type!=0){
+//                        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+//                                  m_calculation.SPLadB3d_rotor_loops()[i][j] << ";" <<
+//                                  m_calculation.SPLsdB3d_rotor_loops()[i][j] << ";" <<
+//                                  m_calculation.SPLpdB3d_rotor_loops()[i][j] << ";" <<
+//                                  m_calculation.SPL_LEdB3d_rotor_loops()[i][j] << ";" <<
+//                                  m_calculation.SPLdB3d_rotor_loops()[i][j] << ";" <<
+//                                  m_calculation.SPLdBAW3d_rotor_loops()[i][j] << ";" <<
+//                                  m_calculation.SPLdBBW3d_rotor_loops()[i][j] << ";" <<
+//                                  m_calculation.SPLdBCW3d_rotor_loops()[i][j] << ";" <<
+//                                  endl; //Alexandre MOD
+//                    }
+//            else{
+//                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+//                           m_calculation.SPLadB3d_rotor_loops()[i][j] << ";" <<
+//                           m_calculation.SPLsdB3d_rotor_loops()[i][j] << ";" <<
+//                           m_calculation.SPLpdB3d_rotor_loops()[i][j] << ";" <<
+//                           m_calculation.SPLdB3d_rotor_loops()[i][j] << ";" <<
+//                           m_calculation.SPLdBAW3d_rotor_loops()[i][j] << ";" <<
+//                           m_calculation.SPLdBBW3d_rotor_loops()[i][j] << ";" <<
+//                           m_calculation.SPLdBCW3d_rotor_loops()[i][j] << ";" << endl;
+//             }
+//         }
+//         stream << endl;
+//         stream << qSetFieldWidth(0);
+// //        stream << "i: " << i << endl;
+//         stream << "SPL_a: " << m_calculation.SPLALOG3d_rotor_loops()[i] << "" << endl;
+//         stream << "SPL_s: " << m_calculation.SPLSLOG3d_rotor_loops()[i] << "" << endl;
+//         stream << "SPL_p: " << m_calculation.SPLPLOG3d_rotor_loops()[i] << "" << endl;
+//         if(m_parameter.Lowson_type!=0){
+//         stream << "SPL_LE: " << m_calculation.SPLlogLE3d_rotor_loops()[i] << " dB" << endl;}
+//         stream << "OASPL: " << m_calculation.OASPL3d_rotor_loops()[i] << " dB" << endl;
+//         stream << "OASPL (A): " << m_calculation.OASPLA3d_rotor_loops()[i] << " dB(A)" << endl;
+//         stream << "OASPL (B): " << m_calculation.OASPLB3d_rotor_loops()[i] << " dB(B)" << endl;
+//         stream << "OASPL (C): " << m_calculation.OASPLC3d_rotor_loops()[i] << " dB(C)" << endl;
+//         stream << endl;
+//         stream << endl;
+
+ if(i==(number_of_segments-1)){
+// stream << "********** FINAL **********" << endl;
+ if(m_parameter.Lowson_type!=0){
+ stream << qSetFieldWidth(14) <<
+    "Freq [Hz]" << ";" <<
+    "SPLa" << ";" <<
+    "SPLs" << ";" <<
+    "SPLp" << ";" <<
+    "SPL_LE (dB)" << ";" <<
+    "SPL (dB)" << ";" <<
+    "SPL (dB(A))" << ";" <<
+    "SPL (dB(B))" << ";" <<
+    "SPL (dB(C))" << ";" <<endl; //Alexandre MOD
+ }
+ else{
+     stream << qSetFieldWidth(14) <<
+               "Freq [Hz]" << ";" <<
+               "SPLa" << ";" <<
+               "SPLs" << ";" <<
+               "SPLp" << ";" <<
+               "SPL (dB)" << ";" <<
+               "SPL (dB(A))" << ";" <<
+               "SPL (dB(B))" << ";" <<
+               "SPL (dB(C))" <<endl; //Alexandre MOD
+ }
+ //int i=0;
+ for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
+
+ if(m_parameter.Lowson_type!=0){
+         stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                   m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPLpdB3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPL_LEdB3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPLdB3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPLdBAW3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPLdBBW3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
+                   endl; //Alexandre MOD
+     }
+ else{
+  stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+            m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
+            m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
+            m_calculation.SPLpdB3d_final_rotor_loops()[i][j] << ";" <<
+            m_calculation.SPLdB3d_final_rotor_loops()[i][j] << ";" <<
+            m_calculation.SPLdBAW3d_final_rotor_loops()[i][j] << ";" <<
+            m_calculation.SPLdBBW3d_final_rotor_loops()[i][j] << ";" <<
+            m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" << endl;
+}
+}
+stream << endl;
+//stream << "Total Values" << endl;
+//stream << "OASPL: " << m_calculation.Final_qs3d << endl;
+//stream << "SPL alfa: " << m_calculation.Final_qs3d_alpha << endl;
+//stream << " SPL S: " << m_calculation.Final_qs3d_S << endl;
+//stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
+//if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
+}}}
+//urgente
 
 void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
     stream.setRealNumberNotation(QTextStream::FixedNotation);
@@ -1265,15 +1435,10 @@ else {value=m_parameter.rot_speed_check;}
         if(set) m_parameter.obs_z_pos_rotor = value.toDouble();
         else {value = m_parameter.obs_z_pos_rotor;}break;
 
-     case P::step_type:
-        if(set) m_parameter.step_type = value.toDouble();
-        else {value = m_parameter.step_type;}
-        break;
-
-    case P::anglesteps:
-        if(set) m_parameter.anglesteps = value.toInt();
-        else {value = m_parameter.anglesteps;}
-        break;
+//     case P::step_type:
+//        if(set) m_parameter.step_type = value.toDouble();
+//        else {value = m_parameter.step_type;}
+//        break;
 
     case P::tower_height:
         if(set) m_parameter.tower_height = value.toDouble();
@@ -1305,6 +1470,36 @@ else {value=m_parameter.Lowson_type;}
 else {value=m_parameter.state_ss_us;}
         break;
 
+    case P::rotation_type:
+       if(set) m_parameter.rotation_type = value.toInt();
+       else {value = m_parameter.rotation_type;}
+       break;
+
+    case P::number_loops:
+        if(m_parameter.rotation_type==1){m_parameter.number_loops=m_parameter.time/(60./m_parameter.rot_speed);}
+       if(set) m_parameter.number_loops = value.toInt();
+       else {value = m_parameter.number_loops;}
+       break;
+
+    case P::time:
+       if(m_parameter.rotation_type==0){m_parameter.time=60./m_parameter.rot_speed;}
+       if (m_parameter.time==0){m_parameter.time=60./m_parameter.rot_speed;}
+       if(set) m_parameter.time = value.toDouble();
+       else {value = m_parameter.time;}
+       break;
+
+    case P::timesteps:
+        if(m_parameter.rotation_type==1){m_parameter.timesteps=(m_parameter.time/(60./m_parameter.rot_speed))/360.*m_parameter.anglesteps*1000.;}
+        if (m_parameter.timesteps==0){m_parameter.timesteps=(m_parameter.time/(60./m_parameter.rot_speed))/360.*45.*1000.;}
+       if(set) m_parameter.timesteps = value.toInt();
+       else {value = m_parameter.timesteps;}
+       break;
+
+    case P::anglesteps:
+        if(m_parameter.rotation_type==1){m_parameter.anglesteps=m_parameter.timesteps*60.*360./(m_parameter.rot_speed*1000.);}
+        if(set) m_parameter.anglesteps = value.toInt();
+        else {value = m_parameter.anglesteps;}
+        break;
     }
 // Sara
 

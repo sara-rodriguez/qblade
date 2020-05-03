@@ -303,21 +303,30 @@ if(g_windFieldStore.size() == 0){tower_height_in=100;}else{tower_height_in=g_win
     m_tower_to_hub_distance_numberedit = new NumberEdit ();
     pGrid->addEdit(P::tower_to_hub_distance, NumberEditType, m_tower_to_hub_distance_numberedit,"Tower To Hub Distance []:",4,LENGTH);
 
+    rotation_combobox = new QComboBox;
+    pGrid->addEdit(P::rotation_type,ComboBox, rotation_combobox,"Reference:","");
+    rotation_combobox->insertItem(0,"Angular");
+    rotation_combobox->insertItem(1,"Time");
+    connect(rotation_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnRotationDefine(int)));
+    rotation_combobox->setEnabled(true);
+
+    m_number_loops_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::number_loops, NumberEditType, m_number_loops_numberedit,"Number of Loops:",1);
+    m_number_loops_numberedit->setEnabled(true);
+
     m_anglesteps_numberedit = new NumberEdit ();
     pGrid->addEdit(P::anglesteps, NumberEditType, m_anglesteps_numberedit,"Anglesteps [deg]:",45);
-    m_anglesteps_numberedit->setMinimum(0.1);
+    m_anglesteps_numberedit->setMinimum(1);
     m_anglesteps_numberedit->setMaximum(45);
+    m_number_loops_numberedit->setEnabled(true);
 
-    step_combobox = new QComboBox;
-    pGrid->addEdit(P::step_type,ComboBox, step_combobox,"Step type:","");
-    step_combobox->insertItem(0,"Time");
-    step_combobox->insertItem(1,"Angular");
-    connect(step_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnStepTypeDefine(int)));
-    step_combobox->setEnabled(false);
+    m_time_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::time, NumberEditType, m_time_numberedit,"Time [s]:",100);
+    m_time_numberedit->setEnabled(false);
 
-//    timesteps_numberedit = new NumberEdit ();
-//    pGrid->addEdit(P::timesteps, NumberEditType, timesteps_numberedit,"Timesteps:",number_time_steps);
-//    timesteps_numberedit->setEnabled(false);
+    m_timesteps_numberedit = new NumberEdit ();
+    pGrid->addEdit(P::timesteps, NumberEditType, m_timesteps_numberedit,"Timesteps [ms]:",5);
+    m_timesteps_numberedit->setEnabled(false);
 
     QLabel *labeltf = new QLabel ("Observer Position:");
     double distx = 1.5*outer_radius;
@@ -592,22 +601,50 @@ void NoiseCreatorDialog::OnSetDstarButton(int index){
 void NoiseCreatorDialog::OnModeDefine(int index){
 //when unsteady state
     if (index==1){
-    step_combobox->setEnabled(true);
-//    timesteps_numberedit->setEnabled(true);
+//    step_combobox->setEnabled(true);
+    rotation_combobox->setCurrentIndex(0);
+    m_number_loops_numberedit->setEnabled(false);
+    m_anglesteps_numberedit->setEnabled(false);
+    m_time_numberedit->setEnabled(false);
+    m_timesteps_numberedit->setEnabled(false);
+    rotation_combobox->setEnabled(false);
     onVerifyWindfield();
     }
     else {
-    step_combobox->setEnabled(false);
-//    timesteps_numberedit->setEnabled(false);
+//    step_combobox->setEnabled(false);
+    rotation_combobox->setEnabled(true);
+    m_number_loops_numberedit->setEnabled(true);
+    m_anglesteps_numberedit->setEnabled(true);
+    m_time_numberedit->setEnabled(false);
+    m_timesteps_numberedit->setEnabled(false);
     }
 }
 
-void NoiseCreatorDialog::OnStepTypeDefine(int index){
+//void NoiseCreatorDialog::OnStepTypeDefine(int index){
+//    if (index==0){
+//        m_anglesteps_numberedit->setEnabled(false);
+//        m_number_loops_numberedit->setEnabled(true);
+//        m_time_numberedit->setEnabled(false);
+//    }
+//    if (index==1){
+//        m_anglesteps_numberedit->setEnabled(true);
+//        m_number_loops_numberedit->setEnabled(false);
+//        m_time_numberedit->setEnabled(false);
+//    }
+//}
+
+void NoiseCreatorDialog::OnRotationDefine(int index){
     if (index==0){
-        m_anglesteps_numberedit->setEnabled(false);
+        m_number_loops_numberedit->setEnabled(true);
+        m_anglesteps_numberedit->setEnabled(true);
+        m_time_numberedit->setEnabled(false);
+        m_timesteps_numberedit->setEnabled(false);
     }
     if (index==1){
-        m_anglesteps_numberedit->setEnabled(true);
+        m_number_loops_numberedit->setEnabled(false);
+        m_anglesteps_numberedit->setEnabled(false);
+        m_time_numberedit->setEnabled(true);
+        m_timesteps_numberedit->setEnabled(true);
     }
 }
 //Sara
