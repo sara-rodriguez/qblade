@@ -605,8 +605,8 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
     m_SplpFirstTerm = 10 * log10(pow(m_parameter->originalMach,5) * m_parameter->wettedLength * getDH() *
                                  m_DStarFinalP / pow(m_parameter->distanceObsever,2));
 
-//    qDebug() << "SPLp dH: " << getDH();
-//    qDebug() << "SPLp firstTerm: " << m_SplpFirstTerm;
+    qDebug() << "SPLp dH: " << getDH();
+    qDebug() << "SPLp firstTerm: " << m_SplpFirstTerm;
 
     m_SplpSt1 = getSt1();
     m_SplpK1 = getK1(nop);
@@ -626,11 +626,11 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
         m_SplpDeltaK1 = nop->getAlphaDegreeAbsolute() * (1.43*log10(m_ReynoldsBasedDisplacement)-5.29);
     }
 
-//	qDebug() << "Reynolds Based Displacement: " << m_ReynoldsBasedDisplacement;
-//	qDebug() << "SPLp st1: " << m_SplpSt1;
-//	qDebug() << "SPLp k1: " << m_SplpK1;
-//	qDebug() << "SPLp k1-3: " << m_SplpK13;
-//	qDebug() << "SPLp DeltaK1: " << m_SplpDeltaK1;
+    qDebug() << "Reynolds Based Displacement: " << m_ReynoldsBasedDisplacement;
+    qDebug() << "SPLp st1: " << m_SplpSt1;
+    qDebug() << "SPLp k1: " << m_SplpK1;
+    qDebug() << "SPLp k1-3: " << m_SplpK13;
+    qDebug() << "SPLp DeltaK1: " << m_SplpDeltaK1;
 }
 
 void NoiseCalculation::calcSPLa(double alpha, int posOpPoint, int posFreq) {
@@ -1043,10 +1043,10 @@ m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordm
                 splDbConsolidated += pow(10,(m_SPLadB[posOpPoint][posFreq]/10));
 
             if(m_CalcPressureSide)
-                splDbConsolidated += pow(10,(m_SPLsdB[posOpPoint][posFreq]/10));
+                splDbConsolidated += pow(10,(m_SPLpdB[posOpPoint][posFreq]/10));//Sara
 
             if(m_CalcSuctionSide)
-                splDbConsolidated += pow(10,(m_SPLpdB[posOpPoint][posFreq]/10));
+                splDbConsolidated += pow(10,(m_SPLsdB[posOpPoint][posFreq]/10));//Sara
 
 //Sara
             if(m_parameter->Lowson_type!=0){
@@ -1930,7 +1930,7 @@ return Dl;
 }
 
 //vector for blade
-void NoiseCalculation::calculateqs3d_graphics(int blade, int E) {
+void NoiseCalculation::calculateqs3d_calc(int blade, int E) {
   QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
@@ -2416,7 +2416,7 @@ D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
 //natural transition
 D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
 
-D_starred_N[i]=D_starred_C_N[i]*chord[i];
+D_starred_N[i]=chord[i]*D_starred_C_N[i];
 
 if ((alpha[i]<=0) & (alpha[i]>=0)){
 D_starred_HT_S[i]=D_starred_HT[i];
@@ -2716,7 +2716,6 @@ local_twist[i]=theta_BEM[i];
 //    qDebug() << "theta_e" << theta_e_rotor[i];
 //    qDebug() << "phi_e" << phi_e_rotor[i];
 //    }
-    //urgente
 
 //rotor
 
@@ -3094,6 +3093,22 @@ aux_m_SPLdBAW3d_rotor=0;
 aux_m_SPLdBBW3d_rotor=0;
 aux_m_SPLdBCW3d_rotor=0;
 }
+
+if(!m_parameter->separatedFlow){
+    aux_m_SPLadB3d=0;
+    aux_m_SPLadB3d_rotor=0;
+}
+
+if(!m_parameter->suctionSide){
+    aux_m_SPLsdB3d=0;
+    aux_m_SPLsdB3d_rotor=0;
+}
+
+if(!m_parameter->pressureSide){
+    aux_m_SPLpdB3d=0;
+    aux_m_SPLpdB3d_rotor=0;
+}
+
 if (LE_validation!=0){
 aux_m_SPL_LEdB3d=SPL_LedB[j];
 aux_m_SPL_LEdBAW3d=SPL_LedBAW[j];
@@ -3142,7 +3157,6 @@ if(qIsInf(aux_m_SPL_LEdBBW3d_rotor) || qIsNaN(aux_m_SPL_LEdBBW3d_rotor)){aux_m_S
 if(qIsInf(aux_m_SPL_LEdBCW3d_rotor) || qIsNaN(aux_m_SPL_LEdBCW3d_rotor)){aux_m_SPL_LEdBCW3d_rotor=0;}
 
 //multi 3D curves
-//urgente
 if((blade==0) & (E==0)){
 m_SPLadB3d[i][j]=aux_m_SPLadB3d;
 m_SPLsdB3d[i][j]=aux_m_SPLsdB3d;
@@ -3222,7 +3236,6 @@ m_SPL_LEdBAW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBBW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBCW3d_4d_blade[i][j][blade][E]=0;
 }
-//urgente
 
 if(m_parameter->state_ss_us==1){
         //    unsteady urgente
@@ -3260,7 +3273,7 @@ z=z+ldelta;
 }}
 
 //calculation for rotor in loop
-void NoiseCalculation::calculateqs3d_graphics_loops(){
+void NoiseCalculation::calculateqs3d_calc_loops(){
 
     setupVectorsqs3d();
 
@@ -3289,7 +3302,7 @@ double last_angle=initial_azimuth+number_of_rotations*360;
 for (int blade=0;blade<blades_num;++blade){
 for (E=0;E<angles_num;++E){
 
-        calculateqs3d_graphics(blade,E);//urgente
+        calculateqs3d_calc(blade,E);
 
 }}
 }
@@ -3680,7 +3693,6 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLlogLE3d_rotor[i]=0;
     }}}
 
-//urgente
 //calculation for all blades in rotation movement
 void NoiseCalculation::calculateqs3d_rotor_loops() {
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
@@ -3897,5 +3909,4 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
             m_SPLlogLE3d_rotor_loops[i]=0;
         }}
 }
-//urgente
     //Sara

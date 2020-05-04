@@ -182,10 +182,10 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
-    m_calculation.calculateqs3d_graphics_loops();//Sara urgente
+    m_calculation.calculateqs3d_calc_loops();//Sara
     m_calculation.calculateqs3d_blade();//Sara
     m_calculation.calculateqs3d_rotor();//Sara
-    m_calculation.calculateqs3d_rotor_loops();//Sara urgente
+    m_calculation.calculateqs3d_rotor_loops();//Sara
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -587,7 +587,6 @@ stream << endl;
 //if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
 }}}
 
-//urgente
 void NoiseSimulation::exportCalculationqs3DNoise_rotor_loops(QTextStream &stream) {
     double E=m_parameter.initial_azimuth;
 
@@ -746,7 +745,6 @@ stream << endl;
 //stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
 //if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
 }}}
-//urgente
 
 void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
     stream.setRealNumberNotation(QTextStream::FixedNotation);
