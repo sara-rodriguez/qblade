@@ -605,8 +605,8 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
     m_SplpFirstTerm = 10 * log10(pow(m_parameter->originalMach,5) * m_parameter->wettedLength * getDH() *
                                  m_DStarFinalP / pow(m_parameter->distanceObsever,2));
 
-    qDebug() << "SPLp dH: " << getDH();
-    qDebug() << "SPLp firstTerm: " << m_SplpFirstTerm;
+//    qDebug() << "SPLp dH: " << getDH();
+//    qDebug() << "SPLp firstTerm: " << m_SplpFirstTerm;
 
     m_SplpSt1 = getSt1();
     m_SplpK1 = getK1(nop);
@@ -626,11 +626,11 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
         m_SplpDeltaK1 = nop->getAlphaDegreeAbsolute() * (1.43*log10(m_ReynoldsBasedDisplacement)-5.29);
     }
 
-    qDebug() << "Reynolds Based Displacement: " << m_ReynoldsBasedDisplacement;
-    qDebug() << "SPLp st1: " << m_SplpSt1;
-    qDebug() << "SPLp k1: " << m_SplpK1;
-    qDebug() << "SPLp k1-3: " << m_SplpK13;
-    qDebug() << "SPLp DeltaK1: " << m_SplpDeltaK1;
+//	qDebug() << "Reynolds Based Displacement: " << m_ReynoldsBasedDisplacement;
+//	qDebug() << "SPLp st1: " << m_SplpSt1;
+//	qDebug() << "SPLp k1: " << m_SplpK1;
+//	qDebug() << "SPLp k1-3: " << m_SplpK13;
+//	qDebug() << "SPLp DeltaK1: " << m_SplpDeltaK1;
 }
 
 void NoiseCalculation::calcSPLa(double alpha, int posOpPoint, int posFreq) {
@@ -1043,10 +1043,10 @@ m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordm
                 splDbConsolidated += pow(10,(m_SPLadB[posOpPoint][posFreq]/10));
 
             if(m_CalcPressureSide)
-                splDbConsolidated += pow(10,(m_SPLpdB[posOpPoint][posFreq]/10));//Sara
+                splDbConsolidated += pow(10,(m_SPLsdB[posOpPoint][posFreq]/10));
 
             if(m_CalcSuctionSide)
-                splDbConsolidated += pow(10,(m_SPLsdB[posOpPoint][posFreq]/10));//Sara
+                splDbConsolidated += pow(10,(m_SPLpdB[posOpPoint][posFreq]/10));
 
 //Sara
             if(m_parameter->Lowson_type!=0){
@@ -1930,7 +1930,7 @@ return Dl;
 }
 
 //vector for blade
-void NoiseCalculation::calculateqs3d_calc(int blade, int E) {
+void NoiseCalculation::calculateqs3d_graphics(int blade, int E) {
   QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
@@ -2416,7 +2416,7 @@ D_starred_HT[i]=chord[i]*D_starred_C_HT[i];
 //natural transition
 D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reynolds[i]),2)));
 
-D_starred_N[i]=chord[i]*D_starred_C_N[i];
+D_starred_N[i]=D_starred_C_N[i]*chord[i];
 
 if ((alpha[i]<=0) & (alpha[i]>=0)){
 D_starred_HT_S[i]=D_starred_HT[i];
@@ -2564,18 +2564,13 @@ double ZB=0;
     omega_rotor = 2.*M_PI*rot_speed/60.; //rotor
     double XUT=XLT;
     double YUT=YLT;
-    double ZUT=ZLT+H;
+    double ZUT=ZLT-H; //Sara it was +H
 
     double XYB=XUT*cos(qDegreesToRadians(Y))+YUT*sin(qDegreesToRadians(Y));
     double YYB=XUT*-sin(qDegreesToRadians(Y))+YUT*cos(qDegreesToRadians(Y));
     double ZYB=ZUT;
 
     double TTH=m_parameter->tower_to_hub_distance;//tower to hub distance
-
-    double XHF=XYB-TTH;
-    double YHF=YYB;
-    double ZHF=ZYB;
-
     int blades_num = pbem->m_pBData->blades;
     double anglesteps;
     double angle_between_blades=360./blades_num;
@@ -2583,6 +2578,12 @@ double ZB=0;
     double E_o=initial_azimuth;
     double E_f;
     int number_of_rotations;
+    E_o=E_o+anglesteps;
+    double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
+
+    double XHF=XYB+TTH;//Sara it was -TTH
+    double YHF=YYB-HR*sin(qDegreesToRadians(azimuthal)); //Sara it was YYB
+    double ZHF=ZYB-HR*(1+cos(qDegreesToRadians(azimuthal))); //Sara it was ZYB
 
     if (m_parameter->rotation_type==0){
     //    angle based
@@ -2594,16 +2595,13 @@ double ZB=0;
     anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
     }
 
-    E_o=E_o+anglesteps;
-    double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
-
     double XRR=XHF;
     double YRR=YHF*cos(qDegreesToRadians(azimuthal))+XHF*sin(qDegreesToRadians(azimuthal));
     double ZRR=YHF*(-sin(qDegreesToRadians(azimuthal)))+ZHF*cos(qDegreesToRadians(azimuthal));
 
     double XB_rotor=XRR;
     double YB_rotor=YRR;
-    double ZB_rotor=ZRR+HR;
+    double ZB_rotor=ZRR; //Sara it was ZRR+HR
 //rotor
 
     c_0[i]=bdata->m_c_local.value(i);
@@ -2664,59 +2662,6 @@ local_twist[i]=theta_BEM[i];
     theta_e_rotor[i]=calcTheta_e(XRT_rotor[i],YRT_rotor[i],ZRT_rotor[i]);
     phi_e_rotor[i]=calcPhi_e(XRT_rotor[i], ZRT_rotor[i]);
     dist_obs_rotor[i]=r_e_rotor[i];
-
-    //urgente
-//    if(i==21){
-//    qDebug() << "";
-//    qDebug() << i;
-//    qDebug() << "XF: " << m_parameter->obs_x_pos_rotor;
-//    qDebug() << "YF: " << m_parameter->obs_y_pos_rotor;
-//    qDebug() << "ZF: " << m_parameter->obs_z_pos_rotor;
-//    qDebug() << "TTH: " << TTH;
-//    qDebug() << "E: " << E;
-//    qDebug() << "HR: " << HR;
-//    qDebug() << "RD: " << RD;
-//    qDebug() << "H: " << H;
-//    qDebug() << "yaw: " << Y;
-//    qDebug() << "a: " << a[i];
-//    qDebug() << "b: " << b[i];
-//        qDebug() << "YT: " << calc_int_a_rotor[i];
-//        qDebug() << "ri_1: " << r_1[i];
-//        qDebug() << "ri: " << r_0[i];
-
-//    qDebug() << "XUT: " << XUT;
-//    qDebug() << "YUT: " << YUT;
-//    qDebug() << "ZUT: " << ZUT;
-
-//    qDebug() << "XYB: " << XYB;
-//    qDebug() << "YYB: " << YYB;
-//    qDebug() << "ZYB: " << ZYB;
-
-//    qDebug() << "XHF: " << XHF;
-//    qDebug() << "YHF: " << YHF;
-//    qDebug() << "ZHF: " << ZHF;
-
-//    qDebug() << "XRR: " << XRR;
-//    qDebug() << "YRR: " << YRR;
-//    qDebug() << "ZRR: " << ZRR;
-
-//    qDebug() << "XB: " << XB_rotor;
-//    qDebug() << "YB: " << YB_rotor;
-//    qDebug() << "ZB: " << ZB_rotor;
-
-//    qDebug() << "XRS: " << XRS_rotor[i];
-//    qDebug() << "YRS: " << YRS_rotor[i];
-//    qDebug() << "ZRS: " << ZRS_rotor[i];
-
-//    qDebug() << "XRT: " << XRT_rotor[i];
-//    qDebug() << "YRT: " << YRT_rotor[i];
-//    qDebug() << "ZRT: " << ZRT_rotor[i];
-//    qDebug() << "";
-//    qDebug() << "re: " << dist_obs_rotor[i];
-//    qDebug() << "theta_e" << theta_e_rotor[i];
-//    qDebug() << "phi_e" << phi_e_rotor[i];
-//    }
-
 //rotor
 
 alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
@@ -3093,22 +3038,6 @@ aux_m_SPLdBAW3d_rotor=0;
 aux_m_SPLdBBW3d_rotor=0;
 aux_m_SPLdBCW3d_rotor=0;
 }
-
-if(!m_parameter->separatedFlow){
-    aux_m_SPLadB3d=0;
-    aux_m_SPLadB3d_rotor=0;
-}
-
-if(!m_parameter->suctionSide){
-    aux_m_SPLsdB3d=0;
-    aux_m_SPLsdB3d_rotor=0;
-}
-
-if(!m_parameter->pressureSide){
-    aux_m_SPLpdB3d=0;
-    aux_m_SPLpdB3d_rotor=0;
-}
-
 if (LE_validation!=0){
 aux_m_SPL_LEdB3d=SPL_LedB[j];
 aux_m_SPL_LEdBAW3d=SPL_LedBAW[j];
@@ -3157,6 +3086,7 @@ if(qIsInf(aux_m_SPL_LEdBBW3d_rotor) || qIsNaN(aux_m_SPL_LEdBBW3d_rotor)){aux_m_S
 if(qIsInf(aux_m_SPL_LEdBCW3d_rotor) || qIsNaN(aux_m_SPL_LEdBCW3d_rotor)){aux_m_SPL_LEdBCW3d_rotor=0;}
 
 //multi 3D curves
+//urgente
 if((blade==0) & (E==0)){
 m_SPLadB3d[i][j]=aux_m_SPLadB3d;
 m_SPLsdB3d[i][j]=aux_m_SPLsdB3d;
@@ -3236,6 +3166,7 @@ m_SPL_LEdBAW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBBW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBCW3d_4d_blade[i][j][blade][E]=0;
 }
+//urgente
 
 if(m_parameter->state_ss_us==1){
         //    unsteady urgente
@@ -3273,7 +3204,7 @@ z=z+ldelta;
 }}
 
 //calculation for rotor in loop
-void NoiseCalculation::calculateqs3d_calc_loops(){
+void NoiseCalculation::calculateqs3d_graphics_loops(){
 
     setupVectorsqs3d();
 
@@ -3302,7 +3233,7 @@ double last_angle=initial_azimuth+number_of_rotations*360;
 for (int blade=0;blade<blades_num;++blade){
 for (E=0;E<angles_num;++E){
 
-        calculateqs3d_calc(blade,E);
+        calculateqs3d_graphics(blade,E);//urgente
 
 }}
 }
@@ -3693,6 +3624,7 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLlogLE3d_rotor[i]=0;
     }}}
 
+//urgente
 //calculation for all blades in rotation movement
 void NoiseCalculation::calculateqs3d_rotor_loops() {
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
@@ -3909,4 +3841,5 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
             m_SPLlogLE3d_rotor_loops[i]=0;
         }}
 }
+//urgente
     //Sara

@@ -282,7 +282,7 @@ hBox->addLayout(vBox);
     connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
 
     double tower_height_in;
-if(g_windFieldStore.size() == 0){tower_height_in=100;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight();}
+if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-hub_radius;}
     m_tower_height_numberedit = new NumberEdit ();
     pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
 

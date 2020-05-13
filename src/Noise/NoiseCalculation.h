@@ -22,7 +22,7 @@ public:
 	
 	typedef QVector< QVector<double> > TwoDVector;
 
-    typedef QVector< QVector < QVector < QVector<double> > > > FourDVector;//Sara
+    typedef QVector< QVector < QVector < QVector<double> > > > FourDVector;//sara urgente
 	
 	static constexpr double SWITCHING_ANGLE2 = 12.5;
     static constexpr int FREQUENCY_TABLE_SIZE = 34; //Alexandre MOD
@@ -38,11 +38,12 @@ public:
 	void calculate();  // can throw NoiseException
 
     void verifydeltafor3d();//Sara
-    void calculateqs3d_calc(int blade, int E);//Sara
-    void calculateqs3d_calc_loops();//Sara
+    void calculateqs3d_graphics(int blade, int E);//Sara
+    void calculateqs3d_graphics_loops();//Sara urgente
     void calculateqs3d_blade();//Sara
     void calculateqs3d_rotor();//Sara
-    void calculateqs3d_rotor_loops();//Sara
+    void calculateqs3d_rotor_loops();//Sara urgente
+//    void unsteady_angles_calc();//Sara urgente
 
     //Sara
     //for quasi 3d rotor
@@ -229,6 +230,18 @@ public:
         QVector<double> SPLLEdBCW3d_rotor_loops() const { return m_SPLLEdBCW3d_rotor_loops;}
         QVector<double> SPLlogLE3d_rotor_loops() const { return m_SPLlogLE3d_rotor_loops; }
 
+//        QVector<double> OASPL3d_4d_blade() const { return m_OASPL3d_4d_blade; }
+//        QVector<double> OASPLA3d_4d_blade() const { return m_OASPLA3d_4d_blade; }
+//        QVector<double> OASPLB3d_4d_blade() const { return m_OASPLB3d_4d_blade; }
+//        QVector<double> OASPLC3d_4d_blade() const { return m_OASPLC3d_4d_blade; }
+//        QVector<double> SPLALOG3d_4d_blade() const { return m_SPLALOG3d_4d_blade; }
+//        QVector<double> SPLSLOG3d_4d_blade() const { return m_SPLSLOG3d_4d_blade; }
+//        QVector<double> SPLPLOG3d_4d_blade() const { return m_SPLPLOG3d_4d_blade; }
+//        QVector<double> SPLLEdBAW3d_4d_blade() const { return m_SPLLEdBAW3d_4d_blade;}
+//        QVector<double> SPLLEdBBW3d_4d_blade() const { return m_SPLLEdBBW3d_4d_blade;}
+//        QVector<double> SPLLEdBCW3d_4d_blade() const { return m_SPLLEdBCW3d_4d_blade;}
+//        QVector<double> SPLlogLE3d_4d_blade() const { return m_SPLlogLE3d_4d_blade; }
+
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
         QVector<double> m_AlphaInterpolated3d;
@@ -361,6 +374,19 @@ private:
     QVector<double> m_SPLLEdBBW3d_rotor_loops;
     QVector<double> m_SPLLEdBCW3d_rotor_loops;
     QVector<double> m_SPLlogLE3d_rotor_loops;
+
+//    QVector<double> m_OASPL3d_4d_blade;
+//    QVector<double> m_OASPLA3d_4d_blade;
+//    QVector<double> m_OASPLB3d_4d_blade;
+//    QVector<double> m_OASPLC3d_4d_blade;
+//    QVector<double> m_SPLALOG3d_4d_blade;
+//    QVector<double> m_SPLSLOG3d_4d_blade;
+//    QVector<double> m_SPLPLOG3d_4d_blade;
+//    QVector<double> m_SPLLEdB3d_4d_blade;
+//    QVector<double> m_SPLLEdBAW3d_4d_blade;
+//    QVector<double> m_SPLLEdBBW3d_4d_blade;
+//    QVector<double> m_SPLLEdBCW3d_4d_blade;
+//    QVector<double> m_SPLlogLE3d_4d_blade;
     //Sara
 
     //For SPLa
@@ -603,6 +629,18 @@ private:
     TwoDVector m_SPL_LEdBBW3d_final_rotor_loops;
     TwoDVector m_SPL_LEdBCW3d_final_rotor_loops;
     TwoDVector m_SPLsdB3d_final_rotor_loops;
+
+//    TwoDVector m_SPLadB3d_final_4d_blade;
+//    TwoDVector m_SPLpdB3d_final_4d_blade;
+//    TwoDVector m_SPLdB3d_final_4d_blade;
+//    TwoDVector m_SPLdBAW3d_final_4d_blade;
+//    TwoDVector m_SPLdBBW3d_final_4d_blade;
+//    TwoDVector m_SPLdBCW3d_final_4d_blade;
+//    TwoDVector m_SPL_LEdB3d_final_4d_blade;
+//    TwoDVector m_SPL_LEdBAW3d_final_4d_blade;
+//    TwoDVector m_SPL_LEdBBW3d_final_4d_blade;
+//    TwoDVector m_SPL_LEdBCW3d_final_4d_blade;
+//    TwoDVector m_SPLsdB3d_final_4d_blade;
 
     //for quasi 3d rotor
     TwoDVector m_unsteady_angles;
