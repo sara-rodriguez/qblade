@@ -7,7 +7,6 @@
 
 #include "ParameterGrid.h"
 
-
 template <class ParameterGroup>
 SimulationCreatorDialog<ParameterGroup>::SimulationCreatorDialog() {
 	QHBoxLayout *hBox = new QHBoxLayout ();
@@ -28,15 +27,15 @@ QGroupBox* SimulationCreatorDialog<ParameterGroup>::constructParameterBox(QStrin
 		ParameterGrid<P> *grid = new ParameterGrid<P>(this);
 		groupBox->setLayout(grid);
 			grid->addEdit(P::Name, this->LineEdit, new QLineEdit(), "Name of Simulation:", defaultName);
-            grid->addEdit(P::Temperature, this->NumberEditType, new NumberEdit (), "Temperature [K]:", 288.15);//Sara
-			grid->addEdit(P::Rho, this->NumberEditType, new NumberEdit (), "Rho [kg/m^3]:", 1.225);
-			grid->addEdit(P::Viscosity, this->NumberEditType, new NumberEdit (), "Viscosity [kg/(m*s)]:", 0.00001647);
+            grid->addEdit(P::Temperature, this->NumberEditType, new NumberEdit (), "Temperature [K]:", temperature);//Sara
+            grid->addEdit(P::Rho, this->NumberEditType, new NumberEdit (), "Rho [kg/m^3]:", rho);//Sara
+            grid->addEdit(P::Viscosity, this->NumberEditType, new NumberEdit (), "Viscosity [kg/(m*s)]:", viscosity);
 			grid->addEdit(P::Discretize, this->NumberEditType, new NumberEdit (), "Discretize Blade into N Elements:", 40);
 			this->template get<NumberEdit>(P::Discretize)->setAutomaticPrecision(0);
 			grid->addEdit(P::MaxIterations, this->NumberEditType, new NumberEdit (), "Max Number of Iterations:", 100);
 			this->template get<NumberEdit>(P::MaxIterations)->setAutomaticPrecision(0);
 			grid->addEdit(P::MaxEpsilon, this->NumberEditType, new NumberEdit (), "Max Epsilon for Convergence:", 0.001);
-			grid->addEdit(P::RelaxFactor, this->NumberEditType, new NumberEdit (), "Relax. Factor:", 0.35);
+            grid->addEdit(P::RelaxFactor, this->NumberEditType, new NumberEdit (), "Relax. Factor:", relax_factor);
 			
 	return groupBox;
 }
@@ -62,13 +61,13 @@ void SimulationCreatorDialog<ParameterGroup>::loadValuesFromSettings() {
     //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
     QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
-    this->template get<NumberEdit>(P::Temperature)->setValue(settings.value("temperature", 288.15).toDouble());//Sara
-	this->template get<NumberEdit>(P::Rho)->setValue(settings.value("rho", 1.225).toDouble());
-	this->template get<NumberEdit>(P::Viscosity)->setValue(settings.value("viscosity", 0.00001647).toDouble());
+    this->template get<NumberEdit>(P::Temperature)->setValue(settings.value("temperature", temperature).toDouble());//Sara
+    this->template get<NumberEdit>(P::Rho)->setValue(settings.value("rho", rho).toDouble());
+    this->template get<NumberEdit>(P::Viscosity)->setValue(settings.value("viscosity", viscosity).toDouble());
 	this->template get<NumberEdit>(P::Discretize)->setValue(settings.value("discretize", 40).toDouble());
 	this->template get<NumberEdit>(P::MaxIterations)->setValue(settings.value("maxIter", 100).toDouble());
 	this->template get<NumberEdit>(P::MaxEpsilon)->setValue(settings.value("maxEpsilon", 0.001).toDouble());
-	this->template get<NumberEdit>(P::RelaxFactor)->setValue(settings.value("relex", 0.35).toDouble());
+    this->template get<NumberEdit>(P::RelaxFactor)->setValue(settings.value("relex", relax_factor).toDouble());
 	this->template get<QCheckBox>(P::TipLoss)->setChecked(settings.value("tipLoss", false).toBool());
 	this->template get<QCheckBox>(P::VariableInduction)->setChecked(settings.value("varInduc", false).toBool());
 	

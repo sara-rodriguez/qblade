@@ -3430,6 +3430,7 @@ void MainFrame::OnVAWTView () {
 	g_windFieldModule->setToolbarVisibility(true);
 	g_fastModule->setToolbarVisibility(false);
 	g_QLLTModule->setActionIcon(":/images/LLT_VAWT.png");
+    g_noiseModule->setToolbarVisibility(false);//Sara
 }
 
 void MainFrame::OnHAWTView () {
@@ -3454,7 +3455,7 @@ void MainFrame::OnHAWTView () {
 	g_windFieldModule->setToolbarVisibility(true);
 	g_fastModule->setToolbarVisibility(true);
 	g_QLLTModule->setActionIcon(":/images/LLT.png");
-	
+    g_noiseModule->setToolbarVisibility(true);//Sara
 }
 
 ////////new code JW//////

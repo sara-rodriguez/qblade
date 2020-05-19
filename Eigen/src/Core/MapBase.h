@@ -151,7 +151,7 @@ template<typename Derived> class MapBase<Derived, ReadOnlyAccessors>
 
   protected:
 
-    void checkSanity() const
+    void checkSanity() const  //Sara urgente o problema está aqui
     {
       EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(internal::traits<Derived>::Flags&PacketAccessBit,
                                         internal::inner_stride_at_compile_time<Derived>::ret==1),

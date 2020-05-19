@@ -56,7 +56,6 @@
 #include "../GlobalFunctions.h"
 #include "PolarSelectionDialog.h"
 
-
 #define SIDEPOINTS 51
 
 
@@ -312,7 +311,7 @@ QBEM::QBEM(QWidget *parent)
     dlg_lambda = 7;
 
     dlg_relax = 0.35;
-    dlg_temp = 288.15;//Sara
+    dlg_temp = 288.15;
     dlg_rho = 1.225;
     dlg_epsilon = 0.001;
     dlg_iterations = 100;
@@ -7108,6 +7107,7 @@ void QBEM::OnCreateTurbineSimulation()
  selected_windspeed = -1;
 
  dlg_rho = pTBEMData->rho;
+ dlg_kin_visc = 1.4661e-05;//Sara
  dlg_relax = pTBEMData->relax;
  dlg_iterations = pTBEMData->iterations;
  dlg_elements = pTBEMData->elements;
@@ -9544,9 +9544,9 @@ void QBEM::OnExportRotorToAeroDyn(){
                   "ShadHWid - Tower-shadow half width (m)" << endl <<
                   QString("%1                               ").arg(0.0, 8, 'f', 3) <<
                   "T_Shad_Refpt - Tower-shadow reference point (m)" << endl <<
-                  QString("%1                               ").arg(1.225, 8, 'f', 3) <<
-                  "AirDens  - Air density (kg/m^3)" << endl <<
-                  QString("%1                          ").arg(1.4661e-05, 13, 'e', 4) <<
+                  QString("%1                               ").arg(dlg_rho, 8, 'f', 3) <<
+                  "AirDens  - Air density (kg/m^3)" << endl <<//Sara new
+                  QString("%1                          ").arg(dlg_kin_visc, 13, 'e', 4) <<
                   "KinVisc  - Kinematic air viscosity (m^2/sec)" << endl <<
                   QString("%1                               ").arg(0.001, 8, 'f', 5) <<
                   "DTAero   - Time interval for aerodynamic calculations (sec)" << endl <<

@@ -22,7 +22,7 @@ public:
 	
 	typedef QVector< QVector<double> > TwoDVector;
 
-    typedef QVector< QVector < QVector < QVector<double> > > > FourDVector;//sara urgente
+    typedef QVector< QVector < QVector < QVector<double> > > > FourDVector;//sara
 	
 	static constexpr double SWITCHING_ANGLE2 = 12.5;
     static constexpr int FREQUENCY_TABLE_SIZE = 34; //Alexandre MOD
@@ -39,10 +39,11 @@ public:
 
     void verifydeltafor3d();//Sara
     void calculateqs3d_graphics(int blade, int E);//Sara
-    void calculateqs3d_graphics_loops();//Sara urgente
+    void calculateqs3d_graphics_loops();//Sara
     void calculateqs3d_blade();//Sara
     void calculateqs3d_rotor();//Sara
-    void calculateqs3d_rotor_loops();//Sara urgente
+    void calculateqs3d_rotor_loops();//Sara
+    void unsteady();//urgente
 //    void unsteady_angles_calc();//Sara urgente
 
     //Sara

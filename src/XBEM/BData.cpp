@@ -25,6 +25,7 @@
 #include "../Globals.h"
 #include "../Store.h"
 #include "../Serializer.h"
+#include "../XBEM/BEM.h"//Sara
 
 BData::BData()
 {
@@ -314,6 +315,12 @@ for (i=0;i<m_pos.size();i++)
 
 
     }
+
+    //Sara
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    temp=pBEM->dlg_temp;
+    //Sara
+
     //now results are appended in the arrays, if the results are computed later, during a
     //turbine simulation a zero as placeholder is appended
     m_a_axial.append(a_a);

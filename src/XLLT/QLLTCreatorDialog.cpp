@@ -38,6 +38,7 @@
 #include "../XBEM/Blade.h"
 #include "../src/GlobalFunctions.h"
 #include "../src/XBEM/BEM.h"
+#include "../SimulationCreatorDialog.h"//Sara
 
 
 QLLTCreatorDialog::QLLTCreatorDialog(QLLTSimulation *presetSimulation, QLLTModule *module, bool isVawt) {
@@ -1431,6 +1432,9 @@ void QLLTCreatorDialog::initView() {
                     i = 0;
                 }
         }}
+
+        QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;//Sara
+
         m_Nth_WakeStep->setValue(1);
         m_desingGroup->button(0)->setChecked(true);
         m_z_leishmanEdit->setEnabled(false);
@@ -1446,7 +1450,7 @@ void QLLTCreatorDialog::initView() {
         m_horInflowAngleEdit->setValue(0);
         m_refHeightEdit->setValue(30);
         m_VertInflowSpeedEdit->setValue(0);
-        m_airDensEdit->setValue(1.225);
+        m_airDensEdit->setValue(pBEM->dlg_rho);
         m_kinViscEdit->setValue(1.6468e-5);
         m_turbulentViscosity->setValue(40);
         m_maxStretch->setValue(10e5);
@@ -1641,7 +1645,8 @@ void QLLTCreatorDialog::onCreateButtonClicked() {
     else m_leishman = -1;
 
     QLLTSimulation *simulation =
-            new QLLTSimulation(m_nameEdit->text(), m_bisVawt,
+            new QLLTSimulation(m_nameEdit->text(),
+                               m_bisVawt,
                                GetUsedWindField(),
                                m_timeStepEdit->getValue(),
                                m_numberTimesteps->getValue(),
@@ -1722,13 +1727,14 @@ void QLLTCreatorDialog::onCreateButtonClicked() {
                                m_refHeightEdit->getValue());
 
     if (!m_bisVawt){
-        if (g_QLLTHAWTSimulationStore.add(simulation)) {
+//        sara urgente parei aqui, o problema está aqui
+        if (!g_QLLTHAWTSimulationStore.isEmpty()) {//Sara g_QLLTHAWTSimulationStore.add(simulation)
             m_module->setShownLLTSimulation(simulation, true);
             accept();  // leave dialog only if adding was successful
         }
     }
     else{
-        if (g_QLLTVAWTSimulationStore.add(simulation)) {
+        if (!g_QLLTVAWTSimulationStore.isEmpty()) {//Sara g_QLLTVAWTSimulationStore.add(simulation)
             m_module->setShownLLTSimulation(simulation, true);
             accept();  // leave dialog only if adding was successful
         }

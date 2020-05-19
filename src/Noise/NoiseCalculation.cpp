@@ -817,7 +817,12 @@ void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
     m_SPL_LEdBAW[posOpPoint][posFreq] = 0;
     m_SPL_LEdBBW[posOpPoint][posFreq] = 0;
     m_SPL_LEdBCW[posOpPoint][posFreq] = 0;
-    const double rho = 1.225;
+
+    //Sara
+    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+    //Sara
+
+    const double rho = pbem->dlg_rho; //Sara
     const double c_0 = 34000;
     const double u = (m_parameter->originalVelocity)*100.;
     const double c = 100.*(m_parameter->originalChordLength);
@@ -1953,10 +1958,7 @@ int number_of_segments = pbem->dlg_elements;
         double rho = pbem->dlg_rho;
 //        double dynamic_visc = pbem->dlg_visc;
 //        double cin_visc = dynamic_visc/rho;
-//        double K_air = 1.4;
-//        double R_air = 286.9;
 //        double T_std_cond = pbem->dlg_temp;
-//        double P_std_cond = 101300;
         double lambda = pbem->dlg_lambda;
         int mpos_size = pbem->dlg_elements;
         double finalradius = bdata->m_pos.value(mpos_size-1);
@@ -2712,7 +2714,7 @@ AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
 
 St1_bar[i]=(St1[i]+St2[i])/2.;
 
-Re_disp_thick[i]=1.225*bdata->m_Windspeed.value(i)*D_starred_P[i]/(0.0000178);
+Re_disp_thick[i]=rho*bdata->m_Windspeed.value(i)*D_starred_P[i]/(0.0000178);
 
 if (Re_disp_thick[i]>5000){delta_K1[i]=0;}
 else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
@@ -3086,7 +3088,6 @@ if(qIsInf(aux_m_SPL_LEdBBW3d_rotor) || qIsNaN(aux_m_SPL_LEdBBW3d_rotor)){aux_m_S
 if(qIsInf(aux_m_SPL_LEdBCW3d_rotor) || qIsNaN(aux_m_SPL_LEdBCW3d_rotor)){aux_m_SPL_LEdBCW3d_rotor=0;}
 
 //multi 3D curves
-//urgente
 if((blade==0) & (E==0)){
 m_SPLadB3d[i][j]=aux_m_SPLadB3d;
 m_SPLsdB3d[i][j]=aux_m_SPLsdB3d;
@@ -3166,7 +3167,6 @@ m_SPL_LEdBAW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBBW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBCW3d_4d_blade[i][j][blade][E]=0;
 }
-//urgente
 
 if(m_parameter->state_ss_us==1){
         //    unsteady urgente
@@ -3233,7 +3233,7 @@ double last_angle=initial_azimuth+number_of_rotations*360;
 for (int blade=0;blade<blades_num;++blade){
 for (E=0;E<angles_num;++E){
 
-        calculateqs3d_graphics(blade,E);//urgente
+        calculateqs3d_graphics(blade,E);
 
 }}
 }
@@ -3624,7 +3624,6 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLlogLE3d_rotor[i]=0;
     }}}
 
-//urgente
 //calculation for all blades in rotation movement
 void NoiseCalculation::calculateqs3d_rotor_loops() {
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
@@ -3841,5 +3840,15 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
             m_SPLlogLE3d_rotor_loops[i]=0;
         }}
 }
-//urgente
+
+void NoiseCalculation::unsteady(){
+WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;
+double hub_speed = pWindField->getMeanWindSpeedAtHub();
+double pps = pWindField->getPointsPerSide();
+double measu_height = pWindField->getWindSpeedMeasurementHeight();
+
+qDebug() << "hub_speed: " << hub_speed;
+qDebug() << "pps: " << pps;
+qDebug() << "measu_height: " << measu_height;
+}
     //Sara

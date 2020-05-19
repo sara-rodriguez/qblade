@@ -13,7 +13,6 @@
 #include "NoiseMenu.h"
 #include "NoiseCreatorDialog.h"//Sara
 
-
 NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
 {
     m_globalModuleIndentifier = NOISEMODULE;
@@ -32,7 +31,9 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
 	m_toolBar = new NoiseToolBar (mainWindow, this);
 	m_dock = new NoiseDock ("Noise Simulation", mainWindow, 0, this);
 	registrateAtToolbar("PNoise", "Predict the noise generation", ":/images/NoiseIcon.png", toolbar);
-	
+
+    m_dock->setDisabled(true);
+
 	m_contextMenu = new NoiseContextMenu (m_twoDWidget, this);  // NM TODO move this up to TwoDInterface?
 	setContextMenu(m_contextMenu);
 

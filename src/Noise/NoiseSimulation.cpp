@@ -169,7 +169,7 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
             message.prepend(tr("- No Windfield in Database (Unsteady Case)"));
         }
         if (!g_QLLTModule->m_bisVAWT && g_QLLTHAWTSimulationStore.isEmpty()) {
-            message.prepend(tr("- No LLT HAWT in Database (Unsteady Case)"));//urgente
+            message.prepend(tr("- No LLT HAWT in Database (Unsteady Case)"));//Sara urgente
         }
         message.prepend("- No Noise Simulation in Database");
             //Sara end
@@ -182,10 +182,11 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 void NoiseSimulation::simulate() {
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.calculate();
-    m_calculation.calculateqs3d_graphics_loops();//Sara urgente
+    m_calculation.calculateqs3d_graphics_loops();//Sara
     m_calculation.calculateqs3d_blade();//Sara
     m_calculation.calculateqs3d_rotor();//Sara
-    m_calculation.calculateqs3d_rotor_loops();//Sara urgente
+    m_calculation.calculateqs3d_rotor_loops();//Sara
+    m_calculation.unsteady();//Sara urgente
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -587,7 +588,6 @@ stream << endl;
 //if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
 }}}
 
-//urgente
 void NoiseSimulation::exportCalculationqs3DNoise_rotor_loops(QTextStream &stream) {
     double E=m_parameter.initial_azimuth;
 
@@ -746,7 +746,6 @@ stream << endl;
 //stream << "SPL P: " << m_calculation.Final_qs3d_P << endl;
 //if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
 }}}
-//urgente
 
 void NoiseSimulation::exportqs3DLog(QTextStream &stream) {
     stream.setRealNumberNotation(QTextStream::FixedNotation);
@@ -772,10 +771,7 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
 //    double rho = pbem->dlg_rho;
 //    double dynamic_visc = pbem->dlg_visc;
 //    double cin_visc = dynamic_visc/rho;
-//    double K_air = 1.4;
-//    double R_air = 286.9;
 //    double T_std_cond = pbem->dlg_temp;
-//    double P_std_cond = 101300;
     double lambda = pbem->dlg_lambda;
     int mpos_size = bdata->m_pos.size(); //total number of segments
     double finalradius = bdata->m_pos.value(mpos_size-1);
