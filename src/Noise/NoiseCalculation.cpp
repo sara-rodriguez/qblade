@@ -3844,11 +3844,12 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
 void NoiseCalculation::unsteady(){
 WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;
 double hub_speed = pWindField->getMeanWindSpeedAtHub();
-double pps = pWindField->getPointsPerSide();
-double measu_height = pWindField->getWindSpeedMeasurementHeight();
+//double pps = pWindField->getPointsPerSide();
+//double measu_height = pWindField->getWindSpeedMeasurementHeight();
 
 qDebug() << "hub_speed: " << hub_speed;
-qDebug() << "pps: " << pps;
-qDebug() << "measu_height: " << measu_height;
+qDebug() << "hub_speed 2: " << g_windFieldModule->getShownWindField()->getMeanWindSpeedAtHub();
+//qDebug() << "pps: " << pps;
+//qDebug() << "measu_height: " << measu_height;
 }
     //Sara

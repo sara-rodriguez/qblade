@@ -78,8 +78,12 @@ WindField::WindField(ParameterViewer<Parameter::Windfield> *viewer, bool *cancel
 		m_meanWindSpeedAtHub = m_meanWindSpeed * 
 							   log((m_hubheight+0) / m_roughnessLength) /
 							   log(m_windSpeedMeasurementHeight / m_roughnessLength);
+
+//        sara urgente
+        qDebug() << "m_meanWindSpeedAtHub 1: " << m_meanWindSpeedAtHub;
 	} else {
 		m_meanWindSpeedAtHub = m_meanWindSpeed;
+        qDebug() << "m_meanWindSpeedAtHub 2: " << m_meanWindSpeedAtHub;
 	}
 	
 	/* m_resultantVelocity */

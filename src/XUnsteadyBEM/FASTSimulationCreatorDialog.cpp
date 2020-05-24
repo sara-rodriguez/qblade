@@ -559,10 +559,9 @@ void FASTSimulationCreatorDialog::onCreateButtonClicked() {
                                 m_WindfieldPathString,
                                 m_windfieldLocationGroup->button(0)->isChecked(),
                                 m_hubHeightEdit->getValue());
-//	if (g_FASTSimulationStore.add(simulation)) {
-    if (!g_FASTSimulationStore.isEmpty()) { //Sara urgente parei aqui
-		m_module->setShownFASTSimulation(simulation);
-		accept();  // leave dialog only if adding was successful
+    if (g_FASTSimulationStore.add(simulation)) {
+        m_module->setShownFASTSimulation(simulation);
+        accept();  // leave dialog only if adding was successful
 	}
 }
 
