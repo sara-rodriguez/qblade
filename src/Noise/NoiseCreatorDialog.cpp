@@ -81,9 +81,9 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                     pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
                                   "Eddy Convection Mach number []:", 0.8, PERCENT);
                     pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
-                                  "Directivity angle θe [deg]:", 90);
+                                  "Directivity angle θe [deg]:", 90);//Sara
                     pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
-                                  "Directivity angle ψe [deg]:", 90);
+                                  "Directivity angle ψe [deg]:", 90);//Sara
 
 
             QVBoxLayout *vBox = new QVBoxLayout;
@@ -150,7 +150,7 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
                     grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignLeft | Qt::AlignTop);
                         pGrid = new ParameterGrid<P>(this);
                         m_originalBpmWidget->setLayout(pGrid);
-                            pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);
+                            pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);//Sara
                             pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
                                            "Chord based Reynolds number (Rc):", 100000);
                             pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
@@ -191,7 +191,7 @@ connect(m_u_wind_speed_check,SIGNAL(clicked()),this,SLOT(OnWindSpeedCheck()));//
 
 m_u_wind_speed_numberedit = new NumberEdit ();
 m_u_wind_speed_numberedit->setAutomaticPrecision(3);
-pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []::",u_wind_speed, SPEED);
+pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []:",u_wind_speed, SPEED);
 
 m_TSR_spinbox = new QDoubleSpinBox;
 m_TSR_spinbox->setLocale(QLocale("en_us"));
@@ -288,14 +288,14 @@ if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_heig
 
     m_initial_azimuth_spinbox = new QDoubleSpinBox;
     m_initial_azimuth_spinbox->setLocale(QLocale("en_us"));
-    pGrid->addEdit(P::initial_azimuth,DoubleSpinBox, m_initial_azimuth_spinbox,"Initial Azimuth:", 0);
+    pGrid->addEdit(P::initial_azimuth,DoubleSpinBox, m_initial_azimuth_spinbox,"Initial Azimuth [deg]:", 0);
     m_initial_azimuth_spinbox->setRange(0, 360);
     m_initial_azimuth_spinbox->setSingleStep(1);
     m_initial_azimuth_spinbox->setDecimals(0);
 
     m_yaw_angle_spinbox = new QDoubleSpinBox;
     m_yaw_angle_spinbox->setLocale(QLocale("en_us"));
-    pGrid->addEdit(P::yaw_angle,DoubleSpinBox, m_yaw_angle_spinbox,"Yaw Angle:", 0);
+    pGrid->addEdit(P::yaw_angle,DoubleSpinBox, m_yaw_angle_spinbox,"Yaw Angle [deg]:", 0);
     m_yaw_angle_spinbox->setRange(0, 360);
     m_yaw_angle_spinbox->setSingleStep(1);
     m_yaw_angle_spinbox->setDecimals(0);
@@ -335,12 +335,27 @@ if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_heig
     pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YF:", 0);
     pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZF:", 0);
 
-    hBox->addLayout(vBox);
+     hBox->addLayout(vBox);
     //hBox = new QHBoxLayout;
     //widget->setLayout(hBox);
         QLabel *imageLabelb = new QLabel;
         imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
         vBox->addWidget(imageLabelb, 0, Qt::AlignHCenter);
+
+        //Sara urgente
+        groupBox = new QGroupBox ("Shear layer effect");
+        vBox->addWidget(groupBox);
+        pGrid = new ParameterGrid<P>(this);
+        groupBox->setLayout(pGrid);
+        m_shear_check = new QCheckBox("Shear layer:");
+        pGrid->addEdit(P::shear_check, CheckBox, m_shear_check,"", 0);
+        connect(m_shear_check,SIGNAL(clicked()),this,SLOT(OnShearLayerCheck()));
+
+        m_shear_numberedit = new NumberEdit();
+        pGrid->addEdit(P::shear, NumberEditType, m_shear_numberedit,"roughness length []:", 0.01,LENGTH);
+        m_shear_numberedit->setEnabled(false);
+        //sara urgente
+
 //Sara
 
     setUnitContainingLabels();
@@ -608,6 +623,7 @@ void NoiseCreatorDialog::OnModeDefine(int index){
     m_time_numberedit->setEnabled(false);
     m_timesteps_numberedit->setEnabled(false);
     rotation_combobox->setEnabled(false);
+    m_shear_check->setEnabled(false);
     onVerifyWindfield();
     }
     else {
@@ -615,6 +631,7 @@ void NoiseCreatorDialog::OnModeDefine(int index){
     rotation_combobox->setEnabled(true);
     m_number_loops_numberedit->setEnabled(true);
     m_anglesteps_numberedit->setEnabled(true);
+    m_shear_check->setEnabled(true);
     m_time_numberedit->setEnabled(false);
     m_timesteps_numberedit->setEnabled(false);
     }
@@ -676,5 +693,10 @@ void NoiseCreatorDialog::OnWarningSet3(){
     QMessageBox::information(this, "Create Noise Simulation","Select 2 options to input values!",QMessageBox::Ok);
     return;
     }
+}
+
+void NoiseCreatorDialog::OnShearLayerCheck(){
+    if (!m_shear_check->isChecked()){m_shear_numberedit->setEnabled(false);}
+    else{m_shear_numberedit->setEnabled(true);}
 }
 //Sara

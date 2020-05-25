@@ -265,7 +265,7 @@ else{
  }
         }
 
-        stream << endl; 
+        stream << endl;
         stream << endl;
     }
     qDeleteAll(noiseOpPoints);
@@ -1373,6 +1373,11 @@ break;
         else {value=m_parameter.TSR_check;}
 break;
 
+    case P::shear_check:
+        if(set) m_parameter.shear_check = value.toBool();
+        else {value=m_parameter.shear_check;}
+break;
+
     case P::u_wind_speed_check:
         if(set) m_parameter.u_wind_speed_check = value.toBool();
         else {value=m_parameter.u_wind_speed_check;}
@@ -1430,6 +1435,11 @@ else {value=m_parameter.rot_speed_check;}
     case P::obs_z_pos_rotor:
         if(set) m_parameter.obs_z_pos_rotor = value.toDouble();
         else {value = m_parameter.obs_z_pos_rotor;}break;
+
+    case P::shear:
+        if(set) m_parameter.shear = value.toDouble();
+        else {value=m_parameter.shear;}
+break;
 
 //     case P::step_type:
 //        if(set) m_parameter.step_type = value.toDouble();
