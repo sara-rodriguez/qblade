@@ -1727,15 +1727,13 @@ void QLLTCreatorDialog::onCreateButtonClicked() {
                                m_refHeightEdit->getValue());
 
     if (!m_bisVawt){
-//        sara urgente erro aqui
-        if (g_QLLTHAWTSimulationStore.isEmpty()) {//Sara g_QLLTHAWTSimulationStore.add(simulation)
-//            m_module->setShownLLTSimulation(simulation, true);
-//            accept();  // leave dialog only if adding was successful
-            qDebug() << "QLLT vazio";
+        if (g_QLLTHAWTSimulationStore.add(simulation)) {
+            m_module->setShownLLTSimulation(simulation, true);
+            accept();  // leave dialog only if adding was successful
         }
     }
     else{
-        if (!g_QLLTVAWTSimulationStore.isEmpty()) {//Sara g_QLLTVAWTSimulationStore.add(simulation)
+        if (!g_QLLTVAWTSimulationStore.add(simulation)) {
             m_module->setShownLLTSimulation(simulation, true);
             accept();  // leave dialog only if adding was successful
         }

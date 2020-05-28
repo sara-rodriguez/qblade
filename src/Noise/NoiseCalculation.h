@@ -18,24 +18,24 @@ class NoiseOpPoint;
 class NoiseCalculation
 {
 public:
-	enum AirfoilSide {PressureSide, SuctionSide};
-	
-	typedef QVector< QVector<double> > TwoDVector;
+    enum AirfoilSide {PressureSide, SuctionSide};
+
+    typedef QVector< QVector<double> > TwoDVector;
 
     typedef QVector< QVector < QVector < QVector<double> > > > FourDVector;//sara
-	
-	static constexpr double SWITCHING_ANGLE2 = 12.5;
+
+    static constexpr double SWITCHING_ANGLE2 = 12.5;
     static constexpr int FREQUENCY_TABLE_SIZE = 34; //Alexandre MOD
-	static const double AWeighting[FREQUENCY_TABLE_SIZE];  // 1/3 octave band frequency
-	static const double BWeighting[FREQUENCY_TABLE_SIZE];
-	static const double CWeighting[FREQUENCY_TABLE_SIZE];
+    static const double AWeighting[FREQUENCY_TABLE_SIZE];  // 1/3 octave band frequency
+    static const double BWeighting[FREQUENCY_TABLE_SIZE];
+    static const double CWeighting[FREQUENCY_TABLE_SIZE];
     static const QVector<double> CENTRAL_BAND_FREQUENCY;
-	
-	NoiseCalculation();
-	void serialize ();
-	
-	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
-	void calculate();  // can throw NoiseException
+
+    NoiseCalculation();
+    void serialize ();
+
+    void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
+    void calculate();  // can throw NoiseException
 
     void verifydeltafor3d();//Sara
     void calculateqs3d_graphics(int blade, int E);//Sara
@@ -44,21 +44,20 @@ public:
     void calculateqs3d_rotor();//Sara
     void calculateqs3d_rotor_loops();//Sara
     void unsteady();//urgente
-//    void unsteady_angles_calc();//Sara urgente
 
     //Sara
     //for quasi 3d rotor
     TwoDVector unsteady_angles() const { return m_unsteady_angles; }
     //Sara
-	
-	// NM the arrays containing the graph data
-	TwoDVector SPLadB() const { return m_SPLadB; }
-	TwoDVector SPLsdB() const { return m_SPLsdB; }
-	TwoDVector SPLpdB() const { return m_SPLpdB; }
-	TwoDVector SPLdB() const { return m_SPLdB; }
-	TwoDVector SPLdBAW() const { return m_SPLdBAW; }
-	TwoDVector SPLdBBW() const { return m_SPLdBBW; }
-	TwoDVector SPLdBCW() const { return m_SPLdBCW; }
+
+    // NM the arrays containing the graph data
+    TwoDVector SPLadB() const { return m_SPLadB; }
+    TwoDVector SPLsdB() const { return m_SPLsdB; }
+    TwoDVector SPLpdB() const { return m_SPLpdB; }
+    TwoDVector SPLdB() const { return m_SPLdB; }
+    TwoDVector SPLdBAW() const { return m_SPLdBAW; }
+    TwoDVector SPLdBBW() const { return m_SPLdBBW; }
+    TwoDVector SPLdBCW() const { return m_SPLdBCW; }
 //Alexandre MOD
     TwoDVector SPL_LEdB() const { return m_SPL_LEdB; }
     TwoDVector SPL_LEdBAW() const { return m_SPL_LEdBAW; }
@@ -178,15 +177,15 @@ public:
     double Final_qs3d_LE_rotor_loops;
     double Final_qs3d_rotor_loops;
 //Sara
-	
-	// NM apparently needed for export as .txt only
-	QVector<double> OASPL() const { return m_OASPL; }
-	QVector<double> OASPLA() const { return m_OASPLA; }
-	QVector<double> OASPLB() const { return m_OASPLB; }
-	QVector<double> OASPLC() const { return m_OASPLC; }
-	QVector<double> SPLALOG() const { return m_SPLALOG; }
-	QVector<double> SPLSLOG() const { return m_SPLSLOG; }
-	QVector<double> SPLPLOG() const { return m_SPLPLOG; }
+
+    // NM apparently needed for export as .txt only
+    QVector<double> OASPL() const { return m_OASPL; }
+    QVector<double> OASPLA() const { return m_OASPLA; }
+    QVector<double> OASPLB() const { return m_OASPLB; }
+    QVector<double> OASPLC() const { return m_OASPLC; }
+    QVector<double> SPLALOG() const { return m_SPLALOG; }
+    QVector<double> SPLSLOG() const { return m_SPLSLOG; }
+    QVector<double> SPLPLOG() const { return m_SPLPLOG; }
 //Alexandre MOD
         QVector<double> SPLLEdBAW() const { return m_SPLLEdBAW; }
         QVector<double> SPLLEdBBW() const { return m_SPLLEdBBW; }
@@ -252,13 +251,13 @@ public:
         double d_const;
         int m_Lowson_type;
     //Sara
-	
+
 private:
     void setupVectors();
     void setupVectorsqs3d();//Sara
 
-	// calculation sub-functions
-	double getK1(NoiseOpPoint* nop);
+    // calculation sub-functions
+    double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
     double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara
     double getDH();
@@ -266,6 +265,9 @@ private:
     double getSt1();
     double getSt2(NoiseOpPoint *nop);
     double getBPMThickness(NoiseOpPoint *nop, AirfoilSide as);
+    double getInputWindSpeed(int blade, int E, int section);//Sara
+    double getInputMach(double windspeed, int section);//Sara urgente
+    double getInputReynolds(double windspeed, int section);//Sara urgente
     void preCalcA1(NoiseOpPoint* nop);
     void preCalcSPLa(NoiseOpPoint* nop);
     void preCalcSPLs(NoiseOpPoint* nop);
@@ -291,7 +293,7 @@ private:
     //Sara
 
     NoiseParameter *m_parameter;
-	
+
     //For general
     double m_DStarInterpolatedS;
     double m_DStarInterpolatedP;
@@ -425,6 +427,9 @@ private:
     double x;
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
+    double m_shear_roughness;
+    double m_shear_height;
+    double m_shear_check;
     double m_TSR_calc;
     double m_obs_x_pos;
     double m_obs_y_pos;

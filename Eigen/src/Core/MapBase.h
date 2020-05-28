@@ -151,13 +151,13 @@ template<typename Derived> class MapBase<Derived, ReadOnlyAccessors>
 
   protected:
 
-    void checkSanity() const  //Sara urgente erro aqui
+    void checkSanity() const
     {
-//      EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(internal::traits<Derived>::Flags&PacketAccessBit,
-//                                        internal::inner_stride_at_compile_time<Derived>::ret==1),
-//                          PACKET_ACCESS_REQUIRES_TO_HAVE_INNER_STRIDE_FIXED_TO_1);
-//      eigen_assert(EIGEN_IMPLIES(internal::traits<Derived>::Flags&AlignedBit, (size_t(m_data) % 16) == 0)
-//                   && "input pointer is not aligned on a 16 byte boundary");
+      EIGEN_STATIC_ASSERT(EIGEN_IMPLIES(internal::traits<Derived>::Flags&PacketAccessBit,
+                                        internal::inner_stride_at_compile_time<Derived>::ret==1),
+                          PACKET_ACCESS_REQUIRES_TO_HAVE_INNER_STRIDE_FIXED_TO_1);
+      eigen_assert(EIGEN_IMPLIES(internal::traits<Derived>::Flags&AlignedBit, (size_t(m_data) % 16) == 0)
+                   && "input pointer is not aligned on a 16 byte boundary");
     }
 
     PointerType m_data;

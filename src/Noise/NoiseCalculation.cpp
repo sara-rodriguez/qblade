@@ -1934,6 +1934,100 @@ double Dl=(2.*pow(sin(qDegreesToRadians(theta_e)),2.)*pow(sin(qDegreesToRadians(
 return Dl;
 }
 
+//Sara
+double NoiseCalculation::getInputWindSpeed(int blade, int E, int section){
+    if(m_parameter->state_ss_us==0){
+//steady
+        QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+//        BData *bdata = (BData *) g_mainFrame->m_pBEM;
+    if(m_parameter->shear_check){
+//wind shear effect
+double hub_height = m_parameter->tower_height+m_parameter->tower_to_hub_distance;
+int section_radius = pbem->m_pBData->m_pos.value(section);
+
+double anglesteps;
+int blades_num = pbem->m_pBData->blades;
+double angle_between_blades=360./blades_num;
+double initial_azimuth=m_parameter->initial_azimuth; //initial azimuth;
+double E_o=initial_azimuth;
+E_o=E_o+anglesteps;
+double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
+double section_height = hub_height+section_radius*sin(qDegreesToRadians(azimuthal));
+double m_meanWindSpeed = pbem->dlg_windspeed;
+    double windspeed;
+
+if(section_height>100){
+    // calculated with power law wind profile. https://en.wikipedia.org/wiki/Wind_profile_power_law
+windspeed = m_meanWindSpeed*pow((section_height/m_parameter->shear_height),(1./7.));
+}else{
+    // calculated with log wind profile. Should not be used with heigth above 100m (see wikipedia)
+windspeed = m_meanWindSpeed*log((section_height)/m_parameter->shear_roughness)/log(m_parameter->shear_height/m_parameter->shear_roughness);
+}
+
+double Vrel2 = (pow(windspeed*(1-pbem->m_pBData->m_a_axial.value(section)),2)+pow(windspeed*pbem->m_pBData->m_lambda_local.value(section)*(1+pbem->m_pBData->m_a_tangential.value(section)),2));
+
+double vel = pow(Vrel2,0.5);
+return vel;
+}
+else {
+//no wind shear effect
+        return pbem->m_pBData->m_Windspeed.value(section);
+}}
+ else {
+//unsteady
+//Sara urgente TODO
+    }
+}
+
+//Sara urgente
+double NoiseCalculation::getInputMach(double windspeed, int section){
+    if(m_parameter->state_ss_us==0){
+//steady
+        QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+//        BData *bdata = (BData *) g_mainFrame->m_pBEM;
+
+double Mach;
+    if(m_parameter->shear_check){
+//wind shear effect
+double Vrel2 = pow(windspeed,2);
+Mach = pow(Vrel2,0.5)/sqrt(pbem->m_pBData->k_air*pbem->m_pBData->r_air*pbem->m_pBData->temp);
+
+return Mach;
+}
+else {
+//no wind shear effect
+        return pbem->m_pBData->m_Mach.value(section);
+}}
+ else {
+//unsteady
+//Sara urgente TODO
+    }
+}
+
+double NoiseCalculation::getInputReynolds(double windspeed, int section){
+    if(m_parameter->state_ss_us==0){
+//steady
+        QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+//        BData *bdata = (BData *) g_mainFrame->m_pBEM;
+
+double Reynolds;
+    if(m_parameter->shear_check){
+//wind shear effect
+Reynolds = pow((pow(windspeed*(1-pbem->m_pBData->m_a_axial.value(section)),2)+pow(windspeed*pbem->m_pBData->m_lambda_local.value(section)*(1+pbem->m_pBData->m_a_tangential.value(section)),2)),0.5)*pbem->m_pBData->m_c_local.value(section)/pbem->m_pBData->visc;
+
+return Reynolds;
+}
+else {
+//no wind shear effect
+        return pbem->m_pBData->m_Reynolds.value(section);
+}}
+ else {
+//unsteady
+//Sara urgente TODO
+    }
+}
+//Sara urgente
+
 //vector for blade
 void NoiseCalculation::calculateqs3d_graphics(int blade, int E) {
   QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
@@ -1962,7 +2056,7 @@ int number_of_segments = pbem->dlg_elements;
         double lambda = pbem->dlg_lambda;
         int mpos_size = pbem->dlg_elements;
         double finalradius = bdata->m_pos.value(mpos_size-1);
-        double nom_tg_speed = m_parameter->u_wind_speed*lambda;
+        double nom_tg_speed = approaxing_wind_speed*lambda;
         double omega = nom_tg_speed/finalradius;
 //        double rotation = 60/(M_PI*100/nom_tg_speed);
         double c_0_le = 34000;
@@ -2127,6 +2221,8 @@ int number_of_segments = pbem->dlg_elements;
 
         double DStarXFoilS[number_of_segments];
         double DStarXFoilP[number_of_segments];
+
+        double vel[number_of_segments];//Sara urgente
 
         double aux_m_SPLadB3d=0;
         double aux_m_SPLsdB3d=0;
@@ -2353,6 +2449,8 @@ int number_of_segments = pbem->dlg_elements;
 
      for (int j = 0; j < w; ++j) {
             // definitions
+            vel[i]=getInputWindSpeed(blade,E,i);//Sara urgente
+
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
            if (i==(number_of_segments-1)){axial_ind_fact_n[i] = bdata->m_a_axial.value(i);}else {axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);}
 
@@ -2362,14 +2460,15 @@ int number_of_segments = pbem->dlg_elements;
             tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.+bdata->m_a_tangential.value(i));
             resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
             chord[i] = bdata->m_c_local.value(i);
-            Reynolds[i] = bdata->m_Reynolds.value(i);
+            Reynolds[i] = getInputReynolds(vel[i],i); //bdata->m_Reynolds.value(i); sara urgente
 
-            Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
+            Reynolds_BEM[i]=getInputReynolds(vel[i],i); //bdata->m_Reynolds.value(i); sara urgente
             Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
             Mach_polar[i]=noiseOpPoints[i]->getMach();
-            Mach[i]=bdata->m_Mach.value(i);
-            Mach_BEM[i] = bdata->m_Mach.value(i);
+
+            Mach[i]=getInputMach(vel[i],i); //bdata->m_Mach.value(i); Sara urgente
+            Mach_BEM[i] = getInputMach(vel[i],i); //bdata->m_Mach.value(i); Sara urgente
             Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
             alpha_BEM[i] = bdata->m_alpha.value(i);
             alpha[i]=alpha_BEM[i];
@@ -2714,7 +2813,8 @@ AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
 
 St1_bar[i]=(St1[i]+St2[i])/2.;
 
-Re_disp_thick[i]=rho*bdata->m_Windspeed.value(i)*D_starred_P[i]/(0.0000178);
+//Re_disp_thick[i]=rho*bdata->m_Windspeed.value(i)*D_starred_P[i]/(0.0000178);
+Re_disp_thick[i]=rho*vel[i]*D_starred_P[i]/(0.0000178); //Sara urgente
 
 if (Re_disp_thick[i]>5000){delta_K1[i]=0;}
 else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
@@ -2742,8 +2842,8 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
 
 
-         Sts[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);
-
+//         Sts[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/bdata->m_Windspeed.value(i);//Sara urgente
+Sts[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/vel[i];//Sara urgente
 
          b_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
 
@@ -2825,7 +2925,8 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 
     Sts_St1_bar[j]=Sts[j]/St1_bar[i];
 
-    Stp_P[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P[i]/bdata->m_Windspeed.value(i);
+//    Stp_P[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P[i]/bdata->m_Windspeed.value(i);//Sara urgente
+Stp_P[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P[i]/vel[i];
 
     a_P[j]=qFabs(log10(Stp_P[j]/St1[i]));
 
@@ -2863,7 +2964,7 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
     SPL_LedBCW_rotor[w]=0;
     //rotor
 
-    u_le=m_parameter->u_wind_speed*100.;
+    u_le=approaxing_wind_speed*100.;
     c_le=100.*chord[i];
     I_le=m_parameter->TurbulenceIntensity;
     lambda_le=100.*m_parameter->IntegralLengthScale;
@@ -3169,7 +3270,7 @@ m_SPL_LEdBCW3d_4d_blade[i][j][blade][E]=0;
 }
 
 if(m_parameter->state_ss_us==1){
-        //    unsteady urgente
+        // unsteady urgente
         int simulation_time;
         int number_time_steps;
         double time_steps;
@@ -3842,14 +3943,10 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
 }
 
 void NoiseCalculation::unsteady(){
-WindField *pWindField = (WindField *) g_mainFrame->m_pBEM;
-double hub_speed = pWindField->getMeanWindSpeedAtHub();
 //double pps = pWindField->getPointsPerSide();
 //double measu_height = pWindField->getWindSpeedMeasurementHeight();
 
-qDebug() << "hub_speed: " << hub_speed;
-qDebug() << "hub_speed 2: " << g_windFieldModule->getShownWindField()->getMeanWindSpeedAtHub();
-//qDebug() << "pps: " << pps;
-//qDebug() << "measu_height: " << measu_height;
+//qDebug() << "hub_speed 2: " << g_windFieldModule->getShownWindField()->getMeanWindSpeedAtHub();
+//qDebug() << "measu_height: " << g_windFieldModule->getShownWindField()->getWindspeed(vetor, tempo, overhang=0);
 }
     //Sara
