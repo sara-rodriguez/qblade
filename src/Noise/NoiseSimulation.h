@@ -20,50 +20,54 @@ class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, publ
 {
 public:
 
-	static NoiseSimulation* newBySerialize ();
-	NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
-	
-	void serialize();
-	void restorePointers();
-	NewCurve* newCurve (QString /*xAxis*/, QString /*yAxis*/, NewGraph::GraphType /*graphType*/) { return NULL; }
-	NewCurve* newCurve (QString xAxis, QString yAxis, NewGraph::GraphType graphType, int opPointIndex);
+    static NoiseSimulation* newBySerialize ();
+    NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
 
-	QString getObjectName () { return m_objectName; }
-	static QStringList getAvailableVariables (NewGraph::GraphType graphType = NewGraph::None);
-	static QStringList prepareMissingObjectMessage();
+    void serialize();
+    void restorePointers();
+    NewCurve* newCurve (QString /*xAxis*/, QString /*yAxis*/, NewGraph::GraphType /*graphType*/) { return NULL; }
+    NewCurve* newCurve (QString xAxis, QString yAxis, NewGraph::GraphType graphType, int opPointIndex);
 
-	void simulate();  // can throw NoiseException
-	void exportCalculation (QTextStream &stream);
+    QString getObjectName () { return m_objectName; }
+    static QStringList getAvailableVariables (NewGraph::GraphType graphType = NewGraph::None);
+    static QStringList prepareMissingObjectMessage();
+
+    void simulate();  // can throw NoiseException
+    void exportCalculation (QTextStream &stream);
     void exportCalculationqs3DNoise_blade (QTextStream &stream); //Sara
     void exportCalculationqs3DNoise_rotor (QTextStream &stream); //Sara
     void exportCalculationqs3DNoise_rotor_loops (QTextStream &stream); //Sara
     void exportqs3DLog (QTextStream &stream);//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
-	
-	void setAnalyzedOpPoints (QVector<OpPoint*> newList);
-	void setSelectFrom (NoiseParameter::OpPointSource select) { m_parameter.opPointSource = select; }
-	QVector<OpPoint*> getAnalyzedOpPoints () { return m_parameter.analyzedOpPoints; }
-	NoiseParameter::OpPointSource getSelectFrom () { return m_parameter.opPointSource; }
+
+    void setAnalyzedOpPoints (QVector<OpPoint*> newList);
+    void setSelectFrom (NoiseParameter::OpPointSource select) { m_parameter.opPointSource = select; }
+    QVector<OpPoint*> getAnalyzedOpPoints () { return m_parameter.analyzedOpPoints; }
+    NoiseParameter::OpPointSource getSelectFrom () { return m_parameter.opPointSource; }
 
     //Sara
     QVector<double> listtsr;
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
     double m_TSR_calc;
-    double m_rot_speed_check;
-    double m_u_wind_speed_check;
-    double m_TSR_check;
+    double m_shear_roughness;
+    double m_shear_height;
+    double m_shear_speed;
+    bool m_rot_speed_check;
+    bool m_u_wind_speed_check;
+    bool m_TSR_check;
+    bool m_shear_check;
     int vectors_size;
     //Sara
-	
+
 private:
-	NoiseSimulation () { }
-	QPen doGetPen (int curveIndex, int highlightedIndex, bool forTheDot);
-	QVariant accessParameter(Parameter::NoiseSimulation::Key key, QVariant value = QVariant());
-	
-	NoiseParameter m_parameter;
-	NoiseCalculation m_calculation;
+    NoiseSimulation () { }
+    QPen doGetPen (int curveIndex, int highlightedIndex, bool forTheDot);
+    QVariant accessParameter(Parameter::NoiseSimulation::Key key, QVariant value = QVariant());
+
+    NoiseParameter m_parameter;
+    NoiseCalculation m_calculation;
 
     //Sara
 
@@ -73,6 +77,7 @@ private:
     double obs_x_pos_rotor;
     double obs_y_pos_rotor;
     double obs_z_pos_rotor;
+    double shear;
     double m_DStarFinalS;
     double m_DStarFinalP;
     double originalMach;
