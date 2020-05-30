@@ -1463,8 +1463,7 @@ void QFEMDock::OnSave()
 
     if (!m_module->m_structure->RunModalTest()) return;
 
-//    if (!g_bladeStructureStore.add(m_module->m_structure)) //Sara urgente erro aqui
-    if (g_bladeStructureStore.isEmpty()) //Sara urgente alterei pra isso
+    if (!g_bladeStructureStore.add(m_module->m_structure))
     {
         m_module->m_structure = NULL;
     }
