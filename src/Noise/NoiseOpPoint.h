@@ -34,11 +34,11 @@ public:
     //Sara
 	
 private:
-    double m_reynolds, m_alpha, m_sects, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_dstar_user, m_rot_speed_calc, m_u_wind_speed_calc, m_TSR_calc, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos, m_mach,  m_obs_x_pos_rotor, m_obs_y_pos_rotor, m_obs_z_pos_rotor, m_tower_to_hub_distance, m_initial_azimuth, m_time, m_shear_roughness, m_shear_height, m_shear_speed; //Sara
+    double m_reynolds, m_alpha, m_sects, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_dstar_user, m_rot_speed_calc, m_u_wind_speed_calc, m_TSR_calc, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos, m_mach,  m_obs_x_pos_rotor, m_obs_y_pos_rotor, m_obs_z_pos_rotor, m_tower_to_hub_distance, m_initial_azimuth, m_time, m_shear_roughness, m_shear_height, m_shear_speed, m_yaw_angle; //Sara
 	OpPoint *m_opPoint;
 //Sara
 bool m_rot_speed_check, m_u_wind_speed_check, m_TSR_check, m_shear_check;
-int m_Lowson_type, m_yaw_angle, m_number_loops, m_timesteps;
+int m_Lowson_type, m_number_loops, m_timesteps;
 //Sara
 };
 

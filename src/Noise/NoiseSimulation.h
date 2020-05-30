@@ -88,6 +88,7 @@ private:
     double m_TSR;
     double m_dstar_user;
     double m_tower_height;
+    double m_yaw_angle;
     int m_dstar_type;
     int m_state_ss_us;
 //    int m_step_type;

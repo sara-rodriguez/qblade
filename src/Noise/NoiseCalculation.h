@@ -440,9 +440,9 @@ private:
     double m_tower_to_hub_distance;
     double m_initial_azimuth;
     double m_time;
+    double m_yaw_angle;
     int m_timesteps;
     int m_number_loops;
-    int m_yaw_angle;
     int m_dstar_type;
     int m_state_ss_us;
 //    int m_step_type;

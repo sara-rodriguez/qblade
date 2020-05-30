@@ -81,6 +81,7 @@ public:
     double shear_height;
     double shear_speed;
     double time;
+    double yaw_angle;
     int phi_type;
     int theta_type;
     int dstar_type;
@@ -90,7 +91,6 @@ public:
     int timesteps;
     int rotation_type;
     int anglesteps;
-    int yaw_angle;
 
     double D_starred_index_user[40];
     double D_starred_S_user[40];

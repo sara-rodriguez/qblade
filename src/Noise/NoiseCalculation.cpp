@@ -1953,7 +1953,7 @@ if (m_parameter->rotation_type==0){
 anglesteps=m_parameter->anglesteps;
 }else{
 //    time based
-anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
+anglesteps=(m_parameter->timesteps-1)*60.*360./(m_parameter->rot_speed*1000.);
 }
 
 int blades_num = bdata->blades;
@@ -1962,7 +1962,7 @@ double initial_azimuth=m_parameter->initial_azimuth;
 double E_o=initial_azimuth;
 E_o=E_o+anglesteps;
 double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
-double section_height = hub_height+section_radius*sin(qDegreesToRadians(azimuthal));
+double section_height = hub_height+(section_radius*sin(qDegreesToRadians(azimuthal)))*cos(qDegreesToRadians(m_parameter->yaw_angle));
 double m_meanWindSpeed = pbem->dlg_windspeed;
 
 if(section_height>100){
@@ -1979,7 +1979,27 @@ else {
  else {
 //unsteady
 //Sara urgente TODO
-        windspeed = 0;
+        double hub_height = m_parameter->tower_height+m_parameter->tower_to_hub_distance;
+        int section_radius = bdata->m_pos.value(section);
+        CVector windspeed_windfield;
+
+        double anglesteps=g_windFieldModule->getShownWindField()->getNumberOfTimesteps()*60.*360./(m_parameter->rot_speed*1000.);
+
+        int blades_num = bdata->blades;
+        double angle_between_blades=360./blades_num;
+        double initial_azimuth=m_parameter->initial_azimuth;
+        double E_o=initial_azimuth;
+        E_o=E_o+anglesteps;
+        double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
+        double time = azimuthal/anglesteps*g_windFieldModule->getShownWindField()->getLengthOfTimestep();
+
+const double X = section_radius*sin(qDegreesToRadians(m_parameter->yaw_angle));
+const double Y = section_radius*cos(qDegreesToRadians(azimuthal));
+const double Z = hub_height+section_radius*sin(qDegreesToRadians(azimuthal))*cos(qDegreesToRadians(m_parameter->yaw_angle));
+
+        CVector vec (X,Y,Z);
+
+        windspeed = g_windFieldModule->getShownWindField()->getWindspeed(vec,time,0).VAbs();
     }
 }
 return windspeed;
