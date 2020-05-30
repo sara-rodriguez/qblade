@@ -58,6 +58,7 @@ public:
     //3D Sara
     bool rot_speed_check;
     bool u_wind_speed_check;
+    bool shear_check;
     bool TSR_check;
     double rot_speed_calc;
     double u_wind_speed_calc;
@@ -76,6 +77,9 @@ public:
     double dstar_user;
     double tower_to_hub_distance;
     double initial_azimuth;
+    double shear_roughness;
+    double shear_height;
+    double shear_speed;
     double time;
     int phi_type;
     int theta_type;

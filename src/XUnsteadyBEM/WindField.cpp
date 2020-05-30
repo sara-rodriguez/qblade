@@ -60,14 +60,21 @@ WindField::WindField(ParameterViewer<Parameter::Windfield> *viewer, bool *cancel
 	m_meanWindSpeedAtHeigth = new float[m_pointsPerSide];
 	for (int i = 0; i < m_pointsPerSide; ++i) {
 		if (m_includeShear) {
+//Sara begin
+            if ((m_hubheight+m_zyCoordinates[i])>100){
+                // calculated with power law wind profile. https://en.wikipedia.org/wiki/Wind_profile_power_law
+            m_meanWindSpeedAtHeigth[i] = m_meanWindSpeed*pow(((m_hubheight+m_zyCoordinates[i])/m_windSpeedMeasurementHeight),(1./7.));
+            } else {
+//Sara end
 			// calculated with log wind profile. Should not be used with heigth above 100m (see wikipedia)
 			m_meanWindSpeedAtHeigth[i] = m_meanWindSpeed * 
 										 log((m_hubheight+m_zyCoordinates[i]) / m_roughnessLength) /
 										 log(m_windSpeedMeasurementHeight / m_roughnessLength);
-		} else {
+        } //Sara
+        } else {
 			m_meanWindSpeedAtHeigth[i] = m_meanWindSpeed;
-		}
-	}
+        }
+    }
 	
 	/* m_meanWindSpeedAtHub */
 	if (m_includeShear) {
@@ -78,12 +85,8 @@ WindField::WindField(ParameterViewer<Parameter::Windfield> *viewer, bool *cancel
 		m_meanWindSpeedAtHub = m_meanWindSpeed * 
 							   log((m_hubheight+0) / m_roughnessLength) /
 							   log(m_windSpeedMeasurementHeight / m_roughnessLength);
-
-//        sara urgente
-        qDebug() << "m_meanWindSpeedAtHub 1: " << m_meanWindSpeedAtHub;
 	} else {
 		m_meanWindSpeedAtHub = m_meanWindSpeed;
-        qDebug() << "m_meanWindSpeedAtHub 2: " << m_meanWindSpeedAtHub;
 	}
 	
 	/* m_resultantVelocity */
