@@ -168,9 +168,6 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
         if (g_windFieldStore.size() == 0) {
             message.prepend(tr("- No Windfield in Database (Unsteady Case)"));
         }
-        if (!g_QLLTModule->m_bisVAWT && g_QLLTHAWTSimulationStore.isEmpty()) {
-            message.prepend(tr("- No LLT HAWT in Database (Unsteady Case)"));//Sara urgente
-        }
         message.prepend("- No Noise Simulation in Database");
             //Sara end
             return message;
@@ -186,7 +183,6 @@ void NoiseSimulation::simulate() {
     m_calculation.calculateqs3d_blade();//Sara
     m_calculation.calculateqs3d_rotor();//Sara
     m_calculation.calculateqs3d_rotor_loops();//Sara
-    m_calculation.unsteady();//Sara urgente
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -265,7 +261,7 @@ else{
  }
         }
 
-        stream << endl; 
+        stream << endl;
         stream << endl;
     }
     qDeleteAll(noiseOpPoints);
@@ -1373,6 +1369,11 @@ break;
         else {value=m_parameter.TSR_check;}
 break;
 
+    case P::shear_check:
+        if(set) m_parameter.shear_check = value.toBool();
+        else {value=m_parameter.shear_check;}
+break;
+
     case P::u_wind_speed_check:
         if(set) m_parameter.u_wind_speed_check = value.toBool();
         else {value=m_parameter.u_wind_speed_check;}
@@ -1430,6 +1431,21 @@ else {value=m_parameter.rot_speed_check;}
     case P::obs_z_pos_rotor:
         if(set) m_parameter.obs_z_pos_rotor = value.toDouble();
         else {value = m_parameter.obs_z_pos_rotor;}break;
+
+    case P::shear_roughness:
+        if(set) m_parameter.shear_roughness = value.toDouble();
+        else {value=m_parameter.shear_roughness;}
+break;
+
+    case P::shear_height:
+        if(set) m_parameter.shear_height = value.toDouble();
+        else {value=m_parameter.shear_height;}
+break;
+
+    case P::shear_speed:
+        if(set) m_parameter.shear_speed = value.toDouble();
+        else {value=m_parameter.shear_speed;}
+break;
 
 //     case P::step_type:
 //        if(set) m_parameter.step_type = value.toDouble();
