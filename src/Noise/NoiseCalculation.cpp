@@ -2000,6 +2000,11 @@ const double Z = hub_height+section_radius*sin(qDegreesToRadians(azimuthal))*cos
         CVector vec (X,Y,Z);
 
         windspeed = g_windFieldModule->getShownWindField()->getWindspeed(vec,time,0).VAbs();
+qDebug() << "X: " << X;
+qDebug() << "Y: " << Y;
+qDebug() << "Z: " << Z;
+qDebug() << "time: " << time;
+qDebug() << "vel: " << windspeed;
     }
 }
 return windspeed;
@@ -2024,7 +2029,8 @@ Mach = bdata->m_Mach.value(section);
 }}
  else {
 //unsteady
-//Sara urgente TODO
+double Vrel2 = pow(windspeed,2);
+Mach = pow(Vrel2,0.5)/sqrt(bdata->k_air*bdata->r_air*bdata->temp);
     }
 }
 return Mach;
@@ -2047,7 +2053,7 @@ Reynolds = bdata->m_Reynolds.value(section);
 }}
  else {
 //unsteady
-//Sara urgente TODO
+Reynolds = pow((pow(windspeed*(1-bdata->m_a_axial.value(section)),2)+pow(windspeed*bdata->m_lambda_local.value(section)*(1+bdata->m_a_tangential.value(section)),2)),0.5)*bdata->m_c_local.value(section)/bdata->visc;
     }
 }
 return Reynolds;
@@ -2815,9 +2821,9 @@ else if (m_parameter->dstar_type==2){
     D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i];
 }
 //Sara
-qDebug() << "";
-qDebug() << "i: " << i;
-qDebug() << "j: " << j;
+//qDebug() << "";
+//qDebug() << "i: " << i;
+//qDebug() << "j: " << j;
 
 //double B=0;
 double XB=0;
