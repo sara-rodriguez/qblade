@@ -37,17 +37,14 @@ public:
     void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
     void calculate();  // can throw NoiseException
 
-    void verifydeltafor3d();//Sara
-    void calculateqs3d_graphics(int blade, int E);//Sara
-    void calculateqs3d_graphics_loops();//Sara
-    void calculateqs3d_blade();//Sara
-    void calculateqs3d_rotor();//Sara
-    void calculateqs3d_rotor_loops();//Sara
-
-    //Sara
-    //for quasi 3d rotor
-    TwoDVector unsteady_angles() const { return m_unsteady_angles; }
-    //Sara
+    //Sara begin
+    void verifydeltafor3d();
+    void calculateqs3d_graphics(int blade, int E);
+    void calculateqs3d_graphics_loops();
+    void calculateqs3d_blade();
+    void calculateqs3d_rotor();
+    void calculateqs3d_rotor_loops();
+    //Sara end
 
     // NM the arrays containing the graph data
     TwoDVector SPLadB() const { return m_SPLadB; }
@@ -64,7 +61,7 @@ public:
     TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; }
     //Alexandre MOD
 
-//Sara
+//Sara begin
     TwoDVector SPLadB3d() const { return m_SPLadB3d; }
     TwoDVector SPLsdB3d() const { return m_SPLsdB3d; }
     TwoDVector SPLpdB3d() const { return m_SPLpdB3d; }
@@ -175,7 +172,9 @@ public:
     double Final_qs3d_P_rotor_loops;
     double Final_qs3d_LE_rotor_loops;
     double Final_qs3d_rotor_loops;
-//Sara
+
+    int user_sel=10;//user selection graphics for 2d, blade or rotor
+//Sara end
 
     // NM apparently needed for export as .txt only
     QVector<double> OASPL() const { return m_OASPL; }
@@ -192,7 +191,7 @@ public:
         QVector<double> SPLlogLE() const { return m_SPLlogLE; }
 //Alexandre MOD
 
-        //Sara
+        //Sara begin
         QVector<double> OASPL3d() const { return m_OASPL3d; }
         QVector<double> OASPLA3d() const { return m_OASPLA3d; }
         QVector<double> OASPLB3d() const { return m_OASPLB3d; }
@@ -249,7 +248,8 @@ public:
         double c_const;
         double d_const;
         int m_Lowson_type;
-    //Sara
+        int m_qs3DSim;
+    //Sara end
 
 private:
     void setupVectors();
@@ -275,7 +275,7 @@ private:
     void calcSPLs(int posOpPoint,int posFreq);
     void calcSPLp(int posOpPoint,int posFreq);
     void LECalc(int posOpPoint, int posFreq); //Alexandre MOD
-    //Sara
+    //Sara begin
     double calcXRS(double a, double XB, double YB);
     double calcYRS(double a, double XB, double YB);
     double calcZRS(double ZB, double r_0, double r_1);
@@ -289,7 +289,7 @@ private:
     double calcFirstTerm(double Mach, double L, double D, double D_starred, double dist_obs);
     double calcDh(double Mach, double theta_e, double phi_e,double EddyMach);
     double calcDl(double Mach, double theta_e, double phi_e);
-    //Sara
+    //Sara end
 
     NoiseParameter *m_parameter;
 
@@ -311,9 +311,8 @@ private:
     bool m_CalcSuctionSide;
     bool m_CalcPressureSide;
 
-    //Sara
-    bool m_CalcLowson;
-    //Sara
+
+    bool m_CalcLowson;    //Sara
 
     double m_A1Ar;
 
@@ -325,7 +324,7 @@ private:
     QVector<double> m_SPLSLOG;
     QVector<double> m_SPLPLOG;
 
-//Sara
+//Sara begin
     QVector<double> m_SPLLEdB;
     QVector<double> m_SPLLEdBAW;
     QVector<double> m_SPLLEdBBW;
@@ -376,20 +375,7 @@ private:
     QVector<double> m_SPLLEdBBW3d_rotor_loops;
     QVector<double> m_SPLLEdBCW3d_rotor_loops;
     QVector<double> m_SPLlogLE3d_rotor_loops;
-
-//    QVector<double> m_OASPL3d_4d_blade;
-//    QVector<double> m_OASPLA3d_4d_blade;
-//    QVector<double> m_OASPLB3d_4d_blade;
-//    QVector<double> m_OASPLC3d_4d_blade;
-//    QVector<double> m_SPLALOG3d_4d_blade;
-//    QVector<double> m_SPLSLOG3d_4d_blade;
-//    QVector<double> m_SPLPLOG3d_4d_blade;
-//    QVector<double> m_SPLLEdB3d_4d_blade;
-//    QVector<double> m_SPLLEdBAW3d_4d_blade;
-//    QVector<double> m_SPLLEdBBW3d_4d_blade;
-//    QVector<double> m_SPLLEdBCW3d_4d_blade;
-//    QVector<double> m_SPLlogLE3d_4d_blade;
-    //Sara
+    //Sara end
 
     //For SPLa
     TwoDVector m_SPLadB; //Store db of SPL alpha
@@ -414,11 +400,21 @@ private:
     double m_SplaAo;
     double m_ChordBasedReynolds;
 
-    //Sara
+    //Sara begin
     bool m_rot_speed_check;
     bool m_u_wind_speed_check;
     bool m_TSRtd_check;
-    double m_sects;
+    bool m_shear_check;
+
+    int m_timesteps;
+    int m_number_loops;
+    int m_dstar_type;
+    int m_state_ss_us;
+    int m_rotation_type;
+    int m_anglesteps;
+    int m_phi_type;
+    int m_theta_type;
+
     double m_rot_speed;
     double m_u_wind_speed;
     double m_TSRtd;
@@ -428,7 +424,6 @@ private:
     double m_u_wind_speed_calc;
     double m_shear_roughness;
     double m_shear_height;
-    double m_shear_check;
     double m_TSR_calc;
     double m_obs_x_pos;
     double m_obs_y_pos;
@@ -441,16 +436,7 @@ private:
     double m_initial_azimuth;
     double m_time;
     double m_yaw_angle;
-    int m_timesteps;
-    int m_number_loops;
-    int m_dstar_type;
-    int m_state_ss_us;
-//    int m_step_type;
-    int m_rotation_type;
-    int m_anglesteps;
-    int m_phi_type;
-    int m_theta_type;
-    //Sara
+    //Sara end
 
     //For SPLs
     TwoDVector m_SPLsdB; //Store db of SPLs
@@ -493,7 +479,7 @@ private:
     double m_originalMach;
     double m_wettedLength;
 
-    //Sara
+    //Sara begin
     TwoDVector m_SPLadB3d;
     TwoDVector m_SPLadBAW3d;
     TwoDVector m_SPLadBBW3d;
@@ -634,22 +620,7 @@ private:
     TwoDVector m_SPL_LEdBBW3d_final_rotor_loops;
     TwoDVector m_SPL_LEdBCW3d_final_rotor_loops;
     TwoDVector m_SPLsdB3d_final_rotor_loops;
-
-//    TwoDVector m_SPLadB3d_final_4d_blade;
-//    TwoDVector m_SPLpdB3d_final_4d_blade;
-//    TwoDVector m_SPLdB3d_final_4d_blade;
-//    TwoDVector m_SPLdBAW3d_final_4d_blade;
-//    TwoDVector m_SPLdBBW3d_final_4d_blade;
-//    TwoDVector m_SPLdBCW3d_final_4d_blade;
-//    TwoDVector m_SPL_LEdB3d_final_4d_blade;
-//    TwoDVector m_SPL_LEdBAW3d_final_4d_blade;
-//    TwoDVector m_SPL_LEdBBW3d_final_4d_blade;
-//    TwoDVector m_SPL_LEdBCW3d_final_4d_blade;
-//    TwoDVector m_SPLsdB3d_final_4d_blade;
-
-    //for quasi 3d rotor
-    TwoDVector m_unsteady_angles;
-    //Sara
+    //Sara end
 };
 
 #endif // NOISECALCULATION_H

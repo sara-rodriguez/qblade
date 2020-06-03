@@ -23,6 +23,7 @@
 #include "../XUnsteadyBEM/WindField.h"
 #include "../MainFrame.h"
 #include "../XUnsteadyBEM/WindFieldModule.h"
+#include "NoiseCalculation.h"
 //Sara
 
 typedef Parameter::NoiseSimulation P;
@@ -109,6 +110,36 @@ pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","
 Lowson_type_combobox->insertItem(0,"None");
 Lowson_type_combobox->insertItem(1,"Von Kármán");
 Lowson_type_combobox->insertItem(2,"Rapid Distortion");
+
+groupBox = new QGroupBox ("Quasi 3D Simulation");
+vBox->addWidget(groupBox);
+pGrid = new ParameterGrid<P>(this);
+groupBox->setLayout(pGrid);
+QComboBox *qs3DSim_combobox = new QComboBox;
+pGrid->addEdit(P::qs3DSim,ComboBox, qs3DSim_combobox,"Quasi 3D:","");
+qs3DSim_combobox->insertItem(0,"Rotor");
+qs3DSim_combobox->insertItem(1,"Blade");
+qs3DSim_combobox->insertItem(2,"Disable");
+
+connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    [=](int index){
+
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+    pNoiseCalculation->user_sel=index;
+
+if (index == 0){
+    tabWidget->setTabEnabled(2, true);
+    tabWidget->setTabEnabled(3, true);
+}
+if (index == 1){
+    tabWidget->setTabEnabled(2, true);
+    tabWidget->setTabEnabled(3, false);
+}
+if (index == 2){
+    tabWidget->setTabEnabled(2, false);
+    tabWidget->setTabEnabled(3, false);
+}
+});
                 //Sara
                 vBox->addStretch();
 
@@ -166,13 +197,6 @@ Lowson_type_combobox->insertItem(2,"Rapid Distortion");
                             hBox->addWidget(groupBox);
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
-                            NumberEdit *numEdit = new NumberEdit();
-                            QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-                            double max_sects = pBEM->dlg_elements;
-                            pGrid->addEdit(P::sects, NumberEditType, numEdit,"Number of Segments:", 40);
-                            numEdit->setRange(13,max_sects);
-                            numEdit->setValue(30,true);
-                            numEdit->setAutomaticPrecision(0);
 
 m_rot_speed_check = new QCheckBox("rot. speed set:");
 pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);

@@ -12,19 +12,21 @@
 #include "../Store.h"
 #include "NoiseMenu.h"
 #include "NoiseCreatorDialog.h"//Sara
+#include "NoiseCalculation.h"//Sara
 
 NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
 {
     m_globalModuleIndentifier = NOISEMODULE;
     m_shownSimulation = nullptr;
 
+//Sara
     onqs3dGraphs(false);//Sara
 	
-//Sara
     //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
     QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
     setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
-                        (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quint).toInt()));//Sara
+                        (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quint).toInt()));
+//Sara
 
 	m_menu = new NoiseMenu (mainWindow, this);
 	
@@ -80,7 +82,14 @@ QList<NewCurve *> NoiseModule::prepareCurves(QString xAxis, QString yAxis, NewGr
 }
 
 QStringList NoiseModule::getAvailableGraphVariables(bool /*xAxis*/) {
-	return NoiseSimulation::getAvailableVariables();
+    int index = 2;
+
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+    if(pNoiseCalculation->user_sel<3){index = pNoiseCalculation->user_sel;}
+
+    if(index==0){return NoiseSimulation::getAvailableVariables_rotor();}
+    else if(index==1){return NoiseSimulation::getAvailableVariables_blade();}
+    else{return NoiseSimulation::getAvailableVariables();}
 }
 
 QPair<ShowAsGraphInterface *, int> NoiseModule::getHighlightDot(NewGraph::GraphType /*graphType*/) {
@@ -141,8 +150,14 @@ void NoiseModule::onHideDocks(bool hide) {
 
 //Sara
 int index_qs3d=-1;
-void NoiseModule::onqs3dGraphs(bool graphs){
+int index = 2;
+void NoiseModule::onqs3dGraphs(bool){
 ++index_qs3d;
+
+NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+if(pNoiseCalculation->user_sel<3){index = pNoiseCalculation->user_sel;}
+
+if (index==0){
 if(index_qs3d==4){index_qs3d=0;}
 
 m_globalModuleIndentifier = NOISEMODULE;
@@ -152,10 +167,26 @@ if(index_qs3d==0){onqs3dGraph2d();}
 if(index_qs3d==1){onqs3dGraphBlade();}
 if(index_qs3d==2){onqs3dGraphRotor();}
 if(index_qs3d==3){onqs3dGraphRotorLoops();}
+}
 
-QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+if (index==1){
+if(index_qs3d==2){index_qs3d=0;}
 
-setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>(settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quint).toInt()));//Sara
+m_globalModuleIndentifier = NOISEMODULE;
+m_shownSimulation = nullptr;
+
+if(index_qs3d==0){onqs3dGraph2d();}
+if(index_qs3d==1){onqs3dGraphBlade();}
+}
+
+if (index==2){
+onqs3dGraph2d();
+}
+
+QSettings settings("qblade.ini", QSettings::IniFormat);
+
+setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>(settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Quint).toInt()));
+//Sara
 
 m_contextMenu = new NoiseContextMenu (m_twoDWidget, this);  // NM TODO move this up to TwoDInterface?
 setContextMenu(m_contextMenu);
@@ -171,29 +202,38 @@ void NoiseModule::onqs3dGraph2d(){
         m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
 }
 
-void NoiseModule::onqs3dGraphBlade(){
+void NoiseModule::onqs3dGraphBlade(){  
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+    int index = pNoiseCalculation->user_sel;
+if (index!=2){
         m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_blade[qs3D]", true, false});
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_blade[qs3D]", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_blade[qs3D]", true, false});
         m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_blade[qs3D] (dB)", true, false});//Alexandre MOD
         m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_blade[qs3D] (dB)", true, false});
-}
+}}
 
 void NoiseModule::onqs3dGraphRotor(){
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+    int index = pNoiseCalculation->user_sel;
+if (index==0){
         m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_rotor[qs3D]", true, false});
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_rotor[qs3D]", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_rotor[qs3D]", true, false});
         m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_rotor[qs3D] (dB)", true, false});//Alexandre MOD
         m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_rotor[qs3D] (dB)", true, false});
-}
+}}
 
 void NoiseModule::onqs3dGraphRotorLoops(){
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+    int index = pNoiseCalculation->user_sel;
+if (index==0){
         m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_rotor_loops[qs3D]", true, false});
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_rotor_loops[qs3D]", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_rotor_loops[qs3D]", true, false});
         m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_rotor_loops[qs3D] (dB)", true, false});//Alexandre MOD
         m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_rotor_loops[qs3D] (dB)", true, false});
-}
+}}
 //Sara
 
 void NoiseModule::setShownSimulation(NoiseSimulation *newSimulation, bool forceReload) {

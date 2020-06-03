@@ -30,6 +30,8 @@ public:
 
     QString getObjectName () { return m_objectName; }
     static QStringList getAvailableVariables (NewGraph::GraphType graphType = NewGraph::None);
+    static QStringList getAvailableVariables_blade (NewGraph::GraphType graphType = NewGraph::None); //Sara
+    static QStringList getAvailableVariables_rotor (NewGraph::GraphType graphType = NewGraph::None); //Sara
     static QStringList prepareMissingObjectMessage();
 
     void simulate();  // can throw NoiseException
@@ -48,17 +50,20 @@ public:
 
     //Sara
     QVector<double> listtsr;
+    bool m_rot_speed_check;
+    bool m_u_wind_speed_check;
+    bool m_TSR_check;
+    bool m_shear_check;
+
+    int vectors_size;
+//    int qs3DSim;
+
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
     double m_TSR_calc;
     double m_shear_roughness;
     double m_shear_height;
     double m_shear_speed;
-    bool m_rot_speed_check;
-    bool m_u_wind_speed_check;
-    bool m_TSR_check;
-    bool m_shear_check;
-    int vectors_size;
     //Sara
 
 private:
@@ -81,7 +86,6 @@ private:
     double m_DStarFinalS;
     double m_DStarFinalP;
     double originalMach;
-    double m_sects;
     double x;
     double m_rot_speed;
     double m_u_wind_speed;

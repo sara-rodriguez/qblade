@@ -1978,7 +1978,7 @@ else {
 }}
  else {
 //unsteady
-//Sara urgente TODO
+//Sara
         double hub_height = m_parameter->tower_height+m_parameter->tower_to_hub_distance;
         int section_radius = bdata->m_pos.value(section);
         CVector windspeed_windfield;
@@ -3756,7 +3756,8 @@ void NoiseCalculation::calculateqs3d_blade() {
     m_SPLLEdBBW3d[i]=0;
     m_SPLLEdBCW3d[i]=0;
     m_SPLlogLE3d[i]=0;
-    }}}
+    }}
+}
 
 //calculation for one blade placed in rotor coordinates
 void NoiseCalculation::calculateqs3d_rotor() {
@@ -3948,7 +3949,8 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLLEdBBW3d_rotor[i]=0;
     m_SPLLEdBCW3d_rotor[i]=0;
     m_SPLlogLE3d_rotor[i]=0;
-    }}}
+    }}
+}
 
 //calculation for all blades in rotation movement
 void NoiseCalculation::calculateqs3d_rotor_loops() {
