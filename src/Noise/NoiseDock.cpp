@@ -58,7 +58,7 @@ void NoiseDock::onUnitsChanged() {
 void NoiseDock::onEditCopyButtonClicked() {
 	NoiseCreatorDialog *creatorDialog = new NoiseCreatorDialog (m_shownObject, m_module);
 	creatorDialog->exec();
-	delete creatorDialog;
+    delete creatorDialog;
 }
 
 void NoiseDock::onRenameButtonClicked() {
@@ -79,7 +79,7 @@ void NoiseDock::onNewButtonClicked() {
 
 	NoiseCreatorDialog *creatorDialog = new NoiseCreatorDialog (NULL, m_module);
 	creatorDialog->exec();
-	delete creatorDialog;
+    delete creatorDialog;
 }
 
 void NoiseDock::onColorByOpPoint() {

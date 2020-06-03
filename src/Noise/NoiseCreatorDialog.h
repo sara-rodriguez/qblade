@@ -69,6 +69,7 @@ private:
     QComboBox *mode_combobox;
     QComboBox *rotation_combobox;
     QComboBox *qs3DSim_combobox;
+    QComboBox *w_TSR_combobox;
 
     QPushButton *buttonle;
 
@@ -104,7 +105,6 @@ private:
     QList<QString> m_CsvFileHeader;
     QLabel *m_CsvFileLabel, *m_StarredDLabel;
     int m_StarredDType;
-//Sara end
 
 private slots:
     void onSelectButtonsClicked (int id);

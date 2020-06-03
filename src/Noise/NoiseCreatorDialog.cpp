@@ -198,156 +198,150 @@ if (index == 2){
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
 
-m_rot_speed_check = new QCheckBox("rot. speed set:");
-pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
+                            m_rot_speed_check = new QCheckBox("rot. speed set:");
+                            pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
 
-    connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnRotSpeedCheck()));//int
+                                connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnRotSpeedCheck()));//int
 
-m_rot_speed_numberedit = new NumberEdit ();
-m_rot_speed_numberedit->setAutomaticPrecision(3);
-m_rot_speed_numberedit->setEnabled(false);
-pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",1);
+                            m_rot_speed_numberedit = new NumberEdit ();
+                            m_rot_speed_numberedit->setAutomaticPrecision(3);
+                            pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",1);
+                            m_rot_speed_numberedit->setEnabled(false);
 
-m_u_wind_speed_check = new QCheckBox("wind speed set:");
-pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", 1);
-connect(m_u_wind_speed_check,SIGNAL(clicked()),this,SLOT(OnWindSpeedCheck()));//int stateChanged(int)
+                            m_u_wind_speed_check = new QCheckBox("wind speed set:");
+                            pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", 1);
+                            connect(m_u_wind_speed_check,SIGNAL(clicked()),this,SLOT(OnWindSpeedCheck()));//int stateChanged(int)
 
+                            m_u_wind_speed_numberedit = new NumberEdit ();
+                            m_u_wind_speed_numberedit->setAutomaticPrecision(3);
+                            pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []:",u_wind_speed, SPEED);
 
-m_u_wind_speed_numberedit = new NumberEdit ();
-m_u_wind_speed_numberedit->setAutomaticPrecision(3);
-pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []:",u_wind_speed, SPEED);
+                            m_TSR_spinbox = new QDoubleSpinBox;
+                            m_TSR_spinbox->setLocale(QLocale("en_us"));
 
-m_TSR_spinbox = new QDoubleSpinBox;
-m_TSR_spinbox->setLocale(QLocale("en_us"));
+                            m_TSR_check = new QCheckBox ("TSR set");
+                            //const bool blocked = m_TSR_check->signalsBlocked();
+                            //m_TSR_check->blockSignals(true);
+                            pGrid->addEdit(P::TSR_check, CheckBox, m_TSR_check,"", 1);
+                            //m_TSR_check->blockSignals(blocked);
 
-m_TSR_check = new QCheckBox ("TSR set");
-//const bool blocked = m_TSR_check->signalsBlocked();
-//m_TSR_check->blockSignals(true);
-pGrid->addEdit(P::TSR_check, CheckBox, m_TSR_check,"", 1);
-//m_TSR_check->blockSignals(blocked);
+                            connect(m_TSR_check,SIGNAL(clicked()),this,SLOT(OnTSRCheck()));
 
-connect(m_TSR_check,SIGNAL(clicked()),this,SLOT(OnTSRCheck()));
+                            pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 7);
+                            double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+                            double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+                            double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 
-pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 7);
-double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
-double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
+                                 m_TSR_spinbox->setRange(lstart, lend);
+                                 m_TSR_spinbox->setSingleStep(ldelta);
+                                 m_TSR_spinbox->setDecimals(1);
+                                 m_TSR_spinbox->valueChanged(change_TSR);
 
-     m_TSR_spinbox->setRange(lstart, lend);
-     m_TSR_spinbox->setSingleStep(ldelta);
-     m_TSR_spinbox->setDecimals(1);
-     m_TSR_spinbox->valueChanged(change_TSR);
+                            dstar_combobox = new QComboBox;
+                            pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* source:","");
+                            dstar_combobox->insertItem(0,"XFoil");
+                            dstar_combobox->insertItem(1,"BPM");
+                            dstar_combobox->insertItem(2,"User");
+                            connect(dstar_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnSetDstarButton(int)));
 
-//QLabel *labeltd = new QLabel ("Select Blade Type from Database:");
-//pGrid->addWidget(labeltd);
-//m_airfoilComboBoxtd = new FoilComboBox (&g_foilStore);
-//pGrid->addWidget(m_airfoilComboBoxtd);
+                            pGrid->setSizeConstraint(QLayout::SetMinimumSize);
+                            buttonle = new QPushButton ("δ* User Input");
+                            buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
+                            buttonle->setEnabled(false);
+                            pGrid->addWidget(buttonle,9,1);//,8,2
+                            connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 
-dstar_combobox = new QComboBox;
-pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* source:","");
-dstar_combobox->insertItem(0,"XFoil");
-dstar_combobox->insertItem(1,"BPM");
-dstar_combobox->insertItem(2,"User");
-connect(dstar_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnSetDstarButton(int)));
+                            hBox->addLayout(vBox);
+                                QLabel *imageLabela = new QLabel;
+                                imageLabela->setPixmap(QPixmap(":/images/noise_3d_position.png"));
+                                vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
 
-pGrid->setSizeConstraint(QLayout::SetMinimumSize);
-buttonle = new QPushButton ("δ* User Input");
-buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
-buttonle->setEnabled(false);
-pGrid->addWidget(buttonle,9,1);//,8,2
-connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
+                                groupBox = new QGroupBox ("Observer Position");
+                                vBox->addWidget(groupBox);
+                                pGrid = new ParameterGrid<P>(this);
+                                groupBox->setLayout(pGrid);
 
-hBox->addLayout(vBox);
-    QLabel *imageLabela = new QLabel;
-    imageLabela->setPixmap(QPixmap(":/images/noise_3d_position.png"));
-    vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
+                                pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
+                                pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
-    groupBox = new QGroupBox ("Observer Position");
-    vBox->addWidget(groupBox);
-    pGrid = new ParameterGrid<P>(this);
-    groupBox->setLayout(pGrid);
+                                QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+                                double hub_radius=pbem->m_pBlade->m_HubRadius;
+                                double outer_radius=pbem->m_pTData->OuterRadius;
+                                double blade_radius=(outer_radius-hub_radius);
+                                double z_pos=blade_radius/2.;
 
-    pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
-    pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
+                                pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
 
-    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-    double hub_radius=pbem->m_pBlade->m_HubRadius;
-    double outer_radius=pbem->m_pTData->OuterRadius;
-    double blade_radius=(outer_radius-hub_radius);
-    double z_pos=blade_radius/2.;
+                                widget = new QWidget;
+                                tabWidget->addTab(widget, "quasi 3D Rotor");
+                                vBox = new QVBoxLayout;
+                                hBox = new QHBoxLayout;
+                                widget->setLayout(hBox);
+                                groupBox = new QGroupBox ("quasi 3D Rotor Simulation Parameters");
+                                hBox->addWidget(groupBox);
+                                pGrid = new ParameterGrid<P>(this);
+                                groupBox->setLayout(pGrid);
+                                mode_combobox = new QComboBox;
+                                pGrid->addEdit(P::state_ss_us,ComboBox, mode_combobox,"State:","");
+                                mode_combobox->insertItem(0,"Steady");
+                                mode_combobox->insertItem(1,"Unsteady");
+                                connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
 
-    pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
+                                double tower_height_in;
+                            if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-hub_radius;}
+                                m_tower_height_numberedit = new NumberEdit ();
+                                pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
 
-    widget = new QWidget;
-    tabWidget->addTab(widget, "quasi 3D Rotor");
-    vBox = new QVBoxLayout;
-    hBox = new QHBoxLayout;
-    widget->setLayout(hBox);
-    groupBox = new QGroupBox ("quasi 3D Rotor Simulation Parameters");
-    hBox->addWidget(groupBox);
-    pGrid = new ParameterGrid<P>(this);
-    groupBox->setLayout(pGrid);
-    mode_combobox = new QComboBox;
-    pGrid->addEdit(P::state_ss_us,ComboBox, mode_combobox,"State:","");
-    mode_combobox->insertItem(0,"Steady");
-    mode_combobox->insertItem(1,"Unsteady");
-    connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
+                                m_initial_azimuth_spinbox = new QDoubleSpinBox;
+                                m_initial_azimuth_spinbox->setLocale(QLocale("en_us"));
+                                pGrid->addEdit(P::initial_azimuth,DoubleSpinBox, m_initial_azimuth_spinbox,"Initial Azimuth [deg]:", 0);
+                                m_initial_azimuth_spinbox->setRange(0, 360);
+                                m_initial_azimuth_spinbox->setSingleStep(1);
+                                m_initial_azimuth_spinbox->setDecimals(0);
 
-    double tower_height_in;
-if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-hub_radius;}
-    m_tower_height_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
+                                m_yaw_angle_spinbox = new QDoubleSpinBox;
+                                m_yaw_angle_spinbox->setLocale(QLocale("en_us"));
+                                pGrid->addEdit(P::yaw_angle,DoubleSpinBox, m_yaw_angle_spinbox,"Yaw Angle [deg]:", 0);
+                                m_yaw_angle_spinbox->setRange(0, 360);
+                                m_yaw_angle_spinbox->setSingleStep(1);
+                                m_yaw_angle_spinbox->setDecimals(0);
 
-    m_initial_azimuth_spinbox = new QDoubleSpinBox;
-    m_initial_azimuth_spinbox->setLocale(QLocale("en_us"));
-    pGrid->addEdit(P::initial_azimuth,DoubleSpinBox, m_initial_azimuth_spinbox,"Initial Azimuth [deg]:", 0);
-    m_initial_azimuth_spinbox->setRange(0, 360);
-    m_initial_azimuth_spinbox->setSingleStep(1);
-    m_initial_azimuth_spinbox->setDecimals(0);
+                                m_tower_to_hub_distance_numberedit = new NumberEdit ();
+                                pGrid->addEdit(P::tower_to_hub_distance, NumberEditType, m_tower_to_hub_distance_numberedit,"Tower To Hub Distance []:",4,LENGTH);
 
-    m_yaw_angle_spinbox = new QDoubleSpinBox;
-    m_yaw_angle_spinbox->setLocale(QLocale("en_us"));
-    pGrid->addEdit(P::yaw_angle,DoubleSpinBox, m_yaw_angle_spinbox,"Yaw Angle [deg]:", 0);
-    m_yaw_angle_spinbox->setRange(0, 360);
-    m_yaw_angle_spinbox->setSingleStep(1);
-    m_yaw_angle_spinbox->setDecimals(0);
+                                rotation_combobox = new QComboBox;
+                                pGrid->addEdit(P::rotation_type,ComboBox, rotation_combobox,"Reference:","");
+                                rotation_combobox->insertItem(0,"Angular");
+                                rotation_combobox->insertItem(1,"Time");
+                                connect(rotation_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnRotationDefine(int)));
+                                rotation_combobox->setEnabled(true);
 
-    m_tower_to_hub_distance_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::tower_to_hub_distance, NumberEditType, m_tower_to_hub_distance_numberedit,"Tower To Hub Distance []:",4,LENGTH);
+                                m_number_loops_numberedit = new NumberEdit ();
+                                pGrid->addEdit(P::number_loops, NumberEditType, m_number_loops_numberedit,"Number of Loops:",1);
+                                m_number_loops_numberedit->setEnabled(true);
 
-    rotation_combobox = new QComboBox;
-    pGrid->addEdit(P::rotation_type,ComboBox, rotation_combobox,"Reference:","");
-    rotation_combobox->insertItem(0,"Angular");
-    rotation_combobox->insertItem(1,"Time");
-    connect(rotation_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnRotationDefine(int)));
-    rotation_combobox->setEnabled(true);
+                                m_anglesteps_numberedit = new NumberEdit ();
+                                pGrid->addEdit(P::anglesteps, NumberEditType, m_anglesteps_numberedit,"Anglesteps [deg]:",45);
+                                m_anglesteps_numberedit->setMinimum(1);
+                                m_anglesteps_numberedit->setMaximum(45);
+                                m_number_loops_numberedit->setEnabled(true);
 
-    m_number_loops_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::number_loops, NumberEditType, m_number_loops_numberedit,"Number of Loops:",1);
-    m_number_loops_numberedit->setEnabled(true);
+                                m_time_numberedit = new NumberEdit ();
+                                pGrid->addEdit(P::time, NumberEditType, m_time_numberedit,"Time [s]:",100);
+                                m_time_numberedit->setEnabled(false);
 
-    m_anglesteps_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::anglesteps, NumberEditType, m_anglesteps_numberedit,"Anglesteps [deg]:",45);
-    m_anglesteps_numberedit->setMinimum(1);
-    m_anglesteps_numberedit->setMaximum(45);
-    m_number_loops_numberedit->setEnabled(true);
+                                m_timesteps_numberedit = new NumberEdit ();
+                                pGrid->addEdit(P::timesteps, NumberEditType, m_timesteps_numberedit,"Timesteps [ms]:",5);
+                                m_timesteps_numberedit->setEnabled(false);
 
-    m_time_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::time, NumberEditType, m_time_numberedit,"Time [s]:",100);
-    m_time_numberedit->setEnabled(false);
-
-    m_timesteps_numberedit = new NumberEdit ();
-    pGrid->addEdit(P::timesteps, NumberEditType, m_timesteps_numberedit,"Timesteps [ms]:",5);
-    m_timesteps_numberedit->setEnabled(false);
-
-    groupBox = new QGroupBox ("Observer Position");
-    vBox->addWidget(groupBox);
-    pGrid = new ParameterGrid<P>(this);
-    groupBox->setLayout(pGrid);
-    double distx = 1.5*outer_radius;
-    pGrid->addEdit(P::obs_x_pos_rotor, NumberEditType, new NumberEdit(),"XF:", distx);
-    pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YF:", 0);
-    pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZF:", 0);
+                                groupBox = new QGroupBox ("Observer Position");
+                                vBox->addWidget(groupBox);
+                                pGrid = new ParameterGrid<P>(this);
+                                groupBox->setLayout(pGrid);
+                                double distx = 1.5*outer_radius;
+                                pGrid->addEdit(P::obs_x_pos_rotor, NumberEditType, new NumberEdit(),"XF:", distx);
+                                pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YF:", 0);
+                                pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZF:", 0);
 
     groupBox = new QGroupBox ("Shear layer effect");
     vBox->addWidget(groupBox);
@@ -691,6 +685,7 @@ void NoiseCreatorDialog::OnRotSpeedCheck(){
 }
 
 void NoiseCreatorDialog::OnWindSpeedCheck(){
+
     if (!m_u_wind_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(false);}
     else{m_u_wind_speed_numberedit->setEnabled(true);}
     OnWarningSet3();
