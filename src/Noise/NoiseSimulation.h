@@ -20,6 +20,8 @@ class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, publ
 {
 public:
 
+    int y=0;
+
     static NoiseSimulation* newBySerialize ();
     NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
 
@@ -75,7 +77,6 @@ private:
     NoiseCalculation m_calculation;
 
     //Sara
-
     double obs_x_pos;
     double obs_y_pos;
     double obs_z_pos;
@@ -90,12 +91,10 @@ private:
     double m_rot_speed;
     double m_u_wind_speed;
     double m_TSR;
-    double m_dstar_user;
     double m_tower_height;
     double m_yaw_angle;
     int m_dstar_type;
     int m_state_ss_us;
-//    int m_step_type;
     int m_anglesteps;
     int m_phi_type;
     int m_theta_type;

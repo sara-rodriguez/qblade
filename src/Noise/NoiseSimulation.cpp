@@ -1419,10 +1419,10 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
         if(set) m_parameter.transition = static_cast<NoiseParameter::TransitionType>(value.toInt());
         else value = static_cast<int>(m_parameter.transition); break;
         //Alexandre MOD
-        case P::IntegralLengthScale:
+    case P::IntegralLengthScale:
             if(set) m_parameter.IntegralLengthScale = value.toDouble();
             else value = m_parameter.IntegralLengthScale; break;
-        case P::TurbulenceIntensity:
+     case P::TurbulenceIntensity:
         if(set) m_parameter.TurbulenceIntensity = value.toDouble();
             else value = m_parameter.TurbulenceIntensity; break;
 
@@ -1475,13 +1475,6 @@ break;
         else {value = m_parameter.theta_type;}break;
 
     case P::obs_x_pos:
-        if ((m_parameter.obs_x_pos==0.) & (m_parameter.obs_y_pos==0.) & (m_parameter.obs_z_pos==0.)){
-        m_parameter.obs_x_pos=10;
-        m_parameter.obs_y_pos=10;
-        double hub_radius=pbem->m_pBlade->m_HubRadius;
-        double blade_radius=(outer_radius-hub_radius);
-        m_parameter.obs_z_pos=blade_radius/2.;
-        }
         if(set) m_parameter.obs_x_pos = value.toDouble();
         else {value = m_parameter.obs_x_pos;}break;
 
@@ -1494,12 +1487,7 @@ break;
         else {value = m_parameter.obs_z_pos;}break;
 
     case P::obs_x_pos_rotor:
-        if((m_parameter.obs_x_pos_rotor==0.) & (m_parameter.obs_y_pos_rotor==0.) & (m_parameter.obs_z_pos_rotor==0.)){
-          m_parameter.obs_x_pos_rotor=0;
-          m_parameter.obs_y_pos_rotor=0;
-          m_parameter.obs_z_pos_rotor=1.5*outer_radius;
-        }
-        if(set) m_parameter.obs_x_pos_rotor = value.toDouble();
+         if(set) m_parameter.obs_x_pos_rotor = value.toDouble();
         else {value = m_parameter.obs_x_pos_rotor;}break;
 
     case P::obs_y_pos_rotor:
@@ -1566,83 +1554,117 @@ else {value=m_parameter.state_ss_us;}
        break;
 
     case P::number_loops:
-        if(m_parameter.rotation_type==1){m_parameter.number_loops=m_parameter.time/(60./m_parameter.rot_speed);}
        if(set) m_parameter.number_loops = value.toInt();
        else {value = m_parameter.number_loops;}
        break;
 
     case P::time:
-       if(m_parameter.rotation_type==0){m_parameter.time=60./m_parameter.rot_speed;}
-       if (m_parameter.time==0){m_parameter.time=60./m_parameter.rot_speed;}
        if(set) m_parameter.time = value.toDouble();
        else {value = m_parameter.time;}
        break;
 
     case P::timesteps:
-        if(m_parameter.rotation_type==1){m_parameter.timesteps=(m_parameter.time/(60./m_parameter.rot_speed))/360.*m_parameter.anglesteps*1000.;}
-        if (m_parameter.timesteps==0){m_parameter.timesteps=(m_parameter.time/(60./m_parameter.rot_speed))/360.*45.*1000.;}
        if(set) m_parameter.timesteps = value.toInt();
        else {value = m_parameter.timesteps;}
        break;
 
     case P::anglesteps:
-        if(m_parameter.rotation_type==1){m_parameter.anglesteps=m_parameter.timesteps*60.*360./(m_parameter.rot_speed*1000.);}
         if(set) m_parameter.anglesteps = value.toInt();
         else {value = m_parameter.anglesteps;}
         break;
     }
-    // Sara
 
-    SimuWidget *pSimuWidget = (SimuWidget *) pbem->m_pSimuWidget;
+    ++y;//number of loops of this process
+//    qDebug() << y; //check the value
 
-    //cálculos TSR w e u
-    m_parameter.TSR_calc=2.*PI*m_parameter.rot_speed/60.*outer_radius/m_parameter.u_wind_speed;
+    if(y==48){ //number of parameters need to change when include or remove according the number of parameter keys
 
-    m_parameter.rot_speed_calc=m_parameter.TSRtd*m_parameter.u_wind_speed*60./(2.*PI*outer_radius);
+//obs x pos
+        if ((m_parameter.obs_x_pos==0.) & (m_parameter.obs_y_pos==0.) & (m_parameter.obs_z_pos==0.)){
+        m_parameter.obs_x_pos=10;
+        m_parameter.obs_y_pos=10;
+        double hub_radius=pbem->m_pBlade->m_HubRadius;
+        double blade_radius=(outer_radius-hub_radius);
+        m_parameter.obs_z_pos=blade_radius/2.;
+        }
 
-    m_parameter.u_wind_speed_calc=2.*PI*m_parameter.rot_speed/60.*outer_radius/m_parameter.TSRtd;
+//x pos rotor
+        if((m_parameter.obs_x_pos_rotor==0.) & (m_parameter.obs_y_pos_rotor==0.) & (m_parameter.obs_z_pos_rotor==0.)){
+          m_parameter.obs_x_pos_rotor=0;
+          m_parameter.obs_y_pos_rotor=0;
+          m_parameter.obs_z_pos_rotor=1.5*outer_radius;
+        }
 
-    //cálculo para não sets
-    if(m_parameter.u_wind_speed_check==false){
-        qDebug() << "u calc"; //urgente
-    m_parameter.u_wind_speed=m_parameter.u_wind_speed_calc;}
+//time
+        if(m_parameter.rotation_type==0){m_parameter.time=60./m_parameter.rot_speed;}
+        if (m_parameter.time==0){m_parameter.time=60./m_parameter.rot_speed;}
 
-    if(m_parameter.TSR_check==false){
-        qDebug() << "TSR calc"; //urgente
+//timesteps
+        if(m_parameter.rotation_type==1){m_parameter.timesteps=(m_parameter.time/(60./m_parameter.rot_speed))/360.*m_parameter.anglesteps*1000.;}
+        if (m_parameter.timesteps==0){m_parameter.timesteps=(m_parameter.time/(60./m_parameter.rot_speed))/360.*45.*1000.;}
+
+//anglesteps
+        if(m_parameter.rotation_type==1){m_parameter.anglesteps=m_parameter.timesteps*60.*360./(m_parameter.rot_speed*1000.);}
+
+//number of loops
+if(m_parameter.rotation_type==1){m_parameter.number_loops=m_parameter.time/(60./m_parameter.rot_speed);}
+
+    //TSR w and u calculation
+    m_TSR_calc=2.*PI*m_parameter.rot_speed/60.*outer_radius/m_parameter.u_wind_speed;
+
+    m_rot_speed_calc=m_parameter.TSRtd*m_parameter.u_wind_speed*60./(2.*PI*outer_radius);
+
+    m_u_wind_speed_calc=2.*PI*m_parameter.rot_speed/60.*outer_radius/m_parameter.TSRtd;
+
+//    calculation for non sets
+    if(!m_parameter.u_wind_speed_check){m_parameter.u_wind_speed=m_u_wind_speed_calc;}
+
+    if(!m_parameter.rot_speed_check){m_parameter.rot_speed=m_rot_speed_calc;}
+
+    if(!m_parameter.TSR_check){
     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
     double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-    //double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
+    double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 
-    double v=lstart;
-    while (qAbs(m_parameter.TSR_calc-v)>ldelta){
-    v=v+ldelta;
+if(m_TSR_calc>lend){
+    m_TSR_calc=lend;
+    m_parameter.TSRtd=m_TSR_calc;
+    m_parameter.rot_speed=m_rot_speed_calc;}
+
+else if(m_TSR_calc<lstart){
+    m_TSR_calc=lstart;
+    m_parameter.TSRtd=m_TSR_calc;
+    m_parameter.rot_speed=m_rot_speed_calc;}
+
+    else{
+int f=(lend-lstart)/ldelta;
+double m=0;
+double x=0;
+
+    for (double i=0;i<=f;++i){
+        x=lstart+i*ldelta;
+        m=m_TSR_calc-x;
+        if(m<ldelta/2.){break;}
     }
 
-    //int q=0;
-    if(m_parameter.TSR_calc!=v){
-    m_parameter.TSR_calc=v;
-//    m_parameter.TSR_check=true;
-    m_parameter.rot_speed=m_parameter.rot_speed_calc;
-//    m_parameter.rot_speed_check=false;
-//    m_parameter.u_wind_speed_check=true;
-    }
-    m_parameter.TSRtd=m_parameter.TSR_calc;
-    }
 
-    if(m_parameter.rot_speed_check==false){m_parameter.rot_speed=m_parameter.rot_speed_calc; qDebug() << "w calc"; }//urgente
-    //condição inicial
-    if((m_parameter.u_wind_speed_check==false) && (m_parameter.rot_speed_check==false) && (m_parameter.TSR_check==false)){
-        qDebug() << "condição inicial";//urgente
-     m_parameter.u_wind_speed_check=true;
-     m_parameter.rot_speed_check=false;
-     m_parameter.TSR_check=true;
-     m_parameter.TSRtd=7;
-     m_parameter.u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();
-     m_parameter.rot_speed=m_parameter.rot_speed_calc;
-    }
+if(m_TSR_calc==x){
+    m_parameter.TSRtd=m_TSR_calc;}
+else{
+    double m_TSR_calc_aux=x;
 
-    // Sara
+    double m_rot_speed_calc_aux=m_TSR_calc_aux*m_parameter.u_wind_speed*60./(2.*PI*outer_radius);
+
+    double m_u_wind_speed_calc_aux=2.*PI*m_parameter.rot_speed/60.*outer_radius/m_TSR_calc_aux;
+
+m_parameter.TSRtd=m_TSR_calc_aux;
+double delta_u=qAbs(m_parameter.u_wind_speed-m_u_wind_speed_calc_aux);
+double delta_w=qAbs(m_parameter.rot_speed-m_rot_speed_calc_aux);
+
+if(delta_w<=delta_u){m_parameter.rot_speed=m_rot_speed_calc_aux;}else{m_parameter.u_wind_speed=m_u_wind_speed_calc_aux;}
+}}}}
+// Sara
 
     return (set ? QVariant() : value);
 }

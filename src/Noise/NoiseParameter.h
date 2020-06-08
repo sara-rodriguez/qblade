@@ -71,9 +71,6 @@ public:
     int rotation_type;
     int anglesteps;
 
-    double rot_speed_calc;
-    double u_wind_speed_calc;
-    double TSR_calc;
     double obs_x_pos;
     double obs_y_pos;
     double obs_z_pos;
@@ -84,7 +81,6 @@ public:
     double rot_speed;
     double u_wind_speed;
     double TSRtd;
-    double dstar_user;
     double tower_to_hub_distance;
     double initial_azimuth;
     double shear_roughness;

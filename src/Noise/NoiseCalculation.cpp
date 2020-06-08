@@ -2000,11 +2000,11 @@ const double Z = hub_height+section_radius*sin(qDegreesToRadians(azimuthal))*cos
         CVector vec (X,Y,Z);
 
         windspeed = g_windFieldModule->getShownWindField()->getWindspeed(vec,time,0).VAbs();
-qDebug() << "X: " << X;
-qDebug() << "Y: " << Y;
-qDebug() << "Z: " << Z;
-qDebug() << "time: " << time;
-qDebug() << "vel: " << windspeed;
+//qDebug() << "X: " << X;
+//qDebug() << "Y: " << Y;
+//qDebug() << "Z: " << Z;
+//qDebug() << "time: " << time;
+//qDebug() << "vel: " << windspeed;
     }
 }
 return windspeed;

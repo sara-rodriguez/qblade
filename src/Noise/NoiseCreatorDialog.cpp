@@ -139,6 +139,9 @@ if (index == 2){
     tabWidget->setTabEnabled(2, false);
     tabWidget->setTabEnabled(3, false);
 }
+
+if(index!=2){check=true;}
+
 });
                 //Sara
                 vBox->addStretch();
@@ -179,12 +182,12 @@ if (index == 2){
 
                     m_originalBpmWidget = new QWidget;
                     grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignLeft | Qt::AlignTop);
-                        pGrid = new ParameterGrid<P>(this);
-                        m_originalBpmWidget->setLayout(pGrid);
-                            pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);//Sara
-                            pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
+                    pGrid = new ParameterGrid<P>(this);
+                    m_originalBpmWidget->setLayout(pGrid);
+                    pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);//Sara
+                    pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
                                            "Chord based Reynolds number (Rc):", 100000);
-                            pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
+                    pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
                                                QStringList()<<"Fully turbulent"<<"Transition flow");
 
                             //Sara
@@ -198,56 +201,57 @@ if (index == 2){
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
 
-                            m_rot_speed_check = new QCheckBox("rot. speed set:");
-                            pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", 0);
+m_rot_speed_check = new QCheckBox("rot. speed set:");
+pGrid->addEdit(P::rot_speed_check, CheckBox, m_rot_speed_check,"", rot_speed_in);
+connect(m_rot_speed_check,SIGNAL(toggled(bool)),this,SLOT(OnRotSpeedCheck(bool)));
+m_rot_speed_check->setToolTip("Select 2 of 3");
+connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnWarningSet3()));
 
-                                connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnRotSpeedCheck()));//int
+m_rot_speed_numberedit = new NumberEdit ();
+m_rot_speed_numberedit->setEnabled(m_rot_speed_check->isChecked());
+pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",6);
+m_rot_speed_numberedit->setAutomaticPrecision(3);
 
-                            m_rot_speed_numberedit = new NumberEdit ();
-                            m_rot_speed_numberedit->setAutomaticPrecision(3);
-                            pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",1);
-                            m_rot_speed_numberedit->setEnabled(false);
+m_u_wind_speed_check = new QCheckBox("wind speed set:");
+pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", u_wind_speed_in);
+connect(m_u_wind_speed_check,SIGNAL(toggled(bool)),this,SLOT(OnWindSpeedCheck(bool)));
+m_u_wind_speed_check->setToolTip("Select 2 of 3");
+connect(m_u_wind_speed_check,SIGNAL(clicked()),this,SLOT(OnWarningSet3()));
 
-                            m_u_wind_speed_check = new QCheckBox("wind speed set:");
-                            pGrid->addEdit(P::u_wind_speed_check, CheckBox, m_u_wind_speed_check,"", 1);
-                            connect(m_u_wind_speed_check,SIGNAL(clicked()),this,SLOT(OnWindSpeedCheck()));//int stateChanged(int)
+m_u_wind_speed_numberedit = new NumberEdit ();
+m_u_wind_speed_numberedit->setEnabled(m_u_wind_speed_check->isChecked());
+m_u_wind_speed_numberedit->setAutomaticPrecision(3);
+pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []:",u_wind_speed,SPEED);
 
-                            m_u_wind_speed_numberedit = new NumberEdit ();
-                            m_u_wind_speed_numberedit->setAutomaticPrecision(3);
-                            pGrid->addEdit(P::u_wind_speed, NumberEditType, m_u_wind_speed_numberedit,"Uniform Wind Speed []:",u_wind_speed, SPEED);
+m_TSR_check = new QCheckBox ("TSR set");
+pGrid->addEdit(P::TSR_check, CheckBox, m_TSR_check,"", TSR_in);
+connect(m_TSR_check,SIGNAL(toggled(bool)),this,SLOT(OnTSRCheck(bool)));
+m_TSR_check->setToolTip("Select 2 of 3");
+connect(m_TSR_check,SIGNAL(clicked()),this,SLOT(OnWarningSet3()));
 
-                            m_TSR_spinbox = new QDoubleSpinBox;
-                            m_TSR_spinbox->setLocale(QLocale("en_us"));
+m_TSR_spinbox = new QDoubleSpinBox;
+m_TSR_spinbox->setEnabled(m_TSR_check->isChecked());
+m_TSR_spinbox->setLocale(QLocale("en_us"));
+pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 7);
+double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 
-                            m_TSR_check = new QCheckBox ("TSR set");
-                            //const bool blocked = m_TSR_check->signalsBlocked();
-                            //m_TSR_check->blockSignals(true);
-                            pGrid->addEdit(P::TSR_check, CheckBox, m_TSR_check,"", 1);
-                            //m_TSR_check->blockSignals(blocked);
+m_TSR_spinbox->setRange(lstart, lend);
+m_TSR_spinbox->setSingleStep(ldelta);
+m_TSR_spinbox->setDecimals(1);
 
-                            connect(m_TSR_check,SIGNAL(clicked()),this,SLOT(OnTSRCheck()));
+dstar_combobox = new QComboBox;
+pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* source:","");
+dstar_combobox->insertItem(0,"XFoil");
+dstar_combobox->insertItem(1,"BPM");
+dstar_combobox->insertItem(2,"User");
+connect(dstar_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnSetDstarButton(int)));
 
-                            pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 7);
-                            double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
-                            double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-                            double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
-
-                                 m_TSR_spinbox->setRange(lstart, lend);
-                                 m_TSR_spinbox->setSingleStep(ldelta);
-                                 m_TSR_spinbox->setDecimals(1);
-                                 m_TSR_spinbox->valueChanged(change_TSR);
-
-                            dstar_combobox = new QComboBox;
-                            pGrid->addEdit(P::dstar_type,ComboBox, dstar_combobox,"δ* source:","");
-                            dstar_combobox->insertItem(0,"XFoil");
-                            dstar_combobox->insertItem(1,"BPM");
-                            dstar_combobox->insertItem(2,"User");
-                            connect(dstar_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnSetDstarButton(int)));
-
-                            pGrid->setSizeConstraint(QLayout::SetMinimumSize);
-                            buttonle = new QPushButton ("δ* User Input");
-                            buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
-                            buttonle->setEnabled(false);
+pGrid->setSizeConstraint(QLayout::SetMinimumSize);
+buttonle = new QPushButton ("δ* User Input");
+buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
+                            buttonle->setEnabled(delta_user_in);
                             pGrid->addWidget(buttonle,9,1);//,8,2
                             connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 
@@ -314,25 +318,25 @@ if (index == 2){
                                 rotation_combobox->insertItem(0,"Angular");
                                 rotation_combobox->insertItem(1,"Time");
                                 connect(rotation_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnRotationDefine(int)));
-                                rotation_combobox->setEnabled(true);
+                                rotation_combobox->setEnabled(rot_in);
 
                                 m_number_loops_numberedit = new NumberEdit ();
                                 pGrid->addEdit(P::number_loops, NumberEditType, m_number_loops_numberedit,"Number of Loops:",1);
-                                m_number_loops_numberedit->setEnabled(true);
+                                m_number_loops_numberedit->setEnabled(loops_in);
 
                                 m_anglesteps_numberedit = new NumberEdit ();
                                 pGrid->addEdit(P::anglesteps, NumberEditType, m_anglesteps_numberedit,"Anglesteps [deg]:",45);
                                 m_anglesteps_numberedit->setMinimum(1);
                                 m_anglesteps_numberedit->setMaximum(45);
-                                m_number_loops_numberedit->setEnabled(true);
+                                m_anglesteps_numberedit->setEnabled(anglesteps_in);
 
                                 m_time_numberedit = new NumberEdit ();
                                 pGrid->addEdit(P::time, NumberEditType, m_time_numberedit,"Time [s]:",100);
-                                m_time_numberedit->setEnabled(false);
+                                m_time_numberedit->setEnabled(time_in);
 
                                 m_timesteps_numberedit = new NumberEdit ();
                                 pGrid->addEdit(P::timesteps, NumberEditType, m_timesteps_numberedit,"Timesteps [ms]:",5);
-                                m_timesteps_numberedit->setEnabled(false);
+                                m_timesteps_numberedit->setEnabled(timesteps_in);
 
                                 groupBox = new QGroupBox ("Observer Position");
                                 vBox->addWidget(groupBox);
@@ -348,21 +352,21 @@ if (index == 2){
     pGrid = new ParameterGrid<P>(this);
     groupBox->setLayout(pGrid);
     m_shear_check = new QCheckBox("Shear layer:");
-    pGrid->addEdit(P::shear_check, CheckBox, m_shear_check,"", 0);
-    connect(m_shear_check,SIGNAL(clicked()),this,SLOT(OnShearLayerCheck()));
+    pGrid->addEdit(P::shear_check, CheckBox, m_shear_check,"", shear_in);
+    connect(m_shear_check,SIGNAL(toggled(bool)),this,SLOT(OnShearLayerCheck(bool)));
 
     m_shear_roughness_numberedit = new NumberEdit();
     pGrid->addEdit(P::shear_roughness, NumberEditType, m_shear_roughness_numberedit,"Roughness length []:", 0.01,LENGTH);
-    m_shear_roughness_numberedit->setEnabled(false);
+    m_shear_roughness_numberedit->setEnabled(m_shear_check->isChecked());
 
     m_shear_height_numberedit = new NumberEdit();
     pGrid->addEdit(P::shear_height, NumberEditType, m_shear_height_numberedit,"Measurement height []:", 10,LENGTH);
-    m_shear_height_numberedit->setEnabled(false);
+    m_shear_height_numberedit->setEnabled(m_shear_check->isChecked());
     m_shear_height_numberedit->setMinimum(0.001);
 
     m_shear_speed_numberedit = new NumberEdit();
     pGrid->addEdit(P::shear_speed, NumberEditType, m_shear_speed_numberedit,"Mean Wind Speed []:", 13, SPEED);
-    m_shear_speed_numberedit->setEnabled(false);
+    m_shear_speed_numberedit->setEnabled(m_shear_check->isChecked());
 
     hBox->addLayout(vBox);
     QLabel *imageLabelb = new QLabel;
@@ -500,17 +504,38 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
             break;
         }
     }
+//Sara
+    QString message ("");
     if (!hasOpPoints) {
-        QMessageBox::critical(this, "Create Noise Simulation",
-                              "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
-        return;
-    }
+//        QMessageBox::critical(this, "Create Noise Simulation",
+//        "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
+//        return;
 
-    /* create new simlation */
+        message.prepend("\n\n- Simulation has no Op. Points");
+    }
+//is quasi 3d?
+if(sum!=2){
+//        QMessageBox::information(this, "Create Noise Simulation","Select just two options to input values:\n -Rotational Speed; \n -Uniform Wind Speed; \n -TSR.",QMessageBox::Ok);
+//        return;
+message.prepend("\n Select just two options to input values:\n    -Rotational Speed; \n    -Uniform Wind Speed;    \n    -TSR.");
+
+if (message != NULL){
+message.prepend("The following error(s) occured:\n");
+QMessageBox::critical(this, "Create Noise Simulation",message, QMessageBox::Ok);
+return;}
+        } else {
+if (message != NULL){message.prepend("The following error(s) occured:\n");
+    QMessageBox::critical(this, "Create Noise Simulation",message, QMessageBox::Ok);
+return;}
+//Sara
+
+    /* create new simulation */
     NoiseSimulation *newSimulation = new NoiseSimulation (this);
+
     newSimulation->setSelectFrom(static_cast<NoiseParameter::OpPointSource> (m_selectFromButtons->checkedId()));
 
     QList<OpPoint*> analyzedOpPoints;
+
     for (int i = 0; i < m_opPointRecords.size(); ++i) {
         if (m_opPointRecords[i].checkBox->isChecked()) {
             analyzedOpPoints.append(m_opPointRecords[i].opPoint);
@@ -520,7 +545,6 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
 
     try {
         newSimulation->simulate();
-
         if (g_noiseSimulationStore.add(newSimulation)) {
             m_module->setShownSimulation(newSimulation);
             accept();  // leave dialog only if adding was successful
@@ -528,21 +552,22 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
     } catch (NoiseException &e) {
         delete newSimulation;
         QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
-    }
+    }}
     onVerifyDeltaFor3D();//Sara
+//Sara
 }
 
 //Sara begin
 void NoiseCreatorDialog::onVerifyDeltaFor3D(){
-//    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+if (check){
 
     QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
 
     if(pXDirect->AlphaDeltaNoise!=0){
-        QMessageBox::critical(this, "Step Angle Error!",
-                              "The following error(s) occured:\n\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok);
+        QMessageBox::information(this, "Step Angle Resolution!",
+                              "The following error occured:\n\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok);
         return;
-    }
+    }}
 
 }
 
@@ -628,95 +653,90 @@ void NoiseCreatorDialog::OnSetDstarButton(int index){
 void NoiseCreatorDialog::OnModeDefine(int index){
 //when unsteady state
     if (index==1){
-//    step_combobox->setEnabled(true);
+loops_in=false;
+anglesteps_in=false;
+time_in=false;
+shear_in=false;
+timesteps_in=false;
+
     rotation_combobox->setCurrentIndex(0);
-    m_number_loops_numberedit->setEnabled(false);
-    m_anglesteps_numberedit->setEnabled(false);
-    m_time_numberedit->setEnabled(false);
-    m_timesteps_numberedit->setEnabled(false);
+    m_number_loops_numberedit->setEnabled(loops_in);
+    m_anglesteps_numberedit->setEnabled(anglesteps_in);
+    m_time_numberedit->setEnabled(time_in);
+    m_timesteps_numberedit->setEnabled(timesteps_in);
     rotation_combobox->setEnabled(false);
-    m_shear_check->setEnabled(false);
+    m_shear_check->setEnabled(shear_in);
     onVerifyWindfield();
     }
     else {
-//    step_combobox->setEnabled(false);
+        loops_in=true;
+        anglesteps_in=true;
+        time_in=false;
+        shear_in=true;
+        timesteps_in=false;
+
     rotation_combobox->setEnabled(true);
-    m_number_loops_numberedit->setEnabled(true);
-    m_anglesteps_numberedit->setEnabled(true);
-    m_shear_check->setEnabled(true);
-    m_time_numberedit->setEnabled(false);
-    m_timesteps_numberedit->setEnabled(false);
+    m_number_loops_numberedit->setEnabled(loops_in);
+    m_anglesteps_numberedit->setEnabled(anglesteps_in);
+    m_shear_check->setEnabled(shear_in);
+    m_time_numberedit->setEnabled(time_in);
+    m_timesteps_numberedit->setEnabled(timesteps_in);
     }
 }
-
-//void NoiseCreatorDialog::OnStepTypeDefine(int index){
-//    if (index==0){
-//        m_anglesteps_numberedit->setEnabled(false);
-//        m_number_loops_numberedit->setEnabled(true);
-//        m_time_numberedit->setEnabled(false);
-//    }
-//    if (index==1){
-//        m_anglesteps_numberedit->setEnabled(true);
-//        m_number_loops_numberedit->setEnabled(false);
-//        m_time_numberedit->setEnabled(false);
-//    }
-//}
 
 void NoiseCreatorDialog::OnRotationDefine(int index){
     if (index==0){
-        m_number_loops_numberedit->setEnabled(true);
-        m_anglesteps_numberedit->setEnabled(true);
-        m_time_numberedit->setEnabled(false);
-        m_timesteps_numberedit->setEnabled(false);
+        loops_in=true;
+        anglesteps_in=true;
+        time_in=false;
+        timesteps_in=false;
     }
     if (index==1){
-        m_number_loops_numberedit->setEnabled(false);
-        m_anglesteps_numberedit->setEnabled(false);
-        m_time_numberedit->setEnabled(true);
-        m_timesteps_numberedit->setEnabled(true);
+        loops_in=false;
+        anglesteps_in=false;
+        time_in=true;
+        timesteps_in=true;
     }
+    m_number_loops_numberedit->setEnabled(loops_in);
+    m_anglesteps_numberedit->setEnabled(anglesteps_in);
+    m_time_numberedit->setEnabled(time_in);
+    m_timesteps_numberedit->setEnabled(timesteps_in);
 }
 //Sara
 
-void NoiseCreatorDialog::OnRotSpeedCheck(){
-    if (!m_rot_speed_check->isChecked()){m_rot_speed_numberedit->setEnabled(false);}
-    else{m_rot_speed_numberedit->setEnabled(true);}
-    OnWarningSet3();
+void NoiseCreatorDialog::OnRotSpeedCheck(bool index){
+rot_speed_in=index;
+m_rot_speed_numberedit->setEnabled(index);
 }
 
-void NoiseCreatorDialog::OnWindSpeedCheck(){
-
-    if (!m_u_wind_speed_check->isChecked()){m_u_wind_speed_numberedit->setEnabled(false);}
-    else{m_u_wind_speed_numberedit->setEnabled(true);}
-    OnWarningSet3();
+void NoiseCreatorDialog::OnWindSpeedCheck(bool index){
+u_wind_speed_in=index;
+m_u_wind_speed_numberedit->setEnabled(index);
 }
 
-void NoiseCreatorDialog::OnTSRCheck(){
-    if (!m_TSR_check->isChecked()){m_TSR_spinbox->setEnabled(false);}
-    else{m_TSR_spinbox->setEnabled(true);}
-        OnWarningSet3();
+void NoiseCreatorDialog::OnTSRCheck(bool index){
+TSR_in=index;
+m_TSR_spinbox->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnShearLayerCheck(bool index){
+shear_roughness_in=index;
+shear_height_in=index;
+shear_speed_in=index;
+
+m_shear_roughness_numberedit->setEnabled(index);
+m_shear_height_numberedit->setEnabled(index);
+m_shear_speed_numberedit->setEnabled(index);
 }
 
 void NoiseCreatorDialog::OnWarningSet3(){
-    int sum=0;
+    sum=0;
     if(m_rot_speed_check->isChecked()){++sum;}
     if(m_u_wind_speed_check->isChecked()){++sum;}
     if(m_TSR_check->isChecked()){++sum;}
-    if(sum!=2){
-    QMessageBox::information(this, "Create Noise Simulation","Select 2 options to input values!",QMessageBox::Ok);
-    return;
-    }
-}
-
-void NoiseCreatorDialog::OnShearLayerCheck(){
-    if (!m_shear_check->isChecked()){
-        m_shear_roughness_numberedit->setEnabled(false);
-        m_shear_height_numberedit->setEnabled(false);
-        m_shear_speed_numberedit->setEnabled(false);
-    }
-    else{m_shear_roughness_numberedit->setEnabled(true);
-    m_shear_height_numberedit->setEnabled(true);
-    m_shear_speed_numberedit->setEnabled(true);
-    }
+//    if(sum!=2){
+//    QMessageBox::information(this, "Create Noise Simulation","Select just two options to input values:\n\n -Rotational Speed; \n -Uniform Wind Speed; \n -TSR.",QMessageBox::Ok);
+//    return;
+//    }
 }
 //Sara

@@ -418,7 +418,6 @@ private:
     double m_rot_speed;
     double m_u_wind_speed;
     double m_TSRtd;
-    double m_dstar_user;
     double x;
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;

@@ -24,6 +24,22 @@ public:
     int phi_selection;
     double AlphaDelta;
 
+    bool rot_speed_in=false;
+    bool u_wind_speed_in=true;
+    bool TSR_in=true;
+    bool shear_in=false;
+    bool shear_roughness_in=false;
+    bool shear_height_in=false;
+    bool shear_speed_in=false;
+    bool rot_in=true;
+    bool loops_in = true;
+    bool time_in = false;
+    bool timesteps_in = false;
+    bool delta_user_in = false;
+    bool anglesteps_in=true;
+    int sum=2;
+    bool check=false;
+
     QVector<int> a_D_starred_index_user;
     QVector<double> a_D_starred_S_user;
     QVector<double> a_D_starred_P_user;
@@ -88,6 +104,8 @@ private:
     NumberEdit *m_shear_roughness_numberedit;
     NumberEdit *m_shear_height_numberedit;
     NumberEdit *m_shear_speed_numberedit;
+
+    int i=0;
 //Sara end
 
     QButtonGroup *m_selectFromButtons;
@@ -120,13 +138,12 @@ private slots:
         void OnImportStarredD();
         void OnSetDstarButton(int index);
         void OnModeDefine(int index);
-//        void OnStepTypeDefine(int index);
         void OnRotationDefine(int index);
-        void OnRotSpeedCheck();
-        void OnWindSpeedCheck();
-        void OnTSRCheck();
+        void OnRotSpeedCheck(bool index);
+        void OnWindSpeedCheck(bool index);
+        void OnTSRCheck(bool index);
         void OnWarningSet3();
-        void OnShearLayerCheck();
+        void OnShearLayerCheck(bool index);
         //Sara end
 };
 
