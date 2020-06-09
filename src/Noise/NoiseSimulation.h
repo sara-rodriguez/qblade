@@ -50,23 +50,9 @@ public:
     QVector<OpPoint*> getAnalyzedOpPoints () { return m_parameter.analyzedOpPoints; }
     NoiseParameter::OpPointSource getSelectFrom () { return m_parameter.opPointSource; }
 
-    //Sara
-    QVector<double> listtsr;
-    bool m_rot_speed_check;
-    bool m_u_wind_speed_check;
-    bool m_TSR_check;
-    bool m_shear_check;
+    QVector<double> listtsr;    //Sara
 
     int vectors_size;
-//    int qs3DSim;
-
-    double m_rot_speed_calc;
-    double m_u_wind_speed_calc;
-    double m_TSR_calc;
-    double m_shear_roughness;
-    double m_shear_height;
-    double m_shear_speed;
-    //Sara
 
 private:
     NoiseSimulation () { }

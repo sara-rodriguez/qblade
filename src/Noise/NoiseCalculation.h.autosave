@@ -35,7 +35,7 @@ public:
     void serialize ();
 
     void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
-    void setInitialValues(); //Sara urgente
+    void setInitialValues(); //Sara
     void calculate();  // can throw NoiseException
 
     //Sara begin
