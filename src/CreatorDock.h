@@ -53,6 +53,7 @@ private:
 template <class Object>
 void CreatorDock<Object>::setShownObject(Object *newObject) {
 	m_shownObject = newObject;
+
     m_editCopyButton->setEnabled(m_shownObject);
 	m_renameButton->setEnabled(m_shownObject);
 	m_deleteButton->setEnabled(m_shownObject);

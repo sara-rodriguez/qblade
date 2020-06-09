@@ -66,7 +66,8 @@ void NoiseDock::onRenameButtonClicked() {
 }
 
 void NoiseDock::onDeleteButtonClicked() {
-	g_noiseSimulationStore.remove(m_shownObject);
+    g_noiseSimulationStore.remove(m_shownObject);
+    m_shownObject = NULL;//Sara
 }
 
 void NoiseDock::onNewButtonClicked() {
