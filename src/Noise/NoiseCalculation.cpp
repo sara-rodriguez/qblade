@@ -915,27 +915,27 @@ void NoiseCalculation::calculate() {
 
 //qDebug() << "D* S original:" << m_DStarInterpolatedS;
 
-            //Sara
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+            //Sara urgente
+//QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
-foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-int number_of_segments = bdata->m_pos.size();
-double chord[number_of_segments];
-m_DStarInterpolatedS3d.resize(number_of_segments+1);
-m_DStarInterpolatedP3d.resize(number_of_segments+1);
-double chordmax=0;
-for (int j = 0; j < number_of_segments; ++j) {
-    if(chord[j]>chordmax){chordmax=chord[j];}
-}
+//foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+//int number_of_segments = bdata->m_pos.size();
+//double chord[number_of_segments];
+//m_DStarInterpolatedS3d.resize(number_of_segments+1);
+//m_DStarInterpolatedP3d.resize(number_of_segments+1);
+//double chordmax=0;
+//for (int j = 0; j < number_of_segments; ++j) {
+//    if(chord[j]>chordmax){chordmax=chord[j];}
+//}
 
-for (int j = 0; j < number_of_segments; ++j) {
-chord[j] = bdata->m_c_local.value(j);
+//for (int j = 0; j < number_of_segments; ++j) {
+//chord[j] = bdata->m_c_local.value(j);
 
-m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
-//qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
-m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
-//qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
-}}
+//m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
+////qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
+//m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
+////qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
+//}}
             //Sara
 
             m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
@@ -1936,10 +1936,17 @@ return Dl;
 }
 
 //Sara
-double NoiseCalculation::getInputWindSpeed(int blade, int E, int section){
+double NoiseCalculation::getInputWindSpeed(int blade, int E, int section, double TSR){
     double windspeed=0;
+    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+        double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+        double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+        double z=lstart;
+
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+        if (z==TSR){
+qDebug() << "entra aqui wind";
     if(m_parameter->state_ss_us==0){
 //steady
     if(m_parameter->shear_check){
@@ -2008,14 +2015,23 @@ const double Z = hub_height+section_radius*sin(qDegreesToRadians(azimuthal))*cos
 //qDebug() << "vel: " << windspeed;
     }
 }
+z=z+ldelta;
+}
 return windspeed;
 }
 
 //Sara
-double NoiseCalculation::getInputMach(double windspeed, int section){
+double NoiseCalculation::getInputMach(double windspeed, int section, double TSR){
 double Mach=0;
-    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+    double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+    double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+    double z=lstart;
+
+QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+    if (z==TSR){
+            qDebug() << "entra aqui Mach";
     if(m_parameter->state_ss_us==0){
 //steady
 
@@ -2034,13 +2050,22 @@ double Vrel2 = pow(windspeed,2);
 Mach = pow(Vrel2,0.5)/sqrt(bdata->k_air*bdata->r_air*bdata->temp);
     }
 }
+    z=z+ldelta;
+}
 return Mach;
 }
 
-double NoiseCalculation::getInputReynolds(double windspeed, int section){
+double NoiseCalculation::getInputReynolds(double windspeed, int section, double TSR){
     double Reynolds=0;
+    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+        double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+        double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+        double z=lstart;
+
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+        if (z==TSR){
+            qDebug() << "entra aqui reynolds";
     if(m_parameter->state_ss_us==0){
 //steady
 
@@ -2057,28 +2082,29 @@ Reynolds = bdata->m_Reynolds.value(section);
 Reynolds = pow((pow(windspeed*(1-bdata->m_a_axial.value(section)),2)+pow(windspeed*bdata->m_lambda_local.value(section)*(1+bdata->m_a_tangential.value(section)),2)),0.5)*bdata->m_c_local.value(section)/bdata->visc;
     }
 }
+z=z+ldelta;
+}
 return Reynolds;
 }
 
 //vector for blade
-void NoiseCalculation::calculateqs3d_graphics(int blade, int E) {
+void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
   QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
     double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
     double z=lstart;
-    double approaxing_wind_speed = m_parameter->u_wind_speed;
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
-    if (z==m_parameter->TSRtd){
+    if (z==TSR){
 
 //BData *bdata = (BData *) g_mainFrame->m_pBEM;
 int number_of_segments = pbem->dlg_elements;
 //        int number_of_segments = bdata->m_pos.size();
+    double approaxing_wind_speed = m_parameter->u_wind_speed;
 
         double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
         double rho = pbem->dlg_rho;
@@ -2530,9 +2556,9 @@ int number_of_segments = pbem->dlg_elements;
                 double a_S_rotor[w];
                 double St1_bar[w];
 
-                vel_rotor[i]=getInputWindSpeed(blade, E, i);
-                Reynolds_rotor[i]=getInputReynolds(vel_rotor[i], i);
-                Mach_rotor[i]=getInputMach(vel_rotor[i], i);
+                vel_rotor[i]=getInputWindSpeed(blade, E, i, TSR);
+                Reynolds_rotor[i]=getInputReynolds(vel_rotor[i], i, TSR);
+                Mach_rotor[i]=getInputMach(vel_rotor[i], i, TSR);
 
                 vel[i]=bdata->m_Windspeed.value(i);
                 Reynolds[i]=bdata->m_Reynolds.value(i);
@@ -3535,7 +3561,8 @@ m_SPL_LEdBAW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBBW3d_4d_blade[i][j][blade][E]=0;
 m_SPL_LEdBCW3d_4d_blade[i][j][blade][E]=0;
 }
-}}}
+}}
+    }
 z=z+ldelta;
 }}
 
@@ -3543,6 +3570,44 @@ z=z+ldelta;
 void NoiseCalculation::calculateqs3d_graphics_loops(){
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 setupVectorsqs3d();
+
+//urgente
+for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+    NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
+    //Sara urgente
+QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+
+foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+int number_of_segments = bdata->m_pos.size();
+double chord[number_of_segments];
+m_DStarInterpolatedS3d.resize(number_of_segments+1);
+m_DStarInterpolatedP3d.resize(number_of_segments+1);
+double chordmax=0;
+for (int j = 0; j < number_of_segments; ++j) {
+if(chord[j]>chordmax){chordmax=chord[j];}
+}
+
+for (int j = 0; j < number_of_segments; ++j) {
+chord[j] = bdata->m_c_local.value(j);
+
+bool dStarOrder = false;
+
+//When angle is negative D* search must be inverted
+if(nop->getAlphaDegree() < 0){
+    dStarOrder = true;
+}
+
+
+if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
+    m_parameter->opPointSource == NoiseParameter::MultiplePolars)
+{
+
+m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
+//qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
+m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
+//qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
+}}}}
+//urgente
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 int blades_num = pbem->m_pBData->blades;
@@ -3562,9 +3627,11 @@ anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
 int angles_num=360./anglesteps*number_of_rotations;
 //double last_angle=initial_azimuth+number_of_rotations*360;
 
+double TSR=m_parameter->TSRtd;
+
 for (int blade=0;blade<blades_num;++blade){
 for (int E=0;E<angles_num;++E){
-        calculateqs3d_graphics(blade,E);
+        calculateqs3d_graphics(blade,E,TSR);
 }}
 }
 

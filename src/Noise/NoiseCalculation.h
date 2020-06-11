@@ -40,7 +40,7 @@ public:
 
     //Sara begin
     void verifydeltafor3d();
-    void calculateqs3d_graphics(int blade, int E);
+    void calculateqs3d_graphics(int blade, int E, double TSR);
     void calculateqs3d_graphics_loops();
     void calculateqs3d_blade();
     void calculateqs3d_rotor();
@@ -259,15 +259,15 @@ private:
     // calculation sub-functions
     double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
-    double getDStarInterpolated3d(bool top, double chord,NoiseOpPoint *nop);  // Sara
+    double getDStarInterpolated3d(bool top, double chord, NoiseOpPoint *nop);  // Sara
     double getDH();
     double getDL();
     double getSt1();
     double getSt2(NoiseOpPoint *nop);
     double getBPMThickness(NoiseOpPoint *nop, AirfoilSide as);
-    double getInputWindSpeed(int blade, int E, int section);//Sara
-    double getInputMach(double windspeed, int section);//Sara
-    double getInputReynolds(double windspeed, int section);//Sara
+    double getInputWindSpeed(int blade, int E, int section, double TSR);//Sara
+    double getInputMach(double windspeed, int section, double TSR);//Sara
+    double getInputReynolds(double windspeed, int section, double TSR);//Sara
     void preCalcA1(NoiseOpPoint* nop);
     void preCalcSPLa(NoiseOpPoint* nop);
     void preCalcSPLs(NoiseOpPoint* nop);

@@ -839,7 +839,6 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-//double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
 double z=lstart;
 double approaxing_wind_speed = m_parameter.u_wind_speed;
 
@@ -847,6 +846,8 @@ QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
 
     foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+            if (z==m_parameter.TSRtd){
+
     int number_of_segments = bdata->m_pos.size();
 //    double rho = pbem->dlg_rho;
 //    double dynamic_visc = pbem->dlg_visc;
@@ -983,9 +984,10 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
     double r_R1  =  0.25; double c_R1 = 0.07500;
     double r_R2  =  1.00; double c_R2 = 0.02000;
 
-        QString str= QString::number(z, 'f', 1);
+    double z=m_parameter.TSRtd;
+    QString str= QString::number(z, 'f', 1);
 
-        if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
+//        if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
 
         stream << "Tip Speed Ratio: " << str << endl;
         stream << endl;
@@ -1009,7 +1011,7 @@ double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
                   "AOA error [%]"   <<";"   <<
                   "Error number[1]" <<  ";" <<
                   endl;
-}
+//}
 
         for (int i = 0; i < number_of_segments; ++i) {
 
@@ -1070,6 +1072,7 @@ alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
 }
 
             alpha[i]=alpha_BEM[i];
+            alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
             phi_BEM[i] = bdata->m_phi.value(i);
             theta_BEM[i] = bdata->m_theta.value(i);
@@ -1311,7 +1314,7 @@ if(!(((((alpha[i]<=19.8) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0)))){o
 if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0))) & (Reynolds[i]>0))){observations_x.append("2");}
 
 //uncomment to input data
- if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
+// if((z<=m_parameter.TSRtd) & (z>=m_parameter.TSRtd)){
         stream << qSetFieldWidth(14)  <<
                   (i+1) << ";" <<
                   bdata->m_pos.value(i) << ";" <<
@@ -1329,11 +1332,11 @@ if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0))) & (Reyn
                                         alpha_polar[i] << ";" <<
                                         alpha_BEM[i]   <<  ";" <<
                                         alpha_error_x    <<  ";" <<
-                                    observations_x   <<  ";" <<
+                                        observations_x   <<  ";" <<
                                         endl;
-}}
+}
+    }
          z=z+ldelta;
-
 }
      stream << endl;
      stream << "[1]1 - Out of range for BPM method. 2 - Out of range for LE method."<< endl;
