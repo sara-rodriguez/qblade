@@ -535,7 +535,7 @@ return;}
     newSimulation->setSelectFrom(static_cast<NoiseParameter::OpPointSource> (m_selectFromButtons->checkedId()));
 
     QList<OpPoint*> analyzedOpPoints;
-
+//    OnProgressDlg();//urgente
     for (int i = 0; i < m_opPointRecords.size(); ++i) {
         if (m_opPointRecords[i].checkBox->isChecked()) {
             analyzedOpPoints.append(m_opPointRecords[i].opPoint);
@@ -739,4 +739,37 @@ void NoiseCreatorDialog::OnWarningSet3(){
 //    return;
 //    }
 }
+
+//urgente
+void NoiseCreatorDialog::OnProgressDlg(){
+m_progress_dlg->setAutoClose(true);
+m_progress_dlg->setAutoReset(true);
+m_progress_dlg->setRange(0,100);
+m_progress_dlg->show();
+m_progress_dlg->setWindowModality(Qt::WindowModal);
+for(int i = 0; i <= 100; ++i)
+{
+//    QApplication::processEvents( QEventLoop::ExcludeUserInputEvents);
+    m_progress_dlg->setValue(i);
+
+    if(m_progress_dlg->wasCanceled())
+        break;
+}
+//    groupBox->setLayout(grid);
+//hBox->addWidget(m_progress,0,0);
+//m_progress->setMinimum(0);
+//m_progress->setMaximum(100);
+//NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+//m_progress->setValue(pNoiseCalculation->m_progress);
+
+//    void QLLTDock::updateProgress(int i){
+//        m_progress->setValue(i);
+//        QString cur;
+//        QTextStream(&cur) << i;
+//        QString end;
+//        QTextStream(&end) << m_progress->maximum();
+//        m_progress->setFormat("Timestep "+cur+" of "+end);
+//    }
+}
+//urgente
 //Sara

@@ -160,9 +160,6 @@ if(pNoiseCalculation->user_sel<3){index = pNoiseCalculation->user_sel;}
 if (index==0){
 if(index_qs3d==4){index_qs3d=0;}
 
-m_globalModuleIndentifier = NOISEMODULE;
-m_shownSimulation = nullptr;
-
 if(index_qs3d==0){onqs3dGraph2d();}
 if(index_qs3d==1){onqs3dGraphBlade();}
 if(index_qs3d==2){onqs3dGraphRotor();}
@@ -171,9 +168,6 @@ if(index_qs3d==3){onqs3dGraphRotorLoops();}
 
 if (index==1){
 if(index_qs3d==2){index_qs3d=0;}
-
-m_globalModuleIndentifier = NOISEMODULE;
-m_shownSimulation = nullptr;
 
 if(index_qs3d==0){onqs3dGraph2d();}
 if(index_qs3d==1){onqs3dGraphBlade();}
@@ -195,7 +189,6 @@ connect(&g_noiseSimulationStore, SIGNAL(objectListChanged(bool)), this, SLOT(rel
 }
 
 void NoiseModule::onqs3dGraph2d(){
-    reloadAllGraphs();
         m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
@@ -204,7 +197,6 @@ void NoiseModule::onqs3dGraph2d(){
 }
 
 void NoiseModule::onqs3dGraphBlade(){
-    reloadAllGraphs();
         m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_blade[qs3D]", true, false});
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_blade[qs3D]", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_blade[qs3D]", true, false});
@@ -213,7 +205,6 @@ void NoiseModule::onqs3dGraphBlade(){
 }
 
 void NoiseModule::onqs3dGraphRotor(){
-    reloadAllGraphs();
         m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_rotor[qs3D]", true, false});
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_rotor[qs3D]", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_rotor[qs3D]", true, false});
@@ -222,7 +213,6 @@ void NoiseModule::onqs3dGraphRotor(){
 }
 
 void NoiseModule::onqs3dGraphRotorLoops(){
-    reloadAllGraphs();
         m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_rotor_loops[qs3D]", true, false});
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_rotor_loops[qs3D]", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_rotor_loops[qs3D]", true, false});

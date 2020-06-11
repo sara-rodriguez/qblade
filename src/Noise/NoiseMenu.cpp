@@ -47,8 +47,7 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
 }
 
 void NoiseMenu::onAboutToShow() {
-    const bool simulationAvailable = (  m_module->getShownSimulation() != NULL); //Sara urgente
-//    const bool simulationAvailable = (!g_noiseSimulationStore.isEmpty()); //Sara
+    const bool simulationAvailable = (  m_module->getShownSimulation() != NULL);
 
     //Sara
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;

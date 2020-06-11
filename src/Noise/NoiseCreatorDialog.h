@@ -10,6 +10,7 @@ class QScrollArea;
 #include "../XBEM/TBEMData.h" //Sara
 #include <QCheckBox>//Sara
 #include <QComboBox>//Sara
+#include <QProgressDialog> //urgente
 class NoiseModule;
 
 class NoiseCreatorDialog : public CreatorDialog, public ParameterViewer<Parameter::NoiseSimulation>
@@ -81,6 +82,8 @@ private:
     QCheckBox *m_TSR_check;
     QCheckBox *m_u_wind_speed_check;
 
+    QProgressDialog *m_progress_dlg;//urgente
+
     QComboBox *dstar_combobox;
     QComboBox *mode_combobox;
     QComboBox *rotation_combobox;
@@ -144,6 +147,7 @@ private slots:
         void OnTSRCheck(bool index);
         void OnWarningSet3();
         void OnShearLayerCheck(bool index);
+        void OnProgressDlg();
         //Sara end
 };
 
