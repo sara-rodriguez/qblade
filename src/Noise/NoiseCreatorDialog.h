@@ -10,7 +10,7 @@ class QScrollArea;
 #include "../XBEM/TBEMData.h" //Sara
 #include <QCheckBox>//Sara
 #include <QComboBox>//Sara
-#include <QProgressDialog> //urgente
+#include <QProgressDialog>//Sara
 class NoiseModule;
 
 class NoiseCreatorDialog : public CreatorDialog, public ParameterViewer<Parameter::NoiseSimulation>
@@ -20,10 +20,16 @@ class NoiseCreatorDialog : public CreatorDialog, public ParameterViewer<Paramete
 public:
 
     NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseModule *module);
+
 //Sara
+    void OnProgressDlg();
+    QProgressDialog *m_progress_dlg;
+
     double change_TSR;
-    int phi_selection;
     double AlphaDelta;
+
+    int phi_selection;
+    int sum=2;
 
     bool rot_speed_in=false;
     bool u_wind_speed_in=true;
@@ -38,7 +44,6 @@ public:
     bool timesteps_in = false;
     bool delta_user_in = false;
     bool anglesteps_in=true;
-    int sum=2;
     bool check=false;
 
     QVector<int> a_D_starred_index_user;
@@ -82,8 +87,6 @@ private:
     QCheckBox *m_TSR_check;
     QCheckBox *m_u_wind_speed_check;
 
-    QProgressDialog *m_progress_dlg;//urgente
-
     QComboBox *dstar_combobox;
     QComboBox *mode_combobox;
     QComboBox *rotation_combobox;
@@ -91,6 +94,7 @@ private:
     QComboBox *w_TSR_combobox;
 
     QPushButton *buttonle;
+    QPushButton *button_cancel;
 
     QDoubleSpinBox *m_TSR_spinbox;
     QDoubleSpinBox *m_initial_azimuth_spinbox;
@@ -147,7 +151,6 @@ private slots:
         void OnTSRCheck(bool index);
         void OnWarningSet3();
         void OnShearLayerCheck(bool index);
-        void OnProgressDlg();
         //Sara end
 };
 

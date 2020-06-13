@@ -174,8 +174,6 @@ public:
     double Final_qs3d_LE_rotor_loops;
     double Final_qs3d_rotor_loops;
 
-    int m_progress=0;//Sara urgente
-
     int user_sel=10;//user selection graphics for 2d, blade or rotor
 //Sara end
 

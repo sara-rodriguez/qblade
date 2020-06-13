@@ -256,25 +256,22 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 }
 
 void NoiseSimulation::simulate() {
+    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;//Sara
+    pNoiseCreatorDialog->OnProgressDlg();//Sara
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.setInitialValues();//Sara
-    m_calculation.m_progress=10; //urgente
+
     m_calculation.calculate();
-    if(m_parameter.qs3DSim==2){m_calculation.m_progress=100;} //urgente
+
     if (m_parameter.qs3DSim!=2){
     m_calculation.calculateqs3d_graphics_loops();//Sara
-    if(m_parameter.qs3DSim==1){m_calculation.m_progress=60;} //urgente
-    if(m_parameter.qs3DSim==2){m_calculation.m_progress=40;} //urgente
     m_calculation.calculateqs3d_blade();//Sara
-    if(m_parameter.qs3DSim==1){m_calculation.m_progress=100;} //urgente
-    if(m_parameter.qs3DSim==2){m_calculation.m_progress=60;} //urgente
     }
     if(m_parameter.qs3DSim==0){
     m_calculation.calculateqs3d_rotor();//Sara
-    m_calculation.m_progress=80; //urgente
     m_calculation.calculateqs3d_rotor_loops();//Sara
-    m_calculation.m_progress=100; //urgente
     }
+    pNoiseCreatorDialog->m_progress_dlg->cancel();
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {

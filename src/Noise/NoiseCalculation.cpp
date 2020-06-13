@@ -24,6 +24,7 @@
 #include "../XLLT/QLLTSimulation.h"
 #include "../XLLT/QLLTCreatorDialog.h"
 #include "../XUnsteadyBEM/FASTSimulation.h"
+#include "../Noise/NoiseCreatorDialog.h"
 #include "../MainFrame.h"
 #include "../XWidgets.h"
 #include <QtMath>
@@ -915,29 +916,6 @@ void NoiseCalculation::calculate() {
 
 //qDebug() << "D* S original:" << m_DStarInterpolatedS;
 
-            //Sara urgente
-//QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-
-//foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-//int number_of_segments = bdata->m_pos.size();
-//double chord[number_of_segments];
-//m_DStarInterpolatedS3d.resize(number_of_segments+1);
-//m_DStarInterpolatedP3d.resize(number_of_segments+1);
-//double chordmax=0;
-//for (int j = 0; j < number_of_segments; ++j) {
-//    if(chord[j]>chordmax){chordmax=chord[j];}
-//}
-
-//for (int j = 0; j < number_of_segments; ++j) {
-//chord[j] = bdata->m_c_local.value(j);
-
-//m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
-////qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
-//m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
-////qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
-//}}
-            //Sara
-
             m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
             m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
         } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
@@ -1120,6 +1098,19 @@ m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
 //			}
 //		}
 //	}
+
+//Sara
+//progress bar
+    int w=0;
+    if (m_parameter->qs3DSim==0){w=1000000/5;}
+    else if (m_parameter->qs3DSim==1){w=1000000/3;}
+    else {w=1000000;}
+    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+    for(int j = 0; j<w; ++j)
+        {
+            pNoiseCreatorDialog->m_progress_dlg->setValue(j);
+        }
+//Sara
 }
 
 //setup 2D vectors
@@ -1946,7 +1937,6 @@ double NoiseCalculation::getInputWindSpeed(int blade, int E, int section, double
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         if (z==TSR){
-qDebug() << "entra aqui wind";
     if(m_parameter->state_ss_us==0){
 //steady
     if(m_parameter->shear_check){
@@ -2031,7 +2021,6 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
     if (z==TSR){
-            qDebug() << "entra aqui Mach";
     if(m_parameter->state_ss_us==0){
 //steady
 
@@ -2065,7 +2054,6 @@ double NoiseCalculation::getInputReynolds(double windspeed, int section, double 
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         if (z==TSR){
-            qDebug() << "entra aqui reynolds";
     if(m_parameter->state_ss_us==0){
 //steady
 
@@ -3568,13 +3556,13 @@ z=z+ldelta;
 
 //calculation for rotor in loop
 void NoiseCalculation::calculateqs3d_graphics_loops(){
+    qDebug() << "entra aqui: calculateqs3d_graphics_loops";
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 setupVectorsqs3d();
 
-//urgente
+//D star interpolated
 for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
     NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
-    //Sara urgente
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
@@ -3597,7 +3585,6 @@ if(nop->getAlphaDegree() < 0){
     dStarOrder = true;
 }
 
-
 if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
     m_parameter->opPointSource == NoiseParameter::MultiplePolars)
 {
@@ -3607,7 +3594,7 @@ m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordma
 m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
 //qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
 }}}}
-//urgente
+//finish D star interpolated
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 int blades_num = pbem->m_pBData->blades;
@@ -3633,11 +3620,24 @@ for (int blade=0;blade<blades_num;++blade){
 for (int E=0;E<angles_num;++E){
         calculateqs3d_graphics(blade,E,TSR);
 }}
+
+//Sara
+//progress bar
+    int w=0;
+    if (m_parameter->qs3DSim==0){w=1000000/5;}
+    else if (m_parameter->qs3DSim==1){w=1000000/3;}
+    else {w=1000000;}
+    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+    for(int j = w+1; j<=2*w; ++j)
+        {
+            pNoiseCreatorDialog->m_progress_dlg->setValue(j);
+        }
+//Sara
 }
 
 //calculation for blade
 void NoiseCalculation::calculateqs3d_blade() {
-
+qDebug() << "entra aqui: calculateqs3d_blade";
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     unsigned int number_of_segments = pbem->dlg_elements;
@@ -3825,6 +3825,19 @@ void NoiseCalculation::calculateqs3d_blade() {
     m_SPLLEdBCW3d[i]=0;
     m_SPLlogLE3d[i]=0;
     }}
+
+    //Sara
+    //progress bar
+        int w=0;
+        if (m_parameter->qs3DSim==0){w=1000000/5;}
+        else if (m_parameter->qs3DSim==1){w=1000000/3;}
+        else {w=1000000;}
+        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+        for(int j = 2*w+1; j<=3*w; ++j)
+            {
+                pNoiseCreatorDialog->m_progress_dlg->setValue(j);
+            }
+    //Sara
 }
 
 //calculation for one blade placed in rotor coordinates
@@ -4018,6 +4031,19 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLLEdBCW3d_rotor[i]=0;
     m_SPLlogLE3d_rotor[i]=0;
     }}
+
+    //Sara
+    //progress bar
+        int w=0;
+        if (m_parameter->qs3DSim==0){w=1000000/5;}
+        else if (m_parameter->qs3DSim==1){w=1000000/3;}
+        else {w=1000000;}
+        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+        for(int j = 3*w+1; j<=4*w; ++j)
+            {
+                pNoiseCreatorDialog->m_progress_dlg->setValue(j);
+            }
+    //Sara
 }
 
 //calculation for all blades in rotation movement
@@ -4232,6 +4258,19 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
             m_SPLLEdBCW3d_rotor_loops[i]=0;
             m_SPLlogLE3d_rotor_loops[i]=0;
         }}
+
+        //Sara
+        //progress bar
+            int w=0;
+            if (m_parameter->qs3DSim==0){w=1000000/5;}
+            else if (m_parameter->qs3DSim==1){w=1000000/3;}
+            else {w=1000000;}
+            NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+            for(int j = 4*w+1; j<=5*w; ++j)
+                {
+                    pNoiseCreatorDialog->m_progress_dlg->setValue(j);
+                }
+        //Sara
 }
 
 //Sara

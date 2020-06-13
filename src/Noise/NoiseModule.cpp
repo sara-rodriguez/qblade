@@ -34,8 +34,6 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
     m_dock = new NoiseDock ("Noise Simulation", mainWindow, 0, this);
 	registrateAtToolbar("PNoise", "Predict the noise generation", ":/images/NoiseIcon.png", toolbar);
 
-//    m_dock->setDisabled(true); Sara
-
 	m_contextMenu = new NoiseContextMenu (m_twoDWidget, this);  // NM TODO move this up to TwoDInterface?
 	setContextMenu(m_contextMenu);
 

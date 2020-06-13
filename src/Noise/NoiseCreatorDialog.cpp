@@ -528,14 +528,12 @@ if (message != NULL){message.prepend("The following error(s) occured:\n");
     QMessageBox::critical(this, "Create Noise Simulation",message, QMessageBox::Ok);
 return;}
 //Sara
-
     /* create new simulation */
     NoiseSimulation *newSimulation = new NoiseSimulation (this);
 
     newSimulation->setSelectFrom(static_cast<NoiseParameter::OpPointSource> (m_selectFromButtons->checkedId()));
 
     QList<OpPoint*> analyzedOpPoints;
-//    OnProgressDlg();//urgente
     for (int i = 0; i < m_opPointRecords.size(); ++i) {
         if (m_opPointRecords[i].checkBox->isChecked()) {
             analyzedOpPoints.append(m_opPointRecords[i].opPoint);
@@ -740,36 +738,30 @@ void NoiseCreatorDialog::OnWarningSet3(){
 //    }
 }
 
-//urgente
+//Sara
 void NoiseCreatorDialog::OnProgressDlg(){
-m_progress_dlg->setAutoClose(true);
-m_progress_dlg->setAutoReset(true);
-m_progress_dlg->setRange(0,100);
-m_progress_dlg->show();
-m_progress_dlg->setWindowModality(Qt::WindowModal);
-for(int i = 0; i <= 100; ++i)
-{
-//    QApplication::processEvents( QEventLoop::ExcludeUserInputEvents);
-    m_progress_dlg->setValue(i);
-
-    if(m_progress_dlg->wasCanceled())
-        break;
-}
-//    groupBox->setLayout(grid);
-//hBox->addWidget(m_progress,0,0);
-//m_progress->setMinimum(0);
-//m_progress->setMaximum(100);
-//NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-//m_progress->setValue(pNoiseCalculation->m_progress);
-
-//    void QLLTDock::updateProgress(int i){
-//        m_progress->setValue(i);
-//        QString cur;
-//        QTextStream(&cur) << i;
-//        QString end;
-//        QTextStream(&end) << m_progress->maximum();
-//        m_progress->setFormat("Timestep "+cur+" of "+end);
+    m_progress_dlg = new QProgressDialog(this);
+    m_progress_dlg->setWindowModality(Qt::WindowModal);
+    m_progress_dlg->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint); // no X(close)
+    m_progress_dlg->setWindowTitle("Noise Simulation");
+    m_progress_dlg->setLabelText("calculating...");
+    button_cancel = new QPushButton("Cancel");
+    m_progress_dlg->setCancelButton(button_cancel);
+    button_cancel->setVisible(false); //no cancel button
+    QProgressBar *m_bar = new QProgressBar(this);
+    m_bar->setAlignment(Qt::AlignCenter);
+    m_progress_dlg->setBar(m_bar);
+//    connect(button_cancel,SIGNAL(clicked()),this,SLOT(cancelProgress));
+//    m_progress_dlg->setRange(0,0);
+   m_progress_dlg->setRange(0,1000000);
+    m_progress_dlg->setMinimumDuration(0);
+    m_progress_dlg->show();
+    //do what u want...
+//    for(int i = 0; i <= 1000000; ++i)
+//    {
+//        m_progress_dlg->setValue(i);
+//        if(m_progress_dlg->wasCanceled()){m_progress_dlg->cancel();  m_progress_dlg->close(); onCreateButtonClicked();}
 //    }
+//    m_progress_dlg->cancel();
 }
-//urgente
 //Sara
