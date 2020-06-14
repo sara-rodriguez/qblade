@@ -25,6 +25,7 @@
 #include "../XLLT/QLLTCreatorDialog.h"
 #include "../XUnsteadyBEM/FASTSimulation.h"
 #include "../Noise/NoiseCreatorDialog.h"
+#include "../Noise/NoiseSimulation.h" //urgente
 #include "../MainFrame.h"
 #include "../XWidgets.h"
 #include <QtMath>
@@ -1099,18 +1100,7 @@ m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
 //		}
 //	}
 
-//Sara
-//progress bar
-    int w=0;
-    if (m_parameter->qs3DSim==0){w=1000000/5;}
-    else if (m_parameter->qs3DSim==1){w=1000000/3;}
-    else {w=1000000;}
-    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
-    for(int j = 0; j<w; ++j)
-        {
-            pNoiseCreatorDialog->m_progress_dlg->setValue(j);
-        }
-//Sara
+ProgressBar(1);//Sara
 }
 
 //setup 2D vectors
@@ -2089,22 +2079,16 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
     if (z==TSR){
 
-//BData *bdata = (BData *) g_mainFrame->m_pBEM;
 int number_of_segments = pbem->dlg_elements;
-//        int number_of_segments = bdata->m_pos.size();
     double approaxing_wind_speed = m_parameter->u_wind_speed;
 
         double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
         double rho = pbem->dlg_rho;
-//        double dynamic_visc = pbem->dlg_visc;
-//        double cin_visc = dynamic_visc/rho;
-//        double T_std_cond = pbem->dlg_temp;
         double lambda = pbem->dlg_lambda;
         int mpos_size = pbem->dlg_elements;
         double finalradius = bdata->m_pos.value(mpos_size-1);
         double nom_tg_speed = approaxing_wind_speed*lambda;
         double omega = nom_tg_speed/finalradius;
-//        double rotation = 60/(M_PI*100/nom_tg_speed);
         double c_0_le = 34000;
         double c_const_rd_le = 19./6.;
         double d_const_rd_le = 65.95;
@@ -2153,9 +2137,7 @@ int number_of_segments = pbem->dlg_elements;
         double alpha_BEM[number_of_segments];
         double alpha_polar[number_of_segments];
         double alpha_error[number_of_segments];
-//        double phi_BEM[number_of_segments];
         double theta_BEM[number_of_segments];
-//        double cl_cd[number_of_segments];
         double r_R[number_of_segments];
         double c_Rx[number_of_segments];
         double D_starred_C_HT[number_of_segments];
@@ -2196,7 +2178,6 @@ int number_of_segments = pbem->dlg_elements;
         double gamma0_gamma_min[number_of_segments];
         double gamma0_gamma_plus[number_of_segments];
         double gamma_rotor[number_of_segments];
-//        double gamma0_rotor[number_of_segments];
         double beta_rotor[number_of_segments];
         double beta0_rotor[number_of_segments];
         double gamma0_gamma_min_rotor[number_of_segments];
@@ -2243,7 +2224,6 @@ int number_of_segments = pbem->dlg_elements;
         double K1_3_rotor[number_of_segments];
         double AR_ao[number_of_segments];
         double AR_ao_rotor[number_of_segments];
-        double St1_bar[number_of_segments];
         double St1_bar_rotor[number_of_segments];
         double Re_disp_thick[number_of_segments];
         double Re_disp_thick_rotor[number_of_segments];
@@ -2263,11 +2243,6 @@ int number_of_segments = pbem->dlg_elements;
         double XRT_rotor[number_of_segments];
         double YRT_rotor[number_of_segments];
         double ZRT_rotor[number_of_segments];
-        double XHF[number_of_segments];
-        double YHF[number_of_segments];
-        double ZHF[number_of_segments];
-        double theta[number_of_segments];
-        double phi[number_of_segments];
         double theta_e[number_of_segments];
         double theta_e_rotor[number_of_segments];
         double phi_e[number_of_segments];
@@ -2289,12 +2264,6 @@ int number_of_segments = pbem->dlg_elements;
         double aux1_le_rotor[number_of_segments];
         double aux4_le_rotor[number_of_segments];
         double aux5_le_rotor[number_of_segments];
-
-        double ri[number_of_segments];
-        double ri_1[number_of_segments];
-        double ri_2[number_of_segments];
-        double A[number_of_segments];
-        double phi_lin[number_of_segments];
 
         double DStarXFoilS[number_of_segments];
         double DStarXFoilP[number_of_segments];
@@ -2328,50 +2297,22 @@ int number_of_segments = pbem->dlg_elements;
 
         double sp_OASPL_alpha=0;
         double splog_OASPL_alpha=0;
-        double st_OASPL_alpha=0;
-        double stlog_OASPL_alpha=0;
         double sp_OASPL_S=0;
         double splog_OASPL_S=0;
-        double st_OASPL_S=0;
-        double stlog_OASPL_S=0;
         double sp_OASPL_P=0;
         double splog_OASPL_P=0;
-        double st_OASPL_P=0;
-        double stlog_OASPL_P=0;
         double sp_OASPL=0;
         double splog_OASPL=0;
-        double st_OASPL=0;
-        double stlog_OASPL=0;
         double sp_dBA=0;
         double splog_dBA=0;
-        double st_dBA=0;
-        double stlog_dBA=0;
         double sp_dBB=0;
         double splog_dBB=0;
-        double st_dBB=0;
-        double stlog_dBB=0;
         double sp_dBC=0;
         double splog_dBC=0;
-        double st_dBC=0;
-        double stlog_dBC=0;
-        double sp_LedB=0;
         double splog_LedB=0;
-        double st_LedB=0;
-        double stlog_LedB=0;
-        double sp_LedBAW=0;
         double splog_LedBAW=0;
-        double st_LedBAW=0;
-        double stlog_LedBAW=0;
-        double sp_LedBBW=0;
         double splog_LedBBW=0;
-        double st_LedBBW=0;
-        double stlog_LedBBW=0;
-        double sp_LedBCW=0;
         double splog_LedBCW=0;
-        double st_LedBCW=0;
-        double stlog_LedBCW=0;
-        double SPL_blade_total=0;
-        double SPL_blade_total_aux=0;
 
         double r_R0  =  0.05; double c_R0 = 0.05500;
         double r_R1  =  0.25; double c_R1 = 0.07500;
@@ -2398,53 +2339,6 @@ int number_of_segments = pbem->dlg_elements;
         splog_LedBAW=0;
         splog_LedBBW=0;
         splog_LedBCW=0;
-
-        double sp_OASPL_alpha_a=0;
-        double splog_OASPL_alpha_a=0;
-        double st_OASPL_alpha_a=0;
-        double stlog_OASPL_alpha_a=0;
-        double sp_OASPL_S_a=0;
-        double splog_OASPL_S_a=0;
-        double st_OASPL_S_a=0;
-        double stlog_OASPL_S_a=0;
-        double sp_OASPL_P_a=0;
-        double splog_OASPL_P_a=0;
-        double st_OASPL_P_a=0;
-        double stlog_OASPL_P_a=0;
-        double sp_OASPL_a=0;
-        double splog_OASPL_a=0;
-        double st_OASPL_a=0;
-        double stlog_OASPL_a=0;
-        double sp_dBA_a=0;
-        double splog_dBA_a=0;
-        double st_dBA_a=0;
-        double stlog_dBA_a=0;
-        double sp_dBB_a=0;
-        double splog_dBB_a=0;
-        double st_dBB_a=0;
-        double stlog_dBB_a=0;
-        double sp_dBC_a=0;
-        double splog_dBC_a=0;
-        double st_dBC_a=0;
-        double stlog_dBC_a=0;
-        double sp_LedB_a=0;
-        double splog_LedB_a=0;
-        double st_LedB_a=0;
-        double stlog_LedB_a=0;
-        double sp_LedBAW_a=0;
-        double splog_LedBAW_a=0;
-        double st_LedBAW_a=0;
-        double stlog_LedBAW_a=0;
-        double sp_LedBBW_a=0;
-        double splog_LedBBW_a=0;
-        double st_LedBBW_a=0;
-        double stlog_LedBBW_a=0;
-        double sp_LedBCW_a=0;
-        double splog_LedBCW_a=0;
-        double st_LedBCW_a=0;
-        double stlog_LedBCW_a=0;
-        double SPL_blade_total_a=0;
-        double SPL_blade_total_aux_a=0;
 
         for (int i = 0; i < number_of_segments; ++i) {
 
@@ -2573,9 +2467,7 @@ int number_of_segments = pbem->dlg_elements;
             Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
             alpha_BEM[i] = bdata->m_alpha.value(i);
             alpha[i]=alpha_BEM[i];
-//            phi_BEM[i] = bdata->m_phi.value(i);
             theta_BEM[i] = bdata->m_theta.value(i);
-//            cl_cd[i] =  bdata->m_LD.value(i);
             r_R[i] = bdata->m_pos.value(i)/finalradius;
 
             D_starred_N_S[i]=0;
@@ -2836,9 +2728,6 @@ else if (m_parameter->dstar_type==2){
     D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i];
 }
 //Sara
-//qDebug() << "";
-//qDebug() << "i: " << i;
-//qDebug() << "j: " << j;
 
 //double B=0;
 double XB=0;
@@ -2877,7 +2766,7 @@ double ZB=0;
     double angle_between_blades=360./blades_num;
     double initial_azimuth=m_parameter->initial_azimuth; //initial azimuth;
     double E_o=initial_azimuth;
-    double E_f;
+//    double E_f;
     int number_of_rotations;
     E_o=E_o+anglesteps;
     double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
@@ -2926,7 +2815,7 @@ local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
 
-//    the angle a is the total angle between the Y B Z B blade reference system plane and the local midsection chord line p 75 apostila
+//    the angle a is the total angle between the YB ZB blade reference system plane and the local midsection chord line p 75 handout
     a[i]=local_twist[i]+blade_pitch;
 
     XRS[i]=calcXRS(a[i],XB,YB);
@@ -3556,27 +3445,32 @@ z=z+ldelta;
 
 //calculation for rotor in loop
 void NoiseCalculation::calculateqs3d_graphics_loops(){
-    qDebug() << "entra aqui: calculateqs3d_graphics_loops";
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 setupVectorsqs3d();
 
 //D star interpolated
+SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+    double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+    double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+    double z=lstart;
+
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    int number_of_segments = pBEM->m_pBData->m_pos.size();
+    double chord[number_of_segments];
+    m_DStarInterpolatedS3d.resize(number_of_segments+1);
+    m_DStarInterpolatedP3d.resize(number_of_segments+1);
+    double chordmax=0;
+    double TSR = m_parameter->TSRtd;
+
 for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
     NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
-QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-int number_of_segments = bdata->m_pos.size();
-double chord[number_of_segments];
-m_DStarInterpolatedS3d.resize(number_of_segments+1);
-m_DStarInterpolatedP3d.resize(number_of_segments+1);
-double chordmax=0;
-for (int j = 0; j < number_of_segments; ++j) {
-if(chord[j]>chordmax){chordmax=chord[j];}
-}
+    if (z==TSR){
 
 for (int j = 0; j < number_of_segments; ++j) {
 chord[j] = bdata->m_c_local.value(j);
+if(chord[j]>chordmax){chordmax=chord[j];}
 
 bool dStarOrder = false;
 
@@ -3593,7 +3487,9 @@ m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordma
 //qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
 m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
 //qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
-}}}}
+}}}
+z=z+ldelta;
+}}
 //finish D star interpolated
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
@@ -3612,32 +3508,17 @@ anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
 }
 
 int angles_num=360./anglesteps*number_of_rotations;
-//double last_angle=initial_azimuth+number_of_rotations*360;
-
-double TSR=m_parameter->TSRtd;
 
 for (int blade=0;blade<blades_num;++blade){
 for (int E=0;E<angles_num;++E){
         calculateqs3d_graphics(blade,E,TSR);
 }}
 
-//Sara
-//progress bar
-    int w=0;
-    if (m_parameter->qs3DSim==0){w=1000000/5;}
-    else if (m_parameter->qs3DSim==1){w=1000000/3;}
-    else {w=1000000;}
-    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
-    for(int j = w+1; j<=2*w; ++j)
-        {
-            pNoiseCreatorDialog->m_progress_dlg->setValue(j);
-        }
-//Sara
+ProgressBar(2);//Sara
 }
 
 //calculation for blade
 void NoiseCalculation::calculateqs3d_blade() {
-qDebug() << "entra aqui: calculateqs3d_blade";
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     unsigned int number_of_segments = pbem->dlg_elements;
@@ -3683,7 +3564,6 @@ qDebug() << "entra aqui: calculateqs3d_blade";
         }
 
     if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
-
         double auxa_m_OASPL3d[size];
         double auxa_m_OASPLA3d[size];
         double auxa_m_OASPLB3d[size];
@@ -3826,18 +3706,7 @@ qDebug() << "entra aqui: calculateqs3d_blade";
     m_SPLlogLE3d[i]=0;
     }}
 
-    //Sara
-    //progress bar
-        int w=0;
-        if (m_parameter->qs3DSim==0){w=1000000/5;}
-        else if (m_parameter->qs3DSim==1){w=1000000/3;}
-        else {w=1000000;}
-        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
-        for(int j = 2*w+1; j<=3*w; ++j)
-            {
-                pNoiseCreatorDialog->m_progress_dlg->setValue(j);
-            }
-    //Sara
+ProgressBar(3);//Sara
 }
 
 //calculation for one blade placed in rotor coordinates
@@ -3888,7 +3757,6 @@ unsigned int number_of_segments = pbem->dlg_elements;
     }
 
 if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
-
     double auxa_m_OASPL3d_rotor[size];
     double auxa_m_OASPLA3d_rotor[size];
     double auxa_m_OASPLB3d_rotor[size];
@@ -4032,18 +3900,7 @@ for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     m_SPLlogLE3d_rotor[i]=0;
     }}
 
-    //Sara
-    //progress bar
-        int w=0;
-        if (m_parameter->qs3DSim==0){w=1000000/5;}
-        else if (m_parameter->qs3DSim==1){w=1000000/3;}
-        else {w=1000000;}
-        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
-        for(int j = 3*w+1; j<=4*w; ++j)
-            {
-                pNoiseCreatorDialog->m_progress_dlg->setValue(j);
-            }
-    //Sara
+ProgressBar(4);//Sara
 }
 
 //calculation for all blades in rotation movement
@@ -4052,7 +3909,6 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     int blades_num = pbem->m_pBData->blades;
     double anglesteps;
-    double initial_azimuth=m_parameter->initial_azimuth;
     int number_of_rotations;
 
     if (m_parameter->rotation_type==0){
@@ -4066,7 +3922,6 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
     }
 
     int angles_num=360./anglesteps*number_of_rotations;
-//    double last_angle=initial_azimuth+number_of_rotations*360;
 
     unsigned int number_of_segments = pbem->dlg_elements;
 
@@ -4164,9 +4019,6 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
            if (SPL_LEdBCW3d_4d()[i][j][blade][E]==0.){auxa_m_SPL_LEdBCW3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final_4d[j] += pow(10.,(SPL_LEdBCW3d_4d()[i][j][blade][E]/10.));}
         }}}}
 
-//        QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-//        unsigned int number_of_segments = pBEM->dlg_elements;
-
         if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
         for (unsigned int i=0;i<size;++i){
@@ -4191,8 +4043,7 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
             m_SPL_LEdBBW3d_final_rotor_loops[i][j]=0;
             m_SPL_LEdBCW3d_final_rotor_loops[i][j]=0;
             }
-        }
-        }
+        }}
 
         //OASPL complete for quasi 3d
         int i=number_of_segments-1;
@@ -4259,18 +4110,7 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
             m_SPLlogLE3d_rotor_loops[i]=0;
         }}
 
-        //Sara
-        //progress bar
-            int w=0;
-            if (m_parameter->qs3DSim==0){w=1000000/5;}
-            else if (m_parameter->qs3DSim==1){w=1000000/3;}
-            else {w=1000000;}
-            NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
-            for(int j = 4*w+1; j<=5*w; ++j)
-                {
-                    pNoiseCreatorDialog->m_progress_dlg->setValue(j);
-                }
-        //Sara
+ProgressBar(5);//Sara
 }
 
 //Sara
@@ -4363,4 +4203,37 @@ double outer_radius=pbem->m_pTData->OuterRadius;
  if(delta_w<=delta_u){m_parameter->rot_speed=m_rot_speed_calc_aux;}else{m_parameter->u_wind_speed=m_u_wind_speed_calc_aux;}
  }}}
 }
+
+void NoiseCalculation::ProgressBar(int index){
+    NoiseSimulation *pNoiseSimulation = (NoiseSimulation *) g_mainFrame->m_pBEM;
+    pNoiseSimulation->progress_dlg_canceled=false;
+        int w=0;
+        if (m_parameter->qs3DSim==0){w=1000000/5;}
+        else if (m_parameter->qs3DSim==1){w=1000000/3;}
+        else {w=1000000;}
+        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+if(pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){
+    pNoiseCreatorDialog->m_progress_dlg->cancel();
+}else{
+if (index == 1) {
+    for(int j = 0; j<=w; ++j)
+        {
+            pNoiseCreatorDialog->m_progress_dlg->setValue(j);
+            if(pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){
+                pNoiseSimulation->progress_dlg_canceled=true;
+                pNoiseCreatorDialog->m_progress_dlg->cancel();
+                break;
+            }
+        }}
+else {
+        for(int j = (index-1)*w+1; j<=index*w; ++j)
+            {
+                pNoiseCreatorDialog->m_progress_dlg->setValue(j);
+                if(pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){
+                    pNoiseSimulation->progress_dlg_canceled=true;
+                    pNoiseCreatorDialog->m_progress_dlg->cancel();
+                    break;
+                }
+            }
+}}}
     //Sara

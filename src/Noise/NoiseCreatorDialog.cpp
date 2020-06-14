@@ -530,6 +530,7 @@ return;}
 //Sara
     /* create new simulation */
     NoiseSimulation *newSimulation = new NoiseSimulation (this);
+    NoiseSimulation *pNoiseSimulation = (NoiseSimulation *) g_mainFrame->m_pBEM;
 
     newSimulation->setSelectFrom(static_cast<NoiseParameter::OpPointSource> (m_selectFromButtons->checkedId()));
 
@@ -540,18 +541,21 @@ return;}
         }
     }
     newSimulation->setAnalyzedOpPoints(analyzedOpPoints.toVector());
-
     try {
         newSimulation->simulate();
+if (!pNoiseSimulation->progress_dlg_canceled){ //Sara
         if (g_noiseSimulationStore.add(newSimulation)) {
             m_module->setShownSimulation(newSimulation);
             accept();  // leave dialog only if adding was successful
         }
-    } catch (NoiseException &e) {
+    }//Sara
+    }
+    catch (NoiseException &e) {
         delete newSimulation;
         QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
-    }}
-    onVerifyDeltaFor3D();//Sara
+    }
+    if (!pNoiseSimulation->progress_dlg_canceled){onVerifyDeltaFor3D();}//Sara
+}
 //Sara
 }
 
@@ -747,11 +751,11 @@ void NoiseCreatorDialog::OnProgressDlg(){
     m_progress_dlg->setLabelText("calculating...");
     button_cancel = new QPushButton("Cancel");
     m_progress_dlg->setCancelButton(button_cancel);
-    button_cancel->setVisible(false); //no cancel button
+//    button_cancel->setVisible(false); //no cancel button
     QProgressBar *m_bar = new QProgressBar(this);
     m_bar->setAlignment(Qt::AlignCenter);
     m_progress_dlg->setBar(m_bar);
-//    connect(button_cancel,SIGNAL(clicked()),this,SLOT(cancelProgress));
+//connect(button_cancel,SIGNAL(clicked()),this,SLOT(OnCancelProgressBar()));
 //    m_progress_dlg->setRange(0,0);
    m_progress_dlg->setRange(0,1000000);
     m_progress_dlg->setMinimumDuration(0);
@@ -760,8 +764,13 @@ void NoiseCreatorDialog::OnProgressDlg(){
 //    for(int i = 0; i <= 1000000; ++i)
 //    {
 //        m_progress_dlg->setValue(i);
-//        if(m_progress_dlg->wasCanceled()){m_progress_dlg->cancel();  m_progress_dlg->close(); onCreateButtonClicked();}
+//        if(m_progress_dlg->wasCanceled()){
+//            qDebug() << "entra aqui";
+//        m_progress_dlg->cancel();
+//        m_progress_dlg->close();
+//        pNoiseSimulation->stopFunction();
+//        }
 //    }
-//    m_progress_dlg->cancel();
+//    m_progress_dlg->cancel();   
 }
 //Sara

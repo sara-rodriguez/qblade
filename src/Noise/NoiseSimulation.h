@@ -20,7 +20,7 @@ class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, publ
 {
 public:
 
-    int y=0;
+    int y=0; //Sara
 
     static NoiseSimulation* newBySerialize ();
     NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
@@ -53,6 +53,7 @@ public:
     QVector<double> listtsr;    //Sara
 
     int vectors_size;
+    bool progress_dlg_canceled=false;
 
 private:
     NoiseSimulation () { }

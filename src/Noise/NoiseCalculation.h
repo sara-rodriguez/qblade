@@ -45,6 +45,7 @@ public:
     void calculateqs3d_blade();
     void calculateqs3d_rotor();
     void calculateqs3d_rotor_loops();
+    void ProgressBar(int index);
     //Sara end
 
     // NM the arrays containing the graph data
