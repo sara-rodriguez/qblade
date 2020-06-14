@@ -751,26 +751,11 @@ void NoiseCreatorDialog::OnProgressDlg(){
     m_progress_dlg->setLabelText("calculating...");
     button_cancel = new QPushButton("Cancel");
     m_progress_dlg->setCancelButton(button_cancel);
-//    button_cancel->setVisible(false); //no cancel button
     QProgressBar *m_bar = new QProgressBar(this);
     m_bar->setAlignment(Qt::AlignCenter);
     m_progress_dlg->setBar(m_bar);
-//connect(button_cancel,SIGNAL(clicked()),this,SLOT(OnCancelProgressBar()));
-//    m_progress_dlg->setRange(0,0);
    m_progress_dlg->setRange(0,1000000);
     m_progress_dlg->setMinimumDuration(0);
     m_progress_dlg->show();
-    //do what u want...
-//    for(int i = 0; i <= 1000000; ++i)
-//    {
-//        m_progress_dlg->setValue(i);
-//        if(m_progress_dlg->wasCanceled()){
-//            qDebug() << "entra aqui";
-//        m_progress_dlg->cancel();
-//        m_progress_dlg->close();
-//        pNoiseSimulation->stopFunction();
-//        }
-//    }
-//    m_progress_dlg->cancel();   
 }
 //Sara

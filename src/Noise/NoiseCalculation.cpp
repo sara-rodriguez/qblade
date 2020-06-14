@@ -25,7 +25,7 @@
 #include "../XLLT/QLLTCreatorDialog.h"
 #include "../XUnsteadyBEM/FASTSimulation.h"
 #include "../Noise/NoiseCreatorDialog.h"
-#include "../Noise/NoiseSimulation.h" //urgente
+#include "../Noise/NoiseSimulation.h"
 #include "../MainFrame.h"
 #include "../XWidgets.h"
 #include <QtMath>
