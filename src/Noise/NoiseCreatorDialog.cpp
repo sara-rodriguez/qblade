@@ -668,6 +668,9 @@ timesteps_in=false;
     m_timesteps_numberedit->setEnabled(timesteps_in);
     rotation_combobox->setEnabled(false);
     m_shear_check->setEnabled(shear_in);
+    m_shear_roughness_numberedit->setEnabled(shear_in);
+    m_shear_height_numberedit->setEnabled(shear_in);
+    m_shear_speed_numberedit->setEnabled(shear_in);
     onVerifyWindfield();
     }
     else {
@@ -681,6 +684,9 @@ timesteps_in=false;
     m_number_loops_numberedit->setEnabled(loops_in);
     m_anglesteps_numberedit->setEnabled(anglesteps_in);
     m_shear_check->setEnabled(shear_in);
+    m_shear_roughness_numberedit->setEnabled(shear_in);
+    m_shear_height_numberedit->setEnabled(shear_in);
+    m_shear_speed_numberedit->setEnabled(shear_in);
     m_time_numberedit->setEnabled(time_in);
     m_timesteps_numberedit->setEnabled(timesteps_in);
     }
