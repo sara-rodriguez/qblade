@@ -4,7 +4,7 @@
 #include <ctime>  // For time()
 #include <cstdlib>  // For srand() and rand()
 #include <limits>
-#include <omp.h>
+//#include <omp.h> Sara
 #include <GL/gl.h>
 #include <QDebug>
 #include <QDate>
@@ -596,24 +596,24 @@ void WindField::importFromBinary(QDataStream &dataStream) {
 
 void WindField::exportToTxt(QTextStream &stream) {
     stream << "Windfield Export File Created with " << g_mainFrame->m_VersionName << " on "<<QDate::currentDate().toString("dd.MM.yyyy") <<
-			  " at " << QTime::currentTime().toString("hh:mm:ss") << endl <<
-			  "Timesteps: " << m_numberOfTimesteps << endl <<
-			  "Temporal Stepwidth: " << m_simulationTime / (m_numberOfTimesteps-1) << " s" << endl <<
-			  "Points per Side: " << m_pointsPerSide << endl <<
-			  "Spatial Stepwidth: " << m_fieldDimension / (m_pointsPerSide-1) << " m" << endl <<
-			  "Hub Height: " << m_hubheight << " m" << endl <<
-			  "Mean Wind Speed at Hub: " << m_meanWindSpeedAtHub << " m/s" << endl <<
-			  "Heigth of lowest Point: " << m_hubheight - m_rotorRadius << " m" << endl <<
-			  endl;
+              " at " << QTime::currentTime().toString("hh:mm:ss") << Qt::endl <<
+              "Timesteps: " << m_numberOfTimesteps << Qt::endl <<
+              "Temporal Stepwidth: " << m_simulationTime / (m_numberOfTimesteps-1) << " s" << Qt::endl <<
+              "Points per Side: " << m_pointsPerSide << Qt::endl <<
+              "Spatial Stepwidth: " << m_fieldDimension / (m_pointsPerSide-1) << " m" << Qt::endl <<
+              "Hub Height: " << m_hubheight << " m" << Qt::endl <<
+              "Mean Wind Speed at Hub: " << m_meanWindSpeedAtHub << " m/s" << Qt::endl <<
+              "Heigth of lowest Point: " << m_hubheight - m_rotorRadius << " m" << Qt::endl <<
+              Qt::endl;
 			  
 	for (int timestep = 0; timestep < m_numberOfTimesteps; ++timestep) {
 		for (int zIndex = 0; zIndex < m_pointsPerSide; ++zIndex) {
 			for (int yIndex = 0; yIndex < m_pointsPerSide; ++yIndex) {
                 stream << QString("%1 ").arg(m_resultantVelocity[zIndex][yIndex][timestep].x, 7, 'f', 3);
 			}
-			stream << endl;
+            stream << Qt::endl;
 		}
-		stream << endl;
+        stream << Qt::endl;
 	}
 }
 

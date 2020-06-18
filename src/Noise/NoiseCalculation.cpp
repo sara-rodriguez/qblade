@@ -327,7 +327,7 @@ double NoiseCalculation::getDL() {
 
 double NoiseCalculation::getDH() {
     //Dh, High Freq. Directivity Factor
-    if (m_parameter->lowFreq)
+    if (m_parameter->highFreq)
     {return (2 * pow((sin((qDegreesToRadians(m_parameter->directivityGreek)/2))),2) * pow((sin(qDegreesToRadians(m_parameter->directivityPhi))),2)) /
                     ((1+m_parameter->originalMach * cos(qDegreesToRadians(m_parameter->directivityGreek))) *
                      (pow((1+(m_parameter->originalMach-m_EddyMachNumber) * cos(qDegreesToRadians(m_parameter->directivityPhi))),2))); //Sara
@@ -2512,7 +2512,7 @@ D_starred_C_N[i]=pow(10,(3.0187-1.5397*log10(Reynolds[i])+0.1059*pow(log10(Reyno
 
 D_starred_N[i]=D_starred_C_N[i]*chord[i];
 
-if (alpha[i]==0.){
+if (alpha[i]==0){
 D_starred_HT_S[i]=D_starred_HT[i];
 D_starred_HT_P[i]=D_starred_HT[i];
 D_starred_N_S[i]=D_starred_N[i];
@@ -2575,7 +2575,7 @@ D_starred_HT_rotor[i]=chord[i]*D_starred_C_HT_rotor[i];
 D_starred_C_N_rotor[i]=pow(10,(3.0187-1.5397*log10(Reynolds_rotor[i])+0.1059*pow(log10(Reynolds_rotor[i]),2)));
 D_starred_N_rotor[i]=D_starred_C_N_rotor[i]*chord[i];
 
-if (alpha[i]==0.){
+if (alpha[i]==0){
 D_starred_HT_S_rotor[i]=D_starred_HT_rotor[i];
 D_starred_HT_P_rotor[i]=D_starred_HT_rotor[i];
 D_starred_N_S_rotor[i]=D_starred_N_rotor[i];
@@ -2705,7 +2705,7 @@ else if (m_parameter->dstar_type==1){
     FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
         double TopTrip=pFoilPolarDlg->m_XTopTr;
         double BotTrip=pFoilPolarDlg->m_XBotTr;
-    if((TopTrip==0.) & (BotTrip==0.)) {
+    if((TopTrip==0) & (BotTrip==0)) {
     //        natural transition
         D_starred_S[i]=D_starred_N_S[i];
         D_starred_P[i]=D_starred_N_P[i];
