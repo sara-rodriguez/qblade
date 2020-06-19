@@ -217,7 +217,7 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
         previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
         previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
 
-        //qDebug() << "i: " << i << " - " << ccur;
+//        qDebug() << "i: " << i << " - " << ccur;
 //        qDebug() << "currentChord" << nop->getXValue(i, side);
 //        qDebug() << "currentDStar" << nop->getDstrAt(i, side);
 //        qDebug() << nop->getXValue(i, side);
@@ -230,10 +230,10 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
             dStarUpStream = previousDStar;
             dStarDownStream = currentDStar;
 
-//			qDebug() << "Chord UpStream: " << chordUpStream;
-//			qDebug() << "Chord DownStream: " << chordDownStream;
-//			qDebug() << "D* UpStream: " << dStarUpStream;
-//			qDebug() << "D* DownStream: " << dStarDownStream;
+//            qDebug() << "Chord UpStream: " << chordUpStream;
+//            qDebug() << "Chord DownStream: " << chordDownStream;
+//            qDebug() << "D* UpStream: " << dStarUpStream;
+//            qDebug() << "D* DownStream: " << dStarDownStream;
 
             upDownFind = true;
             break;
@@ -278,7 +278,7 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
         previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
         previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
 
-        //qDebug() << "i: " << i << " - " << ccur;
+//        qDebug() << "i: " << i << " - " << ccur;
 //        qDebug() << "currentChord" << nop->getXValue(i, side);
 //        qDebug() << "currentDStar" << nop->getDstrAt(i, side);
 //        qDebug() << nop->getXValue(i, side);
@@ -291,10 +291,10 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
             dStarUpStream = previousDStar;
             dStarDownStream = currentDStar;
 
-//			qDebug() << "Chord UpStream: " << chordUpStream;
-//			qDebug() << "Chord DownStream: " << chordDownStream;
-//			qDebug() << "D* UpStream: " << dStarUpStream;
-//			qDebug() << "D* DownStream: " << dStarDownStream;
+//            qDebug() << "Chord UpStream: " << chordUpStream;
+//            qDebug() << "Chord DownStream: " << chordDownStream;
+//            qDebug() << "D* UpStream: " << dStarUpStream;
+//            qDebug() << "D* DownStream: " << dStarDownStream;
 
             upDownFind = true;
             break;
@@ -405,7 +405,7 @@ double NoiseCalculation::getBPMThickness(NoiseOpPoint *nop, AirfoilSide as) {
             bpm = corFactor * dStar;
         }
     }
-//	qDebug() << "BPM D*: " << bpm;
+//    qDebug() << "BPM D*: " << bpm;
 
     return bpm;
 }
@@ -461,11 +461,11 @@ void NoiseCalculation::preCalcA1(NoiseOpPoint* nop) {
 
     m_A1Ar = (-20-m_A1AMin)/(m_A1AMax-m_A1AMin);
 
-//	qDebug() << "A1 ChordBasedReynolds " << m_A1ChordBasedReynolds;
-//	qDebug() << "A1 Ao " << m_A1Ao;
-//	qDebug() << "A1 aMin " << m_A1AMin;
-//	qDebug() << "A1 aMax " << m_A1AMax;
-//	qDebug() << "A1 Ar " << m_A1Ar;
+//    qDebug() << "A1 ChordBasedReynolds " << m_A1ChordBasedReynolds;
+//    qDebug() << "A1 Ao " << m_A1Ao;
+//    qDebug() << "A1 aMin " << m_A1AMin;
+//    qDebug() << "A1 aMax " << m_A1AMax;
+//    qDebug() << "A1 Ar " << m_A1Ar;
 }
 
 void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
@@ -476,7 +476,7 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
     //If angle is smaller than the switching Angle
     //use dH and B else use dL and A1
     if (nop->getAlphaDegree() <= m_SwAlpha) {
-//		qDebug() << "SPLa dH: " << getDH();
+//        qDebug() << "SPLa dH: " << getDH();
         m_SplaFirstTerm = 10 * log10(pow(m_parameter->originalMach, 5) * m_parameter->wettedLength * getDH() *
                                      m_DStarFinalS / pow(m_parameter->distanceObsever, 2));
 
@@ -506,12 +506,12 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
 
         m_SplaBr = (-20-m_SplaBMin)/(m_SplaBMax-m_SplaBMin);
 
-//		qDebug() << "SPLA Bo " << m_SplaBo;
-//		qDebug() << "SPLA bMin " << m_SplaBMin;
-//		qDebug() << "SPLA bMax " << m_SplaBMax;
-//		qDebug() << "SPLA Br " << m_SplaBr;
+//        qDebug() << "SPLA Bo " << m_SplaBo;
+//        qDebug() << "SPLA bMin " << m_SplaBMin;
+//        qDebug() << "SPLA bMax " << m_SplaBMax;
+//        qDebug() << "SPLA Br " << m_SplaBr;
     } else {
-//		qDebug() << "SPLa dL: " << getDL();
+//        qDebug() << "SPLa dL: " << getDL();
         m_SplaFirstTerm = 10 * log10(pow(m_parameter->originalMach, 5) * m_parameter->wettedLength *
                                      getDL() * m_DStarFinalS / pow(m_parameter->distanceObsever, 2));
         m_ChordBasedReynolds = nop->getReynolds() * 3;
@@ -542,11 +542,11 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
 
         m_SplaAr = (-20-m_SplaAMin)/(m_SplaAMax-m_SplaAMin);
 
-//		qDebug() << "SPLA ChordBasedReynolds " << m_ChordBasedReynolds;
-//		qDebug() << "SPLA Ao " << m_SplaAo;
-//		qDebug() << "SPLA aMin " << m_SplaAMin;
-//		qDebug() << "SPLA aMax " << m_SplaAMax;
-//		qDebug() << "SPLA Ar " << m_SplaAr;
+//        qDebug() << "SPLA ChordBasedReynolds " << m_ChordBasedReynolds;
+//        qDebug() << "SPLA Ao " << m_SplaAo;
+//        qDebug() << "SPLA aMin " << m_SplaAMin;
+//        qDebug() << "SPLA aMax " << m_SplaAMax;
+//        qDebug() << "SPLA Ar " << m_SplaAr;
     }
 
     m_SplaSt1 = getSt1();
@@ -568,16 +568,16 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
                                      pow((nop->getAlphaDegreeAbsolute()-m_SwAlpha1),2) ) + m_SplaBetaZero);
     }
 
-//	qDebug() << "SPLa firstTerm: " << m_SplaFirstTerm;
-//	qDebug() << "SPLa st1: " << m_SplaSt1;
-//	qDebug() << "SPLa st2: " << m_SplaSt2;
-//	qDebug() << "SPLa gamma: " << m_SplaGamma;
-//	qDebug() << "SPLa gamma_zero: " << m_SwAlpha1;
-//	qDebug() << "SPLa beta: " << m_SplaBeta;
-//	qDebug() << "SPLa betaZero: " << m_SplaBetaZero;
+//    qDebug() << "SPLa firstTerm: " << m_SplaFirstTerm;
+//    qDebug() << "SPLa st1: " << m_SplaSt1;
+//    qDebug() << "SPLa st2: " << m_SplaSt2;
+//    qDebug() << "SPLa gamma: " << m_SplaGamma;
+//    qDebug() << "SPLa gamma_zero: " << m_SwAlpha1;
+//    qDebug() << "SPLa beta: " << m_SplaBeta;
+//    qDebug() << "SPLa betaZero: " << m_SplaBetaZero;
 //	qDebug() << "SPLa reynolds: " << nop->Reynolds();
-//	qDebug() << "SPLa k1: " << m_SplaK1;
-//	qDebug() << "SPLa k2: " << m_SplaK2;
+//    qDebug() << "SPLa k1: " << m_SplaK1;
+//    qDebug() << "SPLa k2: " << m_SplaK2;
 }
 
 void NoiseCalculation::preCalcSPLs(NoiseOpPoint *nop) {
@@ -586,8 +586,8 @@ void NoiseCalculation::preCalcSPLs(NoiseOpPoint *nop) {
     m_SplsFirstTerm = 10 * log10(pow(m_parameter->originalMach,5) * m_parameter->wettedLength * getDH() *
                                  m_DStarFinalS / pow(m_parameter->distanceObsever,2));
 
-//	qDebug() << "SPLs dH: " << getDH();
-//	qDebug() << "SPLs firstTerm: " << m_SplsFirstTerm;
+//    qDebug() << "SPLs dH: " << getDH();
+//    qDebug() << "SPLs firstTerm: " << m_SplsFirstTerm;
 
     m_SplsSt1 = getSt1();
     m_SplsSt2 = getSt2(nop);
@@ -595,11 +595,11 @@ void NoiseCalculation::preCalcSPLs(NoiseOpPoint *nop) {
     m_SplsSt1Bar = (m_SplsSt1+m_SplsSt2)/2;
     m_SplsK13 = m_SplsK1-3;
 
-//	qDebug() << "SPLs st1: " << m_SplsSt1;
-//	qDebug() << "SPLs st2: " << m_SplsSt2;
-//	qDebug() << "SPLs st1Bar: " << m_SplsSt1Bar;
-//	qDebug() << "SPLs k1: " << m_SplsK1;
-//	qDebug() << "SPLs k1-3: " << m_SplsK13;
+//    qDebug() << "SPLs st1: " << m_SplsSt1;
+//    qDebug() << "SPLs st2: " << m_SplsSt2;
+//    qDebug() << "SPLs st1Bar: " << m_SplsSt1Bar;
+//    qDebug() << "SPLs k1: " << m_SplsK1;
+//    qDebug() << "SPLs k1-3: " << m_SplsK13;
 }
 
 void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
@@ -629,11 +629,11 @@ void NoiseCalculation::preCalcSPLp(NoiseOpPoint *nop) {
         m_SplpDeltaK1 = nop->getAlphaDegreeAbsolute() * (1.43*log10(m_ReynoldsBasedDisplacement)-5.29);
     }
 
-//	qDebug() << "Reynolds Based Displacement: " << m_ReynoldsBasedDisplacement;
-//	qDebug() << "SPLp st1: " << m_SplpSt1;
-//	qDebug() << "SPLp k1: " << m_SplpK1;
-//	qDebug() << "SPLp k1-3: " << m_SplpK13;
-//	qDebug() << "SPLp DeltaK1: " << m_SplpDeltaK1;
+//    qDebug() << "Reynolds Based Displacement: " << m_ReynoldsBasedDisplacement;
+//    qDebug() << "SPLp st1: " << m_SplpSt1;
+//    qDebug() << "SPLp k1: " << m_SplpK1;
+//    qDebug() << "SPLp k1-3: " << m_SplpK13;
+//    qDebug() << "SPLp DeltaK1: " << m_SplpDeltaK1;
 }
 
 void NoiseCalculation::calcSPLa(double alpha, int posOpPoint, int posFreq) {
@@ -672,10 +672,10 @@ void NoiseCalculation::calcSPLa(double alpha, int posOpPoint, int posFreq) {
         m_SPLadBBW[posOpPoint][posFreq] = splDb + BWeighting[posFreq];
         m_SPLadBCW[posOpPoint][posFreq] = splDb + CWeighting[posFreq];
 
-//		qDebug() << "SPLa -> sts("<< sts <<")\t"<< "b("<< b <<")\t"<< "bMin("<< bMin <<")\t"<< "bMax("<< bMax
-//				 << ")\t"<< "db("<< db <<")\t"<< "splDb("<< splDb <<")\t"<< "splDb-AW("
-//				 << m_SPLadBAW[posOpPoint][posFreq] <<")\t"<< "splDb-BW("<< m_SPLadBBW[posOpPoint][posFreq] <<")\t"
-//				 << "splDb-CW("<< m_SPLadBCW[posOpPoint][posFreq] <<")\t";
+//        qDebug() << "SPLa -> sts("<< sts <<")\t"<< "b("<< b <<")\t"<< "bMin("<< bMin <<")\t"<< "bMax("<< bMax
+//                 << ")\t"<< "db("<< db <<")\t"<< "splDb("<< splDb <<")\t"<< "splDb-AW("
+//                 << m_SPLadBAW[posOpPoint][posFreq] <<")\t"<< "splDb-BW("<< m_SPLadBBW[posOpPoint][posFreq] <<")\t"
+//                 << "splDb-CW("<< m_SPLadBCW[posOpPoint][posFreq] <<")\t";
     } else {
         double sts = CENTRAL_BAND_FREQUENCY[posFreq]*m_DStarFinalS/m_parameter->originalVelocity;
         double a = fabs(log10(sts/m_SplaSt2));
@@ -707,10 +707,10 @@ void NoiseCalculation::calcSPLa(double alpha, int posOpPoint, int posFreq) {
         m_SPLadBBW[posOpPoint][posFreq] = splDb + BWeighting[posFreq];
         m_SPLadBCW[posOpPoint][posFreq] = splDb + CWeighting[posFreq];
 
-//		qDebug() << "SPLa -> sts("<< sts <<")\t"<< "a("<< a <<")\t"<< "aMin("<< aMin <<")\t"<< "aMax("<< aMax
-//				 << ")\t"<< "a1("<< a1 <<")\t"<< "splDb("<< splDb <<")\t"<< "splDb-AW("
-//				 << m_SPLadBAW[posOpPoint][posFreq] <<")\t"<< "splDb-BW("<< m_SPLadBBW[posOpPoint][posFreq] <<")\t"
-//				 << "splDb-CW("<< m_SPLadBCW[posOpPoint][posFreq] <<")\t";
+//        qDebug() << "SPLa -> sts("<< sts <<")\t"<< "a("<< a <<")\t"<< "aMin("<< aMin <<")\t"<< "aMax("<< aMax
+//                 << ")\t"<< "a1("<< a1 <<")\t"<< "splDb("<< splDb <<")\t"<< "splDb-AW("
+//                 << m_SPLadBAW[posOpPoint][posFreq] <<")\t"<< "splDb-BW("<< m_SPLadBBW[posOpPoint][posFreq] <<")\t"
+//                 << "splDb-CW("<< m_SPLadBCW[posOpPoint][posFreq] <<")\t";
     }
 }
 
@@ -754,10 +754,10 @@ void NoiseCalculation::calcSPLs(int posOpPoint,int posFreq) {
     m_SPLsdBBW[posOpPoint][posFreq] = splDb + BWeighting[posFreq];
     m_SPLsdBCW[posOpPoint][posFreq] = splDb + CWeighting[posFreq];
 
-//	qDebug() << "SPLs -> sts("<< sts <<")\t"<< "a("<< a <<")\t"<< "aMin("<< aMin <<")\t"<< "aMax("<< aMax <<")\t"
-//			 << "a1("<< a1 <<")\t" << "splDb("<< splDb <<")\t"<< "splDb-AW("<< m_SPLsdBAW[posOpPoint][posFreq]
-//			 << ")\t"<< "splDb-BW("<< m_SPLsdBBW[posOpPoint][posFreq] <<")\t"<< "splDb-CW("
-//			 << m_SPLsdBCW[posOpPoint][posFreq] <<")\t";
+//    qDebug() << "SPLs -> sts("<< sts <<")\t"<< "a("<< a <<")\t"<< "aMin("<< aMin <<")\t"<< "aMax("<< aMax <<")\t"
+//             << "a1("<< a1 <<")\t" << "splDb("<< splDb <<")\t"<< "splDb-AW("<< m_SPLsdBAW[posOpPoint][posFreq]
+//             << ")\t"<< "splDb-BW("<< m_SPLsdBBW[posOpPoint][posFreq] <<")\t"<< "splDb-CW("
+//             << m_SPLsdBCW[posOpPoint][posFreq] <<")\t";
 }
 
 void NoiseCalculation::calcSPLp(int posOpPoint,int posFreq) {
@@ -800,10 +800,10 @@ void NoiseCalculation::calcSPLp(int posOpPoint,int posFreq) {
     m_SPLpdBBW[posOpPoint][posFreq] = splDb + BWeighting[posFreq];
     m_SPLpdBCW[posOpPoint][posFreq] = splDb + CWeighting[posFreq];
 
-//	qDebug() << "SPLp -> stp("<< stp <<")\t"<< "a("<< a <<")\t"<< "aMin("<< aMin <<")\t"<< "aMax("<< aMax <<")\t"
-//			 << "a1("<< a1 <<")\t" << "splDb("<< splDb <<")\t"<< "splDb-AW("<< m_SPLpdBAW[posOpPoint][posFreq]
-//			 << ")\t"<< "splDb-BW("<< m_SPLpdBBW[posOpPoint][posFreq] <<")\t"<< "splDb-CW("
-//			 << m_SPLpdBCW[posOpPoint][posFreq] <<")\t";
+//    qDebug() << "SPLp -> stp("<< stp <<")\t"<< "a("<< a <<")\t"<< "aMin("<< aMin <<")\t"<< "aMax("<< aMax <<")\t"
+//             << "a1("<< a1 <<")\t" << "splDb("<< splDb <<")\t"<< "splDb-AW("<< m_SPLpdBAW[posOpPoint][posFreq]
+//             << ")\t"<< "splDb-BW("<< m_SPLpdBBW[posOpPoint][posFreq] <<")\t"<< "splDb-CW("
+//             << m_SPLpdBCW[posOpPoint][posFreq] <<")\t";
 }
 
 //Alexandre MOD
@@ -3211,25 +3211,30 @@ aux5_le_rotor[i]=10.*log10(aux0_le_rotor[i]*aux4_le_rotor[i]);
 //Validation:
 
 //BPM validation:
-//p 17 C_Project_Log_Text_15_jan_16
-//if(((((alpha[i]<=19.8 & Reynolds[i]<3*pow(10,6)) & (Mach[i]<0.21)) & (Reynolds[i]>0)) & (Mach[i]>0))){
-//if((alpha[i]<=19.8) & (Mach[i]<0.21) & (Reynolds[i]>0) & (Mach[i]>0)){
+//p 66 C_Project_Log_Text_15_jan_16
+//if(!((alpha[i]<=19.8) & (Mach[i]<=0.21) & (Reynolds[i]>=6*pow(10,5)) & (Reynolds[i]<=2.4*pow(10,6)) & (Mach[i]>0))){observations_x.append("1 ");} //urgente
+
+//if (alpha[i]<=19.8){qDebug() << "validation error for blade number "&blade&" and azimuthal angle " E;}
+
+if(Reynolds[i]>=600000){
 BPM_validation=true;
-//}
-//else{
-//SPL_alpha[j]=-999999999999.;
-//SPL_S[j]=-999999999999.;
-//SPL_P[j]=-999999999999.;
-//SPL_dB[j]=-999999999999.;
-//SPL_A[j]=-999999999999.;
-//SPL_B[j]=-999999999999.;
-//SPL_C[j]=-999999999999.;
-//BPM_validation=false;
-//}
+}
+else{
+SPL_alpha[j]=-999999999999.;
+SPL_S[j]=-999999999999.;
+SPL_P[j]=-999999999999.;
+SPL_dB[j]=-999999999999.;
+SPL_A[j]=-999999999999.;
+SPL_B[j]=-999999999999.;
+SPL_C[j]=-999999999999.;
+BPM_validation=false;
+}
 
 //Lowson validation:
-//if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0) & (Reynolds[i]<=(6.*pow(10,5)))) & (Reynolds[i]>0))){
-//if (((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>0)))){
+
+//if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>=0.05588))) & (Reynolds[i]<=6*pow(10,5)))){observations_x.append("2");}
+
+if ((m_parameter->Lowson_type!=0) & (Mach[i]>=0.05588) & (Reynolds[i]>=1.3*pow(10,5))){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le[i]+aux5_le[i])/10.));
 SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
 SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
@@ -3242,14 +3247,14 @@ SPL_LedBCW_rotor[j]=SPL_LedB_rotor[j]+CWeighting[j];
 //rotor
 LE_validation=true;
 
-//}
-//else{
-//SPL_LedB[j]=-999999999999.;
-//SPL_LedBAW[j]=-999999999999.;
-//SPL_LedBBW[j]=-999999999999.;
-//SPL_LedBCW[j]=-999999999999.;
-//LE_validation=false;
-//}
+}
+else{
+SPL_LedB[j]=-999999999999.;
+SPL_LedBAW[j]=-999999999999.;
+SPL_LedBBW[j]=-999999999999.;
+SPL_LedBCW[j]=-999999999999.;
+LE_validation=false;
+}
 
 first_term_Dl_S[i]=calcFirstTerm(Mach[i],L[i],Dl[i],D_starred_S[i],dist_obs[i]);
 first_term_Dh_P[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_P[i],dist_obs[i]);
@@ -3709,202 +3714,8 @@ void NoiseCalculation::calculateqs3d_blade() {
 ProgressBar(3);//Sara
 }
 
-//calculation for one blade placed in rotor coordinates
-void NoiseCalculation::calculateqs3d_rotor() {
-
-QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
-QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-unsigned int number_of_segments = pbem->dlg_elements;
-
-    double aux_m_SPLadB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLsdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLpdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPLdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double aux_m_SPL_LEdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLadB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLsdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLpdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPLdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdB3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBAW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBBW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-    double auxa_m_SPL_LEdBCW3d_final_rotor[FREQUENCY_TABLE_SIZE];
-
-    double Final_qs3d_alpha_aux_rotor=0;
-    double Final_qs3d_S_aux_rotor=0;
-    double Final_qs3d_P_aux_rotor=0;
-    double Final_qs3d_LE_aux_rotor=0;
-    double Final_qs3d_aux_rotor=0;
-
-    // Resize vectors acording to OpPoints total
-    unsigned int sizea = 0;
-    unsigned int size;
-    if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
-        m_parameter->opPointSource == NoiseParameter::MultiplePolars)
-    {
-        sizea = m_parameter->analyzedOpPoints.size();
-     } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
-        sizea = 1;
-    }
-
-if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
-    double auxa_m_OASPL3d_rotor[size];
-    double auxa_m_OASPLA3d_rotor[size];
-    double auxa_m_OASPLB3d_rotor[size];
-    double auxa_m_OASPLC3d_rotor[size];
-    double auxa_m_SPLALOG3d_rotor[size];
-    double auxa_m_SPLSLOG3d_rotor[size];
-    double auxa_m_SPLPLOG3d_rotor[size];
-    double auxa_m_SPLLEdBAW3d_rotor[size];
-    double auxa_m_SPLLEdBBW3d_rotor[size];
-    double auxa_m_SPLLEdBCW3d_rotor[size];
-    double auxa_m_SPLlogLE3d_rotor[size];
-
-for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-    aux_m_SPLadB3d_final_rotor[j]=0;
-    aux_m_SPLsdB3d_final_rotor[j]=0;
-    aux_m_SPLpdB3d_final_rotor[j]=0;
-    aux_m_SPLdB3d_final_rotor[j]=0;
-    aux_m_SPLdBAW3d_final_rotor[j]=0;
-    aux_m_SPLdBBW3d_final_rotor[j]=0;
-    aux_m_SPLdBCW3d_final_rotor[j]=0;
-    aux_m_SPL_LEdB3d_final_rotor[j]=0;
-    aux_m_SPL_LEdBAW3d_final_rotor[j]=0;
-    aux_m_SPL_LEdBBW3d_final_rotor[j]=0;
-    aux_m_SPL_LEdBCW3d_final_rotor[j]=0;
-    auxa_m_SPLadB3d_final_rotor[j]=0;
-    auxa_m_SPLsdB3d_final_rotor[j]=0;
-    auxa_m_SPLpdB3d_final_rotor[j]=0;
-    auxa_m_SPLdB3d_final_rotor[j]=0;
-    auxa_m_SPLdBAW3d_final_rotor[j]=0;
-    auxa_m_SPLdBBW3d_final_rotor[j]=0;
-    auxa_m_SPLdBCW3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdB3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdBAW3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdBBW3d_final_rotor[j]=0;
-    auxa_m_SPL_LEdBCW3d_final_rotor[j]=0;
-
-    for (unsigned int i = 0; i < number_of_segments; ++i) {
-        if (SPLadB3d_4d()[i][j][0][0]==0.){auxa_m_SPLadB3d_final_rotor[j] += 0;} else {auxa_m_SPLadB3d_final_rotor[j] += pow(10.,(SPLadB3d_4d()[i][j][0][0]/10.));}
-        if (SPLsdB3d_4d()[i][j][0][0]==0.){auxa_m_SPLsdB3d_final_rotor[j] += 0;} else {auxa_m_SPLsdB3d_final_rotor[j] += pow(10.,(SPLsdB3d_4d()[i][j][0][0]/10.));}
-        if (SPLpdB3d_4d()[i][j][0][0]==0.){auxa_m_SPLpdB3d_final_rotor[j] += 0;} else {auxa_m_SPLpdB3d_final_rotor[j] += pow(10.,(SPLpdB3d_4d()[i][j][0][0]/10.));}
-        if (SPLdB3d_4d()[i][j][0][0]==0.){auxa_m_SPLdB3d_final_rotor[j] += 0;} else {auxa_m_SPLdB3d_final_rotor[j] += pow(10.,(SPLdB3d_4d()[i][j][0][0]/10.));}
-        if (SPLdBAW3d_4d()[i][j][0][0]==0.){auxa_m_SPLdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBAW3d_final_rotor[j] += pow(10.,(SPLdBAW3d_4d()[i][j][0][0]/10.));}
-        if (SPLdBBW3d_4d()[i][j][0][0]==0.){auxa_m_SPLdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBBW3d_final_rotor[j] += pow(10.,(SPLdBBW3d_4d()[i][j][0][0]/10.));}
-        if (SPLdBCW3d_4d()[i][j][0][0]==0.){auxa_m_SPLdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPLdBCW3d_final_rotor[j] += pow(10.,(SPLdBCW3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdB3d_4d()[i][j][0][0]==0.){auxa_m_SPL_LEdB3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdB3d_final_rotor[j] += pow(10.,(SPL_LEdB3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdBAW3d_4d()[i][j][0][0]==0.){auxa_m_SPL_LEdBAW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final_rotor[j] += pow(10.,(SPL_LEdBAW3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdBBW3d_4d()[i][j][0][0]==0.){auxa_m_SPL_LEdBBW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final_rotor[j] += pow(10.,(SPL_LEdBBW3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdBCW3d_4d()[i][j][0][0]==0.){auxa_m_SPL_LEdBCW3d_final_rotor[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final_rotor[j] += pow(10.,(SPL_LEdBCW3d_4d()[i][j][0][0]/10.));}
-    }
-
-    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-    unsigned int number_of_segments = pBEM->dlg_elements;
-
-    if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
-
-    for (unsigned int i=0;i<size;++i){
-    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-    //    3d curves
-        m_SPLadB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final_rotor[j]);
-        m_SPLsdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final_rotor[j]);
-        m_SPLpdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final_rotor[j]);
-        m_SPLdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final_rotor[j]);
-        m_SPLdBAW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final_rotor[j]);
-        m_SPLdBBW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final_rotor[j]);
-        m_SPLdBCW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final_rotor[j]);
-        if (m_parameter->Lowson_type!=0){
-        m_SPL_LEdB3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final_rotor[j]);
-        m_SPL_LEdBAW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final_rotor[j]);
-        m_SPL_LEdBBW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final_rotor[j]);
-        m_SPL_LEdBCW3d_final_rotor[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final_rotor[j]);
-        }
-        else{
-        m_SPL_LEdB3d_final_rotor[i][j]=0;
-        m_SPL_LEdBAW3d_final_rotor[i][j]=0;
-        m_SPL_LEdBBW3d_final_rotor[i][j]=0;
-        m_SPL_LEdBCW3d_final_rotor[i][j]=0;
-        }
-    }
-    }}
-
-    //OASPL complete for quasi 3d
-    int i=number_of_segments-1;
-    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-    Final_qs3d_alpha_aux_rotor += pow(10.,(m_SPLadB3d_final_rotor[i][j])/10.);
-    Final_qs3d_S_aux_rotor += pow(10.,(m_SPLsdB3d_final_rotor[i][j])/10.);
-    Final_qs3d_P_aux_rotor += pow(10.,(m_SPLpdB3d_final_rotor[i][j])/10.);
-    Final_qs3d_LE_aux_rotor += pow(10.,(m_SPL_LEdB3d_final_rotor[i][j])/10.);
-    Final_qs3d_aux_rotor += pow(10.,(m_SPLdB3d_final_rotor[i][j])/10.);
-        }
-
-    Final_qs3d_alpha_rotor = 10*log10(Final_qs3d_alpha_aux_rotor);
-    Final_qs3d_S_rotor = 10*log10(Final_qs3d_S_aux_rotor);
-    Final_qs3d_P_rotor = 10*log10(Final_qs3d_P_aux_rotor);
-    Final_qs3d_LE_rotor =  10*log10(Final_qs3d_LE_aux_rotor);
-    Final_qs3d_rotor = 10*log10(Final_qs3d_aux_rotor);
-
-    //calculation for the OASPL for the csv output file
-    for (unsigned int i=0;i<size;++i){
-        auxa_m_OASPL3d_rotor[i]=0;
-        auxa_m_OASPLA3d_rotor[i]=0;
-        auxa_m_OASPLB3d_rotor[i]=0;
-        auxa_m_OASPLC3d_rotor[i]=0;
-        auxa_m_SPLALOG3d_rotor[i]=0;
-        auxa_m_SPLSLOG3d_rotor[i]=0;
-        auxa_m_SPLPLOG3d_rotor[i]=0;
-        auxa_m_SPLLEdBAW3d_rotor[i]=0;
-        auxa_m_SPLLEdBBW3d_rotor[i]=0;
-        auxa_m_SPLLEdBCW3d_rotor[i]=0;
-        auxa_m_SPLlogLE3d_rotor[i]=0;
-
-    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-        if (SPLadB3d_4d()[i][j][0][0]==0.){auxa_m_SPLALOG3d_rotor[i] += 0;} else {auxa_m_SPLALOG3d_rotor[i] += pow(10.,(SPLadB3d_4d()[i][j][0][0]/10.));}
-        if (SPLsdB3d_4d()[i][j][0][0]==0.){auxa_m_SPLSLOG3d_rotor[i] += 0;} else {auxa_m_SPLSLOG3d_rotor[i] += pow(10.,(SPLsdB3d_4d()[i][j][0][0]/10.));}
-        if (SPLpdB3d_4d()[i][j][0][0]==0.){auxa_m_SPLPLOG3d_rotor[i] += 0;} else {auxa_m_SPLPLOG3d_rotor[i] += pow(10.,(SPLpdB3d_4d()[i][j][0][0]/10.));}
-        if (SPLdB3d_4d()[i][j][0][0]==0.){auxa_m_OASPL3d_rotor[i] += 0;} else {auxa_m_OASPL3d_rotor[i]+= pow(10.,(SPLdB3d_4d()[i][j][0][0]/10.));}
-        if (SPLdBAW3d_4d()[i][j][0][0]==0.){auxa_m_OASPLA3d_rotor[i] += 0;} else {auxa_m_OASPLA3d_rotor[i] += pow(10.,(SPLdBAW3d_4d()[i][j][0][0]/10.));}
-        if (SPLdBBW3d_4d()[i][j][0][0]==0.){auxa_m_OASPLB3d_rotor[i] += 0;} else {auxa_m_OASPLB3d_rotor[i] += pow(10.,(SPLdBBW3d_4d()[i][j][0][0]/10.));}
-        if (SPLdBCW3d_4d()[i][j][0][0]==0.){auxa_m_OASPLC3d_rotor[i] += 0;} else {auxa_m_OASPLC3d_rotor[i] += pow(10.,(SPLdBCW3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdB3d_4d()[i][j][0][0]==0.){auxa_m_SPLlogLE3d_rotor[i] += 0;} else {auxa_m_SPLlogLE3d_rotor[i] += pow(10.,(SPL_LEdB3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdBAW3d_4d()[i][j][0][0]==0.){auxa_m_SPLLEdBAW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBAW3d_rotor[i] += pow(10.,(SPL_LEdBAW3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdBBW3d_4d()[i][j][0][0]==0.){auxa_m_SPLLEdBBW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBBW3d_rotor[i] += pow(10.,(SPL_LEdBBW3d_4d()[i][j][0][0]/10.));}
-        if (SPL_LEdBCW3d_4d()[i][j][0][0]==0.){auxa_m_SPLLEdBCW3d_rotor[i] += 0;} else {auxa_m_SPLLEdBCW3d_rotor[i] += pow(10.,(SPL_LEdBCW3d_4d()[i][j][0][0]/10.));}
-    }
-    m_OASPL3d_rotor[i]=10*log10(auxa_m_OASPL3d_rotor[i]);
-    m_OASPLA3d_rotor[i]=10*log10(auxa_m_OASPLA3d_rotor[i]);
-    m_OASPLB3d_rotor[i]=10*log10(auxa_m_OASPLB3d_rotor[i]);
-    m_OASPLC3d_rotor[i]=10*log10(auxa_m_OASPLC3d_rotor[i]);
-    m_SPLALOG3d_rotor[i]=10*log10(auxa_m_SPLALOG3d_rotor[i]);
-    m_SPLSLOG3d_rotor[i]=10*log10(auxa_m_SPLSLOG3d_rotor[i]);
-    m_SPLPLOG3d_rotor[i]=10*log10(auxa_m_SPLPLOG3d_rotor[i]);
-    if (m_parameter->Lowson_type!=0){
-    m_SPLLEdBAW3d_rotor[i]=10*log10(auxa_m_SPLLEdBAW3d_rotor[i]);
-    m_SPLLEdBBW3d_rotor[i]=10*log10(auxa_m_SPLLEdBBW3d_rotor[i]);
-    m_SPLLEdBCW3d_rotor[i]=10*log10(auxa_m_SPLLEdBCW3d_rotor[i]);
-    m_SPLlogLE3d_rotor[i]=10*log10(auxa_m_SPLlogLE3d_rotor[i]);
-    }
-    else{
-    m_SPLLEdBAW3d_rotor[i]=0;
-    m_SPLLEdBBW3d_rotor[i]=0;
-    m_SPLLEdBCW3d_rotor[i]=0;
-    m_SPLlogLE3d_rotor[i]=0;
-    }}
-
-ProgressBar(4);//Sara
-}
-
 //calculation for all blades in rotation movement
-void NoiseCalculation::calculateqs3d_rotor_loops() {
+void NoiseCalculation::calculateqs3d_rotor() {
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     int blades_num = pbem->m_pBData->blades;
@@ -4110,7 +3921,7 @@ void NoiseCalculation::calculateqs3d_rotor_loops() {
             m_SPLlogLE3d_rotor_loops[i]=0;
         }}
 
-ProgressBar(5);//Sara
+ProgressBar(4);//Sara
 }
 
 //Sara
@@ -4208,7 +4019,7 @@ void NoiseCalculation::ProgressBar(int index){
     NoiseSimulation *pNoiseSimulation = (NoiseSimulation *) g_mainFrame->m_pBEM;
     pNoiseSimulation->progress_dlg_canceled=false;
         int w=0;
-        if (m_parameter->qs3DSim==0){w=1000000/5;}
+        if (m_parameter->qs3DSim==0){w=1000000/4;}
         else if (m_parameter->qs3DSim==1){w=1000000/3;}
         else {w=1000000;}
         NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;

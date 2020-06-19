@@ -113,6 +113,8 @@ private:
     NumberEdit *m_shear_speed_numberedit;
 
     int i=0;
+    bool all_oppoints_checked;//Sara
+    bool check_one_polar; //Sara
 //Sara end
 
     QButtonGroup *m_selectFromButtons;

@@ -36,11 +36,7 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     connect(m_exportqs3DNoise_blade, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_blade()));
     addAction(m_exportqs3DNoise_blade);
 
-    m_exportqs3DNoise_rotor = new QAction("Export current quasi 3D Noise Rotor for One Blade", this);
-    connect(m_exportqs3DNoise_rotor, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor()));
-    addAction(m_exportqs3DNoise_rotor);
-
-    m_exportqs3DNoise_rotor_loops = new QAction("Export current quasi 3D Noise Rotor in Rotation Movement", this);
+    m_exportqs3DNoise_rotor_loops = new QAction("Export current quasi 3D Noise Moving Rotor", this);
     connect(m_exportqs3DNoise_rotor_loops, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor_loops()));
     addAction(m_exportqs3DNoise_rotor_loops);
     //Sara
@@ -57,7 +53,6 @@ void NoiseMenu::onAboutToShow() {
         m_exportNoise->setEnabled(simulationAvailable);
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
-        m_exportqs3DNoise_rotor->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(simulationAvailable);
     }
 
@@ -65,7 +60,6 @@ void NoiseMenu::onAboutToShow() {
         m_exportNoise->setEnabled(simulationAvailable);
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
-        m_exportqs3DNoise_rotor->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
     }
 
@@ -73,7 +67,6 @@ void NoiseMenu::onAboutToShow() {
         m_exportNoise->setEnabled(simulationAvailable);
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
-        m_exportqs3DNoise_rotor->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
     }
 
@@ -81,7 +74,6 @@ void NoiseMenu::onAboutToShow() {
         m_exportNoise->setEnabled(false);
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
-        m_exportqs3DNoise_rotor->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
     }
     //Sara
@@ -167,7 +159,7 @@ void NoiseMenu::onExportqs3DNoise_rotor() {
 void NoiseMenu::onExportqs3DNoise_rotor_loops() {
     QString fileName = m_module->getShownSimulation()->getName() + "-qs3D-loops.csv";
     fileName.replace(' ', '_');
-    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Rotor in Rotation Movement Simulation",
+    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Moving Rotor Simulation",
                                             g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
                                             "Comma Separated Values (*.csv)");
     if (!fileName.endsWith(".csv")) {
@@ -185,9 +177,12 @@ void NoiseMenu::onExportqs3DNoise_rotor_loops() {
 //Sara
 
 void NoiseMenu::onModelValidityHint() {
+//validation
+//urgente
     const QString message ("Airfoil TE noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
                            "1989.\n\nThe original model was developed and validated for turbulent (tripped) flow up to "
-                           "Rec ≤ 1.5 × 10⁶, M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\n\nThe BPM directivity expression for High Frequency noise is not suitable for shallow angles (Θ → 180°). For details, see page 105 of (BPM, 1989).\n\nThe IAG Wind "
+                           "6 x 10⁵ Rec ≤ 1.5 × 10⁶, M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\n\nThe BPM directivity expression for High Frequency noise is not suitable for shallow angles (Θ → 180°). For details, see page 105 of (BPM, 1989).\n\nThe IAG Wind "
+                           "For LE noise simulation the validated range is 0.05588 ≤ M ≤ 0.18 and 1.3 x 10⁵ ≤ Rec ≥ 6 x 10⁵, according Faria."
                            "tunnel data (Herrig & Würz, 2008) showed good agreement with BPM prediction at Rec ~2.4 "
                            "× 10⁶ and M = 0.204, for peak Strouhal number and higher frequencies.");
     QMessageBox::information(g_mainFrame, "Model Validity Hint", message);

@@ -81,17 +81,33 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                                   "δ* scaling factor:", 1);//Sara
                     pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
                                   "Eddy Convection Mach number []:", 0.8, PERCENT);
-                    pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
-                                  "Directivity angle θe [deg]:", 90);//Sara
-                    pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
-                                  "Directivity angle ψe [deg]:", 90);//Sara
 
+
+//Sara
+                    pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);//Sara
+                    pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
+                                           "Chord based Reynolds number (Rc):", 100000);
+                    pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
+                                               QStringList()<<"Fully turbulent"<<"Transition flow");
+//Sara
 
             QVBoxLayout *vBox = new QVBoxLayout;
             hBox->addLayout(vBox);
                 QLabel *imageLabel = new QLabel;
                 imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
                 vBox->addWidget(imageLabel, 0, Qt::AlignHCenter);
+
+//Sara
+                groupBox = new QGroupBox ("Directivity Angles");
+                vBox->addWidget(groupBox);
+                pGrid = new ParameterGrid<P>(this);
+                groupBox->setLayout(pGrid);
+                pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
+                              "θe [deg]:", 90);//Sara
+                pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
+                              "ψe [deg]:", 90);//Sara
+//Sara
+
                 groupBox = new QGroupBox ("TE noise source contributions");
                 vBox->addWidget(groupBox);
                 pGrid = new ParameterGrid<P>(this);
@@ -156,6 +172,7 @@ if(index!=2){check=true;}
                 QGridLayout *grid = new QGridLayout;
                 grid->setColumnStretch(5, 1);
                 groupBox->setLayout(grid);
+
                     QLabel *label = new QLabel ("Select operational points from");
                     grid->addWidget(label, 0, 0, 1, 1);
                     m_selectFromButtons = new QButtonGroup;
@@ -184,11 +201,6 @@ if(index!=2){check=true;}
                     grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignLeft | Qt::AlignTop);
                     pGrid = new ParameterGrid<P>(this);
                     m_originalBpmWidget->setLayout(pGrid);
-                    pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);//Sara
-                    pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
-                                           "Chord based Reynolds number (Rc):", 100000);
-                    pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
-                                               QStringList()<<"Fully turbulent"<<"Transition flow");
 
                             //Sara
                             widget = new QWidget;
@@ -480,6 +492,8 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
 
     prepareOpPointRecords(id == NoiseParameter::MultiplePolars);
     fillOpPointView();
+
+    if(id==0){check_one_polar=true;}else{check_one_polar=false;}//Sara
 }
 
 void NoiseCreatorDialog::onPolarBoxChange() {
@@ -524,6 +538,18 @@ message.prepend("The following error(s) occured:\n");
 QMessageBox::critical(this, "Create Noise Simulation",message, QMessageBox::Ok);
 return;}
         } else {
+    //Sara
+    all_oppoints_checked=true;
+    for (const OpPointRecord &record : m_opPointRecords) {
+        if (record.checkBox->isEnabled()){
+        if(!record.checkBox->isChecked()){all_oppoints_checked=false;}
+        }
+    }
+
+    if(!(all_oppoints_checked) || !(check_one_polar) & hasOpPoints){
+        message.prepend("\n - Select all available points for one polar to simulate quasi 3D noise.");
+    }//Sar
+
 if (message != NULL){message.prepend("The following error(s) occured:\n");
     QMessageBox::critical(this, "Create Noise Simulation",message, QMessageBox::Ok);
 return;}
@@ -743,7 +769,7 @@ void NoiseCreatorDialog::OnWarningSet3(){
     if(m_u_wind_speed_check->isChecked()){++sum;}
     if(m_TSR_check->isChecked()){++sum;}
 //    if(sum!=2){
-//    QMessageBox::information(this, "Create Noise Simulation","Select just two options to input values:\n\n -Rotational Speed; \n -Uniform Wind Speed; \n -TSR.",QMessageBox::Ok);
+//    QMessageBox::information(this, "Create Noise Simulation","- Select just two options to input values:\n\n * Rotational Speed; \n * Uniform Wind Speed; \n * TSR.",QMessageBox::Ok);
 //    return;
 //    }
 }

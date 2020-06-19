@@ -44,7 +44,6 @@ public:
     void calculateqs3d_graphics_loops();
     void calculateqs3d_blade();
     void calculateqs3d_rotor();
-    void calculateqs3d_rotor_loops();
     void ProgressBar(int index);
     //Sara end
 
@@ -423,7 +422,7 @@ private:
     double x;
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
-    double m_shear_roughness;
+    double m__roughness;
     double m_shear_height;
     double m_TSR_calc;
     double m_obs_x_pos;

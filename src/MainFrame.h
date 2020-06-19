@@ -55,6 +55,7 @@ public:
 	~MainFrame ();
 
     int loadQBladeProject(QString PathName);
+    QAction *noise_separator;//Sara
         
 signals:
 	void moduleChanged ();
@@ -143,7 +144,7 @@ public:
         void ConnectDMSActions();
         /////////end new codeJW//////////
 
-	void closeEvent (QCloseEvent *event);
+    void closeEvent (QCloseEvent *event);
 	void keyPressEvent (QKeyEvent *event);
 	void keyReleaseEvent (QKeyEvent *event);
 

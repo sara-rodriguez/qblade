@@ -156,12 +156,11 @@ NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
 if(pNoiseCalculation->user_sel<3){index = pNoiseCalculation->user_sel;}
 
 if (index==0){
-if(index_qs3d==4){index_qs3d=0;}
+if(index_qs3d==3){index_qs3d=0;}
 
 if(index_qs3d==0){onqs3dGraph2d();}
 if(index_qs3d==1){onqs3dGraphBlade();}
-if(index_qs3d==2){onqs3dGraphRotor();}
-if(index_qs3d==3){onqs3dGraphRotorLoops();}
+if(index_qs3d==2){onqs3dGraphRotorLoops();}
 }
 
 if (index==1){
@@ -211,11 +210,11 @@ void NoiseModule::onqs3dGraphRotor(){
 }
 
 void NoiseModule::onqs3dGraphRotorLoops(){
-        m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_rotor_loops[qs3D]", true, false});
-        m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_rotor_loops[qs3D]", true, false});
-        m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_rotor_loops[qs3D]", true, false});
-        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_rotor_loops[qs3D] (dB)", true, false});//Alexandre MOD
-        m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_rotor_loops[qs3D] (dB)", true, false});
+        m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha_rotor[qs3D]", true, false});
+        m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_rotor[qs3D]", true, false});
+        m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_rotor[qs3D]", true, false});
+        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_rotor[qs3D] (dB)", true, false});//Alexandre MOD
+        m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_rotor[qs3D] (dB)", true, false});
 }
 //Sara
 

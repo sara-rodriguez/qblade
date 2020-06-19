@@ -378,7 +378,7 @@ void MainFrame::onAboutPnoise() {
     scroll->setWidgetResizable(true);
     vBox->addWidget(scroll);
 
-    label = new QLabel ("Copyright (C) Joseph Youssif Saab Junior (contact joseph.saab@usp.br).\n"
+    label = new QLabel ("Copyright (C) Joseph Youssif Saab Junior (contact saab@maua.br), Sara Rodriguez (contact sara.rodriguez@alumni.usp.br), and Alexandre Martuscelli Faria (contact martuscellifaria@gmail.com).\n"
                         "\n"
                         "This airfoil noise prediction module is distributed integrated to the QBlade(C) software, "
                         "under the GNU General Public License, without any warranty, explicit or implied, of "
@@ -401,7 +401,7 @@ void MainFrame::onAboutPnoise() {
                         "If you want to reference PNoise inside a report or publication, please make reference "
                         "to the validation report provided.\n"
                         "\n"
-                        "Please, report any bugs to joseph.saab@usp.br\n"
+                        "Please, report any bugs to saab@maua.br, sara.rodriguez@alumni.usp.br or martuscellifaria@gmail.com\n"
                         "\n"
                         "Future versions planned under the collaboration include additional self-noise sources, "
                         "inflow noise source and a quasi-3D rotor noise tool.\n"
@@ -1705,7 +1705,7 @@ void MainFrame::CreateMainToolbar() {
     m_pctrlMainToolBar->addAction(On360ViewAct);
     m_pctrlMainToolBar->addSeparator();
     g_noiseModule = new NoiseModule (this, m_pctrlMainToolBar);
-    m_pctrlMainToolBar->addSeparator();
+    noise_separator = m_pctrlMainToolBar->addSeparator();
     m_pctrlMainToolBar->addAction(OnBladeViewAct);
     m_pctrlMainToolBar->addAction(OnRotorViewAct);
     m_pctrlMainToolBar->addAction(OnCharacteristicViewAct);
@@ -3431,6 +3431,7 @@ void MainFrame::OnVAWTView () {
     g_fastModule->setToolbarVisibility(false);
     g_QLLTModule->setActionIcon(":/images/LLT_VAWT.png");
     g_noiseModule->setToolbarVisibility(false);//Sara
+    noise_separator->setVisible(false);//Sara
 }
 
 void MainFrame::OnHAWTView () {
@@ -3456,6 +3457,7 @@ void MainFrame::OnHAWTView () {
     g_fastModule->setToolbarVisibility(true);
     g_QLLTModule->setActionIcon(":/images/LLT.png");
     g_noiseModule->setToolbarVisibility(true);//Sara
+    noise_separator->setVisible(true);//Sara
 }
 
 ////////new code JW//////
