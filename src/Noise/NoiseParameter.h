@@ -60,6 +60,16 @@ public:
     bool u_wind_speed_check;
     bool shear_check;
     bool TSR_check;
+    bool valRel_TE_check;
+    bool valReu_TE_check;
+    bool valMal_TE_check;
+    bool valMau_TE_check;
+    bool valAOAl_TE_check;
+    bool valAOAu_TE_check;
+    bool valRel_LE_check;
+    bool valReu_LE_check;
+    bool valMal_LE_check;
+    bool valMau_LE_check;
 
     int qs3DSim;
     int phi_type;
@@ -91,6 +101,16 @@ public:
     double D_starred_index_user[40];
     double D_starred_S_user[40];
     double D_starred_P_user[40];
+    double valRel_TE;
+    double valReu_TE;
+    double valMal_TE;
+    double valMau_TE;
+    double valAOAl_TE;
+    double valAOAu_TE;
+    double valRel_LE;
+    double valReu_LE;
+    double valMal_LE;
+    double valMau_LE;
         //Sara
 
     //Turbulence parameters - Alexandre MOD

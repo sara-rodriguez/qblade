@@ -112,9 +112,17 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                 vBox->addWidget(groupBox);
                 pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
-                pGrid->addEdit(P::SeparatedFlow, CheckBox, new QCheckBox ("enable"),"Separated flow on the suction side (high Reynolds flow):", true);
-                pGrid->addEdit(P::SuctionSide, CheckBox, new QCheckBox ("enable"),"Suction side of airfoil (attached flow):", true);
-                pGrid->addEdit(P::PressureSide, CheckBox, new QCheckBox ("enable"),"Pressure side of airfoil (attached flow):", true);
+                //Sara
+                m_TE_a_check = new QCheckBox ("enable");//Sara
+                m_TE_b_check = new QCheckBox ("enable");//Sara
+                m_TE_c_check = new QCheckBox ("enable");//Sara
+                //Sara
+                pGrid->addEdit(P::SeparatedFlow, CheckBox,m_TE_a_check ,"Separated flow on the suction side (high Reynolds flow):", true);//Sara
+connect(m_TE_a_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
+                pGrid->addEdit(P::SuctionSide, CheckBox, m_TE_b_check,"Suction side of airfoil (attached flow):", true);
+connect(m_TE_b_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
+                pGrid->addEdit(P::PressureSide, CheckBox, m_TE_c_check,"Pressure side of airfoil (attached flow):", true);
+connect(m_TE_c_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
 
                 //Sara
                 groupBox = new QGroupBox ("LE noise source contributions");
@@ -126,6 +134,21 @@ pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","
 Lowson_type_combobox->insertItem(0,"None");
 Lowson_type_combobox->insertItem(1,"Von Kármán");
 Lowson_type_combobox->insertItem(2,"Rapid Distortion");
+connect(Lowson_type_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    [=](int index){
+    check_LE=false;
+if (index != 0){
+    check_LE=true;
+}
+m_valRel_LE_check->setEnabled(check_LE);
+m_valReu_LE_check->setEnabled(check_LE);
+m_valMal_LE_check->setEnabled(check_LE);
+m_valMau_LE_check->setEnabled(check_LE);
+m_valRel_LE_numberedit->setEnabled(check_LE);
+m_valReu_LE_numberedit->setEnabled(check_LE);
+m_valMal_LE_numberedit->setEnabled(check_LE);
+m_valMau_LE_numberedit->setEnabled(check_LE);
+});
 
 groupBox = new QGroupBox ("Quasi 3D Simulation");
 vBox->addWidget(groupBox);
@@ -144,19 +167,19 @@ connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     pNoiseCalculation->user_sel=index;
 
 if (index == 0){
-    tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
+    tabWidget->setTabEnabled(4, true);
 }
 if (index == 1){
-    tabWidget->setTabEnabled(2, true);
-    tabWidget->setTabEnabled(3, false);
+    tabWidget->setTabEnabled(3, true);
+    tabWidget->setTabEnabled(4, false);
 }
 if (index == 2){
-    tabWidget->setTabEnabled(2, false);
     tabWidget->setTabEnabled(3, false);
+    tabWidget->setTabEnabled(4, false);
 }
 
-if(index!=2){check=true;}
+if(index!=2){check_qs3D=true;}
 
 });
                 //Sara
@@ -180,6 +203,7 @@ if(index!=2){check=true;}
                     QRadioButton *radioButton = new QRadioButton ("this polar:");
                     m_selectFromButtons->addButton(radioButton, NoiseParameter::OnePolar);
                     grid->addWidget(radioButton, 0, 1, 1, 1);
+                    radioButton->setToolTip("for quasi 3D simulation select all points for one polar");//Sara
                     m_airfoilComboBox = new FoilComboBox (&g_foilStore);
                     grid->addWidget(m_airfoilComboBox, 0, 2, 1, 1);
                     m_polarComboBox = new PolarComboBox (&g_polarStore);
@@ -189,22 +213,138 @@ if(index!=2){check=true;}
                     radioButton = new QRadioButton ("all polars");
                     m_selectFromButtons->addButton(radioButton, NoiseParameter::MultiplePolars);
                     grid->addWidget(radioButton, 1, 1, 1, 3);
+                    radioButton->setToolTip("for quasi 3D simulation select all points for one polar");//Sara
                     radioButton = new QRadioButton ("original BPM δ* correlations");
                     m_selectFromButtons->addButton(radioButton, NoiseParameter::OriginalBpm);
                     grid->addWidget(radioButton, 2, 1, 1, 3);
+                    radioButton->setToolTip("for quasi 3D simulation select all points for one polar");//Sara
 
                     m_opPointScrollArea = new QScrollArea;
                     grid->addWidget(m_opPointScrollArea, 3, 0, 1, 4);
                         // scroll area is filled in NoiseCreatorDialog::fillOpPointView
 
                     m_originalBpmWidget = new QWidget;
-                    grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignLeft | Qt::AlignTop);
+                    grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignHCenter | Qt::AlignTop); //Sara AlignLeft
                     pGrid = new ParameterGrid<P>(this);
                     m_originalBpmWidget->setLayout(pGrid);
 
                             //Sara
+                    widget = new QWidget;
+                    tabWidget->addTab(widget, "Validation");
+                    vBox = new QVBoxLayout;
+                    hBox = new QHBoxLayout;
+//                    hBox->addLayout(vBox);
+//                    vBox->addWidget(groupBox);
+                    widget->setLayout(hBox);
+                    groupBox = new QGroupBox ("LE noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+                    groupBox->setLayout(pGrid);
+
+if(Lowson_type_combobox->currentIndex()!=0){check_LE=true;}else{check_LE=false;}
+
+                    m_valReLabel = new QLabel("Reynolds Number:");
+                    pGrid->addWidget(m_valReLabel);
+
+                    m_valRel_LE_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_LE_check, CheckBox, m_valRel_LE_check,"", false);
+                    m_valRel_LE_check->setEnabled(check_LE);
+
+                    m_valRel_LE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_LE, NumberEditType, m_valRel_LE_numberedit,"Lower Re Value:",0);
+                    m_valRel_LE_numberedit->setEnabled(check_LE);
+
+                    m_valReu_LE_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_LE_check, CheckBox, m_valReu_LE_check,"", true);
+                    m_valReu_LE_check->setEnabled(check_LE);
+
+                    m_valReu_LE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_LE, NumberEditType, m_valReu_LE_numberedit,"Upper Re Value:",6*pow(10,5));
+                    m_valReu_LE_numberedit->setEnabled(check_LE);
+
+                    m_valMaLabel = new QLabel("Mach Number:");
+                    pGrid->addWidget(m_valMaLabel);
+
+                    m_valMal_LE_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_LE_check, CheckBox, m_valMal_LE_check,"", false);
+                    m_valMal_LE_check->setEnabled(check_LE);
+
+                    m_valMal_LE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_LE, NumberEditType, m_valMal_LE_numberedit,"Lower Ma Value:",0.05588);
+                    m_valMal_LE_numberedit->setEnabled(check_LE);
+
+                    m_valMau_LE_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_LE_check, CheckBox, m_valMau_LE_check,"", true);
+                    m_valMau_LE_check->setEnabled(check_LE);
+
+                    m_valMau_LE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_LE, NumberEditType, m_valMau_LE_numberedit,"Upper Ma Value:",0.18);
+                    m_valMau_LE_numberedit->setEnabled(check_LE);
+
+                    groupBox = new QGroupBox ("TE noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+                    groupBox->setLayout(pGrid);
+
+                    m_valReLabel = new QLabel("Reynolds Number:");
+                    pGrid->addWidget(m_valReLabel);
+
+                    m_valRel_TE_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_TE_check, CheckBox, m_valRel_TE_check,"", false);
+                    m_valRel_TE_check->setEnabled(check_TE);
+
+                    m_valRel_TE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_TE, NumberEditType, m_valRel_TE_numberedit,"Lower Re Value:",6*pow(10,5));
+                    m_valRel_TE_numberedit->setEnabled(check_TE);
+
+                    m_valReu_TE_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_TE_check, CheckBox, m_valReu_TE_check,"", true);
+                    m_valReu_TE_check->setEnabled(check_TE);
+
+                    m_valReu_TE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_TE, NumberEditType, m_valReu_TE_numberedit,"Upper Re Value:",2.4*pow(10,6));
+                    m_valReu_TE_numberedit->setEnabled(check_TE);
+
+                    m_valMaLabel = new QLabel("Mach Number:");
+                    pGrid->addWidget(m_valMaLabel);
+
+                    m_valMal_TE_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_TE_check, CheckBox, m_valMal_TE_check,"", false);
+                    m_valMal_TE_check->setEnabled(check_TE);
+
+                    m_valMal_TE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_TE, NumberEditType, m_valMal_TE_numberedit,"Lower Ma Value:",0);
+                    m_valMal_TE_numberedit->setEnabled(check_TE);
+
+                    m_valMau_TE_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_TE_check, CheckBox, m_valMau_TE_check,"", true);
+                    m_valMau_TE_check->setEnabled(check_TE);
+
+                    m_valMau_TE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_TE, NumberEditType, m_valMau_TE_numberedit,"Upper Ma Value:",0.21);
+                    m_valMal_TE_numberedit->setEnabled(check_TE);
+
+                    m_valAOALabel = new QLabel("AOA Number:");
+                    pGrid->addWidget(m_valAOALabel);
+
+                    m_valAOAl_TE_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_TE_check, CheckBox, m_valAOAl_TE_check,"", false);
+                    m_valAOAl_TE_check->setEnabled(check_TE);
+
+                    m_valAOAl_TE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_TE, NumberEditType, m_valAOAl_TE_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_TE_numberedit->setEnabled(check_TE);
+
+                    m_valAOAu_TE_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_TE_check, CheckBox, m_valAOAu_TE_check,"", true);
+                    m_valAOAu_TE_check->setEnabled(check_TE);
+
+                    m_valAOAu_TE_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_TE, NumberEditType, m_valAOAu_TE_numberedit,"Upper AOA Value [deg]:",19.8);
+                    m_valAOAu_TE_numberedit->setEnabled(check_TE);
+
                             widget = new QWidget;
-                            tabWidget->addTab(widget, "quasi 3D Blade");
+                            tabWidget->addTab(widget, "Quasi 3D Blade");
                             vBox = new QVBoxLayout;
                             hBox = new QHBoxLayout;
                             widget->setLayout(hBox);
@@ -289,7 +429,7 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                                 pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
 
                                 widget = new QWidget;
-                                tabWidget->addTab(widget, "quasi 3D Rotor");
+                                tabWidget->addTab(widget, "Quasi 3D Rotor");
                                 vBox = new QVBoxLayout;
                                 hBox = new QHBoxLayout;
                                 widget->setLayout(hBox);
@@ -528,31 +668,33 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
         message.prepend("\n\n- Simulation has no Op. Points");
     }
 //is quasi 3d?
+    if(check_qs3D){//if is qs3d
 if(sum!=2){
 //        QMessageBox::information(this, "Create Noise Simulation","Select just two options to input values:\n -Rotational Speed; \n -Uniform Wind Speed; \n -TSR.",QMessageBox::Ok);
 //        return;
-message.prepend("\n Select just two options to input values:\n    -Rotational Speed; \n    -Uniform Wind Speed;    \n    -TSR.");
+message.prepend("\n Select just two options to input values:\n    -Rotational Speed; \n    -Uniform Wind Speed;    \n    -TSR.");}
+
+//Sara
+all_oppoints_checked=true;
+for (const OpPointRecord &record : m_opPointRecords) {
+    if (record.checkBox->isEnabled()){
+    if(!record.checkBox->isChecked()){all_oppoints_checked=false;}
+    }
+}
+if(!((all_oppoints_checked) & check_one_polar & hasOpPoints)){
+    message.prepend("\n - Select all available points for one polar to simulate quasi 3D noise.");
+}//Sara
 
 if (message != NULL){
 message.prepend("The following error(s) occured:\n");
 QMessageBox::critical(this, "Create Noise Simulation",message, QMessageBox::Ok);
 return;}
         } else {
-    //Sara
-    all_oppoints_checked=true;
-    for (const OpPointRecord &record : m_opPointRecords) {
-        if (record.checkBox->isEnabled()){
-        if(!record.checkBox->isChecked()){all_oppoints_checked=false;}
-        }
-    }
-
-    if(!(all_oppoints_checked) || !(check_one_polar) & hasOpPoints){
-        message.prepend("\n - Select all available points for one polar to simulate quasi 3D noise.");
-    }//Sar
 
 if (message != NULL){message.prepend("The following error(s) occured:\n");
     QMessageBox::critical(this, "Create Noise Simulation",message, QMessageBox::Ok);
-return;}
+return;
+}}
 //Sara
     /* create new simulation */
     NoiseSimulation *newSimulation = new NoiseSimulation (this);
@@ -581,13 +723,12 @@ if (!pNoiseSimulation->progress_dlg_canceled){ //Sara
         QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
     }
     if (!pNoiseSimulation->progress_dlg_canceled){onVerifyDeltaFor3D();}//Sara
-}
 //Sara
 }
 
 //Sara begin
 void NoiseCreatorDialog::onVerifyDeltaFor3D(){
-if (check){
+if (check_qs3D){//if is qs3d
 
     QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
 
@@ -789,5 +930,24 @@ void NoiseCreatorDialog::OnProgressDlg(){
    m_progress_dlg->setRange(0,1000000);
     m_progress_dlg->setMinimumDuration(0);
     m_progress_dlg->show();
+}
+
+void NoiseCreatorDialog::OnTECheck(){
+    check_TE=false;
+    if(m_TE_a_check->isChecked()){check_TE=true;}
+    if(m_TE_b_check->isChecked()){check_TE=true;}
+    if(m_TE_b_check->isChecked()){check_TE=true;}
+    m_valRel_TE_check->setEnabled(check_TE);
+    m_valReu_TE_check->setEnabled(check_TE);
+    m_valMal_TE_check->setEnabled(check_TE);
+    m_valMau_TE_check->setEnabled(check_TE);
+    m_valRel_TE_numberedit->setEnabled(check_TE);
+    m_valReu_TE_numberedit->setEnabled(check_TE);
+    m_valMal_TE_numberedit->setEnabled(check_TE);
+    m_valMau_TE_numberedit->setEnabled(check_TE);
+    m_valAOAl_TE_check->setEnabled(check_TE);
+    m_valAOAu_TE_check->setEnabled(check_TE);
+    m_valAOAl_TE_numberedit->setEnabled(check_TE);
+    m_valAOAu_TE_numberedit->setEnabled(check_TE);
 }
 //Sara

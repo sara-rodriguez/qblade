@@ -44,7 +44,9 @@ public:
     bool timesteps_in = false;
     bool delta_user_in = false;
     bool anglesteps_in=true;
-    bool check=false;
+    bool check_qs3D=false;
+    bool check_TE;
+    bool check_LE;
 
     QVector<int> a_D_starred_index_user;
     QVector<double> a_D_starred_S_user;
@@ -82,35 +84,15 @@ private:
     QList<OpPointRecord> m_opPointRecords;  // store a sorted list of all OpPoints
 
     //Sara begin
-    QCheckBox *m_rot_speed_check;
-    QCheckBox *m_shear_check;
-    QCheckBox *m_TSR_check;
-    QCheckBox *m_u_wind_speed_check;
+    QCheckBox *m_rot_speed_check, *m_shear_check, *m_TSR_check, *m_u_wind_speed_check, *m_valRel_TE_check, *m_valReu_TE_check, *m_valRel_LE_check, *m_valReu_LE_check, *m_TE_a_check, *m_TE_b_check, *m_TE_c_check, *m_valMal_TE_check, *m_valMau_TE_check, *m_valAOAl_TE_check, *m_valAOAu_TE_check, *m_valMal_LE_check, *m_valMau_LE_check;
 
-    QComboBox *dstar_combobox;
-    QComboBox *mode_combobox;
-    QComboBox *rotation_combobox;
-    QComboBox *qs3DSim_combobox;
-    QComboBox *w_TSR_combobox;
+    QComboBox *dstar_combobox, *mode_combobox, *rotation_combobox, *qs3DSim_combobox, *w_TSR_combobox;
 
-    QPushButton *buttonle;
-    QPushButton *button_cancel;
+    QPushButton *buttonle, *button_cancel;
 
-    QDoubleSpinBox *m_TSR_spinbox;
-    QDoubleSpinBox *m_initial_azimuth_spinbox;
-    QDoubleSpinBox *m_yaw_angle_spinbox;
+    QDoubleSpinBox *m_TSR_spinbox, *m_initial_azimuth_spinbox, *m_yaw_angle_spinbox;
 
-    NumberEdit *m_rot_speed_numberedit;
-    NumberEdit *m_anglesteps_numberedit;
-    NumberEdit *m_tower_height_numberedit;
-    NumberEdit *m_u_wind_speed_numberedit;
-    NumberEdit *m_tower_to_hub_distance_numberedit;
-    NumberEdit *m_number_loops_numberedit;
-    NumberEdit *m_time_numberedit;
-    NumberEdit *m_timesteps_numberedit;
-    NumberEdit *m_shear_roughness_numberedit;
-    NumberEdit *m_shear_height_numberedit;
-    NumberEdit *m_shear_speed_numberedit;
+    NumberEdit *m_rot_speed_numberedit, *m_anglesteps_numberedit, *m_tower_height_numberedit, *m_u_wind_speed_numberedit, *m_tower_to_hub_distance_numberedit, *m_number_loops_numberedit, *m_time_numberedit, *m_timesteps_numberedit, *m_shear_roughness_numberedit, *m_shear_height_numberedit, *m_shear_speed_numberedit, *m_valRel_TE_numberedit, *m_valReu_TE_numberedit, *m_valMal_TE_numberedit, *m_valMau_TE_numberedit, *m_valAOAl_TE_numberedit, *m_valAOAu_TE_numberedit, *m_valRel_LE_numberedit, *m_valReu_LE_numberedit, *m_valMal_LE_numberedit, *m_valMau_LE_numberedit;
 
     int i=0;
     bool all_oppoints_checked;//Sara
@@ -130,7 +112,7 @@ private:
     //Sara begin
     QList< QList<double> > m_CsvParameters;
     QList<QString> m_CsvFileHeader;
-    QLabel *m_CsvFileLabel, *m_StarredDLabel;
+    QLabel *m_CsvFileLabel, *m_StarredDLabel, *m_valReLabel, *m_valMaLabel, *m_valAOALabel;
     int m_StarredDType;
 
 private slots:
@@ -153,6 +135,7 @@ private slots:
         void OnTSRCheck(bool index);
         void OnWarningSet3();
         void OnShearLayerCheck(bool index);
+        void OnTECheck();
         //Sara end
 };
 

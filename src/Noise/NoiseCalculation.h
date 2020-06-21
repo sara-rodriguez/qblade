@@ -406,6 +406,16 @@ private:
     bool m_u_wind_speed_check;
     bool m_TSRtd_check;
     bool m_shear_check;
+    bool m_valRel_TE_check;
+    bool m_valReu_TE_check;
+    bool m_valMal_TE_check;
+    bool m_valMau_TE_check;
+    bool m_valAOAl_TE_check;
+    bool m_valAOAu_TE_check;
+    bool m_valRel_LE_check;
+    bool m_valReu_LE_check;
+    bool m_valMal_LE_check;
+    bool m_valMau_LE_check;
 
     int m_timesteps;
     int m_number_loops;
@@ -422,7 +432,7 @@ private:
     double x;
     double m_rot_speed_calc;
     double m_u_wind_speed_calc;
-    double m__roughness;
+    double m_roughness;
     double m_shear_height;
     double m_TSR_calc;
     double m_obs_x_pos;
@@ -436,6 +446,16 @@ private:
     double m_initial_azimuth;
     double m_time;
     double m_yaw_angle;
+    double m_valRel_TE;
+    double m_valReu_TE;
+    double m_valMal_TE;
+    double m_valMau_TE;
+    double m_valAOAl_TE;
+    double m_valAOAu_TE;
+    double m_valRel_LE;
+    double m_valReu_LE;
+    double m_valMal_LE;
+    double m_valMau_LE;
     //Sara end
 
     //For SPLs

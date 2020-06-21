@@ -1158,6 +1158,14 @@ local_twist[i]=theta_BEM[i];
 //error
 QString observations_x("");
 //new validation for greater Reynolds urgente
+//BPM_validation=true;
+//if(!m_valRel_TE_check & (Reynolds[i]<m_valRel_TE)){BPM_validation=false;}
+//if(!m_valReu_TE_check & (Reynolds[i]>m_valRel_TE)){BPM_validation=false;}
+//if(!m_valMal_TE_check & (Reynolds[i]<m_valMal_TE)){BPM_validation=false;}
+//if(!m_valMau_TE_check & (Reynolds[i]>m_valMal_TE)){BPM_validation=false;}
+//if(!m_valAOAl_TE_check & (Reynolds[i]<m_valAOAl_TE)){BPM_validation=false;}
+//if(!m_valAOAu_TE_check & (Reynolds[i]>m_valAOAl_TE)){BPM_validation=false;}
+
 if(!((alpha[i]<=19.8) & (Mach[i]<=0.21) & (Reynolds[i]>=6*pow(10,5)) & (Reynolds[i]<=2.4*pow(10,6)) & (Mach[i]>0))){observations_x.append("1 ");}
 if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>=0.05588))) & (Reynolds[i]<=6*pow(10,5)) & (Reynolds[i]>=1.3*pow(10,5)))){observations_x.append("2");}
 
@@ -1284,7 +1292,107 @@ break;
 else {value=m_parameter.rot_speed_check;}
         break;
 
-    case P::TSRtd:
+    case P::valRel_TE_check:
+        if(set) {m_parameter.valRel_TE_check = value.toBool();}
+else {value=m_parameter.valRel_TE_check;}
+        break;
+
+    case P::valReu_TE_check:
+        if(set) {m_parameter.valReu_TE_check = value.toBool();}
+else {value=m_parameter.valReu_TE_check;}
+        break;
+
+    case P::valRel_TE:
+        if(set) {m_parameter.valRel_TE = value.toDouble();}
+else {value=m_parameter.valRel_TE;}
+        break;
+
+    case P::valReu_TE:
+        if(set) {m_parameter.valReu_TE = value.toDouble();}
+else {value=m_parameter.valReu_TE;}
+        break;
+
+    case P::valMal_TE_check:
+        if(set) {m_parameter.valMal_TE_check = value.toBool();}
+else {value=m_parameter.valMal_TE_check;}
+        break;
+
+    case P::valMau_TE_check:
+        if(set) {m_parameter.valMau_TE_check = value.toBool();}
+else {value=m_parameter.valMau_TE_check;}
+        break;
+
+    case P::valMal_TE:
+        if(set) {m_parameter.valMal_TE = value.toDouble();}
+else {value=m_parameter.valMal_TE;}
+        break;
+
+    case P::valMau_TE:
+        if(set) {m_parameter.valMau_TE = value.toDouble();}
+else {value=m_parameter.valMau_TE;}
+        break;
+
+    case P::valAOAl_TE_check:
+        if(set) {m_parameter.valAOAl_TE_check = value.toBool();}
+else {value=m_parameter.valAOAl_TE_check;}
+        break;
+
+    case P::valAOAu_TE_check:
+        if(set) {m_parameter.valAOAu_TE_check = value.toBool();}
+else {value=m_parameter.valAOAu_TE_check;}
+        break;
+
+    case P::valAOAl_TE:
+        if(set) {m_parameter.valAOAl_TE = value.toDouble();}
+else {value=m_parameter.valAOAl_TE;}
+        break;
+
+    case P::valAOAu_TE:
+        if(set) {m_parameter.valAOAu_TE = value.toDouble();}
+else {value=m_parameter.valAOAu_TE;}
+        break;
+
+    case P::valRel_LE_check:
+        if(set) {m_parameter.valRel_LE_check = value.toBool();}
+else {value=m_parameter.valRel_LE_check;}
+        break;
+
+    case P::valReu_LE_check:
+        if(set) {m_parameter.valReu_LE_check = value.toBool();}
+else {value=m_parameter.valReu_LE_check;}
+        break;
+
+    case P::valRel_LE:
+        if(set) {m_parameter.valRel_LE = value.toDouble();}
+else {value=m_parameter.valRel_LE;}
+        break;
+
+    case P::valReu_LE:
+        if(set) {m_parameter.valReu_LE = value.toDouble();}
+else {value=m_parameter.valReu_LE;}
+        break;
+
+    case P::valMal_LE_check:
+        if(set) {m_parameter.valMal_LE_check = value.toBool();}
+else {value=m_parameter.valMal_LE_check;}
+        break;
+
+    case P::valMau_LE_check:
+        if(set) {m_parameter.valMau_LE_check = value.toBool();}
+else {value=m_parameter.valMau_LE_check;}
+        break;
+
+    case P::valMal_LE:
+        if(set) {m_parameter.valMal_LE = value.toDouble();}
+else {value=m_parameter.valMal_LE;}
+        break;
+
+    case P::valMau_LE:
+        if(set) {m_parameter.valMau_LE = value.toDouble();}
+else {value=m_parameter.valMau_LE;}
+        break;
+
+      case P::TSRtd:
         if(set) m_parameter.TSRtd = value.toDouble();
         else {value=m_parameter.TSRtd;}
 break;

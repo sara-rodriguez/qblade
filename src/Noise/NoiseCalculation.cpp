@@ -3211,15 +3211,17 @@ aux5_le_rotor[i]=10.*log10(aux0_le_rotor[i]*aux4_le_rotor[i]);
 //Validation:
 
 //BPM validation:
-//p 66 C_Project_Log_Text_15_jan_16
-//if(!((alpha[i]<=19.8) & (Mach[i]<=0.21) & (Reynolds[i]>=6*pow(10,5)) & (Reynolds[i]<=2.4*pow(10,6)) & (Mach[i]>0))){observations_x.append("1 ");} //urgente
+//p 66 C_Project_Log_Text_15_jan_16 urgente
 
-//if (alpha[i]<=19.8){qDebug() << "validation error for blade number "&blade&" and azimuthal angle " E;}
-
-if(Reynolds[i]>=600000){
 BPM_validation=true;
-}
-else{
+if(!m_valRel_TE_check & (Reynolds[i]<m_valRel_TE)){BPM_validation=false;}
+if(!m_valReu_TE_check & (Reynolds[i]>m_valRel_TE)){BPM_validation=false;}
+if(!m_valMal_TE_check & (Reynolds[i]<m_valMal_TE)){BPM_validation=false;}
+if(!m_valMau_TE_check & (Reynolds[i]>m_valMal_TE)){BPM_validation=false;}
+if(!m_valAOAl_TE_check & (Reynolds[i]<m_valAOAl_TE)){BPM_validation=false;}
+if(!m_valAOAu_TE_check & (Reynolds[i]>m_valAOAl_TE)){BPM_validation=false;}
+
+if(!BPM_validation){
 SPL_alpha[j]=-999999999999.;
 SPL_S[j]=-999999999999.;
 SPL_P[j]=-999999999999.;
@@ -3232,9 +3234,13 @@ BPM_validation=false;
 
 //Lowson validation:
 
-//if (!(((((m_parameter.Lowson_type!=0) & (Mach[i]<=0.18)) & (Mach[i]>=0.05588))) & (Reynolds[i]<=6*pow(10,5)))){observations_x.append("2");}
+LE_validation=true;
+if(!m_valRel_LE_check & (Reynolds[i]<m_valRel_LE)){LE_validation=false;}
+if(!m_valReu_LE_check & (Reynolds[i]>m_valRel_LE)){LE_validation=false;}
+if(!m_valMal_LE_check & (Reynolds[i]<m_valMal_LE)){LE_validation=false;}
+if(!m_valMau_LE_check & (Reynolds[i]>m_valMal_LE)){LE_validation=false;}
 
-if ((m_parameter->Lowson_type!=0) & (Mach[i]>=0.05588) & (Reynolds[i]>=1.3*pow(10,5))){
+if (LE_validation){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le[i]+aux5_le[i])/10.));
 SPL_LedBAW[j]=SPL_LedB[j]+AWeighting[j];
 SPL_LedBBW[j]=SPL_LedB[j]+BWeighting[j];
@@ -3245,15 +3251,12 @@ SPL_LedBAW_rotor[j]=SPL_LedB_rotor[j]+AWeighting[j];
 SPL_LedBBW_rotor[j]=SPL_LedB_rotor[j]+BWeighting[j];
 SPL_LedBCW_rotor[j]=SPL_LedB_rotor[j]+CWeighting[j];
 //rotor
-LE_validation=true;
-
 }
 else{
 SPL_LedB[j]=-999999999999.;
 SPL_LedBAW[j]=-999999999999.;
 SPL_LedBBW[j]=-999999999999.;
 SPL_LedBCW[j]=-999999999999.;
-LE_validation=false;
 }
 
 first_term_Dl_S[i]=calcFirstTerm(Mach[i],L[i],Dl[i],D_starred_S[i],dist_obs[i]);
