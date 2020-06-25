@@ -9,6 +9,7 @@
 #include "NoiseSimulation.h"
 
 #include "../Store.h" //Sara
+#include "NoiseCreatorDialog.h"//Sara urgente
 
 
 NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
@@ -28,16 +29,16 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     addAction(m_exportNoise);
 
     //Sara
-    m_exportqs3DNoiseLog = new QAction("Export current quasi 3D Noise Log", this);
+    m_exportqs3DNoiseLog = new QAction("Export current Quasi 3D Noise Log", this);
     connect(m_exportqs3DNoiseLog, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseLog()));
     addAction(m_exportqs3DNoiseLog);
 
-    m_exportqs3DNoise_blade = new QAction("Export current quasi 3D Noise Blade", this);
+    m_exportqs3DNoise_blade = new QAction("Export current Quasi 3D Noise Blade", this);
     connect(m_exportqs3DNoise_blade, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_blade()));
     addAction(m_exportqs3DNoise_blade);
 
-    m_exportqs3DNoise_rotor_loops = new QAction("Export current quasi 3D Noise Moving Rotor", this);
-    connect(m_exportqs3DNoise_rotor_loops, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor_loops()));
+    m_exportqs3DNoise_rotor_loops = new QAction("Export current Quasi 3D Noise Rotor", this);
+    connect(m_exportqs3DNoise_rotor_loops, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor()));
     addAction(m_exportqs3DNoise_rotor_loops);
     //Sara
 }
@@ -47,7 +48,7 @@ void NoiseMenu::onAboutToShow() {
 
     //Sara
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    int index = pNoiseCalculation->user_sel;
+    int index = pNoiseCalculation->user_sel; //urgente
 
     if (index==0){
         m_exportNoise->setEnabled(simulationAvailable);
@@ -155,25 +156,6 @@ void NoiseMenu::onExportqs3DNoise_rotor() {
     }
     file.close();
 }
-
-void NoiseMenu::onExportqs3DNoise_rotor_loops() {
-    QString fileName = m_module->getShownSimulation()->getName() + "-qs3D-loops.csv";
-    fileName.replace(' ', '_');
-    fileName = QFileDialog::getSaveFileName(g_mainFrame, "Export quasi 3D Noise Moving Rotor Simulation",
-                                            g_mainFrame->m_ExportLastDirName + QDir::separator() + fileName,
-                                            "Comma Separated Values (*.csv)");
-    if (!fileName.endsWith(".csv")) {
-        fileName.append(".csv");
-    }
-
-    QFile file (fileName);
-    g_mainFrame->m_ExportLastDirName = QFileInfo(file).absolutePath();
-    if (file.open(QIODevice::WriteOnly)) {
-        QTextStream fileStream (&file);
-        m_module->getShownSimulation()->exportCalculationqs3DNoise_rotor_loops(fileStream);
-    }
-    file.close();
-}
 //Sara
 
 void NoiseMenu::onModelValidityHint() {
@@ -187,3 +169,4 @@ void NoiseMenu::onModelValidityHint() {
                            "× 10⁶ and M = 0.204, for peak Strouhal number and higher frequencies.");
     QMessageBox::information(g_mainFrame, "Model Validity Hint", message);
 }
+//Sara

@@ -30,6 +30,7 @@ public:
 
     int phi_selection;
     int sum=2;
+    int user_sel;
 
     bool rot_speed_in=false;
     bool u_wind_speed_in=true;
@@ -121,7 +122,7 @@ private slots:
     void onAllButtonToggled (bool pressed);
 
     void onCreateButtonClicked ();
-    void onVerifyDeltaFor3D(); //Sara
+    void onVerifyDeltaandValFor3D(); //Sara
     void onVerifyWindfield(); //Sara
     void onUnitsChanged () { }  // no need for this
 

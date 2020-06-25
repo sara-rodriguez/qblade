@@ -3214,12 +3214,25 @@ aux5_le_rotor[i]=10.*log10(aux0_le_rotor[i]*aux4_le_rotor[i]);
 //p 66 C_Project_Log_Text_15_jan_16 urgente
 
 BPM_validation=true;
-if(!m_valRel_TE_check & (Reynolds[i]<m_valRel_TE)){BPM_validation=false;}
-if(!m_valReu_TE_check & (Reynolds[i]>m_valRel_TE)){BPM_validation=false;}
-if(!m_valMal_TE_check & (Reynolds[i]<m_valMal_TE)){BPM_validation=false;}
-if(!m_valMau_TE_check & (Reynolds[i]>m_valMal_TE)){BPM_validation=false;}
-if(!m_valAOAl_TE_check & (Reynolds[i]<m_valAOAl_TE)){BPM_validation=false;}
-if(!m_valAOAu_TE_check & (Reynolds[i]>m_valAOAl_TE)){BPM_validation=false;}
+
+bool Re_validation=true;
+bool Ma_validation=true;
+bool AOA_validation=true;
+
+if(m_parameter->suctionSide || m_parameter->pressureSide || m_parameter->separatedFlow){
+if(!m_parameter->valRel_TE_check & (Reynolds[i]<m_parameter->valRel_TE)){BPM_validation=false;}
+if(!m_parameter->valReu_TE_check & (Reynolds[i]>m_parameter->valReu_TE)){BPM_validation=false;}
+if(!m_parameter->valMal_TE_check & (Mach[i]<m_parameter->valMal_TE)){BPM_validation=false;}
+if(!m_parameter->valMau_TE_check & (Mach[i]>m_parameter->valMau_TE)){BPM_validation=false;}
+if(!m_parameter->valAOAl_TE_check & (alpha[i]<m_parameter->valAOAl_TE)){BPM_validation=false;}
+if(!m_parameter->valAOAu_TE_check & (alpha[i]>m_parameter->valAOAu_TE)){BPM_validation=false;}
+
+if(Reynolds[i]<m_parameter->valRel_TE){TE_alert=true; Re_validation=false;}
+if(Reynolds[i]>m_parameter->valReu_TE){TE_alert=true; Re_validation=false;}
+if(Mach[i]<m_parameter->valMal_TE){TE_alert=true; Ma_validation=false;}
+if(Mach[i]>m_parameter->valMau_TE){TE_alert=true; Ma_validation=false;}
+if(alpha[i]<m_parameter->valAOAl_TE){TE_alert=true; AOA_validation=false;}
+if(alpha[i]>m_parameter->valAOAu_TE){TE_alert=true; AOA_validation=false;}}
 
 if(!BPM_validation){
 SPL_alpha[j]=-999999999999.;
@@ -3235,10 +3248,18 @@ BPM_validation=false;
 //Lowson validation:
 
 LE_validation=true;
-if(!m_valRel_LE_check & (Reynolds[i]<m_valRel_LE)){LE_validation=false;}
-if(!m_valReu_LE_check & (Reynolds[i]>m_valRel_LE)){LE_validation=false;}
-if(!m_valMal_LE_check & (Reynolds[i]<m_valMal_LE)){LE_validation=false;}
-if(!m_valMau_LE_check & (Reynolds[i]>m_valMal_LE)){LE_validation=false;}
+if(m_parameter->Lowson_type!=0){
+if(!m_parameter->valRel_LE_check & (Reynolds[i]<m_parameter->valRel_LE)){LE_validation=false;}
+if(!m_parameter->valReu_LE_check & (Reynolds[i]>m_parameter->valReu_LE)){LE_validation=false;}
+if(!m_parameter->valMal_LE_check & (Mach[i]<m_parameter->valMal_LE)){LE_validation=false;}
+if(!m_parameter->valMau_LE_check & (Mach[i]>m_parameter->valMau_LE)){LE_validation=false;}
+
+if(Reynolds[i]<m_parameter->valRel_LE){LE_alert=true;  Re_validation=false;}
+if(Reynolds[i]>m_parameter->valReu_LE){LE_alert=true;  Re_validation=false;}
+if(Mach[i]<m_parameter->valMal_LE){LE_alert=true; Ma_validation=false;}
+if(Mach[i]>m_parameter->valMau_LE){LE_alert=true; Ma_validation=false;}}
+
+//validation for menu and dialog urgente
 
 if (LE_validation){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le[i]+aux5_le[i])/10.));
@@ -3258,6 +3279,33 @@ SPL_LedBAW[j]=-999999999999.;
 SPL_LedBBW[j]=-999999999999.;
 SPL_LedBCW[j]=-999999999999.;
 }
+//urgente aqui
+//create validation log error
+QString Re_val_num;
+QString Ma_val_num;
+QString AOA_val_num;
+QString obs_val;
+
+if(LE_alert || TE_alert){
+if(!Re_validation || !Ma_validation || !AOA_validation){
+        if(!Re_validation){Re_val_num=QString::number(Reynolds[i], 'f', 0);}else{Re_val_num="-";}
+        if(!Ma_validation){Ma_val_num=QString::number(Mach[i], 'f', 2);}else{Ma_val_num="-";}
+        if(!AOA_validation){AOA_val_num=QString::number(alpha[i], 'f', 1);}else{AOA_val_num="-";}
+        if (TE_alert & LE_alert){obs_val="1 2";} else if(TE_alert){obs_val="1";} else if(LE_alert){obs_val="2";}
+
+if (i!=qs3D_val_line){
+if(i==0){repeat_alert=1+repeat_alert;}
+if(repeat_alert==1){
+qs3D_val_blade.append(QString("%1 ; %2 ; %3 ; %4 ; %5 ; \n").arg(i+1).arg(Re_val_num).arg(Ma_val_num).arg(AOA_val_num).arg(obs_val));
+}}
+qs3D_val_line=i;
+
+QString aux = QString("%1 ; %2 ; %3 ; %4 ; %5 ; %6 ; %7 ; \n").arg(blade+1).arg(E+1).arg(i+1).arg(Re_val_num).arg(Ma_val_num).arg(AOA_val_num).arg(obs_val);//urgente
+if (qs3D_val_rotor_aux != aux){
+qs3D_val_rotor.append(QString("%1 ; %2 ; %3 ; %4 ; %5 ; %6 ; %7 ; \n").arg(blade+1).arg(E+1).arg(i+1).arg(Re_val_num).arg(Ma_val_num).arg(AOA_val_num).arg(obs_val));
+}
+qs3D_val_rotor_aux=aux;
+}}
 
 first_term_Dl_S[i]=calcFirstTerm(Mach[i],L[i],Dl[i],D_starred_S[i],dist_obs[i]);
 first_term_Dh_P[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_P[i],dist_obs[i]);
@@ -3963,11 +4011,16 @@ double outer_radius=pbem->m_pTData->OuterRadius;
  if(m_parameter->rotation_type==1){m_parameter->number_loops=m_parameter->time/(60./m_parameter->rot_speed);}
 
      //TSR w and u calculation
-     double m_TSR_calc=2.*PI*m_parameter->rot_speed/60.*outer_radius/m_parameter->u_wind_speed;
+     double m_TSR_calc=2.*M_PI*m_parameter->rot_speed/60.*outer_radius/m_parameter->u_wind_speed;
 
-     double m_rot_speed_calc=m_parameter->TSRtd*m_parameter->u_wind_speed*60./(2.*PI*outer_radius);
+     double m_rot_speed_calc=m_parameter->TSRtd*m_parameter->u_wind_speed*60./(2.*M_PI*outer_radius);
 
-     double m_u_wind_speed_calc=2.*PI*m_parameter->rot_speed/60.*outer_radius/m_parameter->TSRtd;
+     double m_u_wind_speed_calc=2.*M_PI*m_parameter->rot_speed/60.*outer_radius/m_parameter->TSRtd;
+
+     qDebug() << "m_TSR_calc: " << m_TSR_calc;//urgente
+     qDebug() << "m_rot_speed_calc: " << m_rot_speed_calc;
+     qDebug() << "m_u_wind_speed_calc: " << m_u_wind_speed_calc;
+
 
  //    calculation for non sets
      if(!m_parameter->u_wind_speed_check){m_parameter->u_wind_speed=m_u_wind_speed_calc;}
@@ -4050,4 +4103,129 @@ else {
                 }
             }
 }}}
+
+void NoiseCalculation::qs3D_log(QTextStream &stream){
+    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+    double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+    double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+    double z=lstart;
+
+    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+
+        foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+                if (z==m_parameter->TSRtd){
+
+        int number_of_segments = bdata->m_pos.size();
+        int mpos_size = bdata->m_pos.size(); //total number of segments
+        double finalradius = bdata->m_pos.value(mpos_size-1);
+
+        //definitions
+        double chord[number_of_segments];
+        double Reynolds[number_of_segments];
+        double Reynolds_BEM[number_of_segments];
+        double Reynolds_polar[number_of_segments];
+        double Reynolds_error[number_of_segments];
+        double Mach_BEM[number_of_segments];
+        double Mach_polar[number_of_segments];
+        double Mach_error[number_of_segments];
+        double alpha[number_of_segments];
+        double alpha_BEM[number_of_segments];
+        double alpha_polar[number_of_segments];
+        double alpha_error[number_of_segments];
+        double r_R[number_of_segments];
+        double c_Rx[number_of_segments];
+        double Mach[number_of_segments];
+
+        QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+
+    for (int i = 0; i < number_of_segments; ++i) {
+
+        chord[i] = bdata->m_c_local.value(i);
+        Reynolds[i] = bdata->m_Reynolds.value(i);
+
+        Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
+        Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
+        Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
+
+        Mach_polar[i]=noiseOpPoints[i]->getMach();
+        Mach[i]=bdata->m_Mach.value(i);
+        Mach_BEM[i] = bdata->m_Mach.value(i);
+
+        Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
+        alpha_BEM[i] = bdata->m_alpha.value(i);
+
+
+double aux_alpha_polar[noiseOpPoints.size()];
+for (int k=0;k<noiseOpPoints.size();++k){
+aux_alpha_polar[k]=qFabs(alpha_BEM[i]-noiseOpPoints[k]->getAlphaDegreeAbsolute());
+}
+
+double aux_alpha_polar_set=aux_alpha_polar[0];
+
+for (int k=1;k<noiseOpPoints.size();++k){
+if(aux_alpha_polar_set>aux_alpha_polar[k])
+{aux_alpha_polar_set=aux_alpha_polar[k];
+alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
+}}
+
+        alpha[i]=alpha_BEM[i];
+        alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+
+        r_R[i] = bdata->m_pos.value(i)/finalradius;
+
+        QString c_R= QString::number(c_Rx[i], 'f', 5);
+        QString Mach_error_x= QString::number(Mach_error[i], 'f', 2);
+        QString Reynolds_error_x= QString::number(Reynolds_error[i], 'f', 2);
+        QString alpha_error_x= QString::number(alpha_error[i], 'f', 2);
+
+alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+
+//error
+QString observations_x("");
+//new validation for greater Reynolds
+bool TE_val=true;
+bool check_TE = (m_parameter->suctionSide || m_parameter->pressureSide || m_parameter->separatedFlow);
+if(check_TE){
+if(Reynolds[i]<m_parameter->valRel_TE){TE_val=false;}
+if(Reynolds[i]>m_parameter->valReu_TE){TE_val=false;}
+if(Mach[i]<m_parameter->valMal_TE){TE_val=false;}
+if(Mach[i]>m_parameter->valMau_TE){TE_val=false;}
+if(alpha[i]<m_parameter->valAOAl_TE){TE_val=false;}
+if(alpha[i]>m_parameter->valAOAu_TE){TE_val=false;}}
+
+bool LE_val=true;
+bool check_LE = (m_parameter->Lowson_type!=0); //urgente
+if(check_LE){
+if(Reynolds[i]<m_parameter->valRel_LE){LE_val=false;}
+if(Reynolds[i]>m_parameter->valReu_LE){LE_val=false;}
+if(Mach[i]<m_parameter->valMal_LE){LE_val=false;}
+if(Mach[i]>m_parameter->valMau_LE){LE_val=false;}}
+
+if(!TE_val & !LE_val){observations_x.append("1 2");}
+else if(!TE_val){observations_x.append("1");}
+else if(!LE_val){observations_x.append("2");}
+
+//uncomment to input data
+    stream << qSetFieldWidth(14)  <<
+              (i+1) << ";" <<
+              bdata->m_pos.value(i) << ";" <<
+                                    r_R[i] << ";" <<
+                                    chord[i] << ";" <<
+                                    bdata->m_Windspeed.value(i) << ";" <<
+                                    m_parameter->rot_speed << ";" <<
+                                    m_parameter->TSRtd << ";" <<
+                                    Reynolds_polar[i] << ";" <<
+                                    Reynolds_BEM[i]  << ";" <<
+                                    Reynolds_error_x  << ";" <<
+                                    Mach_polar[i] << ";" <<
+                                    Mach_BEM[i]  <<  ";" <<
+                                    Mach_error_x  << ";" <<
+                                    alpha_polar[i] << ";" <<
+                                    alpha_BEM[i]   <<  ";" <<
+                                    alpha_error_x    <<  ";" <<
+                                    observations_x   <<  ";" <<
+                                    Qt::endl;
+}}
+     z=z+ldelta;
+}}
     //Sara

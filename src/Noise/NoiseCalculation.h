@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QtMath> //Sara
+#include "../Graph/ShowAsGraphInterface.h" //Sara
 
 class NoiseParameter;
 class NoiseOpPoint;
@@ -37,6 +38,7 @@ public:
     void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
     void setInitialValues(); //Sara
     void calculate();  // can throw NoiseException
+    void qs3D_log(QTextStream &stream); //Sara
 
     //Sara begin
     void verifydeltafor3d();
@@ -173,8 +175,18 @@ public:
     double Final_qs3d_P_rotor_loops;
     double Final_qs3d_LE_rotor_loops;
     double Final_qs3d_rotor_loops;
+    double qs3D_val_line = -1;
 
-    int user_sel=10;//user selection graphics for 2d, blade or rotor
+    int user_sel=10;//user selection graphics for 2d, blade or rotor urgente
+    int repeat_alert=0;
+
+    bool TE_alert=false;
+    bool LE_alert=false;
+
+    QString qs3D_val_blade = "";
+    QString qs3D_val_rotor = "";
+
+    QString qs3D_val_rotor_aux = "";//urgente
 //Sara end
 
     // NM apparently needed for export as .txt only

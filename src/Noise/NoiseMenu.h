@@ -21,10 +21,11 @@ private:
 private slots:
 	void onAboutToShow ();
 	void onExportNoise ();
-    void onExportqs3DNoise_blade ();//Sara
-    void onExportqs3DNoise_rotor ();//Sara
-    void onExportqs3DNoise_rotor_loops ();//Sara
-    void onExportqs3DNoiseLog  (); //Sara
+    //Sara
+    void onExportqs3DNoise_blade ();
+    void onExportqs3DNoise_rotor ();
+    void onExportqs3DNoiseLog  ();
+    //Sara
 	void onModelValidityHint ();
 };
 

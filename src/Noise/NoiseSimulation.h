@@ -40,7 +40,6 @@ public:
     void exportCalculation (QTextStream &stream);
     void exportCalculationqs3DNoise_blade (QTextStream &stream); //Sara
     void exportCalculationqs3DNoise_rotor (QTextStream &stream); //Sara
-    void exportCalculationqs3DNoise_rotor_loops (QTextStream &stream); //Sara
     void exportqs3DLog (QTextStream &stream);//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara

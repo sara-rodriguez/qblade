@@ -164,17 +164,20 @@ connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     [=](int index){
 
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    pNoiseCalculation->user_sel=index;
+    pNoiseCalculation->user_sel=index; //urgente
 
 if (index == 0){
+    tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, true);
 }
 if (index == 1){
+    tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, false);
 }
 if (index == 2){
+    tabWidget->setTabEnabled(2, false);
     tabWidget->setTabEnabled(3, false);
     tabWidget->setTabEnabled(4, false);
 }
@@ -241,7 +244,11 @@ if(index!=2){check_qs3D=true;}
                     pGrid = new ParameterGrid<P>(this);
                     groupBox->setLayout(pGrid);
 
-if(Lowson_type_combobox->currentIndex()!=0){check_LE=true;}else{check_LE=false;}
+                    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+
+if(Lowson_type_combobox->currentIndex()!=0){
+    check_LE=true;}
+else{check_LE=false;}
 
                     m_valReLabel = new QLabel("Reynolds Number:");
                     pGrid->addWidget(m_valReLabel);
@@ -361,7 +368,7 @@ connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnWarningSet3()));
 
 m_rot_speed_numberedit = new NumberEdit ();
 m_rot_speed_numberedit->setEnabled(m_rot_speed_check->isChecked());
-pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",6);
+pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",16);
 m_rot_speed_numberedit->setAutomaticPrecision(3);
 
 m_u_wind_speed_check = new QCheckBox("wind speed set:");
@@ -662,10 +669,10 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
     QString message ("");
     if (!hasOpPoints) {
 //        QMessageBox::critical(this, "Create Noise Simulation",
-//        "The following error(s) occured:\n\n - Simulation has no Op. Points", QMessageBox::Ok);
+//        "The following error(s) occured:\n - Simulation has no Op. Points", QMessageBox::Ok);
 //        return;
 
-        message.prepend("\n\n- Simulation has no Op. Points");
+        message.prepend("\n- Simulation has no Op. Points");
     }
 //is quasi 3d?
     if(check_qs3D){//if is qs3d
@@ -722,30 +729,43 @@ if (!pNoiseSimulation->progress_dlg_canceled){ //Sara
         delete newSimulation;
         QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
     }
-    if (!pNoiseSimulation->progress_dlg_canceled){onVerifyDeltaFor3D();}//Sara
+    if (!pNoiseSimulation->progress_dlg_canceled){onVerifyDeltaandValFor3D();}//Sara
 //Sara
 }
 
 //Sara begin
-void NoiseCreatorDialog::onVerifyDeltaFor3D(){
+void NoiseCreatorDialog::onVerifyDeltaandValFor3D(){
 if (check_qs3D){//if is qs3d
 
     QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
-
+    QString message ("");
     if(pXDirect->AlphaDeltaNoise!=0){
-        QMessageBox::information(this, "Step Angle Resolution!",
-                              "The following error occured:\n\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok);
-        return;
-    }}
-
+//        QMessageBox::information(this, "Step Angle Resolution!",
+//                              "The following error occured:\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok); //urgente
+        message.prepend("\n- Use maximum 0.25º step angle resolution for noise prediction models in XDirect");
+//        return;
+    }
+//validation
+NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
+if(pNoiseCalculation->TE_alert & pNoiseCalculation->LE_alert){
+    message.prepend("\n- Leading-edge and trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if(pNoiseCalculation->TE_alert){
+    message.prepend("\n- Trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if(pNoiseCalculation->LE_alert){
+    message.prepend("\n- Leading-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else{}
+if (message != NULL){message.prepend("The following error(s) occured:\n");
+    QMessageBox::information(this, "- Create Noise Simulation",message, QMessageBox::Ok);
+return;
 }
+}}
 
 void NoiseCreatorDialog::onVerifyWindfield(){
 //    QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
 
     if(g_windFieldStore.size() == 0){
         QMessageBox::critical(this, "Wind Field Error!",
-                              "The following error(s) occured:\n\n - Define Windfield.", QMessageBox::Ok);
+                              "The following error(s) occured:\n - Define Windfield.", QMessageBox::Ok);
         return;
     }
 }
@@ -755,7 +775,7 @@ void NoiseCreatorDialog::OnImportStarredD(){
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     int number_of_elements = pBEM->dlg_elements;
 
-QMessageBox::information (this, "δ* User Input Instructions",QString("For user input the δ* you must to follow the instructions:\n\n - Select a csv file with three columns and no header;\n\n- The first column must be filled with the index from 1 to %1;\n\n - The second column must be filled with the values of δ* on the suction side;\n\n- The third column must be filled with the values of δ* on the pressure side.").arg(number_of_elements),QMessageBox::Ok);
+QMessageBox::information (this, "δ* User Input Instructions",QString("For user input the δ* you must to follow the instructions:\n - Select a csv file with three columns and no header;\n- The first column must be filled with the index from 1 to %1;\n - The second column must be filled with the values of δ* on the suction side;\n- The third column must be filled with the values of δ* on the pressure side.").arg(number_of_elements),QMessageBox::Ok);
 
 NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
 
@@ -910,7 +930,7 @@ void NoiseCreatorDialog::OnWarningSet3(){
     if(m_u_wind_speed_check->isChecked()){++sum;}
     if(m_TSR_check->isChecked()){++sum;}
 //    if(sum!=2){
-//    QMessageBox::information(this, "Create Noise Simulation","- Select just two options to input values:\n\n * Rotational Speed; \n * Uniform Wind Speed; \n * TSR.",QMessageBox::Ok);
+//    QMessageBox::information(this, "Create Noise Simulation","- Select just two options to input values:\n * Rotational Speed; \n * Uniform Wind Speed; \n * TSR.",QMessageBox::Ok);
 //    return;
 //    }
 }
@@ -934,7 +954,7 @@ void NoiseCreatorDialog::OnProgressDlg(){
 
 void NoiseCreatorDialog::OnTECheck(){
     check_TE=false;
-    if(m_TE_a_check->isChecked()){check_TE=true;}
+    if(m_TE_a_check->isChecked()){check_TE=true; }
     if(m_TE_b_check->isChecked()){check_TE=true;}
     if(m_TE_b_check->isChecked()){check_TE=true;}
     m_valRel_TE_check->setEnabled(check_TE);
