@@ -27,6 +27,13 @@ public:
 
     double change_TSR;
     double AlphaDelta;
+    double Mach_initial=0.18;
+    double u_wind_speed=12;
+    double rot_speed_value = 16;
+    double TSR_val_in=7;
+    double hub_radius=4;
+    double outer_radius=50;
+    double blade_radius=46;
 
     int phi_selection;
     int sum=2;

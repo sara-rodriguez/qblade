@@ -80,14 +80,14 @@ QList<NewCurve *> NoiseModule::prepareCurves(QString xAxis, QString yAxis, NewGr
 }
 
 QStringList NoiseModule::getAvailableGraphVariables(bool /*xAxis*/) {
-    int index = 2;
-    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    int user_sel = pNoiseCalculation->user_sel; //urgente
+    int index = 0;
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;;
+    int user_sel = pNoiseCalculation->user_sel;
     if(user_sel<3){index = user_sel;}
 
-    if(index==0){return NoiseSimulation::getAvailableVariables_rotor();}
+    if(index==0){return NoiseSimulation::getAvailableVariables();}
     else if(index==1){return NoiseSimulation::getAvailableVariables_blade();}
-    else{return NoiseSimulation::getAvailableVariables();}
+    else if(index==2){return NoiseSimulation::getAvailableVariables_rotor();}
 }
 
 QPair<ShowAsGraphInterface *, int> NoiseModule::getHighlightDot(NewGraph::GraphType /*graphType*/) {
@@ -148,21 +148,17 @@ void NoiseModule::onHideDocks(bool hide) {
 
 //Sara
 int index_qs3d=-1;
-int index = 2;
+int index = 0;
 void NoiseModule::onqs3dGraphs(bool){
 ++index_qs3d;
 
-NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-int user_sel = pNoiseCalculation->user_sel; //urgente
+NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;;
+int user_sel = pNoiseCalculation->user_sel;
 
 if(user_sel<3){index = user_sel;}
 
 if (index==0){
-if(index_qs3d==3){index_qs3d=0;}
-
-if(index_qs3d==0){onqs3dGraph2d();}
-if(index_qs3d==1){onqs3dGraphBlade();}
-if(index_qs3d==2){onqs3dGraphRotorLoops();}
+onqs3dGraph2d();
 }
 
 if (index==1){
@@ -173,7 +169,11 @@ if(index_qs3d==1){onqs3dGraphBlade();}
 }
 
 if (index==2){
-onqs3dGraph2d();
+if(index_qs3d==3){index_qs3d=0;}
+
+if(index_qs3d==0){onqs3dGraph2d();}
+if(index_qs3d==1){onqs3dGraphBlade();}
+if(index_qs3d==2){onqs3dGraphRotorLoops();}
 }
 
 QSettings settings("qblade.ini", QSettings::IniFormat);

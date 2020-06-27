@@ -55,7 +55,11 @@ public:
 	~MainFrame ();
 
     int loadQBladeProject(QString PathName);
-    QAction *noise_separator;//Sara
+
+    //Sara
+    bool isVAWT=false;
+    bool isHAWT=false;
+    //Sara
         
 signals:
 	void moduleChanged ();

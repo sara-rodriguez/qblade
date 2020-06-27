@@ -40,13 +40,16 @@ public:
     void calculate();  // can throw NoiseException
     void qs3D_log(QTextStream &stream); //Sara
 
-    //Sara begin
+    //Sara begin   
     void verifydeltafor3d();
     void calculateqs3d_graphics(int blade, int E, double TSR);
     void calculateqs3d_graphics_loops();
     void calculateqs3d_blade();
     void calculateqs3d_rotor();
     void ProgressBar(int index);
+
+    bool alertTE(){return TE_alert;};
+    bool alertLE(){return LE_alert;};
     //Sara end
 
     // NM the arrays containing the graph data
@@ -177,16 +180,19 @@ public:
     double Final_qs3d_rotor_loops;
     double qs3D_val_line = -1;
 
-    int user_sel=10;//user selection graphics for 2d, blade or rotor urgente
+    int user_sel=0;//user selection graphics for 2d, blade or rotor
     int repeat_alert=0;
+    int progress_end;
 
     bool TE_alert=false;
     bool LE_alert=false;
+    bool isVAWT;
+    bool isHAWT;
 
     QString qs3D_val_blade = "";
     QString qs3D_val_rotor = "";
 
-    QString qs3D_val_rotor_aux = "";//urgente
+    QString qs3D_val_rotor_aux = "";
 //Sara end
 
     // NM apparently needed for export as .txt only
@@ -414,60 +420,60 @@ private:
     double m_ChordBasedReynolds;
 
     //Sara begin
-    bool m_rot_speed_check;
-    bool m_u_wind_speed_check;
-    bool m_TSRtd_check;
-    bool m_shear_check;
-    bool m_valRel_TE_check;
-    bool m_valReu_TE_check;
-    bool m_valMal_TE_check;
-    bool m_valMau_TE_check;
-    bool m_valAOAl_TE_check;
-    bool m_valAOAu_TE_check;
-    bool m_valRel_LE_check;
-    bool m_valReu_LE_check;
-    bool m_valMal_LE_check;
-    bool m_valMau_LE_check;
+//    bool m_rot_speed_check;
+//    bool m_u_wind_speed_check;
+//    bool m_TSRtd_check;
+//    bool m_shear_check;
+//    bool m_valRel_TE_check;
+//    bool m_valReu_TE_check;
+//    bool m_valMal_TE_check;
+//    bool m_valMau_TE_check;
+//    bool m_valAOAl_TE_check;
+//    bool m_valAOAu_TE_check;
+//    bool m_valRel_LE_check;
+//    bool m_valReu_LE_check;
+//    bool m_valMal_LE_check;
+//    bool m_valMau_LE_check;
 
-    int m_timesteps;
-    int m_number_loops;
-    int m_dstar_type;
-    int m_state_ss_us;
-    int m_rotation_type;
-    int m_anglesteps;
-    int m_phi_type;
-    int m_theta_type;
+//    int m_timesteps;
+//    int m_number_loops;
+//    int m_dstar_type;
+//    int m_state_ss_us;
+//    int m_rotation_type;
+//    int m_anglesteps;
+//    int m_phi_type;
+//    int m_theta_type;
 
-    double m_rot_speed;
-    double m_u_wind_speed;
-    double m_TSRtd;
+//    double m_rot_speed;
+//    double m_u_wind_speed;
+//    double m_TSRtd;
     double x;
-    double m_rot_speed_calc;
-    double m_u_wind_speed_calc;
-    double m_roughness;
-    double m_shear_height;
-    double m_TSR_calc;
-    double m_obs_x_pos;
-    double m_obs_y_pos;
-    double m_obs_z_pos;
-    double m_obs_x_pos_rotor;
-    double m_obs_y_pos_rotor;
-    double m_obs_z_pos_rotor;
-    double m_tower_height;
-    double m_tower_to_hub_distance;
-    double m_initial_azimuth;
-    double m_time;
-    double m_yaw_angle;
-    double m_valRel_TE;
-    double m_valReu_TE;
-    double m_valMal_TE;
-    double m_valMau_TE;
-    double m_valAOAl_TE;
-    double m_valAOAu_TE;
-    double m_valRel_LE;
-    double m_valReu_LE;
-    double m_valMal_LE;
-    double m_valMau_LE;
+//    double m_rot_speed_calc;
+//    double m_u_wind_speed_calc;
+//    double m_roughness;
+//    double m_shear_height;
+//    double m_TSR_calc;
+//    double m_obs_x_pos;
+//    double m_obs_y_pos;
+//    double m_obs_z_pos;
+//    double m_obs_x_pos_rotor;
+//    double m_obs_y_pos_rotor;
+//    double m_obs_z_pos_rotor;
+//    double m_tower_height;
+//    double m_tower_to_hub_distance;
+//    double m_initial_azimuth;
+//    double m_time;
+//    double m_yaw_angle;
+//    double m_valRel_TE;
+//    double m_valReu_TE;
+//    double m_valMal_TE;
+//    double m_valMau_TE;
+//    double m_valAOAl_TE;
+//    double m_valAOAu_TE;
+//    double m_valRel_LE;
+//    double m_valReu_LE;
+//    double m_valMal_LE;
+//    double m_valMau_LE;
     //Sara end
 
     //For SPLs

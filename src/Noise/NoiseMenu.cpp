@@ -9,7 +9,7 @@
 #include "NoiseSimulation.h"
 
 #include "../Store.h" //Sara
-#include "NoiseCreatorDialog.h"//Sara urgente
+#include "NoiseCreatorDialog.h"//Sara
 
 
 NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
@@ -47,14 +47,14 @@ void NoiseMenu::onAboutToShow() {
     const bool simulationAvailable = (  m_module->getShownSimulation() != NULL);
 
     //Sara
-    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    int index = pNoiseCalculation->user_sel; //urgente
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;;
+    int index = pNoiseCalculation->user_sel;
 
     if (index==0){
         m_exportNoise->setEnabled(simulationAvailable);
-        m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
-        m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
-        m_exportqs3DNoise_rotor_loops->setEnabled(simulationAvailable);
+        m_exportqs3DNoiseLog->setEnabled(false);
+        m_exportqs3DNoise_blade->setEnabled(false);
+        m_exportqs3DNoise_rotor_loops->setEnabled(false);
     }
 
     else if (index==1){
@@ -66,9 +66,9 @@ void NoiseMenu::onAboutToShow() {
 
     else if (index==2){
         m_exportNoise->setEnabled(simulationAvailable);
-        m_exportqs3DNoiseLog->setEnabled(false);
-        m_exportqs3DNoise_blade->setEnabled(false);
-        m_exportqs3DNoise_rotor_loops->setEnabled(false);
+        m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
+        m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
+        m_exportqs3DNoise_rotor_loops->setEnabled(simulationAvailable);
     }
 
     else{
@@ -160,11 +160,10 @@ void NoiseMenu::onExportqs3DNoise_rotor() {
 
 void NoiseMenu::onModelValidityHint() {
 //validation
-//urgente
     const QString message ("Airfoil TE noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
                            "1989.\n\nThe original model was developed and validated for turbulent (tripped) flow up to "
                            "6 x 10⁵ Rec ≤ 1.5 × 10⁶, M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\n\nThe BPM directivity expression for High Frequency noise is not suitable for shallow angles (Θ → 180°). For details, see page 105 of (BPM, 1989).\n\nThe IAG Wind "
-                           "For LE noise simulation the validated range is 0.05588 ≤ M ≤ 0.18 and 1.3 x 10⁵ ≤ Rec ≥ 6 x 10⁵, according Faria."
+                           "Current validation range for the RDT-Modified LE Noise simulation showed good agreement in the range of 0.05588 ≤ M ≤ 0.18 and 1.3 x 10⁵ ≤ Rec ≥ 6 x 10⁵, with respect to experimental data (Bampanis et al., 2019, Juknevicius and Chong, 2018), for grid-generated turbulence structures."
                            "tunnel data (Herrig & Würz, 2008) showed good agreement with BPM prediction at Rec ~2.4 "
                            "× 10⁶ and M = 0.204, for peak Strouhal number and higher frequencies.");
     QMessageBox::information(g_mainFrame, "Model Validity Hint", message);

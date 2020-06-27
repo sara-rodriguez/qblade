@@ -34,11 +34,10 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
       m_opPointViewWidget(NULL)
 {
     setWindowTitle("Noise Simulation");	//Sara
-    //Sara
-    FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
-    double Mach_initial=pFoilPolarDlg->m_pctrlMach->getValue();
-    if(Mach_initial<0.01){Mach_initial=0.18;}
-
+FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
+    if((g_foilStore.size()!=NULL)){
+    Mach_initial=pFoilPolarDlg->m_pctrlMach->getValue();
+    if(Mach_initial<0.01){Mach_initial=0.18;}}else{Mach_initial=0.18;}
 //Sara
 
     QTabWidget *tabWidget = new QTabWidget;
@@ -59,9 +58,9 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                                   "Length of wetted Trailing-Edge (L) []:", 1, LENGTH);
                     pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
-
                     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-                    double u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();
+                    if((g_bemdataStore.size()!=NULL)){
+                    u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();}
 
                     pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
                                   "Original flow velocity (U) []:", u_wind_speed, SPEED);
@@ -81,16 +80,6 @@ NoiseCreatorDialog::NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseM
                                   "δ* scaling factor:", 1);//Sara
                     pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
                                   "Eddy Convection Mach number []:", 0.8, PERCENT);
-
-
-//Sara
-                    pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);//Sara
-                    pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
-                                           "Chord based Reynolds number (Rc):", 100000);
-                    pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow,
-                                               QStringList()<<"Fully turbulent"<<"Transition flow");
-//Sara
-
             QVBoxLayout *vBox = new QVBoxLayout;
             hBox->addLayout(vBox);
                 QLabel *imageLabel = new QLabel;
@@ -150,26 +139,26 @@ m_valMal_LE_numberedit->setEnabled(check_LE);
 m_valMau_LE_numberedit->setEnabled(check_LE);
 });
 
-groupBox = new QGroupBox ("Quasi 3D Simulation");
-vBox->addWidget(groupBox);
+QGroupBox *groupBox_qs3d = new QGroupBox ("Quasi 3D Simulation");
+vBox->addWidget(groupBox_qs3d);
 pGrid = new ParameterGrid<P>(this);
-groupBox->setLayout(pGrid);
+groupBox_qs3d->setLayout(pGrid);
 QComboBox *qs3DSim_combobox = new QComboBox;
 pGrid->addEdit(P::qs3DSim,ComboBox, qs3DSim_combobox,"Quasi 3D:","");
-qs3DSim_combobox->insertItem(0,"Rotor");
+qs3DSim_combobox->insertItem(0,"Disable");
 qs3DSim_combobox->insertItem(1,"Blade");
-qs3DSim_combobox->insertItem(2,"Disable");
-
+qs3DSim_combobox->insertItem(2,"Rotor");
 connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     [=](int index){
 
-    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    pNoiseCalculation->user_sel=index; //urgente
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;;
+    pNoiseCalculation->user_sel=index;
+    user_sel=index;
 
 if (index == 0){
-    tabWidget->setTabEnabled(2, true);
-    tabWidget->setTabEnabled(3, true);
-    tabWidget->setTabEnabled(4, true);
+    tabWidget->setTabEnabled(2, false);
+    tabWidget->setTabEnabled(3, false);
+    tabWidget->setTabEnabled(4, false);
 }
 if (index == 1){
     tabWidget->setTabEnabled(2, true);
@@ -177,16 +166,22 @@ if (index == 1){
     tabWidget->setTabEnabled(4, false);
 }
 if (index == 2){
-    tabWidget->setTabEnabled(2, false);
-    tabWidget->setTabEnabled(3, false);
-    tabWidget->setTabEnabled(4, false);
+    tabWidget->setTabEnabled(2, true);
+    tabWidget->setTabEnabled(3, true);
+    tabWidget->setTabEnabled(4, true);
 }
 
-if(index!=2){check_qs3D=true;}
+
+if(index!=0){check_qs3D=true;}
 
 });
+
+//qs3d visible just for HAWT:
+groupBox_qs3d->setVisible(g_mainFrame->isHAWT);
+if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
                 //Sara
                 vBox->addStretch();
+
 
     widget = new QWidget;
     tabWidget->addTab(widget, "Op. Points");
@@ -230,21 +225,20 @@ if(index!=2){check_qs3D=true;}
                     grid->addWidget(m_originalBpmWidget, 3,0,1,4, Qt::AlignHCenter | Qt::AlignTop); //Sara AlignLeft
                     pGrid = new ParameterGrid<P>(this);
                     m_originalBpmWidget->setLayout(pGrid);
-
+                    pGrid->addEdit(P::Aoa, NumberEditType, new NumberEdit, "AOA (α) [deg]:", 0);//Sara
+                    pGrid->addEdit(P::ChordBasedReynolds, NumberEditType, new NumberEdit,
+                                                               "Chord based Reynolds number (Rc):", 100000);
+                    pGrid->addComboBox(P::Transition, "Type of Transition:", NoiseParameter::TransitionFlow, QStringList()<<"Fully turbulent"<<"Transition flow");
                             //Sara
                     widget = new QWidget;
                     tabWidget->addTab(widget, "Validation");
                     vBox = new QVBoxLayout;
                     hBox = new QHBoxLayout;
-//                    hBox->addLayout(vBox);
-//                    vBox->addWidget(groupBox);
                     widget->setLayout(hBox);
                     groupBox = new QGroupBox ("LE noise source validation range");
                     hBox->addWidget(groupBox);
                     pGrid = new ParameterGrid<P>(this);
                     groupBox->setLayout(pGrid);
-
-                    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
 
 if(Lowson_type_combobox->currentIndex()!=0){
     check_LE=true;}
@@ -368,7 +362,7 @@ connect(m_rot_speed_check,SIGNAL(clicked()),this,SLOT(OnWarningSet3()));
 
 m_rot_speed_numberedit = new NumberEdit ();
 m_rot_speed_numberedit->setEnabled(m_rot_speed_check->isChecked());
-pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",16);
+pGrid->addEdit(P::rot_speed, NumberEditType, m_rot_speed_numberedit,"Rotational Speed [rpm]:",rot_speed_value);
 m_rot_speed_numberedit->setAutomaticPrecision(3);
 
 m_u_wind_speed_check = new QCheckBox("wind speed set:");
@@ -391,7 +385,7 @@ connect(m_TSR_check,SIGNAL(clicked()),this,SLOT(OnWarningSet3()));
 m_TSR_spinbox = new QDoubleSpinBox;
 m_TSR_spinbox->setEnabled(m_TSR_check->isChecked());
 m_TSR_spinbox->setLocale(QLocale("en_us"));
-pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", 7);
+pGrid->addEdit(P::TSRtd,DoubleSpinBox, m_TSR_spinbox,"TSR:", TSR_val_in);
 double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
 double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
 double lend  =   pSimuWidget->m_pctrlLELineEdit->getValue();
@@ -428,9 +422,10 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                                 pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
                                 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-                                double hub_radius=pbem->m_pBlade->m_HubRadius;
-                                double outer_radius=pbem->m_pTData->OuterRadius;
-                                double blade_radius=(outer_radius-hub_radius);
+                                if((g_bemdataStore.size()!=NULL)){
+                                hub_radius=pbem->m_pBlade->m_HubRadius;
+                                outer_radius=pbem->m_pTData->OuterRadius;
+                                blade_radius=(outer_radius-hub_radius);}
                                 double z_pos=blade_radius/2.;
 
                                 pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
@@ -450,7 +445,7 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                                 mode_combobox->insertItem(1,"Unsteady");
                                 connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
 
-                                double tower_height_in;
+                                double tower_height_in=97;
                             if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-hub_radius;}
                                 m_tower_height_numberedit = new NumberEdit ();
                                 pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
@@ -531,6 +526,15 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
     QLabel *imageLabelb = new QLabel;
     imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
     hBox->addWidget(imageLabelb, 0, Qt::AlignHCenter);
+
+    tabWidget->setTabEnabled(2, (qs3DSim_combobox->currentIndex()!=0));
+    tabWidget->setTabEnabled(3, (qs3DSim_combobox->currentIndex()!=0));
+    tabWidget->setTabEnabled(4, (qs3DSim_combobox->currentIndex()==2));
+
+    //quasi 3d just for HAWT
+    tabWidget->setTabVisible(2, (g_mainFrame->isHAWT));
+    tabWidget->setTabVisible(3, (g_mainFrame->isHAWT));
+    tabWidget->setTabVisible(4, (g_mainFrame->isHAWT));
 //Sara
 
     setUnitContainingLabels();
@@ -690,7 +694,12 @@ for (const OpPointRecord &record : m_opPointRecords) {
 }
 if(!((all_oppoints_checked) & check_one_polar & hasOpPoints)){
     message.prepend("\n - Select all available points for one polar to simulate quasi 3D noise.");
-}//Sara
+}
+
+if(g_360PolarStore.isEmpty() && g_qbem->m_pCur360Polar == NULL){message.prepend("\n - No 360 Polar in Database.");}
+
+if(g_rotorStore.isEmpty() && g_qbem->m_pBlade == NULL){message.prepend("\n - No HAWT Blade in Database.");}
+//Sara
 
 if (message != NULL){
 message.prepend("The following error(s) occured:\n");
@@ -740,20 +749,23 @@ if (check_qs3D){//if is qs3d
     QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
     QString message ("");
     if(pXDirect->AlphaDeltaNoise!=0){
+        SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+            double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+            if (ldelta>0.25){
 //        QMessageBox::information(this, "Step Angle Resolution!",
-//                              "The following error occured:\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok); //urgente
+//                              "The following error occured:\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok);
         message.prepend("\n- Use maximum 0.25º step angle resolution for noise prediction models in XDirect");
 //        return;
-    }
+    }}
 //validation
-NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-if(pNoiseCalculation->TE_alert & pNoiseCalculation->LE_alert){
+NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_noiseModule;
+
+if(pNoiseCalculation->alertLE() & pNoiseCalculation->alertTE()){
     message.prepend("\n- Leading-edge and trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-else if(pNoiseCalculation->TE_alert){
+else if(pNoiseCalculation->alertTE()){
     message.prepend("\n- Trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-else if(pNoiseCalculation->LE_alert){
+else if(pNoiseCalculation->alertLE()){
     message.prepend("\n- Leading-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-else{}
 if (message != NULL){message.prepend("The following error(s) occured:\n");
     QMessageBox::information(this, "- Create Noise Simulation",message, QMessageBox::Ok);
 return;
@@ -761,8 +773,6 @@ return;
 }}
 
 void NoiseCreatorDialog::onVerifyWindfield(){
-//    QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
-
     if(g_windFieldStore.size() == 0){
         QMessageBox::critical(this, "Wind Field Error!",
                               "The following error(s) occured:\n - Define Windfield.", QMessageBox::Ok);
@@ -947,7 +957,6 @@ void NoiseCreatorDialog::OnProgressDlg(){
     QProgressBar *m_bar = new QProgressBar(this);
     m_bar->setAlignment(Qt::AlignCenter);
     m_progress_dlg->setBar(m_bar);
-   m_progress_dlg->setRange(0,1000000);
     m_progress_dlg->setMinimumDuration(0);
     m_progress_dlg->show();
 }

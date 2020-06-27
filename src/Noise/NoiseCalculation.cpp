@@ -369,10 +369,10 @@ double NoiseCalculation::getBPMThickness(NoiseOpPoint *nop, AirfoilSide as) {
             dStarCF = 0.0601 * (pow(nop->getReynolds(),-0.114));
         }
         dStar = dStarCF * m_parameter->originalChordLength;
-//		qDebug() << "BPM FullyTurbulent dStarCF: " << dStarCF;
+//        qDebug() << "BPM FullyTurbulent dStarCF: " << dStarCF;
     } else {
         dStarCT = pow(10,(3.0187-1.5397*log10(nop->getReynolds())+0.1059* pow(log10(nop->getReynolds()),2)));
-//		qDebug() << "BPM TransitionFlow dStarCT: " << dStarCT;
+//        qDebug() << "BPM TransitionFlow dStarCT: " << dStarCT;
         dStar = dStarCT * m_parameter->originalChordLength;
     }
 
@@ -581,7 +581,7 @@ void NoiseCalculation::preCalcSPLa(NoiseOpPoint* nop) {
 }
 
 void NoiseCalculation::preCalcSPLs(NoiseOpPoint *nop) {
-//	qDebug() << "---> SPLs CALCULATION";
+//    qDebug() << "---> SPLs CALCULATION";
     m_SplsFirstTerm = 0;
     m_SplsFirstTerm = 10 * log10(pow(m_parameter->originalMach,5) * m_parameter->wettedLength * getDH() *
                                  m_DStarFinalS / pow(m_parameter->distanceObsever,2));
@@ -872,9 +872,12 @@ else{
 
 //calculation for 2D noise
 void NoiseCalculation::calculate() {
+ProgressBar(1);//Sara
     setupVectors();
 
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+//    qDebug() << "noiseoppoints: " << noiseOpPoints.size();
+
     for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
         NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
 
@@ -895,8 +898,8 @@ void NoiseCalculation::calculate() {
 //Sara
 
 //        qDebug() << "======================== OpPoint ========================";
-//        qDebug() << "Alpha deg: " << nop->AlphaDeg();
-//        qDebug() << "Reynolds: " << nop->Reynolds();
+//        qDebug() << "Alpha deg: " << nop->getAlphaDegree();
+//        qDebug() << "Reynolds: " << nop->getReynolds();
 
         bool dStarOrder = false;
 
@@ -915,10 +918,14 @@ void NoiseCalculation::calculate() {
             m_DStarInterpolatedS = getDStarInterpolated(dStarOrder,nop);
             m_DStarInterpolatedP = getDStarInterpolated(!dStarOrder,nop);
 
-//qDebug() << "D* S original:" << m_DStarInterpolatedS;
+//qDebug() << "D* S original xfoil:" << m_DStarInterpolatedS;
+//qDebug() << "D* P original xfoil:" << m_DStarInterpolatedP;
 
             m_DStarFinalS = m_DStarInterpolatedS * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
             m_DStarFinalP = m_DStarInterpolatedP * m_parameter->originalChordLength * m_parameter->dStarScalingFactor;
+
+//            qDebug() << "m_DStarFinalS xfoil:" << m_DStarFinalS;
+//            qDebug() << "m_DStarFinalP xfoil:" << m_DStarFinalP;
         } else if (m_parameter->opPointSource == NoiseParameter::OriginalBpm) {
 
             m_DStarInterpolatedS = 0;
@@ -929,6 +936,9 @@ void NoiseCalculation::calculate() {
             m_DStarFinalS = getBPMThickness(nop, SuctionSide) * m_parameter->dStarScalingFactor;
             m_DStarFinalP = getBPMThickness(nop, PressureSide) * m_parameter->dStarScalingFactor;
 
+//            qDebug() << "m_DStarFinalS BPM:" << m_DStarFinalS;
+//            qDebug() << "m_DStarFinalP BPM:" << m_DStarFinalP;
+
         }
 
         m_EddyMachNumber = m_parameter->originalMach * m_parameter->eddyConvectionMach;
@@ -937,8 +947,8 @@ void NoiseCalculation::calculate() {
 //        qDebug() << "Final DStar Top/Suction: " << m_DStarFinalS;
 //        qDebug() << "Linear DStar interpolated Bottom/Pressure: " << m_DStarInterpolatedP;
 //        qDebug() << "Final DStar Bottom/Pressure: " << m_DStarFinalP;
-//        qDebug() << "Mach Number: " << m_NoiseParameter->m_OriginalMach;
-//        qDebug() << "Velocity: " << m_NoiseParameter->m_OriginalVelocity;
+//        qDebug() << "Mach Number: " << m_parameter->originalMach;
+//        qDebug() << "Velocity: " << m_parameter->originalVelocity;
 //        qDebug() << "Eddy Mach Number: " << m_EddyMachNumber;
 
         m_SwAlpha1 = 23.43 * m_parameter->originalMach + 4.651;
@@ -1100,7 +1110,11 @@ m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
 //		}
 //	}
 
-ProgressBar(1);//Sara
+//ProgressBar(1);//Sara
+    if(m_parameter->qs3DSim==0){
+        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+        pNoiseCreatorDialog->m_progress_dlg->setValue(progress_end);
+    }
 }
 
 //setup 2D vectors
@@ -2105,6 +2119,7 @@ int number_of_segments = pbem->dlg_elements;
         double L_le;
         double K_le;
         double S_le;
+        double S_le_rotor;
         double LFC_le;
         double LFC_le_rotor;
 
@@ -2123,7 +2138,6 @@ int number_of_segments = pbem->dlg_elements;
         double axial_ind_fact_n[number_of_segments];
         double axial_velocity[number_of_segments];
         double tangential_speed[number_of_segments];
-        double resultant_local_speed[number_of_segments];
         double chord[number_of_segments];
         double Reynolds[number_of_segments];
         double Reynolds_rotor[number_of_segments];
@@ -2186,8 +2200,6 @@ int number_of_segments = pbem->dlg_elements;
         double K2[number_of_segments];
         double K1_rotor[number_of_segments];
         double K2_rotor[number_of_segments];
-        double EddyMach_calc[number_of_segments];
-        double EddyMach_calc_rotor[number_of_segments];
         double dist_obs[number_of_segments];
         double dist_obs_rotor[number_of_segments];
         double D_starred_S[number_of_segments];
@@ -2295,50 +2307,12 @@ int number_of_segments = pbem->dlg_elements;
         double aux_m_SPL_LEdBBW3d_rotor=0;
         double aux_m_SPL_LEdBCW3d_rotor=0;
 
-        double sp_OASPL_alpha=0;
-        double splog_OASPL_alpha=0;
-        double sp_OASPL_S=0;
-        double splog_OASPL_S=0;
-        double sp_OASPL_P=0;
-        double splog_OASPL_P=0;
-        double sp_OASPL=0;
-        double splog_OASPL=0;
-        double sp_dBA=0;
-        double splog_dBA=0;
-        double sp_dBB=0;
-        double splog_dBB=0;
-        double sp_dBC=0;
-        double splog_dBC=0;
-        double splog_LedB=0;
-        double splog_LedBAW=0;
-        double splog_LedBBW=0;
-        double splog_LedBCW=0;
-
         double r_R0  =  0.05; double c_R0 = 0.05500;
         double r_R1  =  0.25; double c_R1 = 0.07500;
         double r_R2  =  1.00; double c_R2 = 0.02000;
 
         bool LE_validation;
         bool BPM_validation;
-
-        sp_OASPL_alpha=0;
-        sp_OASPL_S=0;
-        sp_OASPL_P=0;
-        sp_OASPL=0;
-        sp_dBA=0;
-        sp_dBB=0;
-        sp_dBC=0;
-        splog_OASPL_alpha=0;
-        splog_OASPL_S=0;
-        splog_OASPL_P=0;
-        splog_OASPL=0;
-        splog_dBA=0;
-        splog_dBB=0;
-        splog_dBC=0;
-        splog_LedB=0;
-        splog_LedBAW=0;
-        splog_LedBBW=0;
-        splog_LedBCW=0;
 
         for (int i = 0; i < number_of_segments; ++i) {
 
@@ -2455,7 +2429,7 @@ int number_of_segments = pbem->dlg_elements;
             else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
 
             tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.+bdata->m_a_tangential.value(i));
-            resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
+//            resultant_local_speed[i] = qSqrt(pow(axial_velocity[i],2)+pow(tangential_speed[i],2));
             chord[i] = bdata->m_c_local.value(i);
 
             Reynolds_BEM[i]=Reynolds[i];
@@ -2679,18 +2653,12 @@ else if (Reynolds_rotor[i]>800000)
 {K1_rotor[i]=128.5;}
 else {K1_rotor[i]=-9.*log10(Reynolds_rotor[i])+181.6;}
 
-if (alpha[i]<gamma0_gamma_min[i])
+if (alpha[i]<gamma0_gamma_min_rotor[i])
 {K2_rotor[i]=K1_rotor[i]-1000.;}
-else if (alpha[i]>gamma0_gamma_plus[i])
+else if (alpha[i]>gamma0_gamma_plus_rotor[i])
 {K2_rotor[i]=K1_rotor[i]-12.;}
 else
-{K2_rotor[i]=K1_rotor[i]+(sqrt(pow(beta[i],2)-pow((beta[i]/gamma[i]),2)*pow((alpha[i]-gamma0[i]),2)))+beta0[i];}
-
-
-double EddyMach_perc=EddyMach;
-
-EddyMach_calc[i]=Mach[i]*EddyMach_perc;
-EddyMach_calc_rotor[i]=Mach_rotor[i]*EddyMach_perc;
+{K2_rotor[i]=K1_rotor[i]+(sqrt(pow(beta_rotor[i],2)-pow((beta_rotor[i]/gamma_rotor[i]),2)*pow((alpha[i]-gamma0[i]),2)))+beta0_rotor[i];}
 
 //delta starred type, if natural transition or heavy-tripping
 if (m_parameter->dstar_type==0){
@@ -2766,7 +2734,6 @@ double ZB=0;
     double angle_between_blades=360./blades_num;
     double initial_azimuth=m_parameter->initial_azimuth; //initial azimuth;
     double E_o=initial_azimuth;
-//    double E_f;
     int number_of_rotations;
     E_o=E_o+anglesteps;
     double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
@@ -3165,8 +3132,9 @@ Stp_P_rotor[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P_rotor[i]/vel_rotor[i];
     L_le=100.*L[i];
     K_le=M_PI*CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
+    S_le_rotor=sqrt(pow((2.*M_PI*K_le/(pow(beta_le_rotor, 2)))+(pow((1+(2.4*K_le/pow(beta_le_rotor,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
-    LFC_le_rotor = 10.*Mach_rotor[i]*pow(S_le*K_le/beta_le,2);
+    LFC_le_rotor = 10.*Mach_rotor[i]*pow(S_le_rotor*K_le/beta_le_rotor,2);
 
     if(m_parameter->Lowson_type==2){
         c_const_le = c_const_rd_le;
@@ -3211,7 +3179,7 @@ aux5_le_rotor[i]=10.*log10(aux0_le_rotor[i]*aux4_le_rotor[i]);
 //Validation:
 
 //BPM validation:
-//p 66 C_Project_Log_Text_15_jan_16 urgente
+//p 66 C_Project_Log_Text_15_jan_16
 
 BPM_validation=true;
 
@@ -3259,7 +3227,7 @@ if(Reynolds[i]>m_parameter->valReu_LE){LE_alert=true;  Re_validation=false;}
 if(Mach[i]<m_parameter->valMal_LE){LE_alert=true; Ma_validation=false;}
 if(Mach[i]>m_parameter->valMau_LE){LE_alert=true; Ma_validation=false;}}
 
-//validation for menu and dialog urgente
+//validation for menu and dialog
 
 if (LE_validation){
 SPL_LedB[j]=10.*log10(pow(10,(aux1_le[i]+aux5_le[i])/10.));
@@ -3279,7 +3247,7 @@ SPL_LedBAW[j]=-999999999999.;
 SPL_LedBBW[j]=-999999999999.;
 SPL_LedBCW[j]=-999999999999.;
 }
-//urgente aqui
+
 //create validation log error
 QString Re_val_num;
 QString Ma_val_num;
@@ -3300,7 +3268,8 @@ qs3D_val_blade.append(QString("%1 ; %2 ; %3 ; %4 ; %5 ; \n").arg(i+1).arg(Re_val
 }}
 qs3D_val_line=i;
 
-QString aux = QString("%1 ; %2 ; %3 ; %4 ; %5 ; %6 ; %7 ; \n").arg(blade+1).arg(E+1).arg(i+1).arg(Re_val_num).arg(Ma_val_num).arg(AOA_val_num).arg(obs_val);//urgente
+QString aux = QString("%1 ; %2 ; %3 ; %4 ; %5 ; %6 ; %7 ; \n").arg(blade+1).arg(E+1).arg(i+1).arg(Re_val_num).arg(Ma_val_num).arg(AOA_val_num).arg(obs_val);
+
 if (qs3D_val_rotor_aux != aux){
 qs3D_val_rotor.append(QString("%1 ; %2 ; %3 ; %4 ; %5 ; %6 ; %7 ; \n").arg(blade+1).arg(E+1).arg(i+1).arg(Re_val_num).arg(Ma_val_num).arg(AOA_val_num).arg(obs_val));
 }
@@ -3501,6 +3470,7 @@ z=z+ldelta;
 
 //calculation for rotor in loop
 void NoiseCalculation::calculateqs3d_graphics_loops(){
+ProgressBar(2);//Sara
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 setupVectorsqs3d();
 
@@ -3565,16 +3535,18 @@ anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
 
 int angles_num=360./anglesteps*number_of_rotations;
 
+if(m_parameter->qs3DSim==2){
 for (int blade=0;blade<blades_num;++blade){
 for (int E=0;E<angles_num;++E){
         calculateqs3d_graphics(blade,E,TSR);
-}}
+}}}
 
-ProgressBar(2);//Sara
+if(m_parameter->qs3DSim==1){calculateqs3d_graphics(0,0,TSR);}
 }
 
 //calculation for blade
 void NoiseCalculation::calculateqs3d_blade() {
+ProgressBar(3);//Sara
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     unsigned int number_of_segments = pbem->dlg_elements;
@@ -3762,11 +3734,16 @@ void NoiseCalculation::calculateqs3d_blade() {
     m_SPLlogLE3d[i]=0;
     }}
 
-ProgressBar(3);//Sara
+//ProgressBar(3);//Sara
+if(m_parameter->qs3DSim==1){
+    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+    pNoiseCreatorDialog->m_progress_dlg->setValue(progress_end);
+}
 }
 
 //calculation for all blades in rotation movement
 void NoiseCalculation::calculateqs3d_rotor() {
+ProgressBar(4);//Sara
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     int blades_num = pbem->m_pBData->blades;
@@ -3972,22 +3949,34 @@ void NoiseCalculation::calculateqs3d_rotor() {
             m_SPLlogLE3d_rotor_loops[i]=0;
         }}
 
-ProgressBar(4);//Sara
+//ProgressBar(4);//Sara
+NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+pNoiseCreatorDialog->m_progress_dlg->setValue(progress_end);
 }
 
 //Sara
 void NoiseCalculation::setInitialValues(){
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-double outer_radius=pbem->m_pTData->OuterRadius;
+double outer_radius=50;
+if((g_bemdataStore.size()!=NULL)){
+outer_radius=pbem->m_pBData->outer_radius;
+}
+
+//VAWT or HAWT
+if(g_mainFrame->isVAWT){m_parameter->qs3DSim=0;}
 
  //obs x pos
-         if ((m_parameter->obs_x_pos==0.) & (m_parameter->obs_y_pos==0.) & (m_parameter->obs_z_pos==0.)){
-         m_parameter->obs_x_pos=10;
-         m_parameter->obs_y_pos=10;
-         double hub_radius=pbem->m_pBlade->m_HubRadius;
-         double blade_radius=(outer_radius-hub_radius);
-         m_parameter->obs_z_pos=blade_radius/2.;
-         }
+double hub_radius=4;
+double blade_radius=(outer_radius-hub_radius);
+if ((m_parameter->obs_x_pos==0.) & (m_parameter->obs_y_pos==0.) & (m_parameter->obs_z_pos==0.)){
+m_parameter->obs_x_pos=10;
+m_parameter->obs_y_pos=10;
+if((g_bemdataStore.size()!=NULL)){
+hub_radius=pbem->m_pBlade->m_HubRadius;
+}
+blade_radius=(outer_radius-hub_radius);
+m_parameter->obs_z_pos=blade_radius/2.;
+}
 
  //x pos rotor
          if((m_parameter->obs_x_pos_rotor==0.) & (m_parameter->obs_y_pos_rotor==0.) & (m_parameter->obs_z_pos_rotor==0.)){
@@ -3995,6 +3984,9 @@ double outer_radius=pbem->m_pTData->OuterRadius;
            m_parameter->obs_y_pos_rotor=0;
            m_parameter->obs_z_pos_rotor=1.5*outer_radius;
          }
+
+//rot speed error
+if(isinf(m_parameter->rot_speed) || (m_parameter->rot_speed>1000000)){m_parameter->rot_speed=16;}
 
  //time
          if(m_parameter->rotation_type==0){m_parameter->time=60./m_parameter->rot_speed;}
@@ -4016,11 +4008,6 @@ double outer_radius=pbem->m_pTData->OuterRadius;
      double m_rot_speed_calc=m_parameter->TSRtd*m_parameter->u_wind_speed*60./(2.*M_PI*outer_radius);
 
      double m_u_wind_speed_calc=2.*M_PI*m_parameter->rot_speed/60.*outer_radius/m_parameter->TSRtd;
-
-     qDebug() << "m_TSR_calc: " << m_TSR_calc;//urgente
-     qDebug() << "m_rot_speed_calc: " << m_rot_speed_calc;
-     qDebug() << "m_u_wind_speed_calc: " << m_u_wind_speed_calc;
-
 
  //    calculation for non sets
      if(!m_parameter->u_wind_speed_check){m_parameter->u_wind_speed=m_u_wind_speed_calc;}
@@ -4073,16 +4060,18 @@ double outer_radius=pbem->m_pTData->OuterRadius;
 
 void NoiseCalculation::ProgressBar(int index){
     NoiseSimulation *pNoiseSimulation = (NoiseSimulation *) g_mainFrame->m_pBEM;
+    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
     pNoiseSimulation->progress_dlg_canceled=false;
         int w=0;
-        if (m_parameter->qs3DSim==0){w=1000000/4;}
-        else if (m_parameter->qs3DSim==1){w=1000000/3;}
-        else {w=1000000;}
-        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+        if (m_parameter->qs3DSim==2){progress_end = 700000; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/4;}
+        else if (m_parameter->qs3DSim==1){progress_end = 10000; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/3;}
+        else {progress_end = 1000; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end;}
+
 if(pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){
     pNoiseCreatorDialog->m_progress_dlg->cancel();
 }else{
 if (index == 1) {
+    if(w==progress_end){w=progress_end-1;}
     for(int j = 0; j<=w; ++j)
         {
             pNoiseCreatorDialog->m_progress_dlg->setValue(j);
@@ -4093,7 +4082,9 @@ if (index == 1) {
             }
         }}
 else {
-        for(int j = (index-1)*w+1; j<=index*w; ++j)
+    int g = index*w;
+     if(g==progress_end){g=progress_end-1;}
+        for(int j = (index-1)*w+1; j<=g; ++j)
             {
                 pNoiseCreatorDialog->m_progress_dlg->setValue(j);
                 if(pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){
@@ -4194,7 +4185,7 @@ if(alpha[i]<m_parameter->valAOAl_TE){TE_val=false;}
 if(alpha[i]>m_parameter->valAOAu_TE){TE_val=false;}}
 
 bool LE_val=true;
-bool check_LE = (m_parameter->Lowson_type!=0); //urgente
+bool check_LE = (m_parameter->Lowson_type!=0);
 if(check_LE){
 if(Reynolds[i]<m_parameter->valRel_LE){LE_val=false;}
 if(Reynolds[i]>m_parameter->valReu_LE){LE_val=false;}

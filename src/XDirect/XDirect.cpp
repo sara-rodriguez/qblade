@@ -153,7 +153,7 @@ QXDirect::QXDirect(QWidget *parent)
 
     m_Alpha      = -10.0;
     m_AlphaMax   = 20.0;
-    m_AlphaDelta = 0.25;//Sara
+    m_AlphaDelta = 0.5;
 	m_Cl         = 0.0;
 	m_ClMax      = 1.0;
 	m_ClDelta    = 0.1;

@@ -45,6 +45,7 @@
 #include "StoreAssociatedComboBox.h"
 #include "XLLT/QLLTToolBar.h"
 #include "XLLT/QLLTSimulation.h"
+#include "Noise/NoiseCalculation.h" //Sara
 #include "GLWidget.h"
 #include "QBladeApplication.h"
 
@@ -1705,7 +1706,7 @@ void MainFrame::CreateMainToolbar() {
     m_pctrlMainToolBar->addAction(On360ViewAct);
     m_pctrlMainToolBar->addSeparator();
     g_noiseModule = new NoiseModule (this, m_pctrlMainToolBar);
-    noise_separator = m_pctrlMainToolBar->addSeparator();
+    m_pctrlMainToolBar->addSeparator();
     m_pctrlMainToolBar->addAction(OnBladeViewAct);
     m_pctrlMainToolBar->addAction(OnRotorViewAct);
     m_pctrlMainToolBar->addAction(OnCharacteristicViewAct);
@@ -3430,8 +3431,9 @@ void MainFrame::OnVAWTView () {
     g_windFieldModule->setToolbarVisibility(true);
     g_fastModule->setToolbarVisibility(false);
     g_QLLTModule->setActionIcon(":/images/LLT_VAWT.png");
-    g_noiseModule->setToolbarVisibility(false);//Sara
-    noise_separator->setVisible(false);//Sara
+    g_noiseModule->setToolbarVisibility(true);
+    isVAWT = true;
+    isHAWT = false;
 }
 
 void MainFrame::OnHAWTView () {
@@ -3456,8 +3458,9 @@ void MainFrame::OnHAWTView () {
     g_windFieldModule->setToolbarVisibility(true);
     g_fastModule->setToolbarVisibility(true);
     g_QLLTModule->setActionIcon(":/images/LLT.png");
-    g_noiseModule->setToolbarVisibility(true);//Sara
-    noise_separator->setVisible(true);//Sara
+    g_noiseModule->setToolbarVisibility(true);
+    isHAWT = true; //Sara
+    isVAWT = false; //Sara
 }
 
 ////////new code JW//////
