@@ -302,7 +302,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
  if(m_parameter.Lowson_type!=0){
-            stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] <<
+            stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
                       m_calculation.SPLpdB()[i][j] <<
@@ -314,7 +314,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
                       Qt::endl; //Alexandre MOD
         }
 else{
-     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] <<
+     stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                m_calculation.SPLadB()[i][j] <<
                m_calculation.SPLsdB()[i][j] <<
                m_calculation.SPLpdB()[i][j] <<

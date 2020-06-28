@@ -247,18 +247,6 @@ public:
         QVector<double> SPLLEdBCW3d_rotor_loops() const { return m_SPLLEdBCW3d_rotor_loops;}
         QVector<double> SPLlogLE3d_rotor_loops() const { return m_SPLlogLE3d_rotor_loops; }
 
-//        QVector<double> OASPL3d_4d_blade() const { return m_OASPL3d_4d_blade; }
-//        QVector<double> OASPLA3d_4d_blade() const { return m_OASPLA3d_4d_blade; }
-//        QVector<double> OASPLB3d_4d_blade() const { return m_OASPLB3d_4d_blade; }
-//        QVector<double> OASPLC3d_4d_blade() const { return m_OASPLC3d_4d_blade; }
-//        QVector<double> SPLALOG3d_4d_blade() const { return m_SPLALOG3d_4d_blade; }
-//        QVector<double> SPLSLOG3d_4d_blade() const { return m_SPLSLOG3d_4d_blade; }
-//        QVector<double> SPLPLOG3d_4d_blade() const { return m_SPLPLOG3d_4d_blade; }
-//        QVector<double> SPLLEdBAW3d_4d_blade() const { return m_SPLLEdBAW3d_4d_blade;}
-//        QVector<double> SPLLEdBBW3d_4d_blade() const { return m_SPLLEdBBW3d_4d_blade;}
-//        QVector<double> SPLLEdBCW3d_4d_blade() const { return m_SPLLEdBCW3d_4d_blade;}
-//        QVector<double> SPLlogLE3d_4d_blade() const { return m_SPLlogLE3d_4d_blade; }
-
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
         QVector<double> m_AlphaInterpolated3d;
@@ -315,21 +303,20 @@ private:
     //For general
     double m_DStarInterpolatedS;
     double m_DStarInterpolatedP;
-
     double m_DStarFinalS;
     double m_DStarFinalP;
     double m_EddyMachNumber;
     double m_SwAlpha1;
     double m_SwAlpha;
     bool m_AlphaBigSw;
-    //Turbulent Inflow
-    double m_IntegralLengthScale; //Alexandre MOD
-    double m_TurbulenceIntensity; //Alexandre MOD
 
     bool m_CalcSeparatedFlow;
     bool m_CalcSuctionSide;
     bool m_CalcPressureSide;
 
+    //Turbulent Inflow
+    double m_IntegralLengthScale; //Alexandre MOD
+    double m_TurbulenceIntensity; //Alexandre MOD
 
     bool m_CalcLowson;    //Sara
 
@@ -420,60 +407,7 @@ private:
     double m_ChordBasedReynolds;
 
     //Sara begin
-//    bool m_rot_speed_check;
-//    bool m_u_wind_speed_check;
-//    bool m_TSRtd_check;
-//    bool m_shear_check;
-//    bool m_valRel_TE_check;
-//    bool m_valReu_TE_check;
-//    bool m_valMal_TE_check;
-//    bool m_valMau_TE_check;
-//    bool m_valAOAl_TE_check;
-//    bool m_valAOAu_TE_check;
-//    bool m_valRel_LE_check;
-//    bool m_valReu_LE_check;
-//    bool m_valMal_LE_check;
-//    bool m_valMau_LE_check;
-
-//    int m_timesteps;
-//    int m_number_loops;
-//    int m_dstar_type;
-//    int m_state_ss_us;
-//    int m_rotation_type;
-//    int m_anglesteps;
-//    int m_phi_type;
-//    int m_theta_type;
-
-//    double m_rot_speed;
-//    double m_u_wind_speed;
-//    double m_TSRtd;
     double x;
-//    double m_rot_speed_calc;
-//    double m_u_wind_speed_calc;
-//    double m_roughness;
-//    double m_shear_height;
-//    double m_TSR_calc;
-//    double m_obs_x_pos;
-//    double m_obs_y_pos;
-//    double m_obs_z_pos;
-//    double m_obs_x_pos_rotor;
-//    double m_obs_y_pos_rotor;
-//    double m_obs_z_pos_rotor;
-//    double m_tower_height;
-//    double m_tower_to_hub_distance;
-//    double m_initial_azimuth;
-//    double m_time;
-//    double m_yaw_angle;
-//    double m_valRel_TE;
-//    double m_valReu_TE;
-//    double m_valMal_TE;
-//    double m_valMau_TE;
-//    double m_valAOAl_TE;
-//    double m_valAOAu_TE;
-//    double m_valRel_LE;
-//    double m_valReu_LE;
-//    double m_valMal_LE;
-//    double m_valMau_LE;
     //Sara end
 
     //For SPLs

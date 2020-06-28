@@ -70,13 +70,6 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(simulationAvailable);
     }
-
-    else{
-        m_exportNoise->setEnabled(false);
-        m_exportqs3DNoiseLog->setEnabled(false);
-        m_exportqs3DNoise_blade->setEnabled(false);
-        m_exportqs3DNoise_rotor_loops->setEnabled(false);
-    }
     //Sara
 }
 

@@ -65,7 +65,7 @@ QList<NewCurve *> NoiseModule::prepareCurves(QString xAxis, QString yAxis, NewGr
                 if (simulation->getSelectFrom() == NoiseParameter::OriginalBpm) {
 			NewCurve *curve = simulation->newCurve(xAxis, yAxis, graphType, 0);
 			if (curve) {
-//				curves.append(curve);
+                curves.append(curve);
 			}
 		} else {
             for (int i = 0; i < simulation->getAnalyzedOpPoints().size(); ++i) {
