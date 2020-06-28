@@ -156,23 +156,36 @@ connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     user_sel=index;
 
 if (index == 0){
+    op_points_qs3d=false;
     tabWidget->setTabEnabled(2, false);
     tabWidget->setTabEnabled(3, false);
     tabWidget->setTabEnabled(4, false);
+
+    multi_polars_radiobutton->setEnabled(true);
+    BPM_radiobutton->setEnabled(true);
 }
 if (index == 1){
+    op_points_qs3d=true;
     tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, false);
 }
 if (index == 2){
+    op_points_qs3d=true;
     tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, true);
 }
 
 
-if(index!=0){check_qs3D=true;}
+if(index!=0){
+    check_qs3D=true;
+    onSelectButtonsClicked(0);
+    one_polar_radiobutton->setChecked(true);
+    multi_polars_radiobutton->setEnabled(false);
+    BPM_radiobutton->setEnabled(false);
+    all_op_points->click();
+}
 
 });
 
@@ -198,24 +211,23 @@ if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
                     grid->addWidget(label, 0, 0, 1, 1);
                     m_selectFromButtons = new QButtonGroup;
                     connect(m_selectFromButtons, SIGNAL(buttonClicked(int)), this, SLOT(onSelectButtonsClicked(int)));
-                    QRadioButton *radioButton = new QRadioButton ("this polar:");
-                    m_selectFromButtons->addButton(radioButton, NoiseParameter::OnePolar);
-                    grid->addWidget(radioButton, 0, 1, 1, 1);
-                    radioButton->setToolTip("for quasi 3D simulation select all points for one polar");//Sara
+                    //Sara
+                    one_polar_radiobutton = new QRadioButton ("this polar:");
+                    m_selectFromButtons->addButton(one_polar_radiobutton, NoiseParameter::OnePolar);
+                    grid->addWidget(one_polar_radiobutton, 0, 1, 1, 1);
                     m_airfoilComboBox = new FoilComboBox (&g_foilStore);
                     grid->addWidget(m_airfoilComboBox, 0, 2, 1, 1);
                     m_polarComboBox = new PolarComboBox (&g_polarStore);
                     m_polarComboBox->setParentBox(m_airfoilComboBox);
                     connect(m_polarComboBox, SIGNAL(valueChanged(int)), this, SLOT(onPolarBoxChange()));
                     grid->addWidget(m_polarComboBox, 0, 3, 1, 1);
-                    radioButton = new QRadioButton ("all polars");
-                    m_selectFromButtons->addButton(radioButton, NoiseParameter::MultiplePolars);
-                    grid->addWidget(radioButton, 1, 1, 1, 3);
-                    radioButton->setToolTip("for quasi 3D simulation select all points for one polar");//Sara
-                    radioButton = new QRadioButton ("original BPM δ* correlations");
-                    m_selectFromButtons->addButton(radioButton, NoiseParameter::OriginalBpm);
-                    grid->addWidget(radioButton, 2, 1, 1, 3);
-                    radioButton->setToolTip("for quasi 3D simulation select all points for one polar");//Sara
+                    multi_polars_radiobutton = new QRadioButton ("all polars");
+                    m_selectFromButtons->addButton(multi_polars_radiobutton, NoiseParameter::MultiplePolars);
+                    grid->addWidget(multi_polars_radiobutton, 1, 1, 1, 3);
+                    BPM_radiobutton = new QRadioButton ("original BPM δ* correlations");
+                    m_selectFromButtons->addButton(BPM_radiobutton, NoiseParameter::OriginalBpm);
+                    grid->addWidget(BPM_radiobutton, 2, 1, 1, 3);
+                    //Sara
 
                     m_opPointScrollArea = new QScrollArea;
                     grid->addWidget(m_opPointScrollArea, 3, 0, 1, 4);
@@ -601,11 +613,13 @@ void NoiseCreatorDialog::fillOpPointView() {
             grid->setHorizontalSpacing(20);
             grid->setSizeConstraint(QLayout::SetMinimumSize);
             m_opPointViewWidget->setLayout(grid);
-                QPushButton *button = new QPushButton ("All");
-                button->setMinimumWidth(QFontMetrics(QFont()).width("All") * 1.8);
-                button->setCheckable(true);
-                connect(button, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
-                grid->addWidget(button, 0, 0, 1, 1);
+            //Sara
+                all_op_points = new QPushButton ("All");
+                all_op_points->setMinimumWidth(QFontMetrics(QFont()).width("All") * 1.8);
+                all_op_points->setCheckable(true);
+                connect(all_op_points, &QPushButton::toggled, this, &NoiseCreatorDialog::onAllButtonToggled);
+                grid->addWidget(all_op_points, 0, 0, 1, 1);
+                //Sara
                 QLabel *label = new QLabel("<center>Op. Point</center>");
                 grid->addWidget(label, 0, 1, 1, 1);
                 label = new QLabel("<center>Polar</center>");
@@ -643,13 +657,12 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
 
     prepareOpPointRecords(id == NoiseParameter::MultiplePolars);
     fillOpPointView();
-
-    if(id==0){check_one_polar=true;}else{check_one_polar=false;}//Sara
 }
 
 void NoiseCreatorDialog::onPolarBoxChange() {
     prepareOpPointRecords(false);
     fillOpPointView();
+if(check_qs3D){all_op_points->click();}
 }
 
 void NoiseCreatorDialog::onAllButtonToggled(bool pressed) {
@@ -672,29 +685,12 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
 //Sara
     QString message ("");
     if (!hasOpPoints) {
-//        QMessageBox::critical(this, "Create Noise Simulation",
-//        "The following error(s) occured:\n - Simulation has no Op. Points", QMessageBox::Ok);
-//        return;
-
         message.prepend("\n- Simulation has no Op. Points");
     }
 //is quasi 3d?
     if(check_qs3D){//if is qs3d
 if(sum!=2){
-//        QMessageBox::information(this, "Create Noise Simulation","Select just two options to input values:\n -Rotational Speed; \n -Uniform Wind Speed; \n -TSR.",QMessageBox::Ok);
-//        return;
 message.prepend("\n Select just two options to input values:\n    -Rotational Speed; \n    -Uniform Wind Speed;    \n    -TSR.");}
-
-//Sara
-all_oppoints_checked=true;
-for (const OpPointRecord &record : m_opPointRecords) {
-    if (record.checkBox->isEnabled()){
-    if(!record.checkBox->isChecked()){all_oppoints_checked=false;}
-    }
-}
-if(!((all_oppoints_checked) & check_one_polar & hasOpPoints)){
-    message.prepend("\n - Select all available points for one polar to simulate quasi 3D noise.");
-}
 
 if(g_360PolarStore.isEmpty() && g_qbem->m_pCur360Polar == NULL){message.prepend("\n - No 360 Polar in Database.");}
 
@@ -752,10 +748,7 @@ if (check_qs3D){//if is qs3d
         SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
             double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
             if (ldelta>0.25){
-//        QMessageBox::information(this, "Step Angle Resolution!",
-//                              "The following error occured:\n - Use maximum 0.25º step angle resolution for noise prediction models in XDirect.", QMessageBox::Ok);
         message.prepend("\n- Use maximum 0.25º step angle resolution for noise prediction models in XDirect");
-//        return;
     }}
 //validation
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_noiseModule;
@@ -939,10 +932,6 @@ void NoiseCreatorDialog::OnWarningSet3(){
     if(m_rot_speed_check->isChecked()){++sum;}
     if(m_u_wind_speed_check->isChecked()){++sum;}
     if(m_TSR_check->isChecked()){++sum;}
-//    if(sum!=2){
-//    QMessageBox::information(this, "Create Noise Simulation","- Select just two options to input values:\n * Rotational Speed; \n * Uniform Wind Speed; \n * TSR.",QMessageBox::Ok);
-//    return;
-//    }
 }
 
 //Sara
