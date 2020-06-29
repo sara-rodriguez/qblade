@@ -163,6 +163,7 @@ if (index == 0){
 
     multi_polars_radiobutton->setEnabled(true);
     BPM_radiobutton->setEnabled(true);
+    m_opPointScrollArea->setEnabled(true);
 }
 if (index == 1){
     op_points_qs3d=true;
@@ -180,13 +181,14 @@ if (index == 2){
 
 if(index!=0){
     check_qs3D=true;
+    m_opPointScrollArea->setEnabled(true);
     onSelectButtonsClicked(0);
     one_polar_radiobutton->setChecked(true);
+    all_op_points->click();
     multi_polars_radiobutton->setEnabled(false);
     BPM_radiobutton->setEnabled(false);
-    all_op_points->click();
+    m_opPointScrollArea->setEnabled(false);
 }
-
 });
 
 //qs3d visible just for HAWT:
@@ -662,7 +664,11 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
 void NoiseCreatorDialog::onPolarBoxChange() {
     prepareOpPointRecords(false);
     fillOpPointView();
-if(check_qs3D){all_op_points->click();}
+if(check_qs3D){
+    m_opPointScrollArea->setEnabled(true);
+    all_op_points->click();
+    m_opPointScrollArea->setEnabled(false);
+}
 }
 
 void NoiseCreatorDialog::onAllButtonToggled(bool pressed) {

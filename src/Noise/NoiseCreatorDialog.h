@@ -112,8 +112,6 @@ private:
     QButtonGroup *m_selectFromButtons;
     QButtonGroup *m_selectFromButtonsLE;
     FoilComboBox *m_airfoilComboBox;
-    FoilComboBox *m_airfoilComboBoxtd;
-    FoilComboBox *m_airfoilComboBoxte;
     PolarComboBox *m_polarComboBox;
     QScrollArea *m_opPointScrollArea;
     QWidget *m_opPointViewWidget;
