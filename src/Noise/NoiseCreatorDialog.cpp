@@ -151,7 +151,7 @@ qs3DSim_combobox->insertItem(2,"Rotor");
 connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     [=](int index){
 
-    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;;
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     pNoiseCalculation->user_sel=index;
     user_sel=index;
 
@@ -459,11 +459,6 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                                 mode_combobox->insertItem(1,"Unsteady");
                                 connect(mode_combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(OnModeDefine(int)));
 
-                                double tower_height_in=97;
-                            if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-hub_radius;}
-                                m_tower_height_numberedit = new NumberEdit ();
-                                pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
-
                                 m_initial_azimuth_spinbox = new QDoubleSpinBox;
                                 m_initial_azimuth_spinbox->setLocale(QLocale("en_us"));
                                 pGrid->addEdit(P::initial_azimuth,DoubleSpinBox, m_initial_azimuth_spinbox,"Initial Azimuth [deg]:", 0);
@@ -480,6 +475,15 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
 
                                 m_tower_to_hub_distance_numberedit = new NumberEdit ();
                                 pGrid->addEdit(P::tower_to_hub_distance, NumberEditType, m_tower_to_hub_distance_numberedit,"Tower To Hub Distance []:",4,LENGTH);
+
+double tower_to_rotor_distance_in = hub_radius;
+                                m_tower_to_rotor_distance_numberedit = new NumberEdit ();
+                                pGrid->addEdit(P::tower_to_rotor_distance, NumberEditType, m_tower_to_rotor_distance_numberedit,"Tower To Rotor Distance []:",tower_to_rotor_distance_in,LENGTH);
+
+double tower_height_in;
+if(g_windFieldStore.size() == 0){tower_height_in=100-tower_to_rotor_distance_in;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-tower_to_rotor_distance_in;} //hub_radius or TTR
+m_tower_height_numberedit = new NumberEdit ();
+pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
 
                                 rotation_combobox = new QComboBox;
                                 pGrid->addEdit(P::rotation_type,ComboBox, rotation_combobox,"Reference:","");

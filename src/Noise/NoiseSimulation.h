@@ -7,12 +7,6 @@
 #include "NoiseCalculation.h"
 #include "NoiseParameter.h"
 
-//Sara
-#include "../XDirect/FoilPolarDlg.h"
-#include "../XBEM/BData.h"
-#include <QtMath>
-//Sara
-
 template <class KeyType>
 class ParameterViewer;
 

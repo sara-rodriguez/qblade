@@ -47,7 +47,7 @@ void NoiseMenu::onAboutToShow() {
     const bool simulationAvailable = (  m_module->getShownSimulation() != NULL);
 
     //Sara
-    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;;
+    NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     int index = pNoiseCalculation->user_sel;
 
     if (index==0){

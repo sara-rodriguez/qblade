@@ -1,10 +1,24 @@
 #include "NoiseSimulation.h"
+
 //Sara
 #include "NoiseCalculation.h"
 #include "NoiseParameter.h"
 #include "../XUnsteadyBEM/WindFieldModule.h"
 #include "../XLLT/QLLTSimulation.h"
 #include "../XLLT/QLLTCreatorDialog.h"
+#include "../XDirect/FoilPolarDlg.h"
+#include "../XBEM/BData.h"
+#include "../XBEM/TData.h"
+#include "../XBEM/TBEMData.h"
+#include "../XDMS/DData.h"
+#include "../XBEM/Blade.h"
+#include "NoiseException.h"
+#include "NoiseOpPoint.h"
+#include "NoiseCreatorDialog.h"
+#include <cmath>
+#include <sstream>
+#include <string>
+#include <QtMath>
 //Sara
 
 #include "../ParameterViewer.h"
@@ -16,19 +30,6 @@
 #include "../ColorManager.h"
 #include "NoiseOpPoint.h"
 #include "../XBEM/BEM.h"
-//Sara
-#include "../XBEM/TData.h"
-#include "../XBEM/TBEMData.h"
-#include "../XDMS/DData.h"
-#include "../XBEM/Blade.h"
-#include "NoiseException.h"
-#include "NoiseOpPoint.h"
-#include "NoiseCreatorDialog.h"
-#include <cmath>
-#include <sstream>
-
-#include <string>
-//Sara
 
 //Sara changed all endl; for Qt:: endl;
 
@@ -937,6 +938,11 @@ break;
     case P::tower_to_hub_distance:
         if(set) m_parameter.tower_to_hub_distance = value.toDouble();
         else {value = m_parameter.tower_to_hub_distance;}
+        break;
+
+    case P::tower_to_rotor_distance:
+        if(set) m_parameter.tower_to_rotor_distance = value.toDouble();
+        else {value = m_parameter.tower_to_rotor_distance;}
         break;
 
     case P::Lowson_type:

@@ -10,6 +10,7 @@
 #include "../Objects/Polar.h"//Sara
 
 //Sara
+#include "../Graph/ShowAsGraphInterface.h" //Sara
 #include "../Noise/NoiseParameter.h"
 #include "../StorableObject.h"
 #include "../Graph/ShowAsGraphInterface.h"
@@ -1875,13 +1876,13 @@ double YRS = -XB*sin(qDegreesToRadians(a))+YB*cos(qDegreesToRadians(a));
 return YRS;
 }
 
-double NoiseCalculation::calcZRS(double ZB, double r_0, double r_1){
-double ZRS = ZB-(r_1-r_0)/2.;
+double NoiseCalculation::calcZRS(double ZB, double r_i){
+double ZRS = ZB-r_i;
 return ZRS;
 }
 
-double NoiseCalculation::calcInt_a(double YRS, double c_0, double c_1){
-double calc_int_a = YRS-0.75*(c_1-c_0)/2.;
+double NoiseCalculation::calcInt_a(double YRS, double c_i){
+double calc_int_a = YRS-0.75*c_i;
 return calc_int_a;
 }
 
@@ -1945,9 +1946,9 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 //steady
     if(m_parameter->shear_check){
 //wind shear effect
-double hub_height = m_parameter->tower_height+m_parameter->tower_to_hub_distance;
+double hub_height = m_parameter->tower_height+m_parameter->tower_to_rotor_distance;
 int section_radius = bdata->m_pos.value(section);
-
+double inflowspeed;
 double anglesteps;
 
 if (m_parameter->rotation_type==0){
@@ -1962,26 +1963,32 @@ int blades_num = bdata->blades;
 double angle_between_blades=360./blades_num;
 double initial_azimuth=m_parameter->initial_azimuth;
 double E_o=initial_azimuth;
-E_o=E_o+anglesteps;
 double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
-double section_height = hub_height+(section_radius*sin(qDegreesToRadians(azimuthal)))*cos(qDegreesToRadians(m_parameter->yaw_angle));
-double m_meanWindSpeed = pbem->dlg_windspeed;
+
+double section_height = hub_height+(section_radius*cos(qDegreesToRadians(azimuthal)));
+
+double m_shearspeed = m_parameter->shear_speed;
 
 if(section_height>100){
     // calculated with power law wind profile. https://en.wikipedia.org/wiki/Wind_profile_power_law
-windspeed = m_meanWindSpeed*pow((section_height/m_parameter->shear_height),(1./7.));
+inflowspeed = m_shearspeed*pow((section_height/m_parameter->shear_height),(1./7.));
 }else{
     // calculated with log wind profile. Should not be used with heigth above 100m (see wikipedia)
-windspeed = m_meanWindSpeed*log((section_height)/m_parameter->shear_roughness)/log(m_parameter->shear_height/m_parameter->shear_roughness);
-}}
+inflowspeed = m_shearspeed*log((section_height)/m_parameter->shear_roughness)/log(m_parameter->shear_height/m_parameter->shear_roughness);
+}
+
+double Vrel2 = (pow(inflowspeed*(1-bdata->m_a_axial.at(section)),2)+pow(inflowspeed*bdata->m_lambda_local.at(section)*(1+bdata->m_a_tangential.at(section)),2));
+
+windspeed = pow(Vrel2,0.5);
+    }
 else {
 //no wind shear effect
-        windspeed = bdata->m_Windspeed.value(section);
+windspeed = bdata->m_Windspeed.value(section);
 }}
  else {
 //unsteady
 //Sara
-        double hub_height = m_parameter->tower_height+m_parameter->tower_to_hub_distance;
+        double hub_height = m_parameter->tower_height+m_parameter->tower_to_rotor_distance;
         int section_radius = bdata->m_pos.value(section);
         CVector windspeed_windfield;
 
@@ -1991,22 +1998,28 @@ else {
         double angle_between_blades=360./blades_num;
         double initial_azimuth=m_parameter->initial_azimuth;
         double E_o=initial_azimuth;
-        E_o=E_o+anglesteps;
         double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
         double time = azimuthal/anglesteps*g_windFieldModule->getShownWindField()->getLengthOfTimestep();
+        double TTR = m_parameter->tower_to_rotor_distance;
+        double TTH = m_parameter->tower_to_hub_distance;
 
-const double X = section_radius*sin(qDegreesToRadians(m_parameter->yaw_angle));
-const double Y = section_radius*cos(qDegreesToRadians(azimuthal));
-const double Z = hub_height+section_radius*sin(qDegreesToRadians(azimuthal))*cos(qDegreesToRadians(m_parameter->yaw_angle));
+const double X = 0;
+const double Y = section_radius*sin(qDegreesToRadians(azimuthal));
+const double Z = hub_height+section_radius*cos(qDegreesToRadians(azimuthal));
 
-        CVector vec (X,Y,Z);
+CVector vec (X,Y,Z);
 
-        windspeed = g_windFieldModule->getShownWindField()->getWindspeed(vec,time,0).VAbs();
+double inflowspeed = g_windFieldModule->getShownWindField()->getWindspeed(vec,time,-TTH).VAbs();
+
+double Vrel2 = (pow(inflowspeed*(1-bdata->m_a_axial.at(section)),2)+pow(inflowspeed*bdata->m_lambda_local.at(section)*(1+bdata->m_a_tangential.at(section)),2));
+
+windspeed = pow(Vrel2,0.5);
+
 //qDebug() << "X: " << X;
 //qDebug() << "Y: " << Y;
 //qDebug() << "Z: " << Z;
 //qDebug() << "time: " << time;
-//qDebug() << "vel: " << windspeed;
+//qDebug() << "vel: " << inflowspeed;
     }
 }
 z=z+ldelta;
@@ -2030,8 +2043,8 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
     if(m_parameter->shear_check){
 //wind shear effect
-double Vrel2 = pow(windspeed,2);
-Mach = pow(Vrel2,0.5)/sqrt(bdata->k_air*bdata->r_air*bdata->temp);
+double temp = pbem->dlg_temp;
+Mach = windspeed/sqrt(bdata->k_air*bdata->r_air*temp);
 }
 else {
 //no wind shear effect
@@ -2039,8 +2052,8 @@ Mach = bdata->m_Mach.value(section);
 }}
  else {
 //unsteady
-double Vrel2 = pow(windspeed,2);
-Mach = pow(Vrel2,0.5)/sqrt(bdata->k_air*bdata->r_air*bdata->temp);
+double temp = pbem->dlg_temp;
+Mach = windspeed/sqrt(bdata->k_air*bdata->r_air*temp);
     }
 }
     z=z+ldelta;
@@ -2063,7 +2076,7 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
     if(m_parameter->shear_check){
 //wind shear effect
-Reynolds = pow((pow(windspeed*(1-bdata->m_a_axial.value(section)),2)+pow(windspeed*bdata->m_lambda_local.value(section)*(1+bdata->m_a_tangential.value(section)),2)),0.5)*bdata->m_c_local.value(section)/bdata->visc;
+Reynolds = windspeed*bdata->m_c_local.value(section)/bdata->visc;
 }
 else {
 //no wind shear effect
@@ -2071,7 +2084,7 @@ Reynolds = bdata->m_Reynolds.value(section);
 }}
  else {
 //unsteady
-Reynolds = pow((pow(windspeed*(1-bdata->m_a_axial.value(section)),2)+pow(windspeed*bdata->m_lambda_local.value(section)*(1+bdata->m_a_tangential.value(section)),2)),0.5)*bdata->m_c_local.value(section)/bdata->visc;
+Reynolds = windspeed*bdata->m_c_local.value(section)/bdata->visc;
     }
 }
 z=z+ldelta;
@@ -2131,7 +2144,7 @@ int number_of_segments = pbem->dlg_elements;
         double ZLT = m_parameter->obs_z_pos_rotor;
         double HR=pbem->m_pBlade->m_HubRadius; //hub radius
         double H=m_parameter->tower_height;//tower height
-        double Y=m_parameter->yaw_angle;//yaw angle
+        double yaw=m_parameter->yaw_angle;//yaw angle
 
         //definitions
         double axial_ind_fact[number_of_segments];
@@ -2252,27 +2265,35 @@ int number_of_segments = pbem->dlg_elements;
         double XRT[number_of_segments];
         double YRT[number_of_segments];
         double ZRT[number_of_segments];
+        double YRT_le[number_of_segments];
+        double ZRT_le[number_of_segments];
         double XRT_rotor[number_of_segments];
         double YRT_rotor[number_of_segments];
         double ZRT_rotor[number_of_segments];
+        double YRT_le_rotor[number_of_segments];
+        double ZRT_le_rotor[number_of_segments];
         double theta_e[number_of_segments];
         double theta_e_rotor[number_of_segments];
         double phi_e[number_of_segments];
         double phi_e_rotor[number_of_segments];
         double calc_int_a[number_of_segments];
+        double calc_int_a_le[number_of_segments];
         double calc_int_a_rotor[number_of_segments];
+        double calc_int_a_le_rotor[number_of_segments];
         double r_e[number_of_segments];
+        double r_e_le[number_of_segments];
         double r_e_rotor[number_of_segments];
+        double r_e_le_rotor[number_of_segments];
         double r_1[number_of_segments];
+        double r_i[number_of_segments];
         double c_1[number_of_segments];
         double r_0[number_of_segments];
         double c_0[number_of_segments];
+        double c_i[number_of_segments];
         double local_twist[number_of_segments];
-        double r_e_le[number_of_segments];
         double aux1_le[number_of_segments];
         double aux4_le[number_of_segments];
         double aux5_le[number_of_segments];
-        double r_e_le_rotor[number_of_segments];
         double aux1_le_rotor[number_of_segments];
         double aux4_le_rotor[number_of_segments];
         double aux5_le_rotor[number_of_segments];
@@ -2413,6 +2434,7 @@ int number_of_segments = pbem->dlg_elements;
                 double St1_bar[w];
 
                 vel_rotor[i]=getInputWindSpeed(blade, E, i, TSR);
+
                 Reynolds_rotor[i]=getInputReynolds(vel_rotor[i], i, TSR);
                 Mach_rotor[i]=getInputMach(vel_rotor[i], i, TSR);
 
@@ -2695,31 +2717,27 @@ else if (m_parameter->dstar_type==2){
     D_starred_S_rotor[i]=pNoiseParameter->D_starred_S_user[i];
     D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i];
 }
-//Sara
 
-//double B=0;
-double XB=0;
-double YB=0;
-double ZB=0;
-
+//coordinates transformation using p 54  C_Project_Log_Text_Jan_16.pdf
 //    re phi_e and theta_e calculation p 77 C_Project_Log_Text_Jan_16.pdf
 //    Input X e , Y e , Z e
 //    Attribute their respective values to X B , Y B , Z B
-    XB=m_parameter->obs_x_pos;
-    YB=m_parameter->obs_y_pos;
-    ZB=m_parameter->obs_z_pos;
+    double XB=m_parameter->obs_x_pos;
+    double YB=m_parameter->obs_y_pos;
+    double ZB=m_parameter->obs_z_pos;
 
 //rotor
     omega_rotor = 2.*M_PI*rot_speed/60.; //rotor
     double XUT=XLT;
     double YUT=YLT;
-    double ZUT=ZLT-H; //Sara it was +H
+    double ZUT=ZLT-H;
 
-    double XYB=XUT*cos(qDegreesToRadians(Y))+YUT*sin(qDegreesToRadians(Y));
-    double YYB=XUT*-sin(qDegreesToRadians(Y))+YUT*cos(qDegreesToRadians(Y));
+    double XYB=XUT*cos(qDegreesToRadians(yaw))+YUT*sin(qDegreesToRadians(yaw));
+    double YYB=XUT*-sin(qDegreesToRadians(yaw))+YUT*cos(qDegreesToRadians(yaw));
     double ZYB=ZUT;
 
     double TTH=m_parameter->tower_to_hub_distance;//tower to hub distance
+    double TTR=m_parameter->tower_to_rotor_distance;//tower to rotor distance
     int blades_num = bdata->blades;
     double anglesteps;
 
@@ -2735,12 +2753,11 @@ double ZB=0;
     double initial_azimuth=m_parameter->initial_azimuth; //initial azimuth;
     double E_o=initial_azimuth;
     int number_of_rotations;
-    E_o=E_o+anglesteps;
     double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
 
-    double XHF=XYB+TTH;//Sara it was -TTH
-    double YHF=YYB-HR*sin(qDegreesToRadians(azimuthal)); //Sara it was YYB
-    double ZHF=ZYB-HR*(1+cos(qDegreesToRadians(azimuthal))); //Sara it was ZYB
+    double XHF=XYB+TTH;
+    double YHF=YYB;
+    double ZHF=ZYB-TTR;
 
     if (m_parameter->rotation_type==0){
     //    angle based
@@ -2753,30 +2770,33 @@ double ZB=0;
     }
 
     double XRR=XHF;
-    double YRR=YHF*cos(qDegreesToRadians(azimuthal))+XHF*sin(qDegreesToRadians(azimuthal));
+    double YRR=YHF*cos(qDegreesToRadians(azimuthal))+ZHF*sin(qDegreesToRadians(azimuthal));
     double ZRR=YHF*(-sin(qDegreesToRadians(azimuthal)))+ZHF*cos(qDegreesToRadians(azimuthal));
 
     double XB_rotor=XRR;
     double YB_rotor=YRR;
-    double ZB_rotor=ZRR; //Sara it was ZRR+HR
+    double ZB_rotor=ZRR-HR;
 //rotor
-
-    c_0[i]=bdata->m_c_local.value(i);
-    r_0[i]=bdata->m_pos.value(i);
 
     double hub_radius=pbem->m_pBlade->m_HubRadius;
     double outer_radius=pbem->m_pTData->OuterRadius;
     double blade_radius=(outer_radius-hub_radius);
 
+c_0[i]=bdata->m_c_local.value(i);
+r_0[i]=bdata->m_pos.value(i)-hub_radius;
+
 if(i==(number_of_segments-1)){
 c_1[i]=bdata->m_c_local.value(i);
-r_1[i]=blade_radius;
+r_1[i]=bdata->m_pos.value(i)-hub_radius;
 }
 else
 {
 c_1[i]=bdata->m_c_local.value(i+1);
-r_1[i]=bdata->m_pos.value(i+1);
+r_1[i]=bdata->m_pos.value(i+1)-hub_radius;
 }
+
+r_i[i]=(r_0[i]+r_1[i])/2.;
+c_i[i]=(c_0[i]+c_1[i])/2.;
 
 local_twist[i]=theta_BEM[i];
 
@@ -2787,17 +2807,17 @@ local_twist[i]=theta_BEM[i];
 
     XRS[i]=calcXRS(a[i],XB,YB);
     YRS[i]=calcYRS(a[i],XB,YB);
-    ZRS[i]=calcZRS(ZB,r_0[i],r_1[i]);
+    ZRS[i]=calcZRS(ZB,r_i[i]);
 
 //rotor
     XRS_rotor[i]=calcXRS(a[i],XB_rotor,YB_rotor);
     YRS_rotor[i]=calcYRS(a[i],XB_rotor,YB_rotor);
-    ZRS_rotor[i]=calcZRS(ZB_rotor,r_0[i],r_1[i]);
+    ZRS_rotor[i]=calcZRS(ZB_rotor,r_i[i]);
 //rotor
 
-    calc_int_a[i]=calcInt_a(YRS[i],c_0[i],c_1[i]);
+    calc_int_a[i]=calcInt_a(YRS[i],c_i[i]);
 
-    calc_int_a_rotor[i]=calcInt_a(YRS_rotor[i],c_0[i],c_1[i]);//rotor
+    calc_int_a_rotor[i]=calcInt_a(YRS_rotor[i],c_i[i]);//rotor
 
     XRT[i]=calcXRT(XRS[i]);
     YRT[i]=calcYRT(b[i],calc_int_a[i],ZRS[i]);
@@ -2820,6 +2840,7 @@ local_twist[i]=theta_BEM[i];
     phi_e_rotor[i]=calcPhi_e(XRT_rotor[i], ZRT_rotor[i]);
     dist_obs_rotor[i]=r_e_rotor[i];
 //rotor
+//end coordinates transformation
 
 alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
 
@@ -3977,13 +3998,6 @@ hub_radius=pbem->m_pBlade->m_HubRadius;
 blade_radius=(outer_radius-hub_radius);
 m_parameter->obs_z_pos=blade_radius/2.;
 }
-
- //x pos rotor
-         if((m_parameter->obs_x_pos_rotor==0.) & (m_parameter->obs_y_pos_rotor==0.) & (m_parameter->obs_z_pos_rotor==0.)){
-           m_parameter->obs_x_pos_rotor=0;
-           m_parameter->obs_y_pos_rotor=0;
-           m_parameter->obs_z_pos_rotor=1.5*outer_radius;
-         }
 
 //rot speed error
 if(isinf(m_parameter->rot_speed) || (m_parameter->rot_speed>1000000)){m_parameter->rot_speed=16;}

@@ -2,7 +2,6 @@
 #define NOISECALCULATION_H
 
 #include <QVector>
-#include <QtMath> //Sara
 #include "../Graph/ShowAsGraphInterface.h" //Sara
 
 class NoiseParameter;
@@ -285,8 +284,8 @@ private:
     //Sara begin
     double calcXRS(double a, double XB, double YB);
     double calcYRS(double a, double XB, double YB);
-    double calcZRS(double ZB, double r_0, double r_1);
-    double calcInt_a(double YRS, double c_0, double c_1);
+    double calcZRS(double ZB, double r_i);
+    double calcInt_a(double YRS, double c_i);
     double calcXRT(double XRS);
     double calcYRT(double b, double calc_int_a, double ZRS);
     double calcZRT(double b, double calc_int_a, double ZRS);
