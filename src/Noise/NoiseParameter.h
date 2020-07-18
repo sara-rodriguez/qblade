@@ -92,7 +92,6 @@ public:
     double u_wind_speed;
     double TSRtd;
     double tower_to_hub_distance;
-    double tower_to_rotor_distance;
     double initial_azimuth;
     double shear_roughness;
     double shear_height;

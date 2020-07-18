@@ -31,7 +31,6 @@ public:
     double u_wind_speed=12;
     double rot_speed_value = 16;
     double TSR_val_in=7;
-    double hub_radius=4;
     double outer_radius=50;
     double blade_radius=46;
 
@@ -103,7 +102,7 @@ private:
 
     QRadioButton *one_polar_radiobutton, *multi_polars_radiobutton, *BPM_radiobutton;
 
-    NumberEdit *m_rot_speed_numberedit, *m_anglesteps_numberedit, *m_tower_height_numberedit, *m_u_wind_speed_numberedit, *m_tower_to_hub_distance_numberedit, *m_tower_to_rotor_distance_numberedit, *m_number_loops_numberedit, *m_time_numberedit, *m_timesteps_numberedit, *m_shear_roughness_numberedit, *m_shear_height_numberedit, *m_shear_speed_numberedit, *m_valRel_TE_numberedit, *m_valReu_TE_numberedit, *m_valMal_TE_numberedit, *m_valMau_TE_numberedit, *m_valAOAl_TE_numberedit, *m_valAOAu_TE_numberedit, *m_valRel_LE_numberedit, *m_valReu_LE_numberedit, *m_valMal_LE_numberedit, *m_valMau_LE_numberedit;
+    NumberEdit *m_rot_speed_numberedit, *m_anglesteps_numberedit, *m_tower_height_numberedit, *m_u_wind_speed_numberedit, *m_tower_to_hub_distance_numberedit, *m_number_loops_numberedit, *m_time_numberedit, *m_timesteps_numberedit, *m_shear_roughness_numberedit, *m_shear_height_numberedit, *m_shear_speed_numberedit, *m_valRel_TE_numberedit, *m_valReu_TE_numberedit, *m_valMal_TE_numberedit, *m_valMau_TE_numberedit, *m_valAOAl_TE_numberedit, *m_valAOAu_TE_numberedit, *m_valRel_LE_numberedit, *m_valReu_LE_numberedit, *m_valMal_LE_numberedit, *m_valMau_LE_numberedit;
 
     int i=0;
     bool all_oppoints_checked;//Sara

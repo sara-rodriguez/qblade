@@ -437,7 +437,7 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
 
                                 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
                                 if((g_bemdataStore.size()!=NULL)){
-                                hub_radius=pbem->m_pBlade->m_HubRadius;
+                                double hub_radius=pbem->m_pBlade->m_HubRadius;
                                 outer_radius=pbem->m_pTData->OuterRadius;
                                 blade_radius=(outer_radius-hub_radius);}
                                 double z_pos=blade_radius/2.;
@@ -476,12 +476,9 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                                 m_tower_to_hub_distance_numberedit = new NumberEdit ();
                                 pGrid->addEdit(P::tower_to_hub_distance, NumberEditType, m_tower_to_hub_distance_numberedit,"Tower To Hub Distance []:",4,LENGTH);
 
-double tower_to_rotor_distance_in = hub_radius;
-                                m_tower_to_rotor_distance_numberedit = new NumberEdit ();
-                                pGrid->addEdit(P::tower_to_rotor_distance, NumberEditType, m_tower_to_rotor_distance_numberedit,"Tower To Rotor Distance []:",tower_to_rotor_distance_in,LENGTH);
-
 double tower_height_in;
-if(g_windFieldStore.size() == 0){tower_height_in=100-tower_to_rotor_distance_in;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-tower_to_rotor_distance_in;} //hub_radius or TTR
+double hub_radius = pbem->m_pBlade->m_HubRadius;
+if(g_windFieldStore.size() == 0){tower_height_in=100-hub_radius;}else{tower_height_in=g_windFieldModule->getShownWindField()->getHubheight()-hub_radius;} //hub_radius or TTR
 m_tower_height_numberedit = new NumberEdit ();
 pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower Height []:",tower_height_in,LENGTH);
 

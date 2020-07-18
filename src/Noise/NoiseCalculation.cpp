@@ -1940,13 +1940,15 @@ double NoiseCalculation::getInputWindSpeed(int blade, int E, int section, double
         double z=lstart;
 
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+    double hub_radius;
+    hub_radius=pbem->m_pBlade->m_HubRadius;
 foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         if (z==TSR){
     if(m_parameter->state_ss_us==0){
 //steady
     if(m_parameter->shear_check){
 //wind shear effect
-double hub_height = m_parameter->tower_height+m_parameter->tower_to_rotor_distance;
+double hub_height = m_parameter->tower_height+hub_radius;
 int section_radius = bdata->m_pos.value(section);
 double inflowspeed;
 double anglesteps;
@@ -1988,7 +1990,9 @@ windspeed = bdata->m_Windspeed.value(section);
  else {
 //unsteady
 //Sara
-        double hub_height = m_parameter->tower_height+m_parameter->tower_to_rotor_distance;
+        double hub_radius;
+        hub_radius=pbem->m_pBlade->m_HubRadius;
+        double hub_height = m_parameter->tower_height+hub_radius;
         int section_radius = bdata->m_pos.value(section);
         CVector windspeed_windfield;
 
@@ -2000,7 +2004,7 @@ windspeed = bdata->m_Windspeed.value(section);
         double E_o=initial_azimuth;
         double azimuthal=(E_o+angle_between_blades*blade)+E*anglesteps;
         double time = azimuthal/anglesteps*g_windFieldModule->getShownWindField()->getLengthOfTimestep();
-        double TTR = m_parameter->tower_to_rotor_distance;
+        double TTR = hub_radius;
         double TTH = m_parameter->tower_to_hub_distance;
 
 const double X = 0;
@@ -2736,8 +2740,11 @@ else if (m_parameter->dstar_type==2){
     double YYB=XUT*-sin(qDegreesToRadians(yaw))+YUT*cos(qDegreesToRadians(yaw));
     double ZYB=ZUT;
 
+    double hub_radius;
+    hub_radius=pbem->m_pBlade->m_HubRadius;
+
     double TTH=m_parameter->tower_to_hub_distance;//tower to hub distance
-    double TTR=m_parameter->tower_to_rotor_distance;//tower to rotor distance
+    double TTR=hub_radius;//tower to rotor distance
     int blades_num = bdata->blades;
     double anglesteps;
 
@@ -2778,7 +2785,7 @@ else if (m_parameter->dstar_type==2){
     double ZB_rotor=ZRR-HR;
 //rotor
 
-    double hub_radius=pbem->m_pBlade->m_HubRadius;
+    hub_radius=pbem->m_pBlade->m_HubRadius;
     double outer_radius=pbem->m_pTData->OuterRadius;
     double blade_radius=(outer_radius-hub_radius);
 
@@ -3987,7 +3994,8 @@ outer_radius=pbem->m_pBData->outer_radius;
 if(g_mainFrame->isVAWT){m_parameter->qs3DSim=0;}
 
  //obs x pos
-double hub_radius=4;
+double hub_radius;
+hub_radius=pbem->m_pBlade->m_HubRadius;
 double blade_radius=(outer_radius-hub_radius);
 if ((m_parameter->obs_x_pos==0.) & (m_parameter->obs_y_pos==0.) & (m_parameter->obs_z_pos==0.)){
 m_parameter->obs_x_pos=10;

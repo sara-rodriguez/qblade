@@ -940,11 +940,6 @@ break;
         else {value = m_parameter.tower_to_hub_distance;}
         break;
 
-    case P::tower_to_rotor_distance:
-        if(set) m_parameter.tower_to_rotor_distance = value.toDouble();
-        else {value = m_parameter.tower_to_rotor_distance;}
-        break;
-
     case P::Lowson_type:
         if(set) {m_parameter.Lowson_type = value.toInt();}
 else {value=m_parameter.Lowson_type;}
