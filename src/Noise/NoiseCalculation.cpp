@@ -2626,7 +2626,7 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 D_starred_N_S_rotor[i]=D_starred_N_rotor[i]*corr_fact[i];
 }}
 
-//For D* Xfoil
+//For D* Xfoil urgente
 DStarXFoilS[i]=m_DStarInterpolatedS3d[i];
 DStarXFoilP[i]=m_DStarInterpolatedP3d[i];
 
@@ -2688,11 +2688,11 @@ else
 
 //delta starred type, if natural transition or heavy-tripping
 if (m_parameter->dstar_type==0){
-//XFoil calculation
-    D_starred_S[i]=DStarXFoilS[i];
-    D_starred_P[i]=DStarXFoilP[i];
-    D_starred_S_rotor[i]=DStarXFoilS[i];
-    D_starred_P_rotor[i]=DStarXFoilP[i];
+//XFoil calculation urgente
+    D_starred_S[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
+    D_starred_P[i]=DStarXFoilP[i]*chord[i]*m_parameter->dStarScalingFactor;
+    D_starred_S_rotor[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
+    D_starred_P_rotor[i]=DStarXFoilP[i]*chord[i]*m_parameter->dStarScalingFactor;
 }
 else if (m_parameter->dstar_type==1){
 //    BPM calculation
@@ -2701,25 +2701,25 @@ else if (m_parameter->dstar_type==1){
         double BotTrip=pFoilPolarDlg->m_XBotTr;
     if((TopTrip==0) & (BotTrip==0)) {
     //        natural transition
-        D_starred_S[i]=D_starred_N_S[i];
-        D_starred_P[i]=D_starred_N_P[i];
-        D_starred_S_rotor[i]=D_starred_N_S_rotor[i];
-        D_starred_P_rotor[i]=D_starred_N_P_rotor[i];
+        D_starred_S[i]=D_starred_N_S[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P[i]=D_starred_N_P[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_S_rotor[i]=D_starred_N_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P_rotor[i]=D_starred_N_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
     }
     else {
     //heavy tripping
-        D_starred_S[i]=D_starred_HT_S[i];
-        D_starred_P[i]=D_starred_HT_P[i];
-        D_starred_S_rotor[i]=D_starred_HT_S_rotor[i];
-        D_starred_P_rotor[i]=D_starred_HT_P_rotor[i];
+        D_starred_S[i]=D_starred_HT_S[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P[i]=D_starred_HT_P[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_S_rotor[i]=D_starred_HT_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P_rotor[i]=D_starred_HT_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
 }}
 else if (m_parameter->dstar_type==2){
 //user
     NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
-    D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
-    D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
-    D_starred_S_rotor[i]=pNoiseParameter->D_starred_S_user[i];
-    D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i];
+    D_starred_S[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+    D_starred_P[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+    D_starred_S_rotor[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+    D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
 }
 
 //coordinates transformation using p 54  C_Project_Log_Text_Jan_16.pdf
@@ -2808,6 +2808,7 @@ c_i[i]=(c_0[i]+c_1[i])/2.;
 local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
+//if ((r_1[i]==r_0[i]) && (c_1[i] = c_0[i])){b[i]=0;} urgente
 
 //    the angle a is the total angle between the YB ZB blade reference system plane and the local midsection chord line p 75 handout
     a[i]=local_twist[i]+blade_pitch;

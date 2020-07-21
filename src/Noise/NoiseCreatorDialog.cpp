@@ -865,6 +865,7 @@ timesteps_in=false;
     m_timesteps_numberedit->setEnabled(timesteps_in);
     rotation_combobox->setEnabled(false);
     m_shear_check->setEnabled(shear_in);
+    m_shear_check->setChecked(shear_in);
     m_shear_roughness_numberedit->setEnabled(shear_in);
     m_shear_height_numberedit->setEnabled(shear_in);
     m_shear_speed_numberedit->setEnabled(shear_in);

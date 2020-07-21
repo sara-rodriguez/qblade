@@ -131,6 +131,11 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 14: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
             case 15: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
             case 16: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
+            case 17: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break; //urgente
+            case 18: *vector = m_calculation.SPLsdB3d()[opPointIndex];break;
+            case 19: *vector = m_calculation.SPLpdB3d()[opPointIndex];break;
+            case 20: *vector = m_calculation.SPL_LEdB3d()[opPointIndex];break;
+            case 21: *vector = m_calculation.SPLdB3d()[opPointIndex];break;
 
             default: return nullptr;
             }
@@ -165,6 +170,11 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 22: *vector = m_calculation.SPLdBAW3d_final_rotor_loops()[opPointIndex]; break;
             case 23: *vector = m_calculation.SPLdBBW3d_final_rotor_loops()[opPointIndex]; break;
             case 24: *vector = m_calculation.SPLdBCW3d_final_rotor_loops()[opPointIndex]; break;
+            case 25: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break;//urgente
+            case 26: *vector = m_calculation.SPLsdB3d()[opPointIndex];zeroY = true; break;//urgente
+            case 27: *vector = m_calculation.SPLpdB3d()[opPointIndex];zeroY = true; break;//urgente
+            case 28: *vector = m_calculation.SPL_LEdB3d()[opPointIndex];zeroY = true; break;//urgente
+            case 29: *vector = m_calculation.SPLdB3d()[opPointIndex];break;
 
             default: return nullptr;
             }
@@ -184,7 +194,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
 QStringList NoiseSimulation::getAvailableVariables_rotor(NewGraph::GraphType /*graphType*/) {
     QStringList variables;
     // WARNING: when changing any variables list, change newCurve as well!
-    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" << "SPL_alpha_rotor[qs3D]" << "SPL_S_rotor[qs3D]" << "SPL_P_rotor[qs3D]" << "SPL_LE_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB(A))" << "SPL_rotor[qs3D] (dB(B))" << "SPL_rotor[qs3D] (dB(C))"; //Alexandre MOD Sara
+    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" << "SPL_alpha_rotor[qs3D]" << "SPL_S_rotor[qs3D]" << "SPL_P_rotor[qs3D]" << "SPL_LE_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB(A))" << "SPL_rotor[qs3D] (dB(B))" << "SPL_rotor[qs3D] (dB(C))" <<  "SPL_alpha_multi[qs3D]" << "SPL_S_multi[qs3D]" << "SPL_P_multi[qs3D]" << "SPL_LE_multi[qs3D] (dB)" << "SPL_multi[qs3D] (dB)" ; //Alexandre MOD Sara urgente
 
     return variables;
 }
@@ -192,7 +202,7 @@ QStringList NoiseSimulation::getAvailableVariables_rotor(NewGraph::GraphType /*g
 QStringList NoiseSimulation::getAvailableVariables_blade(NewGraph::GraphType /*graphType*/) {
     QStringList variables;
     // WARNING: when changing any variables list, change newCurve as well!
-    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))"; //Alexandre MOD Sara
+    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" <<  "SPL_alpha_multi[qs3D]" << "SPL_S_multi[qs3D]" << "SPL_P_multi[qs3D]" << "SPL_LE_multi[qs3D] (dB)" << "SPL_multi[qs3D] (dB)"; //Alexandre MOD Sara urgente
 
     return variables;
 }
