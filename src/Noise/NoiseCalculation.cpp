@@ -2115,6 +2115,7 @@ int number_of_segments = pbem->dlg_elements;
 
         double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
         double rho = pbem->dlg_rho;
+        double visc = bdata->visc;
         double lambda = pbem->dlg_lambda;
         int mpos_size = pbem->dlg_elements;
         double finalradius = bdata->m_pos.value(mpos_size-1);
@@ -2245,14 +2246,22 @@ int number_of_segments = pbem->dlg_elements;
         double RCmod_rotor[number_of_segments];
         double ao_Rc[number_of_segments];
         double ao_Rc_rotor[number_of_segments];
+        double ao[number_of_segments];
+        double ao_rotor[number_of_segments];
         double A_min_ao[number_of_segments];
         double A_max_ao[number_of_segments];
         double A_min_ao_rotor[number_of_segments];
         double A_max_ao_rotor[number_of_segments];
+        double A_min_ao_Rc[number_of_segments];
+        double A_max_ao_Rc[number_of_segments];
+        double A_min_ao_Rc_rotor[number_of_segments];
+        double A_max_ao_Rc_rotor[number_of_segments];
         double K1_3[number_of_segments];
         double K1_3_rotor[number_of_segments];
         double AR_ao[number_of_segments];
         double AR_ao_rotor[number_of_segments];
+        double AR_ao_Rc[number_of_segments];
+        double AR_ao_Rc_rotor[number_of_segments];
         double St1_bar_rotor[number_of_segments];
         double Re_disp_thick[number_of_segments];
         double Re_disp_thick_rotor[number_of_segments];
@@ -2626,7 +2635,7 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 D_starred_N_S_rotor[i]=D_starred_N_rotor[i]*corr_fact[i];
 }}
 
-//For D* Xfoil urgente
+//For D* Xfoil
 DStarXFoilS[i]=m_DStarInterpolatedS3d[i];
 DStarXFoilP[i]=m_DStarInterpolatedP3d[i];
 
@@ -2688,7 +2697,7 @@ else
 
 //delta starred type, if natural transition or heavy-tripping
 if (m_parameter->dstar_type==0){
-//XFoil calculation urgente
+//XFoil calculation
     D_starred_S[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
     D_starred_P[i]=DStarXFoilP[i]*chord[i]*m_parameter->dStarScalingFactor;
     D_starred_S_rotor[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
@@ -2808,7 +2817,6 @@ c_i[i]=(c_0[i]+c_1[i])/2.;
 local_twist[i]=theta_BEM[i];
 
     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
-//if ((r_1[i]==r_0[i]) && (c_1[i] = c_0[i])){b[i]=0;} urgente
 
 //    the angle a is the total angle between the YB ZB blade reference system plane and the local midsection chord line p 75 handout
     a[i]=local_twist[i]+blade_pitch;
@@ -2914,33 +2922,33 @@ if (RCmod_rotor[i]<95200){ao_Rc_rotor[i]=0.57;}
 else if (RCmod_rotor[i]>857000){ao_Rc_rotor[i]=1.13;}
 else {ao_Rc_rotor[i]=-9.57*pow(10,-13)*(pow((RCmod_rotor[i]-857000),2)+1.13);}
 
-if(ao_Rc[i]<0.204){A_min_ao[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
-else if (ao_Rc[i]>0.244){A_min_ao[i]=-142.795*pow(ao_Rc[i],3)+103.656*pow(ao_Rc[i],2)-57.757*ao_Rc[i]+6.006;}
-else {A_min_ao[i]=-32.665*ao_Rc[i]+3.981;}
+if(ao_Rc[i]<0.204){A_min_ao_Rc[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
+else if (ao_Rc[i]>0.244){A_min_ao_Rc[i]=-142.795*pow(ao_Rc[i],3)+103.656*pow(ao_Rc[i],2)-57.757*ao_Rc[i]+6.006;}
+else {A_min_ao_Rc[i]=-32.665*ao_Rc[i]+3.981;}
 
-if(ao_Rc_rotor[i]<0.204){A_min_ao_rotor[i]=sqrt(67.552-886.788*pow(ao_Rc_rotor[i],2))-8.219;}
-else if (ao_Rc_rotor[i]>0.244){A_min_ao_rotor[i]=-142.795*pow(ao_Rc_rotor[i],3)+103.656*pow(ao_Rc_rotor[i],2)-57.757*ao_Rc_rotor[i]+6.006;}
-else {A_min_ao_rotor[i]=-32.665*ao_Rc_rotor[i]+3.981;}
+if(ao_Rc_rotor[i]<0.204){A_min_ao_Rc_rotor[i]=sqrt(67.552-886.788*pow(ao_Rc_rotor[i],2))-8.219;}
+else if (ao_Rc_rotor[i]>0.244){A_min_ao_Rc_rotor[i]=-142.795*pow(ao_Rc_rotor[i],3)+103.656*pow(ao_Rc_rotor[i],2)-57.757*ao_Rc_rotor[i]+6.006;}
+else {A_min_ao_Rc_rotor[i]=-32.665*ao_Rc_rotor[i]+3.981;}
 
-if (ao_Rc[i]<0.13){A_max_ao[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
-else if(ao_Rc[i]>0.321){A_max_ao[i]=-4.669*pow(ao_Rc[i],3)+3.491*pow(ao_Rc[i],2)-16.699*ao_Rc[i]+1.149;}
-else {A_max_ao[i]=-15.901*ao_Rc[i]+1.098;}
+if (ao_Rc[i]<0.13){A_max_ao_Rc[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
+else if(ao_Rc[i]>0.321){A_max_ao_Rc[i]=-4.669*pow(ao_Rc[i],3)+3.491*pow(ao_Rc[i],2)-16.699*ao_Rc[i]+1.149;}
+else {A_max_ao_Rc[i]=-15.901*ao_Rc[i]+1.098;}
 
-if (ao_Rc_rotor[i]<0.13){A_max_ao_rotor[i]=sqrt(67.552-886.788*pow(ao_Rc_rotor[i],2))-8.219;}
-else if(ao_Rc_rotor[i]>0.321){A_max_ao_rotor[i]=-4.669*pow(ao_Rc_rotor[i],3)+3.491*pow(ao_Rc_rotor[i],2)-16.699*ao_Rc_rotor[i]+1.149;}
-else {A_max_ao_rotor[i]=-15.901*ao_Rc_rotor[i]+1.098;}
+if (ao_Rc_rotor[i]<0.13){A_max_ao_Rc_rotor[i]=sqrt(67.552-886.788*pow(ao_Rc_rotor[i],2))-8.219;}
+else if(ao_Rc_rotor[i]>0.321){A_max_ao_Rc_rotor[i]=-4.669*pow(ao_Rc_rotor[i],3)+3.491*pow(ao_Rc_rotor[i],2)-16.699*ao_Rc_rotor[i]+1.149;}
+else {A_max_ao_Rc_rotor[i]=-15.901*ao_Rc_rotor[i]+1.098;}
 
 K1_3[i]=K1[i]-3.;
 K1_3_rotor[i]=K1_rotor[i]-3.;
 
-AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
-AR_ao_rotor[i]=(-20-A_min_ao_rotor[i])/(A_max_ao_rotor[i]-A_min_ao_rotor[i]);
+AR_ao_Rc[i]=(-20-A_min_ao_Rc[i])/(A_max_ao_Rc[i]-A_min_ao_Rc[i]);
+AR_ao_Rc_rotor[i]=(-20-A_min_ao_Rc_rotor[i])/(A_max_ao_Rc_rotor[i]-A_min_ao_Rc_rotor[i]);
 
 St1_bar[i]=(St1[i]+St2[i])/2.;
 St1_bar_rotor[i]=(St1_rotor[i]+St2_rotor[i])/2.;
 
-Re_disp_thick[i]=rho*vel[i]*D_starred_P[i]/(0.0000178);
-Re_disp_thick_rotor[i]=rho*vel_rotor[i]*D_starred_P_rotor[i]/(0.0000178);
+Re_disp_thick[i]=rho*vel[i]*D_starred_P[i]/visc;
+Re_disp_thick_rotor[i]=rho*vel_rotor[i]*D_starred_P_rotor[i]/visc;
 
 if (Re_disp_thick[i]>5000){delta_K1[i]=0;}
 else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
@@ -2994,13 +3002,13 @@ b_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
 b_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
 
     if (b_alpha[j]<0.13)
-    {B_min[j]=sqrt(16.888-886.788*pow(b_alpha[j],2));}
+    {B_min[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4.109;}
     else if(b_alpha[j]>0.145)
     {B_min[j]=-817.81*pow(b_alpha[j],3)+335.21*pow(b_alpha[j],2)-135.024*b_alpha[j]+10.619;}
     else {B_min[j]=-83.607*b_alpha[j]+8.138;}
 
     if (b_alpha_rotor[j]<0.13)
-    {B_min_rotor[j]=sqrt(16.888-886.788*pow(b_alpha_rotor[j],2));}
+    {B_min_rotor[j]=sqrt(16.888-886.788*pow(b_alpha_rotor[j],2))-4.109;}
     else if(b_alpha_rotor[j]>0.145)
     {B_min_rotor[j]=-817.81*pow(b_alpha_rotor[j],3)+335.21*pow(b_alpha_rotor[j],2)-135.024*b_alpha_rotor[j]+10.619;}
     else {B_min_rotor[j]=-83.607*b_alpha_rotor[j]+8.138;}
@@ -3018,10 +3026,12 @@ b_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
     else {B_max_rotor[j]=-31.33*b_alpha_rotor[j]+1.854;}
 
     B_b[j]=B_min[j]+BR_b0[i]*(B_max[j]-B_min[j]);
-    if(qIsInf(B_b[j])){B_b[j]=0;}
+//    if(qIsInf(B_b[j])){B_b[j]=0;} urgente
 
     B_b_rotor[j]=B_min_rotor[j]+BR_b0_rotor[i]*(B_max_rotor[j]-B_min_rotor[j]);
-    if(qIsInf(B_b_rotor[j])){B_b_rotor[j]=0;}
+//    if(qIsInf(B_b_rotor[j])){B_b_rotor[j]=0;} urgente
+
+    a_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
     a_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
 
     if (a_alpha[j]<0.204)
@@ -3047,25 +3057,38 @@ b_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
     else if(a_alpha_rotor[j]>0.321)
     {A_max_alpha_rotor[j]=-4.669*pow(a_alpha_rotor[j],3)+3.491*pow(a_alpha_rotor[j],2)-16.699*a_alpha_rotor[j]+1.149;}
     else {A_max_alpha_rotor[j]=-15.901*a_alpha_rotor[j]+1.098;}
-    Alin_a[j]=A_min_alpha[j]+AR_ao[i]*(A_max_alpha[j]-A_min_alpha[j]);
-    Alin_a_rotor[j]=A_min_alpha_rotor[j]+AR_ao_rotor[i]*(A_max_alpha_rotor[j]-A_min_alpha_rotor[j]);
-
-    dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
-    dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
-    dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
-    dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
-    dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
-    dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
-
-    dBA_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+AWeighting[j];
-    dBA_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+AWeighting[j];
-    dBB_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+BWeighting[j];
-    dBC_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+CWeighting[j];
-    dBC_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+CWeighting[j];
-    dBB_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+BWeighting[j];
+    Alin_a[j]=A_min_alpha[j]+AR_ao_Rc[i]*(A_max_alpha[j]-A_min_alpha[j]);
+    Alin_a_rotor[j]=A_min_alpha_rotor[j]+AR_ao_Rc_rotor[i]*(A_max_alpha_rotor[j]-A_min_alpha_rotor[j]);
 
     St1_bar[j]=(St1[i]+St2[i])/2.;
     St1_bar_rotor[j]=(St1_rotor[i]+St2_rotor[i])/2.;
+
+    if (Reynolds[i]<95200){ao[i]=0.57;}
+    else if (Reynolds[i]>857000){ao[i]=1.13;}
+    else {ao[i]=-9.57*pow(10,-13)*(pow((Reynolds[i]-857000),2)+1.13);}
+
+    if (Reynolds_rotor[i]<95200){ao_rotor[i]=0.57;}
+    else if (Reynolds_rotor[i]>857000){ao_rotor[i]=1.13;}
+    else {ao_rotor[i]=-9.57*pow(10,-13)*(pow((Reynolds_rotor[i]-857000),2)+1.13);}
+
+    if(ao[i]<0.204){A_min_ao[i]=sqrt(67.552-886.788*pow(ao[i],2))-8.219;}
+    else if (ao[i]>0.244){A_min_ao[i]=-142.795*pow(ao[i],3)+103.656*pow(ao[i],2)-57.757*ao[i]+6.006;}
+    else {A_min_ao[i]=-32.665*ao[i]+3.981;}
+
+    if(ao_rotor[i]<0.204){A_min_ao_rotor[i]=sqrt(67.552-886.788*pow(ao_rotor[i],2))-8.219;}
+    else if (ao_rotor[i]>0.244){A_min_ao_rotor[i]=-142.795*pow(ao_rotor[i],3)+103.656*pow(ao_rotor[i],2)-57.757*ao_rotor[i]+6.006;}
+    else {A_min_ao_rotor[i]=-32.665*ao_rotor[i]+3.981;}
+
+    if (ao[i]<0.13){A_max_ao[i]=sqrt(67.552-886.788*pow(ao[i],2))-8.219;}
+    else if(ao[i]>0.321){A_max_ao[i]=-4.669*pow(ao[i],3)+3.491*pow(ao[i],2)-16.699*ao[i]+1.149;}
+    else {A_max_ao[i]=-15.901*ao[i]+1.098;}
+
+    if (ao_rotor[i]<0.13){A_max_ao_rotor[i]=sqrt(67.552-886.788*pow(ao_rotor[i],2))-8.219;}
+    else if(ao_rotor[i]>0.321){A_max_ao_rotor[i]=-4.669*pow(ao_rotor[i],3)+3.491*pow(ao_rotor[i],2)-16.699*ao_rotor[i]+1.149;}
+    else {A_max_ao_rotor[i]=-15.901*ao_rotor[i]+1.098;}
+
+    AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
+    AR_ao_rotor[i]=(-20-A_min_ao_rotor[i])/(A_max_ao_rotor[i]-A_min_ao_rotor[i]);
 
     a_S[j]=qFabs(log10(Sts[j]/St1_bar[j]));
     a_S_rotor[j]=qFabs(log10(Sts_rotor[j]/St1_bar_rotor[j]));
@@ -3342,6 +3365,20 @@ SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor
 else{SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
 SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.)));
 }
+
+dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
+dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
+dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
+dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
+dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
+dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
+
+dBA_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+AWeighting[j];
+dBA_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+AWeighting[j];
+dBB_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+BWeighting[j];
+dBC_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+CWeighting[j];
+dBC_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+CWeighting[j];
+dBB_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+BWeighting[j];
 
 SPL_A[j]=SPL_dB[j]+AWeighting[j];
 SPL_B[j]=SPL_dB[j]+BWeighting[j];
