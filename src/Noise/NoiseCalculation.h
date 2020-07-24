@@ -282,6 +282,16 @@ private:
     void calcSPLp(int posOpPoint,int posFreq);
     void LECalc(int posOpPoint, int posFreq); //Alexandre MOD
     //Sara begin
+    double calcao(double Reynolds);
+    double calcBR_b(double B_min, double B_max);
+    double calcB_min(double b);
+    double calcB_max(double b);
+    double calcA_min(double a);
+    double calcA_max(double a);
+    double calcK1(double Reynolds);
+    double calcK2(double gamma0_gamma_min,double gamma0_gamma_plus, double K1, double beta, double gamma, double alpha, double gamma0, double beta0);
+    double calcb0(double Reynolds);
+    double calcSt2(double alpha, double St1);
     double calcXRS(double a, double XB, double YB);
     double calcYRS(double a, double XB, double YB);
     double calcZRS(double ZB, double r_i);

@@ -1922,13 +1922,114 @@ return first_term;
 }
 
 double NoiseCalculation::calcDh(double Mach, double theta_e, double phi_e,double EddyMach){
-double Dh=(2.*pow(sin(qDegreesToRadians(theta_e/2.)),2)*pow(sin(qDegreesToRadians(phi_e)),2))/pow(1+Mach*cos(qDegreesToRadians(theta_e))*(1.+(Mach-Mach*EddyMach)*cos(qDegreesToRadians(phi_e))),2);
+double Dh;
+if (m_parameter->lowFreq) {
+Dh=(2.*pow(sin(qDegreesToRadians(theta_e/2.)),2)*pow(sin(qDegreesToRadians(phi_e)),2))/pow(1+Mach*cos(qDegreesToRadians(theta_e))*(1.+(Mach-Mach*EddyMach)*cos(qDegreesToRadians(phi_e))),2);}
+else {Dh=1;}
 return Dh;
 }
 
 double NoiseCalculation::calcDl(double Mach, double theta_e, double phi_e){
-double Dl=(2.*pow(sin(qDegreesToRadians(theta_e)),2.)*pow(sin(qDegreesToRadians(phi_e)),2.))/pow((1.+(Mach*cos(qDegreesToRadians(theta_e)))),4.);
+double Dl;
+if (m_parameter->lowFreq) {
+Dl=(2.*pow(sin(qDegreesToRadians(theta_e)),2.)*pow(sin(qDegreesToRadians(phi_e)),2.))/pow((1.+(Mach*cos(qDegreesToRadians(theta_e)))),4.);}
+else {Dl=1;}
 return Dl;
+}
+
+double NoiseCalculation::calcSt2(double alpha, double St1){
+double St2;
+    if(alpha<1.33){
+        St2=St1;}
+    else if(alpha>12.5){
+        St2=St1*4.72;}
+    else {St2=St1*pow(10.,(0.0054*pow((alpha-1.33),2)));}
+
+return St2;
+}
+
+double NoiseCalculation::calcK1(double Reynolds){
+double K1;
+    if (Reynolds<247000)
+    {K1=-4.31*log10(Reynolds)+156.3;}
+    else if (Reynolds>800000)
+    {K1=128.5;}
+    else {K1=-9.*log10(Reynolds)+181.6;}
+
+return K1;
+}
+
+double NoiseCalculation::calcK2(double gamma0_gamma_min,double gamma0_gamma_plus, double K1, double beta, double gamma, double alpha, double gamma0, double beta0){
+double K2;
+if (alpha<gamma0_gamma_min)
+{K2=K1-1000.;}
+else if (alpha>gamma0_gamma_plus)
+{K2=K1-12.;}
+else
+{K2=K1+(sqrt(pow(beta,2)-pow((beta/gamma),2)*pow((alpha-gamma0),2)))+beta0;}
+
+return K2;
+}
+
+double NoiseCalculation::calcb0(double Reynolds){
+double b0;
+    if (Reynolds<95200)
+    {b0= 0.3;}
+    else if (Reynolds>857000)
+    {b0= 0.56;}
+    else {b0=-4.48*pow(10,-13)*(pow((Reynolds-857000.),2)+0.56);}
+return b0;
+}
+
+double NoiseCalculation::calcB_min(double b){
+double B_min;
+if (b<0.13)
+{B_min=sqrt(16.888-886.788*pow(b,2))-4.109;}
+else if (b>0.145)
+{B_min=-817.81*pow(b,3)+335.21*pow(b,2)-135.024*b+10.619;}
+else{B_min=-83.607*b+8.138;}
+
+return B_min;
+}
+
+double NoiseCalculation::calcB_max(double b){
+double B_max;
+if (b<0.1)
+{B_max=sqrt(16.888-886.788*pow(b,2))-4.109;}
+else if (b>0.187)
+{B_max=-80.541*pow(b,3)+44.174*pow(b,2)-39.381*b+2.344;}
+else {B_max=-31.33*b+1.854;}
+
+return B_max;
+}
+
+double NoiseCalculation::calcBR_b(double B_min, double B_max){
+double BR_b=(-20-B_min)/(B_max-B_min);
+return BR_b;
+}
+
+double NoiseCalculation::calcA_min(double a){
+double A_min;
+if(a<0.204){A_min=sqrt(67.552-886.788*pow(a,2))-8.219;}
+else if (a>0.244){A_min=-142.795*pow(a,3)+103.656*pow(a,2)-57.757*a+6.006;}
+else {A_min=-32.665*a+3.981;}
+return A_min;
+}
+
+double NoiseCalculation::calcA_max(double a){
+double A_max;
+if (a<0.13){A_max=sqrt(67.552-886.788*pow(a,2))-8.219;}
+else if(a>0.321){A_max=-4.669*pow(a,3)+3.491*pow(a,2)-16.699*a+1.149;}
+else {A_max=-15.901*a+1.098;}
+return A_max;
+}
+
+double NoiseCalculation::calcao(double Reynolds){
+double ao;
+if (Reynolds<95200){ao=0.57;}
+else if (Reynolds>857000){ao=1.13;}
+else {ao=-9.57*pow(10,-13)*(pow((Reynolds-857000),2)+1.13);}
+return ao;
 }
 
 //Sara
@@ -2643,93 +2744,7 @@ DStarXFoilP[i]=m_DStarInterpolatedP3d[i];
 if (i==(number_of_segments-1)){L[i]=0;}else{
 L[i]=bdata->m_pos.value(i+1)-bdata->m_pos.value(i);}
 
-//Calculate the Switching Angle
-SwAlpha_1[i]=23.43*Mach[i]+4.651;
-SwAlpha_2[i]=12.5;
-
-if (SwAlpha_1[i]<SwAlpha_2[i]){SwAlpha[i]=SwAlpha_1[i];}
-else {SwAlpha[i]=SwAlpha_2[i];}
-
 double EddyMach = m_parameter->eddyConvectionMach;
-
-gamma[i]=27.094*Mach[i]+3.32;
-gamma_rotor[i]=27.094*Mach_rotor[i]+3.32;
-
-gamma0[i]=SwAlpha_1[i];
-
-beta[i]=72.65*Mach[i]+10.74;
-beta_rotor[i]=72.65*Mach_rotor[i]+10.74;
-
-beta0[i]=-34.19*Mach[i]-13.82;
-beta0_rotor[i]=-34.19*Mach_rotor[i]-13.82;
-
-gamma0_gamma_min[i]=gamma0[i]-gamma[i];
-gamma0_gamma_plus[i]=gamma0[i]+gamma[i];
-
-gamma0_gamma_min_rotor[i]=gamma0[i]-gamma_rotor[i];
-gamma0_gamma_plus_rotor[i]=gamma0[i]+gamma_rotor[i];
-
-if (Reynolds[i]<247000)
-{K1[i]=-4.31*log10(Reynolds[i])+156.3;}
-else if (Reynolds[i]>800000)
-{K1[i]=128.5;}
-else {K1[i]=-9.*log10(Reynolds[i])+181.6;}
-
-if (alpha[i]<gamma0_gamma_min[i])
-{K2[i]=K1[i]-1000.;}
-else if (alpha[i]>gamma0_gamma_plus[i])
-{K2[i]=K1[i]-12.;}
-else
-{K2[i]=K1[i]+(sqrt(pow(beta[i],2)-pow((beta[i]/gamma[i]),2)*pow((alpha[i]-gamma0[i]),2)))+beta0[i];}
-
-if (Reynolds_rotor[i]<247000)
-{K1_rotor[i]=-4.31*log10(Reynolds_rotor[i])+156.3;}
-else if (Reynolds_rotor[i]>800000)
-{K1_rotor[i]=128.5;}
-else {K1_rotor[i]=-9.*log10(Reynolds_rotor[i])+181.6;}
-
-if (alpha[i]<gamma0_gamma_min_rotor[i])
-{K2_rotor[i]=K1_rotor[i]-1000.;}
-else if (alpha[i]>gamma0_gamma_plus_rotor[i])
-{K2_rotor[i]=K1_rotor[i]-12.;}
-else
-{K2_rotor[i]=K1_rotor[i]+(sqrt(pow(beta_rotor[i],2)-pow((beta_rotor[i]/gamma_rotor[i]),2)*pow((alpha[i]-gamma0[i]),2)))+beta0_rotor[i];}
-
-//delta starred type, if natural transition or heavy-tripping
-if (m_parameter->dstar_type==0){
-//XFoil calculation
-    D_starred_S[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
-    D_starred_P[i]=DStarXFoilP[i]*chord[i]*m_parameter->dStarScalingFactor;
-    D_starred_S_rotor[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
-    D_starred_P_rotor[i]=DStarXFoilP[i]*chord[i]*m_parameter->dStarScalingFactor;
-}
-else if (m_parameter->dstar_type==1){
-//    BPM calculation
-    FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
-        double TopTrip=pFoilPolarDlg->m_XTopTr;
-        double BotTrip=pFoilPolarDlg->m_XBotTr;
-    if((TopTrip==0) & (BotTrip==0)) {
-    //        natural transition
-        D_starred_S[i]=D_starred_N_S[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_P[i]=D_starred_N_P[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_S_rotor[i]=D_starred_N_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_P_rotor[i]=D_starred_N_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
-    }
-    else {
-    //heavy tripping
-        D_starred_S[i]=D_starred_HT_S[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_P[i]=D_starred_HT_P[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_S_rotor[i]=D_starred_HT_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_P_rotor[i]=D_starred_HT_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
-}}
-else if (m_parameter->dstar_type==2){
-//user
-    NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
-    D_starred_S[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
-    D_starred_P[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
-    D_starred_S_rotor[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
-    D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
-}
 
 //coordinates transformation using p 54  C_Project_Log_Text_Jan_16.pdf
 //    re phi_e and theta_e calculation p 77 C_Project_Log_Text_Jan_16.pdf
@@ -2796,7 +2811,6 @@ else if (m_parameter->dstar_type==2){
 
     hub_radius=pbem->m_pBlade->m_HubRadius;
     double outer_radius=pbem->m_pTData->OuterRadius;
-    double blade_radius=(outer_radius-hub_radius);
 
 c_0[i]=bdata->m_c_local.value(i);
 r_0[i]=bdata->m_pos.value(i)-hub_radius;
@@ -2858,94 +2872,234 @@ local_twist[i]=theta_BEM[i];
 //rotor
 //end coordinates transformation
 
-alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+//begin original BPM correlations
+    //delta starred type, if natural transition or heavy-tripping
+    if (m_parameter->dstar_type==0){
+    //XFoil calculation
+        D_starred_S[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P[i]=DStarXFoilP[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_S_rotor[i]=DStarXFoilS[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P_rotor[i]=DStarXFoilP[i]*chord[i]*m_parameter->dStarScalingFactor;
+    }
+    else if (m_parameter->dstar_type==1){
+    //    BPM calculation
+        FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
+            double TopTrip=pFoilPolarDlg->m_XTopTr;
+            double BotTrip=pFoilPolarDlg->m_XBotTr;
+        if((TopTrip==0) & (BotTrip==0)) {
+        //        natural transition
+            D_starred_S[i]=D_starred_N_S[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_P[i]=D_starred_N_P[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_S_rotor[i]=D_starred_N_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_P_rotor[i]=D_starred_N_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+        }
+        else {
+        //heavy tripping
+            D_starred_S[i]=D_starred_HT_S[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_P[i]=D_starred_HT_P[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_S_rotor[i]=D_starred_HT_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_P_rotor[i]=D_starred_HT_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+    }}
+    else if (m_parameter->dstar_type==2){
+    //user
+        NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
+        D_starred_S[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_S_rotor[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+    }
+//end original BPM correlations
 
+    Dh[i]=calcDh(Mach[i],theta_e[i],phi_e[i],EddyMach);
+    Dh_rotor[i]=calcDh(Mach_rotor[i],theta_e_rotor[i],phi_e_rotor[i],EddyMach);
+
+    Dl[i]=calcDl(Mach[i],theta_e[i],phi_e[i]);
+    Dl_rotor[i]=calcDl(Mach_rotor[i],theta_e_rotor[i],phi_e_rotor[i]);
+
+    alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+
+//begin SPL Alpha
+
+//Calculate the Switching Angle
+SwAlpha_1[i]=23.43*Mach[i]+4.651;
+SwAlpha_2[i]=12.5;
+
+if (SwAlpha_1[i]<SwAlpha_2[i]){SwAlpha[i]=SwAlpha_1[i];}
+else {SwAlpha[i]=SwAlpha_2[i];}
+
+first_term_Dl_S[i]=calcFirstTerm(Mach[i],L[i],Dl[i],D_starred_S[i],dist_obs[i]);
+first_term_Dh_P[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_P[i],dist_obs[i]);
+first_term_Dh_S[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_S[i],dist_obs[i]);
+
+//rotor
+first_term_Dl_S_rotor[i]=calcFirstTerm(Mach_rotor[i],L[i],Dl_rotor[i],D_starred_S_rotor[i],dist_obs_rotor[i]);
+first_term_Dh_P_rotor[i]=calcFirstTerm(Mach_rotor[i],L[i],Dh_rotor[i],D_starred_P_rotor[i],dist_obs_rotor[i]);
+first_term_Dh_S_rotor[i]=calcFirstTerm(Mach_rotor[i],L[i],Dh_rotor[i],D_starred_S_rotor[i],dist_obs_rotor[i]);
+//rotor
+
+
+//for angles smaller than the switch angle
 St1[i]=0.02*(pow(Mach[i],-0.6));
 St1_rotor[i]=0.02*(pow(Mach_rotor[i],-0.6));
 
-if(alpha[i]<1.33){
-    St2[i]=St1[i];
-    St2_rotor[i]=St1_rotor[i];}
-else if(alpha[i]>12.5){
-    St2[i]=St1[i]*4.72;
-    St2_rotor[i]=St1_rotor[i]*4.72;}
-else {St2[i]=St1[i]*pow(10.,(0.0054*pow((alpha[i]-1.33),2)));
-St2_rotor[i]=St1_rotor[i]*pow(10.,(0.0054*pow((alpha[i]-1.33),2)));}
+St2[i]=calcSt2(alpha[i],St1[i]);
+St2_rotor[i]=calcSt2(alpha[i],St1_rotor[i]);
 
-if (Reynolds[i]<95200)
-{b0[i]= 0.3;}
-else if (Reynolds[i]>857000)
-{b0[i]= 0.56;}
-else {b0[i]=-4.48*pow(10,-13)*(pow((Reynolds[i]-857000.),2)+0.56);}
+gamma[i]=27.094*Mach[i]+3.32;
+gamma_rotor[i]=27.094*Mach_rotor[i]+3.32;
 
-if (Reynolds_rotor[i]<95200)
-{b0_rotor[i]= 0.3;}
-else if (Reynolds_rotor[i]>857000)
-{b0_rotor[i]= 0.56;}
-else {b0_rotor[i]=-4.48*pow(10,-13)*(pow((Reynolds_rotor[i]-857000.),2)+0.56);}
+gamma0[i]=SwAlpha_1[i];
 
-if (b0[i]<0.13)
-{B_min_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
-else if (b0[i]>0.145)
-{B_min_b0[i]=-817.81*pow(b0[i],3)+335.21*pow(b0[i],2)-135.024*b0[i]+10.619;}
-else{B_min_b0[i]=-83.607*b0[i]+8.138;}
+beta[i]=72.65*Mach[i]+10.74;
+beta_rotor[i]=72.65*Mach_rotor[i]+10.74;
 
-if (b0_rotor[i]<0.13)
-{B_min_b0_rotor[i]=sqrt(16.888-886.788*pow(b0_rotor[i],2))-4.109;}
-else if (b0_rotor[i]>0.145)
-{B_min_b0_rotor[i]=-817.81*pow(b0_rotor[i],3)+335.21*pow(b0[i],2)-135.024*b0_rotor[i]+10.619;}
-else{B_min_b0_rotor[i]=-83.607*b0_rotor[i]+8.138;}
+beta0[i]=-34.19*Mach[i]-13.82;
+beta0_rotor[i]=-34.19*Mach_rotor[i]-13.82;
 
-if (b0[i]<0.1)
-{B_max_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
-else if (b0[i]>0.187)
-{B_max_b0[i]=-80.541*pow(b0[i],3)+44.174*pow(b0[i],2)-39.381*b0[i]+2.344;}
-else {B_max_b0[i]=-31.33*b0[i]+1.854;}
+gamma0_gamma_min[i]=gamma0[i]-gamma[i];
+gamma0_gamma_plus[i]=gamma0[i]+gamma[i];
 
-if (b0_rotor[i]<0.1)
-{B_max_b0_rotor[i]=sqrt(16.888-886.788*pow(b0_rotor[i],2))-4.109;}
-else if (b0_rotor[i]>0.187)
-{B_max_b0_rotor[i]=-80.541*pow(b0_rotor[i],3)+44.174*pow(b0_rotor[i],2)-39.381*b0_rotor[i]+2.344;}
-else {B_max_b0_rotor[i]=-31.33*b0_rotor[i]+1.854;}
+gamma0_gamma_min_rotor[i]=gamma0[i]-gamma_rotor[i];
+gamma0_gamma_plus_rotor[i]=gamma0[i]+gamma_rotor[i];
 
-BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
-BR_b0_rotor[i]=(-20-B_min_b0_rotor[i])/(B_max_b0_rotor[i]-B_min_b0_rotor[i]);
+K1[i]=calcK1(Reynolds[i]);
+K1_rotor[i]=calcK1(Reynolds_rotor[i]);
+
+K2[i]=calcK2(gamma0_gamma_min[i],gamma0_gamma_plus[i],K1[i],beta[i],gamma[i],alpha[i],gamma0[i],beta0[i]);
+K2_rotor[i]=calcK2(gamma0_gamma_min_rotor[i],gamma0_gamma_plus_rotor[i],K1_rotor[i],beta_rotor[i],gamma_rotor[i],alpha[i],gamma0[i],beta0_rotor[i]);
+
+b0[i]=calcb0(Reynolds[i]);
+b0_rotor[i]=calcb0(Reynolds_rotor[i]);
+
+B_min_b0[i]=calcB_min(b0[i]);
+B_min_b0_rotor[i]=calcB_min(b0_rotor[i]);
+
+B_max_b0[i]=calcB_max(b0[i]);
+B_max_b0_rotor[i]=calcB_max(b0_rotor[i]);
+
+BR_b0[i]=calcBR_b(B_min_b0[i],B_max_b0[i]);
+BR_b0_rotor[i]=calcBR_b(B_min_b0_rotor[i],B_max_b0_rotor[i]);
+
+Sts[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/vel[i];
+Sts_rotor[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S_rotor[i]/vel_rotor[i];
+
+b_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
+b_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
+
+B_min[j]=calcB_min(b_alpha[j]);
+B_min_rotor[j]=calcB_min(b_alpha_rotor[j]);
+
+B_max[j]=calcB_max(b_alpha[j]);
+B_max_rotor[j]=calcB_max(b_alpha_rotor[j]);
+
+B_b[j]=B_min[j]+BR_b0[i]*(B_max[j]-B_min[j]);
+B_b_rotor[j]=B_min_rotor[j]+BR_b0_rotor[i]*(B_max_rotor[j]-B_min_rotor[j]);
+
+SPL_alpha_min0[j]=first_term_Dh_S[i]+K2[i]+B_b[j];
+SPL_alpha_min0_rotor[j]=first_term_Dh_S_rotor[i]+K2_rotor[i]+B_b_rotor[j];
+
+dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
+dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
+dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
+
+dBA_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+AWeighting[j];
+dBB_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+BWeighting[j];
+dBC_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+CWeighting[j];
+
+//for angles greater than the switch angle
 
 RCmod[i]=3*Reynolds[i];
 RCmod_rotor[i]=3*Reynolds_rotor[i];
 
-if (RCmod[i]<95200){ao_Rc[i]=0.57;}
-else if (RCmod[i]>857000){ao_Rc[i]=1.13;}
-else {ao_Rc[i]=-9.57*pow(10,-13)*(pow((RCmod[i]-857000),2)+1.13);}
+ao_Rc[i]=calcao(RCmod[i]);
+ao_Rc_rotor[i]=calcao(RCmod_rotor[i]);
 
-if (RCmod_rotor[i]<95200){ao_Rc_rotor[i]=0.57;}
-else if (RCmod_rotor[i]>857000){ao_Rc_rotor[i]=1.13;}
-else {ao_Rc_rotor[i]=-9.57*pow(10,-13)*(pow((RCmod_rotor[i]-857000),2)+1.13);}
+A_min_ao_Rc[i]=calcA_min(ao_Rc[i]);
+A_min_ao_Rc_rotor[i]=calcA_min(ao_Rc_rotor[i]);
 
-if(ao_Rc[i]<0.204){A_min_ao_Rc[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
-else if (ao_Rc[i]>0.244){A_min_ao_Rc[i]=-142.795*pow(ao_Rc[i],3)+103.656*pow(ao_Rc[i],2)-57.757*ao_Rc[i]+6.006;}
-else {A_min_ao_Rc[i]=-32.665*ao_Rc[i]+3.981;}
-
-if(ao_Rc_rotor[i]<0.204){A_min_ao_Rc_rotor[i]=sqrt(67.552-886.788*pow(ao_Rc_rotor[i],2))-8.219;}
-else if (ao_Rc_rotor[i]>0.244){A_min_ao_Rc_rotor[i]=-142.795*pow(ao_Rc_rotor[i],3)+103.656*pow(ao_Rc_rotor[i],2)-57.757*ao_Rc_rotor[i]+6.006;}
-else {A_min_ao_Rc_rotor[i]=-32.665*ao_Rc_rotor[i]+3.981;}
-
-if (ao_Rc[i]<0.13){A_max_ao_Rc[i]=sqrt(67.552-886.788*pow(ao_Rc[i],2))-8.219;}
-else if(ao_Rc[i]>0.321){A_max_ao_Rc[i]=-4.669*pow(ao_Rc[i],3)+3.491*pow(ao_Rc[i],2)-16.699*ao_Rc[i]+1.149;}
-else {A_max_ao_Rc[i]=-15.901*ao_Rc[i]+1.098;}
-
-if (ao_Rc_rotor[i]<0.13){A_max_ao_Rc_rotor[i]=sqrt(67.552-886.788*pow(ao_Rc_rotor[i],2))-8.219;}
-else if(ao_Rc_rotor[i]>0.321){A_max_ao_Rc_rotor[i]=-4.669*pow(ao_Rc_rotor[i],3)+3.491*pow(ao_Rc_rotor[i],2)-16.699*ao_Rc_rotor[i]+1.149;}
-else {A_max_ao_Rc_rotor[i]=-15.901*ao_Rc_rotor[i]+1.098;}
-
-K1_3[i]=K1[i]-3.;
-K1_3_rotor[i]=K1_rotor[i]-3.;
+A_max_ao_Rc[i]=calcA_max(ao_Rc[i]);
+A_max_ao_Rc_rotor[i]=calcA_max(ao_Rc_rotor[i]);
 
 AR_ao_Rc[i]=(-20-A_min_ao_Rc[i])/(A_max_ao_Rc[i]-A_min_ao_Rc[i]);
 AR_ao_Rc_rotor[i]=(-20-A_min_ao_Rc_rotor[i])/(A_max_ao_Rc_rotor[i]-A_min_ao_Rc_rotor[i]);
 
-St1_bar[i]=(St1[i]+St2[i])/2.;
-St1_bar_rotor[i]=(St1_rotor[i]+St2_rotor[i])/2.;
+a_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
+a_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
+
+A_min_alpha[j]=calcA_min(a_alpha[j]);
+A_min_alpha_rotor[j]=calcA_min(a_alpha_rotor[j]);
+
+A_max_alpha[j]=calcA_max(a_alpha[j]);
+A_max_alpha_rotor[j]=calcA_max(a_alpha_rotor[j]);
+
+Alin_a[j]=A_min_alpha[j]+AR_ao_Rc[i]*(A_max_alpha[j]-A_min_alpha[j]);
+Alin_a_rotor[j]=A_min_alpha_rotor[j]+AR_ao_Rc_rotor[i]*(A_max_alpha_rotor[j]-A_min_alpha_rotor[j]);
+
+SPL_alpha_big0[j]=first_term_Dl_S[i]+K2[i]+Alin_a[j];
+SPL_alpha_big0_rotor[j]=first_term_Dl_S_rotor[i]+K2_rotor[i]+Alin_a_rotor[j];
+
+dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
+dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
+dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
+
+dBA_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+AWeighting[j];
+dBC_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+CWeighting[j];
+dBB_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+BWeighting[j];
+
+//SPL alfa
+if (alpha[i]<SwAlpha[i]){SPL_alpha[j]=SPL_alpha_min0[j]; SPL_alpha_rotor[j]=SPL_alpha_min0_rotor[j];}
+else {SPL_alpha[j]=SPL_alpha_big0[j]; SPL_alpha_rotor[j]=SPL_alpha_big0_rotor[j];}
+//end SPL alpha calculation
+
+//begin SPL suction calculation
+
+K1_3[i]=K1[i]-3.;
+K1_3_rotor[i]=K1_rotor[i]-3.;
+
+St1_bar[j]=(St1[i]+St2[i])/2.;
+St1_bar_rotor[j]=(St1_rotor[i]+St2_rotor[i])/2.;
+
+ao[i]=calcao(Reynolds[i]);
+ao_rotor[i]=calcao(Reynolds_rotor[i]);
+
+A_min_ao[i]=calcA_min(ao[i]);
+A_min_ao_rotor[i]=calcA_min(ao_rotor[i]);
+
+A_max_ao[i]=calcA_max(ao[i]);
+A_max_ao_rotor[i]=calcA_max(ao_rotor[i]);
+
+AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
+AR_ao_rotor[i]=(-20-A_min_ao_rotor[i])/(A_max_ao_rotor[i]-A_min_ao_rotor[i]);
+
+a_S[j]=qFabs(log10(Sts[j]/St1_bar[j]));
+a_S_rotor[j]=qFabs(log10(Sts_rotor[j]/St1_bar_rotor[j]));
+
+A_min_S[j]=calcA_min(a_S[j]);
+A_min_S_rotor[j]=calcA_min(a_S_rotor[j]);
+
+A_max_S[j]=calcA_max(a_S[j]);
+A_max_S_rotor[j]=calcA_max(a_S_rotor[j]);
+
+A_a_S[j]=A_min_S[j]+AR_ao[i]*(A_max_S[j]-A_min_S[j]);
+A_a_S_rotor[j]=A_min_S_rotor[j]+AR_ao_rotor[i]*(A_max_S_rotor[j]-A_min_S_rotor[j]);
+
+SPL_dB_S[j]=first_term_Dh_S[i]+A_a_S[j]+K1_3[i];
+SPL_dB_S_rotor[j]=first_term_Dh_S_rotor[i]+A_a_S_rotor[j]+K1_3_rotor[i];
+
+dBA_S[j]=SPL_dB_S[j]+AWeighting[j];
+dBB_S[j]=SPL_dB_S[j]+BWeighting[j];
+dBC_S[j]=SPL_dB_S[j]+CWeighting[j];
+
+dBA_S_rotor[j]=SPL_dB_S_rotor[j]+AWeighting[j];
+dBB_S_rotor[j]=SPL_dB_S_rotor[j]+BWeighting[j];
+dBC_S_rotor[j]=SPL_dB_S_rotor[j]+CWeighting[j];
+
+if (alpha[i]<SwAlpha[i]){SPL_S[j]=SPL_dB_S[j]; SPL_S_rotor[j]=SPL_dB_S_rotor[j];}
+else {SPL_S[j]=-999999999999.; SPL_S_rotor[j]=-999999999999.;}
+
+//end SPL suction calculation
+
+//begin SPL pressure calculation
 
 Re_disp_thick[i]=rho*vel[i]*D_starred_P[i]/visc;
 Re_disp_thick_rotor[i]=rho*vel_rotor[i]*D_starred_P_rotor[i]/visc;
@@ -2956,204 +3110,40 @@ else {delta_K1[i]=alpha[i]*(1.43*log10(Re_disp_thick[i])-5.29);}
 if (Re_disp_thick_rotor[i]>5000){delta_K1_rotor[i]=0;}
 else {delta_K1_rotor[i]=alpha[i]*(1.43*log10(Re_disp_thick_rotor[i])-5.29);}
 
-    if (Reynolds[i]<95200)
-    {b0[i]= 0.3;}
-    else if (Reynolds[i]>857000)
-    {b0[i]= 0.56;}
-    else {b0[i]=-4.48*pow(10.,-13)*(pow((Reynolds[i]-857000.),2)+0.56);}
-
-    if (Reynolds_rotor[i]<95200)
-    {b0_rotor[i]= 0.3;}
-    else if (Reynolds_rotor[i]>857000)
-    {b0_rotor[i]= 0.56;}
-    else {b0_rotor[i]=-4.48*pow(10.,-13)*(pow((Reynolds_rotor[i]-857000.),2)+0.56);}
-
-    if (b0[i]<0.13)
-    {B_min_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
-    else if (b0[i]>0.145)
-    {B_min_b0[i]=-817.81*pow(b0[i],3)+335.21*pow(b0[i],2)-135.024*b0[i]+10.619;}
-    else{B_min_b0[i]=-83.607*b0[i]+8.138;}
-
-    if (b0_rotor[i]<0.13)
-    {B_min_b0_rotor[i]=sqrt(16.888-886.788*pow(b0_rotor[i],2))-4.109;}
-    else if (b0_rotor[i]>0.145)
-    {B_min_b0_rotor[i]=-817.81*pow(b0_rotor[i],3)+335.21*pow(b0_rotor[i],2)-135.024*b0_rotor[i]+10.619;}
-    else{B_min_b0_rotor[i]=-83.607*b0_rotor[i]+8.138;}
-
-    if (b0[i]<0.1)
-    {B_max_b0[i]=sqrt(16.888-886.788*pow(b0[i],2))-4.109;}
-    else if (b0[i]>0.187)
-    {B_max_b0[i]=-80.541*pow(b0[i],3)+44.174*pow(b0[i],2)-39.381*b0[i]+2.344;}
-    else {B_max_b0[i]=-31.33*b0[i]+1.854;}
-
-    if (b0_rotor[i]<0.1)
-    {B_max_b0_rotor[i]=sqrt(16.888-886.788*pow(b0_rotor[i],2))-4.109;}
-    else if (b0_rotor[i]>0.187)
-    {B_max_b0_rotor[i]=-80.541*pow(b0_rotor[i],3)+44.174*pow(b0_rotor[i],2)-39.381*b0_rotor[i]+2.344;}
-    else {B_max_b0_rotor[i]=-31.33*b0_rotor[i]+1.854;}
-
-    BR_b0[i]=(-20-B_min_b0[i])/(B_max_b0[i]-B_min_b0[i]);
-    BR_b0_rotor[i]=(-20-B_min_b0_rotor[i])/(B_max_b0_rotor[i]-B_min_b0_rotor[i]);
-
-Sts[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S[i]/vel[i];
-Sts_rotor[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_S_rotor[i]/vel_rotor[i];
-
-b_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
-b_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
-
-    if (b_alpha[j]<0.13)
-    {B_min[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4.109;}
-    else if(b_alpha[j]>0.145)
-    {B_min[j]=-817.81*pow(b_alpha[j],3)+335.21*pow(b_alpha[j],2)-135.024*b_alpha[j]+10.619;}
-    else {B_min[j]=-83.607*b_alpha[j]+8.138;}
-
-    if (b_alpha_rotor[j]<0.13)
-    {B_min_rotor[j]=sqrt(16.888-886.788*pow(b_alpha_rotor[j],2))-4.109;}
-    else if(b_alpha_rotor[j]>0.145)
-    {B_min_rotor[j]=-817.81*pow(b_alpha_rotor[j],3)+335.21*pow(b_alpha_rotor[j],2)-135.024*b_alpha_rotor[j]+10.619;}
-    else {B_min_rotor[j]=-83.607*b_alpha_rotor[j]+8.138;}
-
-    if (b_alpha[j]<0.1)
-    {B_max[j]=sqrt(16.888-886.788*pow(b_alpha[j],2))-4.109;}
-    else if(b_alpha[j]>0.187)
-    {B_max[j]=-80.541*pow(b_alpha[j],3)+44.174*pow(b_alpha[j],2)-39.381*b_alpha[j]+2.344;}
-    else {B_max[j]=-31.33*b_alpha[j]+1.854;}
-
-    if (b_alpha_rotor[j]<0.1)
-    {B_max_rotor[j]=sqrt(16.888-886.788*pow(b_alpha_rotor[j],2))-4.109;}
-    else if(b_alpha_rotor[j]>0.187)
-    {B_max_rotor[j]=-80.541*pow(b_alpha_rotor[j],3)+44.174*pow(b_alpha_rotor[j],2)-39.381*b_alpha_rotor[j]+2.344;}
-    else {B_max_rotor[j]=-31.33*b_alpha_rotor[j]+1.854;}
-
-    B_b[j]=B_min[j]+BR_b0[i]*(B_max[j]-B_min[j]);
-//    if(qIsInf(B_b[j])){B_b[j]=0;} urgente
-
-    B_b_rotor[j]=B_min_rotor[j]+BR_b0_rotor[i]*(B_max_rotor[j]-B_min_rotor[j]);
-//    if(qIsInf(B_b_rotor[j])){B_b_rotor[j]=0;} urgente
-
-    a_alpha[j]=qFabs(log10(Sts[j]/St2[i]));
-    a_alpha_rotor[j]=qFabs(log10(Sts_rotor[j]/St2_rotor[i]));
-
-    if (a_alpha[j]<0.204)
-    {A_min_alpha[j]=sqrt(67.552-886.788*pow(a_alpha[j],2))-8.219;}
-    else if(a_alpha[j]>0.244)
-    {A_min_alpha[j]=-142.795*pow(a_alpha[j],3)+103.656*pow(a_alpha[j],2)-57.757*a_alpha[j]+6.006;}
-    else {A_min_alpha[j]=-32.665*a_alpha[j]+3.981;}
-
-    if (a_alpha_rotor[j]<0.204)
-    {A_min_alpha_rotor[j]=sqrt(67.552-886.788*pow(a_alpha_rotor[j],2))-8.219;}
-    else if(a_alpha_rotor[j]>0.244)
-    {A_min_alpha_rotor[j]=-142.795*pow(a_alpha_rotor[j],3)+103.656*pow(a_alpha_rotor[j],2)-57.757*a_alpha_rotor[j]+6.006;}
-    else {A_min_alpha_rotor[j]=-32.665*a_alpha_rotor[j]+3.981;}
-
-    if (a_alpha[j]<0.13)
-    {A_max_alpha[j]=sqrt(67.552-886.788*pow(a_alpha[j],2))-8.219;}
-    else if(a_alpha[j]>0.321)
-    {A_max_alpha[j]=-4.669*pow(a_alpha[j],3)+3.491*pow(a_alpha[j],2)-16.699*a_alpha[j]+1.149;}
-    else {A_max_alpha[j]=-15.901*a_alpha[j]+1.098;}
-
-    if (a_alpha_rotor[j]<0.13)
-    {A_max_alpha_rotor[j]=sqrt(67.552-886.788*pow(a_alpha_rotor[j],2))-8.219;}
-    else if(a_alpha_rotor[j]>0.321)
-    {A_max_alpha_rotor[j]=-4.669*pow(a_alpha_rotor[j],3)+3.491*pow(a_alpha_rotor[j],2)-16.699*a_alpha_rotor[j]+1.149;}
-    else {A_max_alpha_rotor[j]=-15.901*a_alpha_rotor[j]+1.098;}
-    Alin_a[j]=A_min_alpha[j]+AR_ao_Rc[i]*(A_max_alpha[j]-A_min_alpha[j]);
-    Alin_a_rotor[j]=A_min_alpha_rotor[j]+AR_ao_Rc_rotor[i]*(A_max_alpha_rotor[j]-A_min_alpha_rotor[j]);
-
-    St1_bar[j]=(St1[i]+St2[i])/2.;
-    St1_bar_rotor[j]=(St1_rotor[i]+St2_rotor[i])/2.;
-
-    if (Reynolds[i]<95200){ao[i]=0.57;}
-    else if (Reynolds[i]>857000){ao[i]=1.13;}
-    else {ao[i]=-9.57*pow(10,-13)*(pow((Reynolds[i]-857000),2)+1.13);}
-
-    if (Reynolds_rotor[i]<95200){ao_rotor[i]=0.57;}
-    else if (Reynolds_rotor[i]>857000){ao_rotor[i]=1.13;}
-    else {ao_rotor[i]=-9.57*pow(10,-13)*(pow((Reynolds_rotor[i]-857000),2)+1.13);}
-
-    if(ao[i]<0.204){A_min_ao[i]=sqrt(67.552-886.788*pow(ao[i],2))-8.219;}
-    else if (ao[i]>0.244){A_min_ao[i]=-142.795*pow(ao[i],3)+103.656*pow(ao[i],2)-57.757*ao[i]+6.006;}
-    else {A_min_ao[i]=-32.665*ao[i]+3.981;}
-
-    if(ao_rotor[i]<0.204){A_min_ao_rotor[i]=sqrt(67.552-886.788*pow(ao_rotor[i],2))-8.219;}
-    else if (ao_rotor[i]>0.244){A_min_ao_rotor[i]=-142.795*pow(ao_rotor[i],3)+103.656*pow(ao_rotor[i],2)-57.757*ao_rotor[i]+6.006;}
-    else {A_min_ao_rotor[i]=-32.665*ao_rotor[i]+3.981;}
-
-    if (ao[i]<0.13){A_max_ao[i]=sqrt(67.552-886.788*pow(ao[i],2))-8.219;}
-    else if(ao[i]>0.321){A_max_ao[i]=-4.669*pow(ao[i],3)+3.491*pow(ao[i],2)-16.699*ao[i]+1.149;}
-    else {A_max_ao[i]=-15.901*ao[i]+1.098;}
-
-    if (ao_rotor[i]<0.13){A_max_ao_rotor[i]=sqrt(67.552-886.788*pow(ao_rotor[i],2))-8.219;}
-    else if(ao_rotor[i]>0.321){A_max_ao_rotor[i]=-4.669*pow(ao_rotor[i],3)+3.491*pow(ao_rotor[i],2)-16.699*ao_rotor[i]+1.149;}
-    else {A_max_ao_rotor[i]=-15.901*ao_rotor[i]+1.098;}
-
-    AR_ao[i]=(-20-A_min_ao[i])/(A_max_ao[i]-A_min_ao[i]);
-    AR_ao_rotor[i]=(-20-A_min_ao_rotor[i])/(A_max_ao_rotor[i]-A_min_ao_rotor[i]);
-
-    a_S[j]=qFabs(log10(Sts[j]/St1_bar[j]));
-    a_S_rotor[j]=qFabs(log10(Sts_rotor[j]/St1_bar_rotor[j]));
-
-    if (a_S[j]<0.204){A_min_S[j]=sqrt(67.552-886.788*pow(a_S[j],2))-8.219;}
-    else if (a_S[j]>0.244){A_min_S[j]=-142.795*pow(a_S[j],3)+103.656*pow(a_S[j],2)-57.757*a_S[j]+6.006;}
-    else {A_min_S[j]=-32.665*a_S[j]+3.981;}
-
-    if (a_S_rotor[j]<0.204){A_min_S_rotor[j]=sqrt(67.552-886.788*pow(a_S_rotor[j],2))-8.219;}
-    else if (a_S_rotor[j]>0.244){A_min_S_rotor[j]=-142.795*pow(a_S_rotor[j],3)+103.656*pow(a_S_rotor[j],2)-57.757*a_S_rotor[j]+6.006;}
-    else {A_min_S_rotor[j]=-32.665*a_S_rotor[j]+3.981;}
-
-    if (a_S[j]<0.13){A_max_S[j]=sqrt(67.552-886.788*pow(a_S[j],2))-8.219;}
-    else if (a_S[j]>0.321){A_max_S[j]=-4.669*pow(a_S[j],3)+3.491*pow(a_S[j],2)-16.699*a_S[j]+1.149;}
-    else {A_max_S[j]=-15.901*a_S[j]+1.098;}
-
-    if (a_S_rotor[j]<0.13){A_max_S_rotor[j]=sqrt(67.552-886.788*pow(a_S_rotor[j],2))-8.219;}
-    else if (a_S_rotor[j]>0.321){A_max_S_rotor[j]=-4.669*pow(a_S_rotor[j],3)+3.491*pow(a_S_rotor[j],2)-16.699*a_S_rotor[j]+1.149;}
-    else {A_max_S_rotor[j]=-15.901*a_S_rotor[j]+1.098;}
-
-    A_a_S[j]=A_min_S[j]+AR_ao[i]*(A_max_S[j]-A_min_S[j]);
-    A_a_S_rotor[j]=A_min_S_rotor[j]+AR_ao_rotor[i]*(A_max_S_rotor[j]-A_min_S_rotor[j]);
-
-    dBA_S[j]=SPL_dB_S[j]+AWeighting[j];
-    dBB_S[j]=SPL_dB_S[j]+BWeighting[j];
-    dBC_S[j]=SPL_dB_S[j]+CWeighting[j];
-
-    dBA_S_rotor[j]=SPL_dB_S_rotor[j]+AWeighting[j];
-    dBB_S_rotor[j]=SPL_dB_S_rotor[j]+BWeighting[j];
-    dBC_S_rotor[j]=SPL_dB_S_rotor[j]+CWeighting[j];
-
-    Sts_St1_bar[j]=Sts[j]/St1_bar[i];
-    Sts_St1_bar_rotor[j]=Sts_rotor[j]/St1_bar_rotor[i];
-
 Stp_P[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P[i]/vel[i];
 Stp_P_rotor[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P_rotor[i]/vel_rotor[i];
 
-    a_P[j]=qFabs(log10(Stp_P[j]/St1[i]));
-    a_P_rotor[j]=qFabs(log10(Stp_P_rotor[j]/St1_rotor[i]));
+a_P[j]=qFabs(log10(Stp_P[j]/St1[i]));
+a_P_rotor[j]=qFabs(log10(Stp_P_rotor[j]/St1_rotor[i]));
 
-    if(a_P[j]<0.204){A_min_P[j]=sqrt(67.552-886.788*pow(a_P[j],2))-8.219;}
-    else if (a_P[j]>0.244){A_min_P[j]=-142.795*pow(a_P[j],3)+103.656*pow(a_P[j],2)-57.757*a_P[j]+6.006;}
-    else {A_min_P[j]=-32.665*a_P[j]+3.981;}
+A_min_P[j]=calcA_min(a_P[j]);
+A_min_P_rotor[j]=calcA_min(a_P_rotor[j]);
 
-    if(a_P_rotor[j]<0.204){A_min_P_rotor[j]=sqrt(67.552-886.788*pow(a_P_rotor[j],2))-8.219;}
-    else if (a_P_rotor[j]>0.244){A_min_P_rotor[j]=-142.795*pow(a_P_rotor[j],3)+103.656*pow(a_P_rotor[j],2)-57.757*a_P_rotor[j]+6.006;}
-    else {A_min_P_rotor[j]=-32.665*a_P_rotor[j]+3.981;}
+A_max_P[j]=calcA_max(a_P[j]);
+A_max_P_rotor[j]=calcA_max(a_P_rotor[j]);
 
-    if(a_P[j]<0.13){A_max_P[j]=sqrt(67.552-886.788*pow(a_P[j],2))-8.219;}
-    else if (a_P[j]>0.321){A_max_P[j]=-4.669*pow(a_P[j],3)+3.491*pow(a_P[j],2)-16.699*a_P[j]+1.149;}
-    else {A_max_P[j]=-15.901*a_P[j]+1.098;}
+A_a_P[j]=A_min_P[j]+AR_ao[i]*(A_max_P[j]-A_min_P[j]);
+A_a_P_rotor[j]=A_min_P_rotor[j]+AR_ao_rotor[i]*(A_max_P_rotor[j]-A_min_P_rotor[j]);
 
-    if(a_P_rotor[j]<0.13){A_max_P_rotor[j]=sqrt(67.552-886.788*pow(a_P_rotor[j],2))-8.219;}
-    else if (a_P_rotor[j]>0.321){A_max_P_rotor[j]=-4.669*pow(a_P_rotor[j],3)+3.491*pow(a_P_rotor[j],2)-16.699*a_P_rotor[j]+1.149;}
-    else {A_max_P_rotor[j]=-15.901*a_P_rotor[j]+1.098;}
+SPL_dB_P[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P[i];
+SPL_dB_P_rotor[j]=delta_K1_rotor[i]+A_a_P_rotor[j]+K1_3_rotor[i]+first_term_Dh_P_rotor[i];
 
-    A_a_P[j]=A_min_P[j]+AR_ao[i]*(A_max_P[j]-A_min_P[j]);
-    A_a_P_rotor[j]=A_min_P_rotor[j]+AR_ao_rotor[i]*(A_max_P_rotor[j]-A_min_P_rotor[j]);
+dBA_P[j]=SPL_dB_P[j]+AWeighting[j];
+dBB_P[j]=SPL_dB_P[j]+BWeighting[j];
+dBC_P[j]=SPL_dB_P[j]+CWeighting[j];
+
+dBA_P_rotor[j]=SPL_dB_P_rotor[j]+AWeighting[j];
+dBB_P_rotor[j]=SPL_dB_P_rotor[j]+BWeighting[j];
+dBC_P_rotor[j]=SPL_dB_P_rotor[j]+CWeighting[j];
+
+if (alpha[i]<SwAlpha[i]){SPL_P[j]=SPL_dB_P[j]; SPL_P_rotor[j]=SPL_dB_P_rotor[j];}
+else {SPL_P[j]=-999999999999.; SPL_P_rotor[j]=-999999999999.;}
+
+//end SPL pressure calculation
 
     SPL_A[j]=0;
     SPL_B[j]=0;
     SPL_C[j]=0;
-    dBA_P[j]=SPL_dB_P[j]+AWeighting[j];
-    dBB_P[j]=SPL_dB_P[j]+BWeighting[j];
-    dBC_P[j]=SPL_dB_P[j]+CWeighting[j];
     SPL_LedB[w]=0;
     SPL_LedBAW[w]=0;
     SPL_LedBBW[w]=0;
@@ -3163,9 +3153,6 @@ Stp_P_rotor[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P_rotor[i]/vel_rotor[i];
     SPL_A_rotor[j]=0;
     SPL_B_rotor[j]=0;
     SPL_C_rotor[j]=0;
-    dBA_P_rotor[j]=SPL_dB_P_rotor[j]+AWeighting[j];
-    dBB_P_rotor[j]=SPL_dB_P_rotor[j]+BWeighting[j];
-    dBC_P_rotor[j]=SPL_dB_P_rotor[j]+CWeighting[j];
     SPL_LedB_rotor[w]=0;
     SPL_LedBAW_rotor[w]=0;
     SPL_LedBBW_rotor[w]=0;
@@ -3200,17 +3187,6 @@ Stp_P_rotor[j]=CENTRAL_BAND_FREQUENCY[j]*D_starred_P_rotor[i]/vel_rotor[i];
             c_const_le=0;
             d_const_le = 0;
         }
-
-if (m_parameter->lowFreq) {
-Dh[i]=calcDh(Mach[i],theta_e[i],phi_e[i],EddyMach);
-Dh_rotor[i]=calcDh(Mach_rotor[i],theta_e_rotor[i],phi_e_rotor[i],EddyMach);
-}
-else{Dh[i]=1; Dh_rotor[i]=1;}
-if (m_parameter->lowFreq) {
-Dl[i]=calcDl(Mach[i],theta_e[i],phi_e[i]);
-Dl_rotor[i]=calcDl(Mach_rotor[i],theta_e_rotor[i],phi_e_rotor[i]);
-}
-else{Dl[i]=1; Dl_rotor[i]=1;}
 
 Dl_le[i]=0.5*Dl[i];
 
@@ -3328,57 +3304,12 @@ qs3D_val_rotor.append(QString("%1 ; %2 ; %3 ; %4 ; %5 ; %6 ; %7 ; \n").arg(blade
 qs3D_val_rotor_aux=aux;
 }}
 
-first_term_Dl_S[i]=calcFirstTerm(Mach[i],L[i],Dl[i],D_starred_S[i],dist_obs[i]);
-first_term_Dh_P[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_P[i],dist_obs[i]);
-first_term_Dh_S[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_S[i],dist_obs[i]);
-
-//rotor
-first_term_Dl_S_rotor[i]=calcFirstTerm(Mach_rotor[i],L[i],Dl_rotor[i],D_starred_S_rotor[i],dist_obs_rotor[i]);
-first_term_Dh_P_rotor[i]=calcFirstTerm(Mach_rotor[i],L[i],Dh_rotor[i],D_starred_P_rotor[i],dist_obs_rotor[i]);
-first_term_Dh_S_rotor[i]=calcFirstTerm(Mach_rotor[i],L[i],Dh_rotor[i],D_starred_S_rotor[i],dist_obs_rotor[i]);
-//rotor
-
-SPL_dB_P[j]=delta_K1[i]+A_a_P[j]+K1_3[i]+first_term_Dh_P[i];
-SPL_dB_P_rotor[j]=delta_K1_rotor[i]+A_a_P_rotor[j]+K1_3_rotor[i]+first_term_Dh_P_rotor[i];
-
-if (alpha[i]<SwAlpha[i]){SPL_P[j]=SPL_dB_P[j]; SPL_P_rotor[j]=SPL_dB_P_rotor[j];}
-else {SPL_P[j]=-999999999999.; SPL_P_rotor[j]=-999999999999.;}
-
-SPL_dB_S[j]=first_term_Dh_S[i]+A_a_S[j]+K1_3[i];
-SPL_dB_S_rotor[j]=first_term_Dh_S_rotor[i]+A_a_S_rotor[j]+K1_3_rotor[i];
-
-if (alpha[i]<SwAlpha[i]){SPL_S[j]=SPL_dB_S[j]; SPL_S_rotor[j]=SPL_dB_S_rotor[j];}
-else {SPL_S[j]=-999999999999.; SPL_S_rotor[j]=-999999999999.;}
-
-SPL_alpha_min0[j]=first_term_Dh_S[i]+K2[i]+B_b[j];
-SPL_alpha_big0[j]=first_term_Dl_S[i]+K2[i]+Alin_a[j];
-
-SPL_alpha_min0_rotor[j]=first_term_Dh_S_rotor[i]+K2_rotor[i]+B_b_rotor[j];
-SPL_alpha_big0_rotor[j]=first_term_Dl_S_rotor[i]+K2_rotor[i]+Alin_a_rotor[j];
-
-if (alpha[i]<SwAlpha[i]){SPL_alpha[j]=SPL_alpha_min0[j]; SPL_alpha_rotor[j]=SPL_alpha_min0_rotor[j];}
-else {SPL_alpha[j]=SPL_alpha_big0[j]; SPL_alpha_rotor[j]=SPL_alpha_big0_rotor[j];}
-
 if(m_parameter->Lowson_type!=0){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.)));
 SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.)));
 }
 else{SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
 SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.)));
 }
-
-dBA_alpha_min0[j]=SPL_alpha_min0[j]+AWeighting[j];
-dBA_alpha_big0[j]=SPL_alpha_big0[j]+AWeighting[j];
-dBB_alpha_min0[j]=SPL_alpha_min0[j]+BWeighting[j];
-dBC_alpha_big0[j]=SPL_alpha_big0[j]+CWeighting[j];
-dBC_alpha_min0[j]=SPL_alpha_min0[j]+CWeighting[j];
-dBB_alpha_big0[j]=SPL_alpha_big0[j]+BWeighting[j];
-
-dBA_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+AWeighting[j];
-dBA_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+AWeighting[j];
-dBB_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+BWeighting[j];
-dBC_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+CWeighting[j];
-dBC_alpha_min0_rotor[j]=SPL_alpha_min0_rotor[j]+CWeighting[j];
-dBB_alpha_big0_rotor[j]=SPL_alpha_big0_rotor[j]+BWeighting[j];
 
 SPL_A[j]=SPL_dB[j]+AWeighting[j];
 SPL_B[j]=SPL_dB[j]+BWeighting[j];
