@@ -255,7 +255,7 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
 }
 
 //Sara
-double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoint * nop) {
+double NoiseCalculation::getDStarInterpolated3d(bool top,double chord_station,NoiseOpPoint * nop) {
     bool upDownFind = false;
     double chordUpStream = 0;
     double chordDownStream = 0;
@@ -279,14 +279,14 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
         previousChord = i == 0 ? currentChord : nop->getXValue(i-1, side);
         previousDStar = i == 0 ? currentDStar: nop->getDstrAt(i-1, side);
 
-//        qDebug() << "i: " << i << " - " << ccur;
+//        qDebug() << "i: " << i; // << " - " << ccur;
 //        qDebug() << "currentChord" << nop->getXValue(i, side);
 //        qDebug() << "currentDStar" << nop->getDstrAt(i, side);
 //        qDebug() << nop->getXValue(i, side);
 //        qDebug() << nop->getDstrAt(i, side);
 //        qDebug() << "";
 
-        if (currentChord > chord) {
+        if (currentChord > chord_station) {
             chordUpStream = previousChord;
             chordDownStream = currentChord;
             dStarUpStream = previousDStar;
@@ -304,7 +304,7 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
 
     if (!upDownFind) {
         qWarning() << "Can not find upstream and downstream. D* Interpolated will be zero ! D* ChordStation target: "
-                   << chord << " - Last found X ( "<<currentChord<<" ) D* ("
+                   << chord_station << " - Last found X ( "<<currentChord<<" ) D* ("
                    << currentDStar <<")";
         throw NoiseException(NoiseException::EXPT_DSTAR_NOT_FOUND, "There is no data to interpolate D* from, at the "
                              "specified chord station");
@@ -312,7 +312,7 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord,NoiseOpPoi
 
 //    qDebug() << ((dStarUpStream-dStarDownStream) * (m_parameter->dStarChordStation-chordDownStream) /                                       (chordUpStream-chordDownStream)) + dStarDownStream;
 
-    return ((dStarUpStream-dStarDownStream) * (chord-chordDownStream) /
+    return ((dStarUpStream-dStarDownStream) * (chord_station-chordDownStream) /
             (chordUpStream-chordDownStream)) + dStarDownStream;
 }
 
@@ -400,7 +400,7 @@ double NoiseCalculation::getBPMThickness(NoiseOpPoint *nop, AirfoilSide as) {
                 } else if (nop->getAlphaDegreeAbsolute() >= 7.5 && nop->getAlphaDegreeAbsolute() <= 12.5) {
                     corFactor = 0.0162*(pow(10,(0.3066*nop->getAlphaDegreeAbsolute())));
                 } else {
-                    corFactor = 54.42*(pow(10,(0.0258*nop->getAlphaDegreeAbsolute())));
+                    corFactor = 52.42*(pow(10,(0.0258*nop->getAlphaDegreeAbsolute()))); //Sara correction pag 14 BPM (22 pdf)
                 }
             }
             bpm = corFactor * dStar;
@@ -2302,10 +2302,14 @@ int number_of_segments = pbem->dlg_elements;
         double D_starred_N_P_rotor[number_of_segments];
         double L[number_of_segments];
         double SwAlpha[number_of_segments];
+        double SwAlpha_rotor[number_of_segments];
         double SwAlpha_1[number_of_segments];
         double SwAlpha_2[number_of_segments];
+        double SwAlpha_1_rotor[number_of_segments];
+        double SwAlpha_2_rotor[number_of_segments];
         double gamma[number_of_segments];
         double gamma0[number_of_segments];
+        double gamma0_rotor[number_of_segments];
         double beta[number_of_segments];
         double beta0[number_of_segments];
         double gamma0_gamma_min[number_of_segments];
@@ -2664,22 +2668,9 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 }
 
 if ((alpha[i]>12.5) & (alpha[i]<=25)){
-corr_fact[i]=54.42*(pow(10.,(0.0258*alpha[i])));
+corr_fact[i]=52.42*(pow(10.,(0.0258*alpha[i])));
 D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 }}
-
-//For D* Xfoil
-DStarXFoilS[i]=m_DStarInterpolatedS3d[i];
-DStarXFoilP[i]=m_DStarInterpolatedP3d[i];
-
-//heavy tripping
-
-if (Reynolds_rotor[i]>300000){
-    D_starred_C_HT_rotor[i]=pow(10,(3.411-1.5397*log10(Reynolds_rotor[i])+0.1059*pow(log10(Reynolds_rotor[i]),2)));
-}
-else {D_starred_C_HT_rotor[i]=0.0601*(pow(Reynolds_rotor[i],(-0.114)));}
-
-D_starred_HT_rotor[i]=chord[i]*D_starred_C_HT_rotor[i];
 
 //natural transition
 D_starred_C_N_rotor[i]=pow(10,(3.0187-1.5397*log10(Reynolds_rotor[i])+0.1059*pow(log10(Reynolds_rotor[i]),2)));
@@ -2736,9 +2727,19 @@ D_starred_N_S[i]=D_starred_N[i]*corr_fact[i];
 D_starred_N_S_rotor[i]=D_starred_N_rotor[i]*corr_fact[i];
 }}
 
+
 //For D* Xfoil
 DStarXFoilS[i]=m_DStarInterpolatedS3d[i];
 DStarXFoilP[i]=m_DStarInterpolatedP3d[i];
+
+//heavy tripping
+
+if (Reynolds_rotor[i]>300000){
+    D_starred_C_HT_rotor[i]=pow(10,(3.411-1.5397*log10(Reynolds_rotor[i])+0.1059*pow(log10(Reynolds_rotor[i]),2)));
+}
+else {D_starred_C_HT_rotor[i]=0.0601*(pow(Reynolds_rotor[i],(-0.114)));}
+
+D_starred_HT_rotor[i]=chord[i]*D_starred_C_HT_rotor[i];
 
 //Length of Wetted Trailing Edge
 if (i==(number_of_segments-1)){L[i]=0;}else{
@@ -2888,25 +2889,25 @@ local_twist[i]=theta_BEM[i];
             double BotTrip=pFoilPolarDlg->m_XBotTr;
         if((TopTrip==0) & (BotTrip==0)) {
         //        natural transition
-            D_starred_S[i]=D_starred_N_S[i]*chord[i]*m_parameter->dStarScalingFactor;
-            D_starred_P[i]=D_starred_N_P[i]*chord[i]*m_parameter->dStarScalingFactor;
-            D_starred_S_rotor[i]=D_starred_N_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
-            D_starred_P_rotor[i]=D_starred_N_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_S[i]=D_starred_N_S[i];
+            D_starred_P[i]=D_starred_N_P[i];
+            D_starred_S_rotor[i]=D_starred_N_S_rotor[i];
+            D_starred_P_rotor[i]=D_starred_N_P_rotor[i];
         }
         else {
         //heavy tripping
-            D_starred_S[i]=D_starred_HT_S[i]*chord[i]*m_parameter->dStarScalingFactor;
-            D_starred_P[i]=D_starred_HT_P[i]*chord[i]*m_parameter->dStarScalingFactor;
-            D_starred_S_rotor[i]=D_starred_HT_S_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
-            D_starred_P_rotor[i]=D_starred_HT_P_rotor[i]*chord[i]*m_parameter->dStarScalingFactor;
+            D_starred_S[i]=D_starred_HT_S[i];
+            D_starred_P[i]=D_starred_HT_P[i];
+            D_starred_S_rotor[i]=D_starred_HT_S_rotor[i];
+            D_starred_P_rotor[i]=D_starred_HT_P_rotor[i];
     }}
     else if (m_parameter->dstar_type==2){
     //user
         NoiseParameter *pNoiseParameter = (NoiseParameter *) g_mainFrame->m_pSimuWidget;
-        D_starred_S[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_P[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_S_rotor[i]=pNoiseParameter->D_starred_S_user[i]*chord[i]*m_parameter->dStarScalingFactor;
-        D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i]*chord[i]*m_parameter->dStarScalingFactor;
+        D_starred_S[i]=pNoiseParameter->D_starred_S_user[i];
+        D_starred_P[i]=pNoiseParameter->D_starred_P_user[i];
+        D_starred_S_rotor[i]=pNoiseParameter->D_starred_S_user[i];
+        D_starred_P_rotor[i]=pNoiseParameter->D_starred_P_user[i];
     }
 //end original BPM correlations
 
@@ -2924,8 +2925,14 @@ local_twist[i]=theta_BEM[i];
 SwAlpha_1[i]=23.43*Mach[i]+4.651;
 SwAlpha_2[i]=12.5;
 
+SwAlpha_1_rotor[i]=23.43*Mach_rotor[i]+4.651;
+SwAlpha_2_rotor[i]=12.5;
+
 if (SwAlpha_1[i]<SwAlpha_2[i]){SwAlpha[i]=SwAlpha_1[i];}
 else {SwAlpha[i]=SwAlpha_2[i];}
+
+if (SwAlpha_1_rotor[i]<SwAlpha_2_rotor[i]){SwAlpha_rotor[i]=SwAlpha_1_rotor[i];}
+else {SwAlpha_rotor[i]=SwAlpha_2_rotor[i];}
 
 first_term_Dl_S[i]=calcFirstTerm(Mach[i],L[i],Dl[i],D_starred_S[i],dist_obs[i]);
 first_term_Dh_P[i]=calcFirstTerm(Mach[i],L[i],Dh[i],D_starred_P[i],dist_obs[i]);
@@ -2949,6 +2956,7 @@ gamma[i]=27.094*Mach[i]+3.32;
 gamma_rotor[i]=27.094*Mach_rotor[i]+3.32;
 
 gamma0[i]=SwAlpha_1[i];
+gamma0_rotor[i]=SwAlpha_1_rotor[i];
 
 beta[i]=72.65*Mach[i]+10.74;
 beta_rotor[i]=72.65*Mach_rotor[i]+10.74;
@@ -2959,14 +2967,14 @@ beta0_rotor[i]=-34.19*Mach_rotor[i]-13.82;
 gamma0_gamma_min[i]=gamma0[i]-gamma[i];
 gamma0_gamma_plus[i]=gamma0[i]+gamma[i];
 
-gamma0_gamma_min_rotor[i]=gamma0[i]-gamma_rotor[i];
-gamma0_gamma_plus_rotor[i]=gamma0[i]+gamma_rotor[i];
+gamma0_gamma_min_rotor[i]=gamma0_rotor[i]-gamma_rotor[i];
+gamma0_gamma_plus_rotor[i]=gamma0_rotor[i]+gamma_rotor[i];
 
 K1[i]=calcK1(Reynolds[i]);
 K1_rotor[i]=calcK1(Reynolds_rotor[i]);
 
 K2[i]=calcK2(gamma0_gamma_min[i],gamma0_gamma_plus[i],K1[i],beta[i],gamma[i],alpha[i],gamma0[i],beta0[i]);
-K2_rotor[i]=calcK2(gamma0_gamma_min_rotor[i],gamma0_gamma_plus_rotor[i],K1_rotor[i],beta_rotor[i],gamma_rotor[i],alpha[i],gamma0[i],beta0_rotor[i]);
+K2_rotor[i]=calcK2(gamma0_gamma_min_rotor[i],gamma0_gamma_plus_rotor[i],K1_rotor[i],beta_rotor[i],gamma_rotor[i],alpha[i],gamma0_rotor[i],beta0_rotor[i]);
 
 b0[i]=calcb0(Reynolds[i]);
 b0_rotor[i]=calcb0(Reynolds_rotor[i]);
@@ -3479,10 +3487,10 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     int number_of_segments = pBEM->m_pBData->m_pos.size();
-    double chord[number_of_segments];
+    double alpha[number_of_segments];
+
     m_DStarInterpolatedS3d.resize(number_of_segments+1);
     m_DStarInterpolatedP3d.resize(number_of_segments+1);
-    double chordmax=0;
     double TSR = m_parameter->TSRtd;
 
 for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
@@ -3491,28 +3499,28 @@ for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
     if (z==TSR){
 
-for (int j = 0; j < number_of_segments; ++j) {
-chord[j] = bdata->m_c_local.value(j);
-if(chord[j]>chordmax){chordmax=chord[j];}
+for (int i = 0; i < number_of_segments; ++i) {
+alpha[i] = bdata->m_alpha.value(i);
 
 bool dStarOrder = false;
 
 //When angle is negative D* search must be inverted
-if(nop->getAlphaDegree() < 0){
+if(alpha[i] < 0){
     dStarOrder = true;
 }
 
-if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
-    m_parameter->opPointSource == NoiseParameter::MultiplePolars)
-{
+double chord_station = (bdata->m_pos.value(i)-bdata->m_pos.value(0))/(bdata->m_pos.value(number_of_segments-1)-bdata->m_pos.value(0));
 
-m_DStarInterpolatedS3d[j] = getDStarInterpolated3d(dStarOrder,(chord[j]/(chordmax)),nop);
-//qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[j];
-m_DStarInterpolatedP3d[j] = getDStarInterpolated3d(!dStarOrder,(chord[j]/(chordmax)),nop);
-//qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d;
+//qDebug() << "i: " << i;
+m_DStarInterpolatedS3d[i] = getDStarInterpolated3d(dStarOrder,chord_station,nop);
+//qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[i];
+m_DStarInterpolatedP3d[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nop);
+//qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d[i];
+//qDebug() << "";
 }}}
 z=z+ldelta;
-}}
+//}
+}
 //finish D star interpolated
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;

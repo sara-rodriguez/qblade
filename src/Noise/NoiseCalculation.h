@@ -264,7 +264,7 @@ private:
     // calculation sub-functions
     double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
-    double getDStarInterpolated3d(bool top, double chord, NoiseOpPoint *nop);  // Sara
+    double getDStarInterpolated3d(bool top, double chord_station, NoiseOpPoint *nop);  // Sara
     double getDH();
     double getDL();
     double getSt1();
