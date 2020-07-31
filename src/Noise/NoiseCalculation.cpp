@@ -231,6 +231,7 @@ double NoiseCalculation::getDStarInterpolated(bool top,NoiseOpPoint * nop) {
             dStarUpStream = previousDStar;
             dStarDownStream = currentDStar;
 
+//            qDebug() << m_parameter->dStarChordStation;
 //            qDebug() << "Chord UpStream: " << chordUpStream;
 //            qDebug() << "Chord DownStream: " << chordDownStream;
 //            qDebug() << "D* UpStream: " << dStarUpStream;
@@ -292,10 +293,12 @@ double NoiseCalculation::getDStarInterpolated3d(bool top,double chord_station,No
             dStarUpStream = previousDStar;
             dStarDownStream = currentDStar;
 
+//            qDebug() << "chord station: " << chord_station;
 //            qDebug() << "Chord UpStream: " << chordUpStream;
 //            qDebug() << "Chord DownStream: " << chordDownStream;
 //            qDebug() << "D* UpStream: " << dStarUpStream;
 //            qDebug() << "D* DownStream: " << dStarDownStream;
+//            qDebug() << "";
 
             upDownFind = true;
             break;
@@ -2573,9 +2576,9 @@ int number_of_segments = pbem->dlg_elements;
             chord[i] = bdata->m_c_local.value(i);
 
             Reynolds_BEM[i]=Reynolds[i];
-            Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
+            Reynolds_polar[i]=noiseOpPoints[0]->getReynolds();
             Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
-            Mach_polar[i]=noiseOpPoints[i]->getMach();
+            Mach_polar[i]=noiseOpPoints[0]->getMach();
 
             Mach_BEM[i] = Mach[i];
             Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
@@ -3491,10 +3494,11 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
 
     m_DStarInterpolatedS3d.resize(number_of_segments+1);
     m_DStarInterpolatedP3d.resize(number_of_segments+1);
+    m_DStarInterpolatedS3d_min.resize(number_of_segments+1);
+    m_DStarInterpolatedP3d_min.resize(number_of_segments+1);
+    m_DStarInterpolatedS3d_max.resize(number_of_segments+1);
+    m_DStarInterpolatedP3d_max.resize(number_of_segments+1);
     double TSR = m_parameter->TSRtd;
-
-for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
 
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
     if (z==TSR){
@@ -3502,22 +3506,91 @@ foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
 for (int i = 0; i < number_of_segments; ++i) {
 alpha[i] = bdata->m_alpha.value(i);
 
+//find nop of defined alpha
+int position=0;
+for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+    int posOpPointNext;
+    NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
+
+    if(posOpPoint==noiseOpPoints.size()){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+    NoiseOpPoint *nop_next = noiseOpPoints[posOpPointNext];
+
+    double alpha_nop = nop->getAlphaDegree();
+    double alpha_nop_next = nop_next->getAlphaDegree();
+    if (qFabs(alpha[i]-alpha_nop)>qFabs(alpha[i]-alpha_nop_next)){
+        position = posOpPointNext;
+    } else {break;}
+
+//NoiseOpPoint *nop = noiseOpPoints[position];
+//qDebug() << "nop: " << posOpPoint;
+//qDebug() << "position: " << position;
+//qDebug() << "alpha: " << alpha[i];
+//qDebug() << "alpha_nop: " << nopx->getAlphaDegree();
+//qDebug() << "";
+}
+
+NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest alpha
+
+//define min and max position to interpolate delta starred for the correct alpha value
+int pos_max;
+int pos_min;
+
+if(position == 0){pos_min=position; pos_max=position+1;}else{pos_min=position-1;}
+if(position == noiseOpPoints.size()-1){pos_min=position-1; pos_max=position;}else{pos_max=position+1;}
+
+if((position!=0) & (position!=noiseOpPoints.size()-1)){
+if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_min=position;}
+if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_max=position;}
+
+if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_min=position;}
+if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_max=position;}
+}
+
+NoiseOpPoint *nop_min = noiseOpPoints[pos_min];
+NoiseOpPoint *nop_max = noiseOpPoints[pos_max];
+
 bool dStarOrder = false;
 
 //When angle is negative D* search must be inverted
-if(alpha[i] < 0){
-    dStarOrder = true;
-}
+if(alpha[i] < 0){dStarOrder = true;}
 
+//alpha interpolation to get delta starred value
 double chord_station = (bdata->m_pos.value(i)-bdata->m_pos.value(0))/(bdata->m_pos.value(number_of_segments-1)-bdata->m_pos.value(0));
+//double chord_station = 0.98;
 
-//qDebug() << "i: " << i;
-m_DStarInterpolatedS3d[i] = getDStarInterpolated3d(dStarOrder,chord_station,nop);
-//qDebug() << "D* S 3d:" << m_DStarInterpolatedS3d[i];
-m_DStarInterpolatedP3d[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nop);
-//qDebug() << "D* P 3d:" << m_DStarInterpolatedP3d[i];
+double alpha_min=nop_min->getAlphaDegree();
+double alpha_max=nop_max->getAlphaDegree();
+
+m_DStarInterpolatedS3d_min[i] = getDStarInterpolated3d(dStarOrder,chord_station,nop_min);
+m_DStarInterpolatedS3d_max[i] = getDStarInterpolated3d(dStarOrder,chord_station,nop_max);
+
+m_DStarInterpolatedP3d_min[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nop_min);
+m_DStarInterpolatedP3d_max[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nop_max);
+
+if(m_DStarInterpolatedS3d_max[i]==m_DStarInterpolatedS3d_min[i] || alpha_max==alpha_min){m_DStarInterpolatedS3d[i] = getDStarInterpolated3d(dStarOrder,chord_station,nopx);}else{
+m_DStarInterpolatedS3d_min[i] = getDStarInterpolated3d(dStarOrder,chord_station,nop_min);
+m_DStarInterpolatedS3d_max[i] = getDStarInterpolated3d(dStarOrder,chord_station,nop_max);
+m_DStarInterpolatedS3d[i]=(m_DStarInterpolatedS3d_max[i]-m_DStarInterpolatedS3d_min[i])/(alpha_max-alpha_min)*(alpha[i]-alpha_min)+m_DStarInterpolatedS3d_min[i];}
+
+if(m_DStarInterpolatedP3d_max[i]==m_DStarInterpolatedP3d_min[i] || alpha_max==alpha_min){m_DStarInterpolatedP3d[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nopx);}else{
+m_DStarInterpolatedP3d_min[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nop_min);
+m_DStarInterpolatedP3d_max[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nop_max);
+m_DStarInterpolatedP3d[i]=(m_DStarInterpolatedP3d_max[i]-m_DStarInterpolatedP3d_min[i])/(alpha_max-alpha_min)*(alpha[i]-alpha_min)+m_DStarInterpolatedP3d_min[i];}
+
+//qDebug() << "chord_station: " << chord_station;
+//qDebug() << "alpha_min: " << alpha_min;
+//qDebug() << "alpha: " << alpha[i];
+//qDebug() << "alpha_max: " << alpha_max;
+//qDebug() << "***";
+//qDebug() << "m_DStar S min: " << m_DStarInterpolatedS3d_min[i];
+//qDebug() << "m_DStar S: " << m_DStarInterpolatedS3d[i];
+//qDebug() << "m_DStar S max: " << m_DStarInterpolatedS3d_max[i];
+//qDebug() << "***";
+//qDebug() << "m_DStar P min: " << m_DStarInterpolatedP3d_min[i];
+//qDebug() << "m_DStar P: " << m_DStarInterpolatedP3d[i];
+//qDebug() << "m_DStar P max: " << m_DStarInterpolatedP3d_max[i];
 //qDebug() << "";
-}}}
+}}
 z=z+ldelta;
 //}
 }
@@ -3963,7 +4036,7 @@ pNoiseCreatorDialog->m_progress_dlg->setValue(progress_end);
 void NoiseCalculation::setInitialValues(){
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 double outer_radius=50;
-if((g_bemdataStore.size()!=NULL)){
+if((g_bemdataStore.size()!=0)){
 outer_radius=pbem->m_pBData->outer_radius;
 }
 

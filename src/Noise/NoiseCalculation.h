@@ -248,6 +248,10 @@ public:
 
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
+        QVector<double> m_DStarInterpolatedS3d_min;
+        QVector<double> m_DStarInterpolatedP3d_min;
+        QVector<double> m_DStarInterpolatedS3d_max;
+        QVector<double> m_DStarInterpolatedP3d_max;
         QVector<double> m_AlphaInterpolated3d;
         QVector<double> m_ReynoldsInterpolated3d;
         QVector<double> m_MachInterpolated3d;
