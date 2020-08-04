@@ -4,6 +4,8 @@
 #include <QGroupBox>
 #include <QBoxLayout>
 #include <QComboBox>
+#include <QDoubleSpinBox>//Sara
+#include <QRadioButton>//Sara
 #include <QMainWindow>
 
 #include "../Store.h"
@@ -27,6 +29,15 @@ NoiseToolBar::NoiseToolBar(QMainWindow *parent, NoiseModule *module) {
 	hideDocksAction->setStatusTip("Hide Docks");
 	connect(hideDocksAction, SIGNAL(toggled(bool)), m_module, SLOT(onHideDocks(bool)));
 	addAction(hideDocksAction);
+
+    //    Sara
+    QAction *m_3dAction = new QAction(QIcon(":/images/3d.png"), tr("View 2D/qs3D blade/qs3D rotor"), this);
+
+    m_3dAction->setCheckable(true);
+    m_3dAction->setStatusTip(tr("View 2D/qs3D blade/qs3D rotor"));
+        connect(m_3dAction, SIGNAL(toggled(bool)), module, SLOT(onqs3dGraphs(bool)));
+        addAction(m_3dAction);
+    //    Sara
 	
 	QGroupBox *groupBox = new QGroupBox ("Noise Simulation");
 	addWidget(groupBox);
@@ -36,7 +47,7 @@ NoiseToolBar::NoiseToolBar(QMainWindow *parent, NoiseModule *module) {
 			m_simulationComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 			m_simulationComboBox->setMinimumWidth(170);
 			vBox->addWidget(m_simulationComboBox);
-	groupBox = new QGroupBox ("Operational Point");
+    groupBox = new QGroupBox ("Operational Point");
 	addWidget(groupBox);
 		vBox = new QVBoxLayout ();
 		groupBox->setLayout(vBox);

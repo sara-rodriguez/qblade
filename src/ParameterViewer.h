@@ -7,6 +7,9 @@
 #include <QCheckBox>
 #include <QDebug>
 #include <QLabel>
+#include <QDoubleSpinBox>//Sara
+#include <QComboBox>//Sara
+#include <QRadioButton>//Sara
 
 #include "Globals.h"
 #include "ParameterObject.h"
@@ -21,7 +24,7 @@ class ParameterViewer
 {
 public:
 	typedef typename ParameterGroup::Key Key;
-	enum Type {Unknown, CheckBox, NumberEditType, LineEdit, Label, NumberLabel, BoxLabel, RotorBox, ComboBox};
+    enum Type {Unknown, CheckBox, NumberEditType, LineEdit, Label, NumberLabel, BoxLabel, RotorBox, ComboBox, DoubleSpinBox, RadioButton};//Sara doublespinbox
 	
 	void addView (Key key, Type type, QWidget *widget, QVariant defaultValue) {
 		m_views.insert(key, ViewTuple(type, widget, defaultValue));
@@ -92,6 +95,7 @@ void ParameterViewer<ParameterGroup>::setParameter(Key key, QVariant value) {
 	}
 
 	switch(view.type) {
+    case RadioButton: static_cast<QRadioButton*>(view.widget)->setChecked(value.toBool()); break;//Sara
 	case CheckBox: static_cast<QCheckBox*>(view.widget)->setChecked(value.toBool()); break;
 	case NumberEditType: static_cast<NumberEdit*>(view.widget)->setValue(value.toDouble()); break;
 	case LineEdit: static_cast<QLineEdit*>(view.widget)->setText(value.toString()); break;
@@ -100,6 +104,7 @@ void ParameterViewer<ParameterGroup>::setParameter(Key key, QVariant value) {
 	case BoxLabel: static_cast<FixedSizeLabel*>(view.widget)->setText(prepareObjectString(value)); break;
 	case RotorBox: setObjectBox<CBlade>(view.widget, value); break;
 	case ComboBox: static_cast<QComboBox*>(view.widget)->setCurrentIndex(value.toInt()); break;
+    case DoubleSpinBox: static_cast<QDoubleSpinBox*>(view.widget)->setValue(value.toDouble()); break; //Sara
 	case Unknown: qDebug() << "Attempt to set invalid parameter" << key << "in ParameterViewer!";
 	}
 }
@@ -113,6 +118,8 @@ QVariant ParameterViewer<ParameterGroup>::getParameter(Key key) {
 	case CheckBox: value = QVariant(static_cast<QCheckBox*>(view.widget)->isChecked()); break;
 	case NumberEditType: value = QVariant(static_cast<NumberEdit*>(view.widget)->getValue()); break;
 	case LineEdit: value = QVariant(static_cast<QLineEdit*>(view.widget)->text()); break;
+    case RadioButton: static_cast<QRadioButton*>(view.widget)->setChecked(value.toBool()); break;//Sara
+    case DoubleSpinBox: value = QVariant(static_cast<QDoubleSpinBox*>(view.widget)->text()); break;//Sara
 	case Label:
 	case NumberLabel: value = QVariant(static_cast<QLabel*>(view.widget)->text()); break;
 	case BoxLabel: value = QVariant(static_cast<FixedSizeLabel*>(view.widget)->text()); break;
