@@ -48,7 +48,7 @@ void NoiseMenu::onAboutToShow() {
 
     //Sara
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    int index = pNoiseCalculation->user_sel;
+    int index = pNoiseCalculation->UserSelectionMode();
 
     if (index==0){
         m_exportNoise->setEnabled(simulationAvailable);

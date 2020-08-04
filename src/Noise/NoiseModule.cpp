@@ -82,7 +82,7 @@ QList<NewCurve *> NoiseModule::prepareCurves(QString xAxis, QString yAxis, NewGr
 QStringList NoiseModule::getAvailableGraphVariables(bool /*xAxis*/) {
     int index = 0;
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    int user_sel = pNoiseCalculation->user_sel;
+    int user_sel = pNoiseCalculation->UserSelectionMode();
     if(user_sel<3){index = user_sel;}
 
     if(index==0){return NoiseSimulation::getAvailableVariables();}
@@ -153,7 +153,7 @@ void NoiseModule::onqs3dGraphs(bool){
 ++index_qs3d;
 
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-int user_sel = pNoiseCalculation->user_sel;
+    int user_sel = pNoiseCalculation->UserSelectionMode();
 
 if(user_sel<3){index = user_sel;}
 
