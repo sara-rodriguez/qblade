@@ -47,8 +47,11 @@ void NoiseMenu::onAboutToShow() {
     const bool simulationAvailable = (  m_module->getShownSimulation() != NULL);
 
     //Sara
+    int index=0;
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    int index = pNoiseCalculation->UserSelectionMode();
+    index = pNoiseCalculation->user_sel;
+
+    qDebug() << "index menu: " << index;
 
     if (index==0){
         m_exportNoise->setEnabled(simulationAvailable);
@@ -69,6 +72,12 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(simulationAvailable);
+    }
+    else {
+        m_exportNoise->setEnabled(false);
+        m_exportqs3DNoiseLog->setEnabled(false);
+        m_exportqs3DNoise_blade->setEnabled(false);
+        m_exportqs3DNoise_rotor_loops->setEnabled(false);
     }
     //Sara
 }

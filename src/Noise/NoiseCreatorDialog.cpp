@@ -149,11 +149,10 @@ qs3DSim_combobox->insertItem(0,"Disable");
 qs3DSim_combobox->insertItem(1,"Blade");
 qs3DSim_combobox->insertItem(2,"Rotor");
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-pNoiseCalculation->UserSelectionSet(qs3DSim_combobox->currentIndex());
+pNoiseCalculation->user_sel=qs3DSim_combobox->currentIndex();
 connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     [=](int index){
     pNoiseCalculation->user_sel=index;
-    pNoiseCalculation->UserSelectionSet(index);
     user_sel=index;
 
 if (index == 0){
