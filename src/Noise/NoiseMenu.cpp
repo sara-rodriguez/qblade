@@ -51,8 +51,6 @@ void NoiseMenu::onAboutToShow() {
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     index = pNoiseCalculation->user_sel;
 
-    qDebug() << "index menu: " << index;
-
     if (index==0){
         m_exportNoise->setEnabled(simulationAvailable);
         m_exportqs3DNoiseLog->setEnabled(false);
