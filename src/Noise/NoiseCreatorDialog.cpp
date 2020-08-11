@@ -184,7 +184,7 @@ if(index!=0){
     m_opPointScrollArea->setEnabled(true);
     onSelectButtonsClicked(0);
     one_polar_radiobutton->setChecked(true);
-    all_op_points->click();
+    if(!m_opPointRecords.isEmpty()){all_op_points->click();}
     multi_polars_radiobutton->setEnabled(false);
     BPM_radiobutton->setEnabled(false);
     m_opPointScrollArea->setEnabled(false);
@@ -699,7 +699,7 @@ void NoiseCreatorDialog::onCreateButtonClicked() {
 if(sum!=2){
 message.prepend("\n Select just two options to input values:\n    -Rotational Speed; \n    -Uniform Wind Speed;    \n    -TSR.");}
 
-if(g_360PolarStore.isEmpty() && g_qbem->m_pCur360Polar == NULL){message.prepend("\n - No 360 Polar in Database.");}
+if(g_360PolarStore.isEmpty() && g_qbem->m_pCur360Polar == NULL){message.prepend("\n - No 360 Polar in Database. \n - No HAWT Blade in Database.");}
 
 if(g_rotorStore.isEmpty() && g_qbem->m_pBlade == NULL){message.prepend("\n - No HAWT Blade in Database.");}
 //Sara
