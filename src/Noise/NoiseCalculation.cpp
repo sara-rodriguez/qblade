@@ -34,7 +34,7 @@
 //Sara
 
 const double NoiseCalculation::AWeighting[] = {-70.4, -63.4, -56.7,  -50.5, -44.7, -39.4, -34.6, -30.2, -26.2, -22.5, -19.1, -16.1, -13.4, -10.9,  -8.6,  -6.6,  -4.8,  -3.2,  -1.9,  -0.8, 0.0,   0.6,   1.0,   1.2,   1.3,   1.2,   1.0,   0.5,-0.1,-1.1,  -2.5,  -4.3,  -6.6,-  9.3};
-const double NoiseCalculation::BWeighting[] = {-38.2, -33.3, -28.3, -24.2, -20.4, -17.1, -14.2, -11.6,  -9.3,  -7.4,  -5.6,  -4.2, -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.1,   0.0, 0.0,   0.0,   0.0,  -0.1,  -0.2,  -0.4,  -0.7,  -1.2,-1.9,  -2.9,  -4.3,  -6.1,  -8.4, -11.1};
+const double NoiseCalculation::BWeighting[] = {38.2, -33.3, -28.3, -24.2, -20.4, -17.1, -14.2, -11.6,  -9.3,  -7.4,  -5.6,  -4.2, -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.1,   0.0, 0.0,   0.0,   0.0,  -0.1,  -0.2,  -0.4,  -0.7,  -1.2,-1.9,  -2.9,  -4.3,  -6.1,  -8.4, -11.1};
 const double NoiseCalculation::CWeighting[] = {-14.3, -11.2, -8.5, -6.2, -4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2, -0.1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0, 0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,-2.0,-3.0,  -4.4,  -6.2,  -8.5, -11.2};
 const QVector<double> NoiseCalculation::CENTRAL_BAND_FREQUENCY ({10, 12.5, 16, 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400, 500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000});
 
@@ -812,7 +812,7 @@ void NoiseCalculation::calcSPLp(int posOpPoint,int posFreq) {
 
 //Alexandre MOD
 
-void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
+void NoiseCalculation::LECalc(int posOpPoint,int posFreq, NoiseOpPoint* nop) {
     double aux_SPL_LEdB=0;
     double Aux1=0;
     double Aux4=0;
@@ -830,28 +830,29 @@ void NoiseCalculation::LECalc(int posOpPoint,int posFreq) {
     //Sara
 
     const double rho = pbem->dlg_rho; //Sara
-    const double c_0 = 34000;
-    const double u = (m_parameter->originalVelocity)*100.;
-    const double c = 100.*(m_parameter->originalChordLength);
+    const double c_0 = 340;
+    const double u = (m_parameter->originalVelocity);
+    const double c = (m_parameter->originalChordLength);
     const double I = (m_parameter->TurbulenceIntensity);
-    const double Lambda = 100.*(m_parameter->IntegralLengthScale);
-    const double r_e = 100.*(m_parameter->distanceObsever);
+    const double Lambda = (m_parameter->IntegralLengthScale);
+    const double r_e = (m_parameter->distanceObsever);
     const double Mach = m_parameter->originalMach;
     const double beta = sqrt(1-pow(Mach, 2));
     const double D_L = 0.5*getDL();
-    const double L = 100.*(m_parameter->wettedLength);
-    double Aux = 0.5*(Lambda*L*pow(rho/1000., 2)*pow(c_0, 2)*pow(u, 2)*pow(Mach, 3)*pow(I, 2)*D_L)/(pow(r_e, 2));
+    const double alpha = nop->getAlphaDegree();
+    const double L = (m_parameter->wettedLength);
+    double Aux = 0.5*(Lambda*L*pow(rho, 2)*pow(c_0, 2)*pow(u, 2)*pow(Mach, 3)*pow(I, 2)*D_L)/(pow(r_e, 2));
     double K = M_PI*CENTRAL_BAND_FREQUENCY[posFreq]*c/u;
     double S = sqrt(pow((2.*M_PI*K/(pow(beta, 2)))+(pow((1+(2.4*K/pow(beta,2))), -1)), -1));
-    double LFC = 10.*Mach*pow(S*K/beta, 2);
+    double LFC = 10.*Mach*pow(S*K/beta, 2)*(1+(9*pow(alpha*M_PI/180,2)));
 
 if(m_parameter->Lowson_type==2){
     c_const=19./6.;
-    d_const = 65.95;
+    d_const = 85.95;
  }
 if(m_parameter->Lowson_type==1){
     c_const=7./3.;
-    d_const = 58.4;
+    d_const = 78.4;
  }
 
 if (m_parameter->Lowson_type!=0){
@@ -967,6 +968,7 @@ ProgressBar(1);//Sara
 //        qDebug() << "SwAngle1: " << m_SwAlpha1;
 //        qDebug() << "SwAngle calculated: " << m_SwAlpha;
 
+
         m_CalcSeparatedFlow = false;
         m_CalcPressureSide = false;
         m_CalcSuctionSide = false;
@@ -1017,7 +1019,7 @@ ProgressBar(1);//Sara
 //			qDebug() << "==== Band Frequency ====";
 //			qDebug() << "Freq: [" << (posFreq+1) << "] " << Noise::CENTRAL_BAND_FREQUENCY[posFreq] ;
 
-            LECalc(posOpPoint, posFreq); //Alexandre MOD
+            LECalc(posOpPoint, posFreq, nop); //Alexandre MOD
 
             if (m_CalcSeparatedFlow) {
                 calcSPLa(nop->getAlphaDegree(),posOpPoint,posFreq);
@@ -2224,11 +2226,11 @@ int number_of_segments = pbem->dlg_elements;
         double finalradius = bdata->m_pos.value(mpos_size-1);
         double nom_tg_speed = approaxing_wind_speed*lambda;
         double omega = nom_tg_speed/finalradius;
-        double c_0_le = 34000;
+        double c_0_le = 340;
         double c_const_rd_le = 19./6.;
-        double d_const_rd_le = 65.95;
+        double d_const_rd_le = 85.95;
         double c_const_vk_le = 7./3.;
-        double d_const_vk_le = 58.4;
+        double d_const_vk_le = 78.4;
         double c_const_le=0;
         double d_const_le=0;
         double u_le;
@@ -2913,9 +2915,6 @@ local_twist[i]=theta_BEM[i];
     }
 //end original BPM correlations
 
-//    qDebug() << "D_starred_S: " << D_starred_S[i];
-//    qDebug() << "D_starred_P: "<< D_starred_P[i];
-
     Dh[i]=calcDh(Mach[i],theta_e[i],phi_e[i],EddyMach);
     Dh_rotor[i]=calcDh(Mach_rotor[i],theta_e_rotor[i],phi_e_rotor[i],EddyMach);
 
@@ -3172,21 +3171,21 @@ else {SPL_P[j]=-999999999999.; SPL_P_rotor[j]=-999999999999.;}
     SPL_LedBCW_rotor[w]=0;
     //rotor
 
-    u_le=approaxing_wind_speed*100.;
-    c_le=100.*chord[i];
+    u_le=approaxing_wind_speed;
+    c_le=chord[i];
     I_le=m_parameter->TurbulenceIntensity;
-    lambda_le=100.*m_parameter->IntegralLengthScale;
-    r_e_le[i]=100.*dist_obs[i];
-    r_e_le_rotor[i]=100.*dist_obs_rotor[i];//rotor
+    lambda_le=m_parameter->IntegralLengthScale;
+    r_e_le[i]=dist_obs[i];
+    r_e_le_rotor[i]=dist_obs_rotor[i];//rotor
 
     beta_le=sqrt(1-pow(Mach[i],2));
     beta_le_rotor=sqrt(1-pow(Mach_rotor[i],2));
-    L_le=100.*L[i];
+    L_le=L[i];
     K_le=M_PI*CENTRAL_BAND_FREQUENCY[j]*c_le/u_le;
     S_le=sqrt(pow((2.*M_PI*K_le/(pow(beta_le, 2)))+(pow((1+(2.4*K_le/pow(beta_le,2))),-1)),-1));
     S_le_rotor=sqrt(pow((2.*M_PI*K_le/(pow(beta_le_rotor, 2)))+(pow((1+(2.4*K_le/pow(beta_le_rotor,2))),-1)),-1));
     LFC_le = 10.*Mach[i]*pow(S_le*K_le/beta_le,2);
-    LFC_le_rotor = 10.*Mach_rotor[i]*pow(S_le_rotor*K_le/beta_le_rotor,2);
+    LFC_le_rotor = 10.*Mach_rotor[i]*pow(S_le_rotor*K_le/beta_le_rotor,2)*(1+(9*pow(alpha[i]*M_PI/180,2)));
 
     if(m_parameter->Lowson_type==2){
         c_const_le = c_const_rd_le;
@@ -3205,13 +3204,13 @@ Dl_le[i]=0.5*Dl[i];
 
 Dl_le_rotor[i]=0.5*Dl_rotor[i];
 
-aux0_le[i]=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl_le[i])/(pow(r_e_le[i], 2));
+aux0_le[i]=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach[i], 3)*pow(I_le, 2)*Dl_le[i])/(pow(r_e_le[i], 2));
 aux1_le[i]=10.*log10(pow(LFC_le/(1+LFC_le), 2))+d_const_le;
 aux4_le[i]=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le[i]=10.*log10(aux0_le[i]*aux4_le[i]);
 
 //rotor
-aux0_le_rotor[i]=0.5*(lambda_le*L_le*pow(rho/1000., 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach_rotor[i], 3)*pow(I_le, 2)*Dl_le_rotor[i])/(pow(r_e_le_rotor[i], 2));
+aux0_le_rotor[i]=0.5*(lambda_le*L_le*pow(rho, 2)*pow(c_0_le, 2)*pow(u_le, 2)*pow(Mach_rotor[i], 3)*pow(I_le, 2)*Dl_le_rotor[i])/(pow(r_e_le_rotor[i], 2));
 aux1_le_rotor[i]=10.*log10(pow(LFC_le_rotor/(1+LFC_le_rotor), 2))+d_const_le;
 aux4_le_rotor[i]=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le_rotor[i]=10.*log10(aux0_le_rotor[i]*aux4_le_rotor[i]);
@@ -3558,6 +3557,7 @@ if(alpha[i] < 0){dStarOrder = true;}
 
 //alpha interpolation to get delta starred value
 double chord_station = (bdata->m_pos.value(i)-bdata->m_pos.value(0))/(bdata->m_pos.value(number_of_segments-1)-bdata->m_pos.value(0));
+//double chord_station = 0.98;
 
 double alpha_min=nop_min->getAlphaDegree();
 double alpha_max=nop_max->getAlphaDegree();
