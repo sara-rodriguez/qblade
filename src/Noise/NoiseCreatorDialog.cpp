@@ -766,6 +766,7 @@ else if(pNoiseCalculation->alertTE()){
     message.prepend("\n- Trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 else if(pNoiseCalculation->alertLE()){
     message.prepend("\n- Leading-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+
 if (message != NULL){message.prepend("The following error(s) occured:\n");
     QMessageBox::information(this, "- Create Noise Simulation",message, QMessageBox::Ok);
 return;

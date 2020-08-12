@@ -255,11 +255,12 @@ void NoiseSimulation::simulate() {
 
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate();}
     if (m_parameter.qs3DSim!=0){
+if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.TestAlphaMachReynolds();}//Sara
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_graphics_loops();}//Sara
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_blade();}//Sara
     }
     if(m_parameter.qs3DSim==2){
-if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_rotor();}//Sara
+if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){ m_calculation.calculateqs3d_rotor();}//Sara
     }
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){pNoiseCreatorDialog->m_progress_dlg->cancel();}
 }
