@@ -72,20 +72,21 @@ void NoiseDock::onDeleteButtonClicked() {
 
 void NoiseDock::onNewButtonClicked() {
 	/* check first, if all requirements are fullfilled */
-    if (g_polarStore.isEmpty() & g_tbemdataStore.isEmpty() & (m_parameter->qs3DSim!=0)) {
+    if (g_polarStore.isEmpty() & g_tbemdataStore.isEmpty()) {
         QMessageBox::critical(this, "Create new Noise Simulation",
-                              "The following error(s) occured:\n\n - No Polars in database \n - No Turbine BEM simulation in database (for quasi 3D)", QMessageBox::Ok);
+                              "The following error(s) occured:\n\n - No Polars in database \n - No Turbine BEM simulation in database", QMessageBox::Ok);
         return;
     }
+
     else if (g_polarStore.size() == 0) {
         QMessageBox::critical(this, "Create new Noise Simulation",
 							  "The following error(s) occured:\n\n - No Polars in database", QMessageBox::Ok);
         return;
     }
 
-    else if (g_tbemdataStore.isEmpty() & (m_parameter->qs3DSim!=0)){
+    else if (g_tbemdataStore.isEmpty()){
         QMessageBox::critical(this, "Create new Noise Simulation",
-                              "The following error(s) occured:\n\n - No Turbine BEM simulation in database (for quasi 3D)", QMessageBox::Ok);
+                              "The following error(s) occured:\n\n - No Turbine BEM simulation in database", QMessageBox::Ok);
         return;
     }
 
