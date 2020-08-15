@@ -967,6 +967,7 @@ ProgressBar(1);//Sara
 //        qDebug() << "SwAngle1: " << m_SwAlpha1;
 //        qDebug() << "SwAngle calculated: " << m_SwAlpha;
 
+
         m_CalcSeparatedFlow = false;
         m_CalcPressureSide = false;
         m_CalcSuctionSide = false;
