@@ -227,11 +227,8 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
             }
         }
         //Sara begin
-        if (g_tbemdataStore.isEmpty()){
-            message.prepend("\n - No Turbine BEM Simulation in Database");}
-
         if (g_360PolarStore.isEmpty() && g_qbem->m_pCur360Polar == NULL) {
-            message.prepend(tr("- No 360 Polar in Database"));
+            message.prepend(tr("- No 360 Polar in Database (for quasi 3D)"));
             }
         if (g_rotorStore.isEmpty() && g_qbem->m_pBlade == NULL) {
             message.prepend(tr("- No HAWT Blade in Database (for quasi 3D)"));

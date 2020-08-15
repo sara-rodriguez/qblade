@@ -188,6 +188,7 @@ MainFrame::MainFrame (QWidget *parent, Qt::WindowFlags flags)
 //	g_multiDmsModule = new MultiDmsModule (this, m_pctrlMainToolBar);
 //	g_turDmsModule = new TurDmsModule (this, m_pctrlMainToolBar);
 
+    m_pctrlMainToolBar->addSeparator();
     g_windFieldModule = new WindFieldModule (this, m_pctrlMainToolBar);
     g_QLLTModule = new QLLTModule (this, m_pctrlMainToolBar);
 
@@ -1561,7 +1562,7 @@ void MainFrame::CreateBEMMenus()
     BEMViewMenu->addAction(OnRotorViewAct);
     BEMViewMenu->addAction(OnCharacteristicViewAct);
     BEMViewMenu->addAction(OnTurbineViewAct);
-    BEMViewMenu->addSeparator(); //Sara
+    //	BEMViewMenu->addSeparator();
     BEMViewMenu->addAction(OnBladeViewAct2);
     BEMViewMenu->addAction(OnRotorViewAct2);
     BEMViewMenu->addAction(OnCharacteristicViewAct2);
@@ -1703,6 +1704,9 @@ void MainFrame::CreateMainToolbar() {
     //	m_pctrlMainToolBar->addAction(OnXInverseAct);
     m_pctrlMainToolBar->addAction(OnXDirectAct);
     m_pctrlMainToolBar->addAction(On360ViewAct);
+    m_pctrlMainToolBar->addSeparator();
+    g_noiseModule = new NoiseModule (this, m_pctrlMainToolBar);
+    m_pctrlMainToolBar->addSeparator();
     m_pctrlMainToolBar->addAction(OnBladeViewAct);
     m_pctrlMainToolBar->addAction(OnRotorViewAct);
     m_pctrlMainToolBar->addAction(OnCharacteristicViewAct);
@@ -1711,9 +1715,7 @@ void MainFrame::CreateMainToolbar() {
     m_pctrlMainToolBar->addAction(OnRotorViewAct2);
     m_pctrlMainToolBar->addAction(OnCharacteristicViewAct2);
     m_pctrlMainToolBar->addAction(OnTurbineViewAct2);
-    m_pctrlMainToolBar->addSeparator();
-    g_noiseModule = new NoiseModule (this, m_pctrlMainToolBar);
-    m_pctrlMainToolBar->addSeparator();
+
     QRect rec = QApplication::desktop()->screenGeometry();
     int width = rec.width();
     m_pctrlMainToolBar->setIconSize(QSize(width*0.025,width*0.025));
