@@ -22,6 +22,7 @@ private:
 	
 	NoiseModule *m_module;
 	QCheckBox *m_colorByOpPoint;
+    NoiseParameter *m_parameter;//Sara
 	
 private slots:
 	void onUnitsChanged();

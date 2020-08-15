@@ -227,14 +227,14 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
             }
         }
         //Sara begin
-        if (g_tbemdataStore.isEmpty()){
-            message.prepend("\n - No Turbine BEM Simulation in Database");}
-
         if (g_360PolarStore.isEmpty() && g_qbem->m_pCur360Polar == NULL) {
             message.prepend(tr("- No 360 Polar in Database"));
             }
         if (g_rotorStore.isEmpty() && g_qbem->m_pBlade == NULL) {
             message.prepend(tr("- No HAWT Blade in Database (for quasi 3D)"));
+        }
+        if (g_tbemdataStore.isEmpty()){
+            message.prepend("\n - No Turbine BEM Simulation in Database (for quasi 3D)");
         }
         if (g_windFieldStore.size() == 0) {
             message.prepend(tr("- No Windfield in Database (for quasi 3D unsteady)"));
@@ -255,7 +255,6 @@ void NoiseSimulation::simulate() {
 
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate();}
     if (m_parameter.qs3DSim!=0){
-if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.TestAlphaMachReynolds();}//Sara
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_graphics_loops();}//Sara
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_blade();}//Sara
     }
@@ -263,6 +262,7 @@ if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){ m_calculation.calculateqs3d_rotor();}//Sara
     }
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){pNoiseCreatorDialog->m_progress_dlg->cancel();}
+m_calculation.onVerifyDeltaandValFor3D();
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {

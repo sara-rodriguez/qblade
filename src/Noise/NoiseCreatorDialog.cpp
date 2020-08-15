@@ -59,8 +59,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                     pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
                     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-                    if((g_bemdataStore.size()!=NULL)){
-                    u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();}
+                    if(g_tbemdataStore.isEmpty()){u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();}//Sara
 
                     pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
                                   "Original flow velocity (U) []:", u_wind_speed, SPEED);
@@ -741,38 +740,10 @@ if (!pNoiseSimulation->progress_dlg_canceled){ //Sara
         delete newSimulation;
         QMessageBox::critical(g_mainFrame, "Simulation Error", e.what());
     }
-    if (!pNoiseSimulation->progress_dlg_canceled){onVerifyDeltaandValFor3D();}//Sara
 //Sara
 }
 
 //Sara begin
-void NoiseCreatorDialog::onVerifyDeltaandValFor3D(){
-if (check_qs3D){//if is qs3d
-
-    QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
-    QString message ("");
-    if(pXDirect->AlphaDeltaNoise!=0){
-        SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-            double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-            if (ldelta>0.25){
-        message.prepend("\n- Use maximum 0.25º step angle resolution for noise prediction models in XDirect");
-    }}
-//validation
-NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_noiseModule;
-
-if(pNoiseCalculation->alertLE() & pNoiseCalculation->alertTE()){
-    message.prepend("\n- Leading-edge and trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-else if(pNoiseCalculation->alertTE()){
-    message.prepend("\n- Trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-else if(pNoiseCalculation->alertLE()){
-    message.prepend("\n- Leading-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-
-if (message != NULL){message.prepend("The following error(s) occured:\n");
-    QMessageBox::information(this, "- Create Noise Simulation",message, QMessageBox::Ok);
-return;
-}
-}}
-
 void NoiseCreatorDialog::onVerifyWindfield(){
     if(g_windFieldStore.size() == 0){
         QMessageBox::critical(this, "Wind Field Error!",
