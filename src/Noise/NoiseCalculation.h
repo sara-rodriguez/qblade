@@ -49,9 +49,6 @@ public:
 
     bool alertTE(){return TE_alert;};
     bool alertLE(){return LE_alert;};
-
-    void UserSelectionSet(int index){user_sel = index;};
-    int UserSelectionMode(){return user_sel;};
     //Sara end
 
     // NM the arrays containing the graph data
@@ -182,9 +179,9 @@ public:
     double Final_qs3d_rotor_loops;
     double qs3D_val_line = -1;
 
+    int user_sel=0;//user selection graphics for 2d, blade or rotor
     int repeat_alert=0;
     int progress_end;
-    int user_sel=0;//user selection graphics for 2d, blade or rotor
 
     bool TE_alert=false;
     bool LE_alert=false;

@@ -2914,8 +2914,8 @@ local_twist[i]=theta_BEM[i];
     }
 //end original BPM correlations
 
-//    qDebug() << "D_starred_S: " << D_starred_S[i];
-//    qDebug() << "D_starred_P: "<< D_starred_P[i];
+    qDebug() << "D_starred_S: " << D_starred_S[i];
+    qDebug() << "D_starred_P: "<< D_starred_P[i];
 
     Dh[i]=calcDh(Mach[i],theta_e[i],phi_e[i],EddyMach);
     Dh_rotor[i]=calcDh(Mach_rotor[i],theta_e_rotor[i],phi_e_rotor[i],EddyMach);
