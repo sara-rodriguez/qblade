@@ -51,16 +51,14 @@ RotDmsSimulationDock::RotDmsSimulationDock(const QString &title, QMainWindow *pa
 	connect(g_mainFrame, SIGNAL(unitsChanged()), this, SLOT(onUnitsChanged()));
 	onUnitsChanged();
 
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 	m_showSelectCheckBox->setChecked(settings.value("modules/RotDmsDock/showSelect", true).toBool());
 
 	addScrolledDock (Qt::RightDockWidgetArea, parent);
 }
 
 RotDmsSimulationDock::~RotDmsSimulationDock() {
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 	settings.setValue("modules/RotDmsDock/showSelect", m_showSelectCheckBox->isChecked());
 }
 

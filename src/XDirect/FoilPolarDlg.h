@@ -39,7 +39,6 @@ class FoilPolarDlg : public QDialog
 
 public:
 	FoilPolarDlg(void *pParent=NULL);
-    double rho=1.225;//Sara
 
 	void ReadParams();
 	void keyPressEvent(QKeyEvent *event);

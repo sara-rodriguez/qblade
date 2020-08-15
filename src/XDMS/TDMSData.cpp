@@ -56,7 +56,6 @@ TDMSData::TDMSData()
 
     visc = 0.0000178;
     rho = 1.2;
-    temp = 188.15;//Sara
 
     m_bPowerLaw = false;
     m_bConstant = false;
@@ -168,11 +167,10 @@ void TDMSData::calculateWeibull() {  //NM copied from QDMS::OnSetWeibull()
 
 QVariant TDMSData::accessParameter(Parameter::TDMSData::Key key, QVariant value) {
 	typedef Parameter::TDMSData P;
-
+	
 	const bool set = value.isValid();
 	switch (key) {
 	case P::Name: if(set) setName(value.toString()); else value = getName(); break;
-    case P::Temperature: if(set) temp = value.toDouble(); else value = temp; break;//Sara
 	case P::Rho: if(set) rho = value.toDouble(); else value = rho; break;
 	case P::Viscosity: if(set) visc = value.toDouble(); else value = visc; break;
 	case P::Discretize: if(set) elements = value.toDouble(); else value = elements; break;
@@ -240,7 +238,6 @@ void TDMSData::Compute(DData *pDData, CBlade *pWing, double lambda, double pitch
     pDData->rho = rho;
     pDData->visc = visc;
     pDData->Toff = Toff;
-    pDData->temp = temp;//Sara
 
     pDData->bPowerLaw = m_bPowerLaw;
     pDData->bConstant = m_bConstant;

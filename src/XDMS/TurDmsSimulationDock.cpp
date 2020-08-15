@@ -56,16 +56,14 @@ TurDmsSimulationDock::TurDmsSimulationDock(const QString &title, QMainWindow *pa
 	connect(g_mainFrame, SIGNAL(unitsChanged()), this, SLOT(onUnitsChanged()));
 	onUnitsChanged();
 	
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 	m_showSelectCheckBox->setChecked(settings.value("modules/TurDmsDock/showSelect", true).toBool());
 
 	addScrolledDock (Qt::RightDockWidgetArea, parent);	
 }
 
 TurDmsSimulationDock::~TurDmsSimulationDock() {
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 	settings.setValue("modules/TurDmsDock/showSelect", m_showSelectCheckBox->isChecked());
 }
 

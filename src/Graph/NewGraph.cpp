@@ -27,8 +27,8 @@ NewGraph::NewGraph(QString nameInSettings, TwoDWidgetInterface *twoDInterface, c
 	: m_graphType(None),
 	  m_graphTypeMulti(None),
 	  m_twoDInterface(twoDInterface),
-      m_xAxis (-1.1, 1.1, 2.5, defaults.xLogarithmic),
-      m_yAxis (-1.1, 1.1, 5, defaults.yLogarithmic),
+	  m_xAxis (-1.1, 1.1, 2.5, defaults.xLogarithmic),
+	  m_yAxis (-1.1, 1.1, 5, defaults.yLogarithmic),
 	  m_nameInSettings(nameInSettings),
 	  m_borderGapWidth(3),
 	  m_gapWidth(3)
@@ -320,8 +320,7 @@ void NewGraph::removeAllCurves() {
 }
 
 bool NewGraph::loadStylesFromSettings() {
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 
 	if (settings.contains(QString("graphs/" + m_nameInSettings + "/type"))) {
 		settings.beginGroup(QString("graphs/" + m_nameInSettings));
@@ -355,8 +354,7 @@ bool NewGraph::loadStylesFromSettings() {
 
 void NewGraph::saveStylesToSettings() {
 	if (m_nameInSettings != "__default") {  // do not save a default graph
-        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+		QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
 		
 		settings.beginGroup(QString("graphs/" + m_nameInSettings));
 

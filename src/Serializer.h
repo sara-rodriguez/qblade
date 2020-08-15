@@ -62,7 +62,6 @@ public:
 	void readOrWriteDoubleVector1D (QVector<double>*);
 	void readOrWriteDoubleVector2D (QVector<QVector<double> >*);
 	void readOrWriteDoubleVector3D (QVector<QVector<QVector<double> > >*);
-    void readOrWriteDoubleVector4D (QVector<QVector<QVector<QVector<double> > > >*);//Sara
 	void readOrWriteDoubleList1D (QList<double>*);
 	void readOrWriteDoubleList2D (QList<QList<double> >*);
 	void readOrWritePairIntDoubleVector (QPair<int,QVector<double> >*);

@@ -94,7 +94,6 @@ private:
     bool m_bNewTipLoss;
     bool m_bCdReynolds;
     bool m_bNewRootLoss;
-    double temp;//Sara
     double rho;
     double visc;
 };

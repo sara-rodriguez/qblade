@@ -4,7 +4,7 @@
 #include <ctime>  // For time()
 #include <cstdlib>  // For srand() and rand()
 #include <limits>
-//#include <omp.h> Sara
+#include <omp.h>
 #include <GL/gl.h>
 #include <QDebug>
 #include <QDate>
@@ -60,21 +60,14 @@ WindField::WindField(ParameterViewer<Parameter::Windfield> *viewer, bool *cancel
 	m_meanWindSpeedAtHeigth = new float[m_pointsPerSide];
 	for (int i = 0; i < m_pointsPerSide; ++i) {
 		if (m_includeShear) {
-//Sara begin
-            if ((m_hubheight+m_zyCoordinates[i])>100){
-                // calculated with power law wind profile. https://en.wikipedia.org/wiki/Wind_profile_power_law
-            m_meanWindSpeedAtHeigth[i] = m_meanWindSpeed*pow(((m_hubheight+m_zyCoordinates[i])/m_windSpeedMeasurementHeight),(1./7.));
-            } else {
-//Sara end
 			// calculated with log wind profile. Should not be used with heigth above 100m (see wikipedia)
 			m_meanWindSpeedAtHeigth[i] = m_meanWindSpeed * 
 										 log((m_hubheight+m_zyCoordinates[i]) / m_roughnessLength) /
 										 log(m_windSpeedMeasurementHeight / m_roughnessLength);
-        } //Sara
-        } else {
+		} else {
 			m_meanWindSpeedAtHeigth[i] = m_meanWindSpeed;
-        }
-    }
+		}
+	}
 	
 	/* m_meanWindSpeedAtHub */
 	if (m_includeShear) {
@@ -596,24 +589,24 @@ void WindField::importFromBinary(QDataStream &dataStream) {
 
 void WindField::exportToTxt(QTextStream &stream) {
     stream << "Windfield Export File Created with " << g_mainFrame->m_VersionName << " on "<<QDate::currentDate().toString("dd.MM.yyyy") <<
-              " at " << QTime::currentTime().toString("hh:mm:ss") << Qt::endl <<
-              "Timesteps: " << m_numberOfTimesteps << Qt::endl <<
-              "Temporal Stepwidth: " << m_simulationTime / (m_numberOfTimesteps-1) << " s" << Qt::endl <<
-              "Points per Side: " << m_pointsPerSide << Qt::endl <<
-              "Spatial Stepwidth: " << m_fieldDimension / (m_pointsPerSide-1) << " m" << Qt::endl <<
-              "Hub Height: " << m_hubheight << " m" << Qt::endl <<
-              "Mean Wind Speed at Hub: " << m_meanWindSpeedAtHub << " m/s" << Qt::endl <<
-              "Heigth of lowest Point: " << m_hubheight - m_rotorRadius << " m" << Qt::endl <<
-              Qt::endl;
+			  " at " << QTime::currentTime().toString("hh:mm:ss") << endl <<
+			  "Timesteps: " << m_numberOfTimesteps << endl <<
+			  "Temporal Stepwidth: " << m_simulationTime / (m_numberOfTimesteps-1) << " s" << endl <<
+			  "Points per Side: " << m_pointsPerSide << endl <<
+			  "Spatial Stepwidth: " << m_fieldDimension / (m_pointsPerSide-1) << " m" << endl <<
+			  "Hub Height: " << m_hubheight << " m" << endl <<
+			  "Mean Wind Speed at Hub: " << m_meanWindSpeedAtHub << " m/s" << endl <<
+			  "Heigth of lowest Point: " << m_hubheight - m_rotorRadius << " m" << endl <<
+			  endl;
 			  
 	for (int timestep = 0; timestep < m_numberOfTimesteps; ++timestep) {
 		for (int zIndex = 0; zIndex < m_pointsPerSide; ++zIndex) {
 			for (int yIndex = 0; yIndex < m_pointsPerSide; ++yIndex) {
                 stream << QString("%1 ").arg(m_resultantVelocity[zIndex][yIndex][timestep].x, 7, 'f', 3);
 			}
-            stream << Qt::endl;
+			stream << endl;
 		}
-        stream << Qt::endl;
+		stream << endl;
 	}
 }
 

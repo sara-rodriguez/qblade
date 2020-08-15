@@ -28,7 +28,7 @@ BEMToolbar::BEMToolbar(QMainWindow *parent)
 	addAction(m_SingleGraphAct);
 	addAction(m_HideWidgetsAct);
 
-    QGroupBox *groupBox = new QGroupBox (tr("Airfoils"));
+	QGroupBox *groupBox = new QGroupBox (tr("Airfoils"));
 	m_foilBox = addWidget(groupBox);
 	QVBoxLayout *vBox = new QVBoxLayout ();
 		groupBox->setLayout(vBox);
@@ -36,7 +36,7 @@ BEMToolbar::BEMToolbar(QMainWindow *parent)
 		m_foilComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 		m_foilComboBox->setMinimumWidth(170);
 		vBox->addWidget(m_foilComboBox);
-    groupBox = new QGroupBox (tr("Polars"));
+	groupBox = new QGroupBox (tr("Polars"));
 	m_polarBox = addWidget(groupBox);
 		vBox = new QVBoxLayout ();
 		groupBox->setLayout(vBox);

@@ -22,7 +22,7 @@ GraphOptionsDialog::GraphOptionsDialog(NewGraph *graph) {
 	m_graph = graph;
 	
     setWindowTitle(tr("Graph Settings"));
-    setMinimumSize(678,401);//Sara
+	
 	QVBoxLayout *dialogVBox = new QVBoxLayout ();
 	setLayout(dialogVBox);
 		QTabWidget *tabWidget = new QTabWidget ();

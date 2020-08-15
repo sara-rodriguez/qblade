@@ -1447,9 +1447,9 @@ void QFEMDock::OnSave()
     connect(m_progressDialog, SIGNAL(canceled()), this, SLOT(onProgressDialogCanceled()));
     connect(m_module->m_structure, SIGNAL(updateProgress()), this, SLOT(onWindFieldProgress()));
 
-    m_module->ReadParams();
+	m_module->ReadParams();
 
-    m_module->m_structure->setName(m_pctrlNameEdit->text());
+	m_module->m_structure->setName(m_pctrlNameEdit->text());
 
     m_module->m_structure->ShellRho = m_pctrlShellRhoLineEdit->getValue();
     m_module->m_structure->ShellEMod = m_pctrlShellELineEdit->getValue();
@@ -1461,12 +1461,13 @@ void QFEMDock::OnSave()
     m_module->m_structure->sparColor = m_module->sparColor;
     m_module->m_structure->Omega = m_pctrlDesignOmega->getValue();
 
+
     if (!m_module->m_structure->RunModalTest()) return;
 
-    if (!g_bladeStructureStore.add(m_module->m_structure))
-    {
-        m_module->m_structure = NULL;
-    }
+	if (!g_bladeStructureStore.add(m_module->m_structure))
+	{
+		m_module->m_structure = NULL;
+	}
 
     if (m_module->m_structure) m_module->m_QFEMToolBar->m_BladeStructureComboBox->setCurrentObject(m_module->m_structure);
     else{
@@ -1480,16 +1481,16 @@ void QFEMDock::OnSave()
 
     ObjectIsEdited = false;
 
-    m_module->m_bStructEdited = false;
+	m_module->m_bStructEdited = false;
 
-    structureWidget->setCurrentIndex(0);
+	structureWidget->setCurrentIndex(0);
 
-    m_module->EnableAll();
+	m_module->EnableAll();
 
     m_module->DeformBlade();
 
-    m_pctrlInnerMaterial->setCurrentIndex(0);
-    m_pctrlShellMaterial->setCurrentIndex(0);
+	m_pctrlInnerMaterial->setCurrentIndex(0);
+	m_pctrlShellMaterial->setCurrentIndex(0);
 
 
 }

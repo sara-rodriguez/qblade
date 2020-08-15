@@ -21,8 +21,7 @@ NoiseDock::NoiseDock(const QString &title, QMainWindow *parent, Qt::WindowFlags 
 	
 	m_contentVBox->addStretch();	
 	
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
 	m_colorByOpPoint->setChecked(settings.value("modules/NoiseDock/colorByOpPoint", false).toBool());
 
 	connect(g_mainFrame, SIGNAL(unitsChanged()), this, SLOT(onUnitsChanged()));
@@ -33,8 +32,7 @@ NoiseDock::NoiseDock(const QString &title, QMainWindow *parent, Qt::WindowFlags 
 
 
 NoiseDock::~NoiseDock() {
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
 	settings.setValue("modules/NoiseDock/colorByOpPoint", m_colorByOpPoint->isChecked());
 }
 
@@ -58,7 +56,7 @@ void NoiseDock::onUnitsChanged() {
 void NoiseDock::onEditCopyButtonClicked() {
 	NoiseCreatorDialog *creatorDialog = new NoiseCreatorDialog (m_shownObject, m_module);
 	creatorDialog->exec();
-    delete creatorDialog;
+	delete creatorDialog;
 }
 
 void NoiseDock::onRenameButtonClicked() {
@@ -66,8 +64,7 @@ void NoiseDock::onRenameButtonClicked() {
 }
 
 void NoiseDock::onDeleteButtonClicked() {
-    g_noiseSimulationStore.remove(m_shownObject);
-    m_shownObject = NULL;//Sara
+	g_noiseSimulationStore.remove(m_shownObject);
 }
 
 void NoiseDock::onNewButtonClicked() {
@@ -80,7 +77,7 @@ void NoiseDock::onNewButtonClicked() {
 
 	NoiseCreatorDialog *creatorDialog = new NoiseCreatorDialog (NULL, m_module);
 	creatorDialog->exec();
-    delete creatorDialog;
+	delete creatorDialog;
 }
 
 void NoiseDock::onColorByOpPoint() {

@@ -162,8 +162,8 @@ void CPolar::ExportPolar(QTextStream &out, int FileType, bool bDataOnly)
 	}
 	else 
 	{
-        if(FileType==1) Header=QString(("  alpha     Re      CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge     XCp   \n"));
-        else            Header=QString(("alpha,Re,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n"));
+		if(FileType==1) Header=QString(("  alpha     Re      CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge     XCp    \n"));
+		else            Header=QString(("alpha,Re,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n"));
 		out << Header;
 		if(FileType==1)
 		{
@@ -172,20 +172,20 @@ void CPolar::ExportPolar(QTextStream &out, int FileType, bool bDataOnly)
 		}
 		for (j=0; j<m_Alpha.size(); j++)
 		{
-            if(FileType==1) strong=QString(" %1 %2  %3  %4  %5  %6")
+			if(FileType==1) strong=QString(" %1 %2  %3  %4  %5  %6")
 											.arg(m_Alpha[j],7,'f',3)
 											.arg( m_Re[j],8,'f',0)
 											.arg( m_Cl[j],7,'f',4)
 											.arg( m_Cd[j],8,'f',5)
 											.arg(m_Cdp[j],8,'f',5)
-                                            .arg(m_Cm[j],7,'f',4);
-            else            strong=QString(" %1,%2,%3,%4,%5,%6")
+											.arg(m_Cm[j],7,'f',4);
+			else            strong=QString(" %1,%2,%3,%4,%5,%6")
 											.arg(m_Alpha[j],7,'f',3)
 											.arg( m_Re[j],8,'f',0)
 											.arg( m_Cl[j],7,'f',4)
 											.arg( m_Cd[j],8,'f',5)
 											.arg(m_Cdp[j],8,'f',5)
-                                            .arg(m_Cm[j],7,'f',4);
+											.arg(m_Cm[j],7,'f',4);
 			out << strong;
 			if(m_XTr1[j]<990.0)
 			{
@@ -234,7 +234,7 @@ void CPolar::AddData(OpPoint *pOpPoint)
 	m_ACrit = pOpPoint->ACrit;
 	AddPoint(pOpPoint->Alpha, pOpPoint->Cd, pOpPoint->Cdp, pOpPoint->Cl, pOpPoint->Cm,
 			 pOpPoint->Xtr1, pOpPoint->Xtr2, pOpPoint->m_TEHMom, pOpPoint->Cpmn, pOpPoint->Reynolds,
-             pOpPoint->m_XCP);
+			 pOpPoint->m_XCP);
 }
 
 
@@ -246,13 +246,13 @@ void CPolar::AddData(void* ptrXFoil)
 	double alpha = pXFoil->alfa*180.0/PI;
 	m_ACrit = pXFoil->acrit;
 
-    AddPoint(alpha, pXFoil->cd, pXFoil->cdp, pXFoil->cl, pXFoil->cm, pXFoil->xoctr[1],
-             pXFoil->xoctr[2], pXFoil->hmom, pXFoil->cpmn, pXFoil->reinf1, pXFoil->xcp);
-
+	AddPoint(alpha, pXFoil->cd, pXFoil->cdp, pXFoil->cl, pXFoil->cm, pXFoil->xoctr[1],
+			 pXFoil->xoctr[2], pXFoil->hmom, pXFoil->cpmn, pXFoil->reinf1, pXFoil->xcp);
+	
 }
 
 void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, double Xtr1,
-                      double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp)
+					  double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp)
 {
 	int i;
 	bool bInserted = false;
@@ -283,19 +283,16 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                     if (Cl>=0.0) m_Cl32Cd[i] = pow(Cl, 1.5)/ Cd;
                     else         m_Cl32Cd[i] = -pow(-Cl, 1.5)/ Cd;
 
-                    if(m_PolarType==FIXEDSPEEDPOLAR) {m_Re[i] =  Reynolds;
-                    }
+					if(m_PolarType==FIXEDSPEEDPOLAR)	       m_Re[i] =  Reynolds;
 					else if (m_PolarType==FIXEDLIFTPOLAR)
                     {
-                        if(Cl>0.0) {m_Re[i] =  Reynolds/ sqrt(Cl);}
-                        else {m_Re[i] = 0.0;
-                        }
+						if(Cl>0.0) m_Re[i] =  Reynolds/ sqrt(Cl);
+						else m_Re[i] = 0.0;
 					}
 					else if (m_PolarType==RUBBERCHORDPOLAR)
                     {
-                        if(Cl>0.0) {m_Re[i] =  Reynolds/(Cl);}
-                        else {m_Re[i] = 0.0;
-                        }
+						if(Cl>0.0) m_Re[i] =  Reynolds/(Cl);
+						else m_Re[i] = 0.0;
 					}
 
 
@@ -323,18 +320,16 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                     if (Cl>=0.0) m_Cl32Cd.insert(i,pow(Cl, 1.5)/ Cd);
                     else         m_Cl32Cd.insert(i,-pow(-Cl, 1.5)/ Cd);
 
-                    if(m_PolarType==FIXEDSPEEDPOLAR){m_Re.insert(i, Reynolds);}
+					if(m_PolarType==FIXEDSPEEDPOLAR)	 m_Re.insert(i, Reynolds);
 					else if (m_PolarType==FIXEDLIFTPOLAR)
                     {
-                        if(Cl>0) {m_Re.insert(i, Reynolds/sqrt(Cl));}
-                        else {m_Re[i] = 0.0;
-                        }
+                        if(Cl>0) m_Re.insert(i, Reynolds/sqrt(Cl));
+                        else m_Re[i] = 0.0;
                     }
 					else if (m_PolarType==RUBBERCHORDPOLAR)
                     {
-                        if(Cl>0.0){m_Re.insert(i, Reynolds/Cl);}
-                        else       {m_Re.insert(i, 0.0);
-                        }
+                        if(Cl>0.0) m_Re.insert(i, Reynolds/Cl);
+                        else       m_Re.insert(i, 0.0);
                     }
 
                     bInserted = true;
@@ -417,13 +412,13 @@ void CPolar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
 		if(m_PolarType==FIXEDSPEEDPOLAR || m_PolarType==FIXEDAOAPOLAR) m_Re.insert(size, Reynolds);
 		else if (m_PolarType==FIXEDLIFTPOLAR)
         {
-            if(Cl>0) {m_Re.insert(size, Reynolds/(double) sqrt(Cl));}
-            else     {m_Re.insert(size, 0.0);}
+            if(Cl>0) m_Re.insert(size, Reynolds/(double) sqrt(Cl));
+            else     m_Re.insert(size, 0.0);
         }
 		else if (m_PolarType==RUBBERCHORDPOLAR)
         {
-            if(Cl>0.0) {m_Re.insert(size, Reynolds/Cl);}
-            else     {m_Re.insert(size, 0.0);}
+            if(Cl>0.0) m_Re.insert(size, Reynolds/Cl);
+            else     m_Re.insert(size, 0.0);
         }
     }
 }

@@ -56,6 +56,7 @@
 #include "../GlobalFunctions.h"
 #include "PolarSelectionDialog.h"
 
+
 #define SIDEPOINTS 51
 
 
@@ -308,10 +309,15 @@ QBEM::QBEM(QWidget *parent)
     rotspeeds.append(200);
     pitchangles.append(0);
 
+
+
+
+
+
+
     dlg_lambda = 7;
 
     dlg_relax = 0.35;
-    dlg_temp = 288.15;
     dlg_rho = 1.225;
     dlg_epsilon = 0.001;
     dlg_iterations = 100;
@@ -349,6 +355,8 @@ QBEM::QBEM(QWidget *parent)
     selected_wind = 0;
     selected_rot = 0;
     selected_pitch = 0;
+
+
 
     dlg_visc = 1.6468e-5;
 
@@ -3784,12 +3792,6 @@ void * QBEM::GetBladeVariable(void *Data, int iVar)
 
                     pVar = &pBData->m_Fa_radial;
                     break;
-//Sara
-            case 23:
-
-                    pVar = &pBData->m_Mach;
-                    break;
-//Sara
             default:
 
                     pVar = &pBData->m_pos;
@@ -5805,7 +5807,6 @@ void QBEM::InitTurbineSimulationParams(TBEMData *bladedata)
 
     if(bladedata)
     {
-//    pSimuWidget->m_pctrlTempVal->setText(strong.number(bladedata->temp,'f',2));//Sara
     pSimuWidget->m_pctrlRhoVal->setText(strong.number(bladedata->rho,'f',4));
     pSimuWidget->m_pctrlElementsVal->setText(strong.number(bladedata->elements,'f',0));
     pSimuWidget->m_pctrlIterationVal->setText(strong.number(bladedata->iterations,'f',0));
@@ -5823,7 +5824,6 @@ void QBEM::InitTurbineSimulationParams(TBEMData *bladedata)
     }
     if(!bladedata)
     {
-//    pSimuWidget->m_pctrlTempVal->setText("");//Sara
     pSimuWidget->m_pctrlRhoVal->setText("");
     pSimuWidget->m_pctrlElementsVal->setText("");
     pSimuWidget->m_pctrlIterationVal->setText("");
@@ -5871,7 +5871,6 @@ void QBEM::InitBladeSimulationParams(BEMData *bladedata)
 
     if(bladedata)
     {
-//    pSimuWidget->m_pctrlTempVal->setText(strong.number(bladedata->temp,'f',2));//Sara
     pSimuWidget->m_pctrlRhoVal->setText(strong.number(bladedata->rho,'f',4));
     pSimuWidget->m_pctrlElementsVal->setText(strong.number(bladedata->elements,'f',0));
     pSimuWidget->m_pctrlIterationVal->setText(strong.number(bladedata->iterations,'f',0));
@@ -5889,7 +5888,6 @@ void QBEM::InitBladeSimulationParams(BEMData *bladedata)
     }
     else
     {
-//    pSimuWidget->m_pctrlTempVal->setText("");//Sara
     pSimuWidget->m_pctrlRhoVal->setText("");
     pSimuWidget->m_pctrlElementsVal->setText("");
     pSimuWidget->m_pctrlIterationVal->setText("");
@@ -5919,7 +5917,6 @@ void QBEM::InitCharSimulationParams(CBEMData *bladedata)
 
     if(bladedata)
     {
-//    pSimuWidget->m_pctrlTempVal->setText(strong.number(bladedata->temp,'f',2));//Sara
     pSimuWidget->m_pctrlRhoVal->setText(strong.number(bladedata->rho,'f',4));
     pSimuWidget->m_pctrlElementsVal->setText(strong.number(bladedata->elements,'f',0));
     pSimuWidget->m_pctrlIterationVal->setText(strong.number(bladedata->iterations,'f',0));
@@ -5936,8 +5933,7 @@ void QBEM::InitCharSimulationParams(CBEMData *bladedata)
 
     }
     if(!bladedata)
-    {
-//    pSimuWidget->m_pctrlTempVal->setText("");//Sara
+    {        
     pSimuWidget->m_pctrlRhoVal->setText("");
     pSimuWidget->m_pctrlElementsVal->setText("");
     pSimuWidget->m_pctrlIterationVal->setText("");
@@ -6014,7 +6010,6 @@ void QBEM::LoadSettings(QSettings *pSettings)
 		dlg_epsilon     =       pSettings->value("Epsilon").toDouble();
 		dlg_iterations  =       pSettings->value("Interations").toInt();
 		dlg_elements    =       pSettings->value("Elements").toInt();
-        dlg_temp         =       pSettings->value("Temperature").toDouble();//Sara
 		dlg_rho         =       pSettings->value("Rho").toDouble();
 		dlg_relax       =       pSettings->value("Relax").toDouble();
 		dlg_tiploss     =       pSettings->value("TipLoss").toBool();
@@ -6944,7 +6939,6 @@ void QBEM::OnCreateCharacteristicSimulation()
 		pCBEMData->m_Color = g_mainFrame->GetColor(12);
         pCBEMData->m_WingName = m_pBlade->getName();
         pCBEMData->setSingleParent(m_pBlade);
-        pCBEMData->temp = pBEMDlg.TempEdit->getValue();//Sara
 		pCBEMData->rho = pBEMDlg.RhoEdit->getValue();
 		pCBEMData->visc = pBEMDlg.ViscEdit->getValue();
 		pCBEMData->m_bNewRootLoss = pBEMDlg.NewRootLossBox->isChecked();
@@ -7027,7 +7021,7 @@ void QBEM::OnCreateRotorSimulation()
 		m_pBEMData = pBEMData;
 		
 		//////set the selected values as standart values for next definition of a simulation///
-        dlg_rho = pBEMData->rho;
+		dlg_rho = pBEMData->rho;
 		dlg_relax = pBEMData->relax;
 		dlg_iterations = pBEMData->iterations;
 		dlg_elements = pBEMData->elements;
@@ -7107,7 +7101,6 @@ void QBEM::OnCreateTurbineSimulation()
  selected_windspeed = -1;
 
  dlg_rho = pTBEMData->rho;
- dlg_kin_visc = 1.4661e-05;//Sara
  dlg_relax = pTBEMData->relax;
  dlg_iterations = pTBEMData->iterations;
  dlg_elements = pTBEMData->elements;
@@ -8873,7 +8866,7 @@ void QBEM::OnExportBladeTable(){
 
     QTextStream out(&XFile);
 
-    out << "Blade Export File Created with "<< g_mainFrame->m_VersionName<<" v0.96 Beta on "<<date.toString("dd.MM.yyyy") << " at " << time.toString("hh:mm:ss") << "\n" ;
+    out << "Blade Export File Created with "<< g_mainFrame->m_VersionName<<" v0.96 on "<<date.toString("dd.MM.yyyy") << " at " << time.toString("hh:mm:ss") << "\n" ;
     out << QString(" %1 %2 %3 %4 %5 %6 %7").arg("Radial Position [m]",25).arg("Chord Length [m]",25).arg("Twist [deg]",25).arg("Pitch Axis Offset [m]",25).arg("Thread Axis in [% chord]",25).arg("Airfoil Name",25).arg("360 Polar Name",25) << endl;
     out << QString().fill('-',182) << endl;
     for (int i=0;i<=m_pBlade->m_NPanel;i++){
@@ -9544,9 +9537,9 @@ void QBEM::OnExportRotorToAeroDyn(){
                   "ShadHWid - Tower-shadow half width (m)" << endl <<
                   QString("%1                               ").arg(0.0, 8, 'f', 3) <<
                   "T_Shad_Refpt - Tower-shadow reference point (m)" << endl <<
-                  QString("%1                               ").arg(dlg_rho, 8, 'f', 3) <<
-                  "AirDens  - Air density (kg/m^3)" << endl <<//Sara new
-                  QString("%1                          ").arg(dlg_kin_visc, 13, 'e', 4) <<
+                  QString("%1                               ").arg(1.225, 8, 'f', 3) <<
+                  "AirDens  - Air density (kg/m^3)" << endl <<
+                  QString("%1                          ").arg(1.4661e-05, 13, 'e', 4) <<
                   "KinVisc  - Kinematic air viscosity (m^2/sec)" << endl <<
                   QString("%1                               ").arg(0.001, 8, 'f', 5) <<
                   "DTAero   - Time interval for aerodynamic calculations (sec)" << endl <<
@@ -9594,7 +9587,7 @@ void QBEM::OnExportRotorToWT_Perf()
                                                                                 g_mainFrame->m_ExportLastDirName);
 	if (directoryName.isEmpty()) return;
 	
-    ExportRotorDialog *parameterDialog = new ExportRotorDialog(dlg_rho,dlg_visc);
+	ExportRotorDialog *parameterDialog = new ExportRotorDialog(dlg_rho,dlg_visc);
 
 	int response = parameterDialog->exec();
 	if (response == ExportRotorDialog::Rejected) {
@@ -11748,7 +11741,6 @@ void QBEM::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("Epsilon", dlg_epsilon);
 		pSettings->setValue("Interations", dlg_iterations);
 		pSettings->setValue("Elements", dlg_elements);
-        pSettings->setValue("Temperature", dlg_temp);//Sara
 		pSettings->setValue("Rho", dlg_rho);
 		pSettings->setValue("Relax", dlg_relax);
 		pSettings->setValue("TipLoss", dlg_tiploss);
@@ -13053,11 +13045,6 @@ void QBEM::SetRotorGraphTitles(Graph* pGraph)
         case 22:
 			pGraph->SetXTitle(tr("Fa_t"));
 			break;
-//Sara
-        case 23:
-            pGraph->SetXTitle(tr("Ma [-]"));
-            break;
-//Sara
 		default:
 			pGraph->SetXTitle(tr("pos [m]"));
 			break;
@@ -13181,11 +13168,6 @@ void QBEM::SetRotorGraphTitles(Graph* pGraph)
         case 22:
 			pGraph->SetYTitle(tr("Fa_t"));
 			break;
-//Sara
-        case 23:
-             pGraph->SetYTitle(tr("Ma [-]"));
-             break;
-//Sara
 		default:
 			pGraph->SetYTitle(tr("pos [m]"));
 			break;

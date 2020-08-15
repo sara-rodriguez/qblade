@@ -288,7 +288,7 @@ void CCurve::SetWidth(int nWidth)
 
 void CCurve::SetVisible(bool bVisible)
 {
-    m_bIsVisible = bVisible;
+	m_bIsVisible = bVisible;
 }
 
 void CCurve::ShowPoints(bool bShow)
