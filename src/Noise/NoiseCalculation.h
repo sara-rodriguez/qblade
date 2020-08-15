@@ -3,7 +3,6 @@
 
 #include <QVector>
 #include "../Graph/ShowAsGraphInterface.h" //Sara
-#include <QMessageBox> //Sara
 
 class NoiseParameter;
 class NoiseOpPoint;
@@ -42,12 +41,14 @@ public:
 
     //Sara begin
     void onVerifyDeltaandValFor3D();
-    void verifydeltafor3d();
     void calculateqs3d_graphics(int blade, int E, double TSR);
     void calculateqs3d_graphics_loops();
     void calculateqs3d_blade();
     void calculateqs3d_rotor();
     void ProgressBar(int index);
+
+    bool alertTE(){return TE_alert;};
+    bool alertLE(){return LE_alert;};
     //Sara end
 
     // NM the arrays containing the graph data
@@ -182,14 +183,8 @@ public:
     int repeat_alert=0;
     int progress_end;
 
-    //Sara begin
-    bool TE_alert;
-    bool LE_alert;
-    bool alpha_max_alert;
-    bool alpha_min_alert;
-    bool Reynolds_alert;
-    bool Mach_alert;
-    //Sara end
+    bool TE_alert=false;
+    bool LE_alert=false;
     bool isVAWT;
     bool isHAWT;
 

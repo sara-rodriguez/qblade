@@ -12,8 +12,9 @@ NoiseOpPoint::NoiseOpPoint(OpPoint *opPoint)
 {
 }
 
-NoiseOpPoint::NoiseOpPoint(double reynolds, double alpha) 
+NoiseOpPoint::NoiseOpPoint(double reynolds, double mach, double alpha) //Sara
 	: m_reynolds(reynolds),
+      m_mach(mach),//Sara
 	  m_alpha(alpha),
 	  m_opPoint(NULL)
 {

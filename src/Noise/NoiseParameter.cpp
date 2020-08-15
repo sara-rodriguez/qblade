@@ -56,7 +56,7 @@ QList<NoiseOpPoint*> NoiseParameter::prepareNoiseOpPointList() {
 			noiseOpPoints.append(new NoiseOpPoint(opPoint));
 		}
 	} else if (opPointSource == OriginalBpm) {
-		noiseOpPoints.append(new NoiseOpPoint(chordBasedReynolds, aoa));
+        noiseOpPoints.append(new NoiseOpPoint(chordBasedReynolds, originalMach, aoa));//Sara
 	}
 	return noiseOpPoints;
 }

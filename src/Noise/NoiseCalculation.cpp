@@ -8,7 +8,6 @@
 #include "NoiseException.h"
 #include "../XBEM/BEM.h" //Sara
 #include "../Objects/Polar.h"//Sara
-#include <QMessageBox>//Sara
 
 //Sara
 #include "../Graph/ShowAsGraphInterface.h" //Sara
@@ -3510,18 +3509,15 @@ alpha[i] = bdata->m_alpha.value(i);
 
 //find nop of defined alpha
 int position=0;
-
 for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-
     int posOpPointNext;
     NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
 
-    if(posOpPoint==noiseOpPoints.size()-1){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+    if(posOpPoint==noiseOpPoints.size()){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
     NoiseOpPoint *nop_next = noiseOpPoints[posOpPointNext];
 
     double alpha_nop = nop->getAlphaDegree();
     double alpha_nop_next = nop_next->getAlphaDegree();
-
     if (qFabs(alpha[i]-alpha_nop)>qFabs(alpha[i]-alpha_nop_next)){
         position = posOpPointNext;
     } else {break;}
@@ -3530,6 +3526,7 @@ for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
 //qDebug() << "nop: " << posOpPoint;
 //qDebug() << "position: " << position;
 //qDebug() << "alpha: " << alpha[i];
+//qDebug() << "alpha_nop: " << nopx->getAlphaDegree();
 //qDebug() << "";
 }
 
@@ -3549,6 +3546,7 @@ if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_max=position;}
 if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_min=position;}
 if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_max=position;}
 }
+
 NoiseOpPoint *nop_min = noiseOpPoints[pos_min];
 NoiseOpPoint *nop_max = noiseOpPoints[pos_max];
 
@@ -4296,7 +4294,8 @@ else if(!LE_val){observations_x.append("2");}
 }}
 
 void NoiseCalculation::onVerifyDeltaandValFor3D(){
-    if (m_parameter->qs3DSim!=0){
+if (m_parameter->qs3DSim!=0){//if is qs3d
+
     QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
     QString message ("");
     if(pXDirect->AlphaDeltaNoise!=0){
@@ -4306,14 +4305,13 @@ void NoiseCalculation::onVerifyDeltaandValFor3D(){
         message.prepend("\n- Use maximum 0.25º step angle resolution for noise prediction models in XDirect");
     }}
 //validation
-if(LE_alert & TE_alert){
+if(alertLE() & alertTE()){
     message.prepend("\n- Leading-edge and trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-else if(TE_alert){
+else if(alertTE()){
     message.prepend("\n- Trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-else if(LE_alert){
+else if(alertLE()){
     message.prepend("\n- Leading-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
-{
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 int number_of_segments = pbem->dlg_elements;
 
@@ -4395,25 +4393,23 @@ if(Mach[i]>Mach_max){Mach_max=Mach[i];}
 z=z+ldelta;
 }
 
-if(alpha_nop_min>alpha_min){alpha_min_alert=true;}
-if(alpha_nop_max<alpha_max){alpha_max_alert=true;}
-if((Reynolds_nop_min>Reynolds_max) || (Reynolds_nop_min<Reynolds_min)){Reynolds_alert=true;}
-if((Mach_nop_min>Mach_max) || (Mach_nop_min<Mach_min)){Mach_alert=true;}
+//qDebug() << "alfa min: " << alpha_min << alpha_nop_min;
+//qDebug() << "alfa max: " << alpha_max << alpha_nop_max;
+//qDebug() << "Reynolds min: " << Reynolds_min << Reynolds_nop_min;
+//qDebug() << "Reynolds max: " << Reynolds_max << Reynolds_nop_max;
+//qDebug() << "Mach min: " << Mach_min << Mach_nop_min;
+//qDebug() << "Mach max: " << Mach_max << Mach_nop_max;
 
-QString message ("");
+if((alpha_nop_min>alpha_min) & (alpha_nop_max<alpha_max)){message.prepend(QString("\n- Alpha polar minimum range must be less than %1 and greater than %2").arg(alpha_min,1,'f',2).arg(alpha_max,1,'f',2));}
+else if(alpha_nop_min>alpha_min){message.prepend(QString("\n- Alpha polar minimum range must be less than %1").arg(alpha_min,1,'f',2));}
+else if(alpha_nop_max<alpha_max){message.prepend(QString("\n- Alpha polar maximum range must be greater than %1").arg(alpha_max,1,'f',2));}
 
-if(alpha_nop_min>alpha_min){message.prepend(QString("\n- Alpha polar minimum range must be less than %1").arg(alpha_min,1,'f',2)); alpha_min_alert=true;}
-if(alpha_nop_max<alpha_max){message.prepend(QString("\n- Alpha polar maximum range must be greater than %1").arg(alpha_max,1,'f',2)); alpha_max_alert=true;}
-if((Reynolds_nop_min>Reynolds_max) || (Reynolds_nop_min<Reynolds_min)){message.prepend(QString("\n- Reynolds polar must be between %1 and %2").arg(Reynolds_min,1,'f',2).arg(Reynolds_max,1,'f',2)); Reynolds_alert=true;}
-if((Mach_nop_min>Mach_max) || (Mach_nop_min<Mach_min)){message.prepend(QString("\n- Mach polar must be between %1 and %2").arg(Mach_min,1,'f',2).arg(Mach_max,1,'f',2)); Mach_alert=true;}
+if((Reynolds_nop_min>Reynolds_max) || (Reynolds_nop_min<Reynolds_min)){message.prepend(QString("\n- Reynolds polar must be between %1 and %2").arg(Reynolds_min,1,'f',2).arg(Reynolds_max,1,'f',2));}
+if((Mach_nop_min>Mach_max) || (Mach_nop_min<Mach_min)){message.prepend(QString("\n- Mach polar must be between %1 and %2").arg(Mach_min,1,'f',2).arg(Mach_max,1,'f',2));}
 
 if (message != NULL){message.prepend("The following error(s) occured:\n");
-    QMessageBox::critical(g_mainFrame, "Create Noise Simulation",message, QMessageBox::Ok);
-return;}
+    QMessageBox::information(g_mainFrame, "- Create Noise Simulation",message, QMessageBox::Ok);
+return;
 }
-
-if (message != NULL){message.prepend("The following error(s) occured:\n");
-    QMessageBox::critical(g_mainFrame, "Create Noise Simulation",message, QMessageBox::Ok);
-return;}
-    }}
+}}
     //Sara
