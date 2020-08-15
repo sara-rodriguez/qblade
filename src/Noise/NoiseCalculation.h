@@ -39,7 +39,7 @@ public:
     void calculate();  // can throw NoiseException
     void qs3D_log(QTextStream &stream); //Sara
 
-    //Sara begin
+    //Sara begin   
     void verifydeltafor3d();
     void calculateqs3d_graphics(int blade, int E, double TSR);
     void calculateqs3d_graphics_loops();
@@ -179,9 +179,9 @@ public:
     double Final_qs3d_rotor_loops;
     double qs3D_val_line = -1;
 
-    int user_sel=0;//user selection graphics for 2d, blade or rotor
     int repeat_alert=0;
     int progress_end;
+    int user_sel=0;//user selection graphics for 2d, blade or rotor
 
     bool TE_alert=false;
     bool LE_alert=false;
@@ -284,7 +284,7 @@ private:
     void calcSPLa(double alpha,int posOpPoint,int posFreq);
     void calcSPLs(int posOpPoint,int posFreq);
     void calcSPLp(int posOpPoint,int posFreq);
-    void LECalc(int posOpPoint, int posFreq, NoiseOpPoint* nop); //Alexandre MOD
+    void LECalc(int posOpPoint, int posFreq); //Alexandre MOD
     //Sara begin
     double calcao(double Reynolds);
     double calcBR_b(double B_min, double B_max);
