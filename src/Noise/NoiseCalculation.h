@@ -3,7 +3,6 @@
 
 #include <QVector>
 #include "../Graph/ShowAsGraphInterface.h" //Sara
-#include <QMessageBox> //Sara
 
 class NoiseParameter;
 class NoiseOpPoint;
@@ -47,7 +46,6 @@ public:
     void calculateqs3d_blade();
     void calculateqs3d_rotor();
     void ProgressBar(int index);
-    void TestAlphaMachReynolds();
 
     bool alertTE(){return TE_alert;};
     bool alertLE(){return LE_alert;};

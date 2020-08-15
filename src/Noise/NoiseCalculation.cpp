@@ -8,7 +8,6 @@
 #include "NoiseException.h"
 #include "../XBEM/BEM.h" //Sara
 #include "../Objects/Polar.h"//Sara
-#include <QMessageBox>//Sara
 
 //Sara
 #include "../Graph/ShowAsGraphInterface.h" //Sara
@@ -3510,18 +3509,15 @@ alpha[i] = bdata->m_alpha.value(i);
 
 //find nop of defined alpha
 int position=0;
-
 for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-
     int posOpPointNext;
     NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
 
-    if(posOpPoint==noiseOpPoints.size()-1){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+    if(posOpPoint==noiseOpPoints.size()){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
     NoiseOpPoint *nop_next = noiseOpPoints[posOpPointNext];
 
     double alpha_nop = nop->getAlphaDegree();
     double alpha_nop_next = nop_next->getAlphaDegree();
-
     if (qFabs(alpha[i]-alpha_nop)>qFabs(alpha[i]-alpha_nop_next)){
         position = posOpPointNext;
     } else {break;}
@@ -3530,6 +3526,7 @@ for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
 //qDebug() << "nop: " << posOpPoint;
 //qDebug() << "position: " << position;
 //qDebug() << "alpha: " << alpha[i];
+//qDebug() << "alpha_nop: " << nopx->getAlphaDegree();
 //qDebug() << "";
 }
 
@@ -3549,6 +3546,7 @@ if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_max=position;}
 if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_min=position;}
 if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_max=position;}
 }
+
 NoiseOpPoint *nop_min = noiseOpPoints[pos_min];
 NoiseOpPoint *nop_max = noiseOpPoints[pos_max];
 
@@ -4294,103 +4292,4 @@ else if(!LE_val){observations_x.append("2");}
 }}
      z=z+ldelta;
 }}
-
-void NoiseCalculation::TestAlphaMachReynolds(){
-QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-int number_of_segments = pbem->dlg_elements;
-
-QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
-
-SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
-double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-double z=lstart;
-double alpha[number_of_segments];
-double Reynolds[number_of_segments];
-double Mach[number_of_segments];
-
-double alpha_nop[noiseOpPoints.size()];
-double Reynolds_nop[noiseOpPoints.size()];
-double Mach_nop[noiseOpPoints.size()];
-
-double alpha_min;
-double alpha_max;
-double Reynolds_min;
-double Reynolds_max;
-double Mach_min;
-double Mach_max;
-
-double alpha_nop_min;
-double alpha_nop_max;
-double Reynolds_nop_min;
-double Reynolds_nop_max;
-double Mach_nop_min;
-double Mach_nop_max;
-
-for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
-if (posOpPoint==0){
-alpha_nop_min = nop->getAlphaDegree();
-alpha_nop_max = nop->getAlphaDegree();
-Reynolds_nop_min = nop->getReynolds();
-Reynolds_nop_max = nop->getReynolds();
-Mach_nop_min = nop->getMach();
-Mach_nop_max = nop->getMach();
-}
-
-    alpha_nop[posOpPoint] = nop->getAlphaDegree();
-    Reynolds_nop[posOpPoint] = nop->getReynolds();
-    Mach_nop[posOpPoint] = nop->getMach();
-
-if(alpha_nop[posOpPoint]<alpha_nop_min){alpha_nop_min=alpha_nop[posOpPoint];}
-if(alpha_nop[posOpPoint]>alpha_nop_max){alpha_nop_max=alpha_nop[posOpPoint];}
-if(Reynolds_nop[posOpPoint]<Reynolds_nop_min){Reynolds_nop_min=Reynolds_nop[posOpPoint];}
-if(Reynolds_nop[posOpPoint]>Reynolds_nop_max){Reynolds_nop_max=Reynolds_nop[posOpPoint];}
-if(Mach_nop[posOpPoint]<Mach_nop_min){Mach_nop_min=Mach_nop[posOpPoint];}
-if(Mach_nop[posOpPoint]>Mach_nop_max){Mach_nop_max=Mach_nop[posOpPoint];}
-}
-
-foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-if (z==m_parameter->TSRtd){
-for (int i=0;i<number_of_segments;++i){
-
-if (i==0){
-alpha_min = bdata->m_alpha.value(i);
-alpha_max = bdata->m_alpha.value(i);
-Reynolds_min = bdata->m_Reynolds.value(i);
-Reynolds_max = bdata->m_Reynolds.value(i);
-Mach_min = bdata->m_Mach.value(i);
-Mach_max = bdata->m_Mach.value(i);
-}
-
-alpha[i]=bdata->m_alpha.value(i);
-Reynolds[i]=bdata->m_Reynolds.value(i);
-Mach[i]=bdata->m_Mach.value(i);
-
-if(alpha[i]<alpha_min){alpha_min=alpha[i];}
-if(alpha[i]>alpha_max){alpha_max=alpha[i];}
-if(Reynolds[i]<Reynolds_min){Reynolds_min=Reynolds[i];}
-if(Reynolds[i]>Reynolds_max){Reynolds_max=Reynolds[i];}
-if(Mach[i]<Mach_min){Mach_min=Mach[i];}
-if(Mach[i]>Mach_max){Mach_max=Mach[i];}
-}}
-z=z+ldelta;
-}
-
-//qDebug() << "Reynolds min: " << Reynolds_min << Reynolds_nop_min;
-//qDebug() << "Reynolds max: " << Reynolds_max << Reynolds_nop_max;
-//qDebug() << "Mach min: " << Mach_min << Mach_nop_min;
-//qDebug() << "Mach max: " << Mach_max << Mach_nop_max;
-
-QString message ("");
-
-if(alpha_nop_min>alpha_min){message.prepend(QString("\n- Alpha polar minimum range must be less than %1").arg(alpha_min,1,'f',2));}
-if(alpha_nop_max<alpha_max){message.prepend(QString("\n- Alpha polar maximum range must be greater than %1").arg(alpha_max,1,'f',2));}
-if((Reynolds_nop_min>Reynolds_max) || (Reynolds_nop_min<Reynolds_min)){message.prepend(QString("\n- Reynolds polar must be between %1 and %2").arg(Reynolds_min,1,'f',2).arg(Reynolds_max,1,'f',2));}
-if((Mach_nop_min>Mach_max) || (Mach_nop_min<Mach_min)){message.prepend(QString("\n- Mach polar must be between %1 and %2").arg(Mach_min,1,'f',2).arg(Mach_max,1,'f',2));}
-
-if (message != NULL){message.prepend("The following error(s) occured:\n");
-    QMessageBox::critical(g_mainFrame, "Create Noise Simulation",message, QMessageBox::Ok);
-return;}
-}
     //Sara
