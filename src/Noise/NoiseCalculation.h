@@ -49,6 +49,9 @@ public:
 
     bool alertTE(){return TE_alert;};
     bool alertLE(){return LE_alert;};
+
+    void UserSelectionSet(int index){user_sel = index;};
+    int UserSelectionMode(){return user_sel;};
     //Sara end
 
     // NM the arrays containing the graph data
