@@ -21,6 +21,7 @@ public:
 
     NoiseCreatorDialog(NoiseSimulation *presetSimulation, NoiseModule *module);
 
+//Sara
     void OnProgressDlg();
     QProgressDialog *m_progress_dlg;
 

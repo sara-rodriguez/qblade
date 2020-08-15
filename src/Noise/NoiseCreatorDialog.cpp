@@ -59,7 +59,8 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                     pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
                     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-                    if(g_tbemdataStore.isEmpty()){u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();}//Sara
+                    if((g_bemdataStore.size()!=NULL)){
+                    u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();}
 
                     pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
                                   "Original flow velocity (U) []:", u_wind_speed, SPEED);
