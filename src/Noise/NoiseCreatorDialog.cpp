@@ -184,10 +184,7 @@ if(index!=0){
     m_opPointScrollArea->setEnabled(true);
     onSelectButtonsClicked(0);
     one_polar_radiobutton->setChecked(true);
-    if(!m_opPointRecords.isEmpty()){all_op_points->click();}
-    multi_polars_radiobutton->setEnabled(false);
     BPM_radiobutton->setEnabled(false);
-    m_opPointScrollArea->setEnabled(false);
 }
 });
 
@@ -357,6 +354,20 @@ else{check_LE=false;}
                     m_valAOAu_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valAOAu_TE, NumberEditType, m_valAOAu_TE_numberedit,"Upper AOA Value [deg]:",19.8);
                     m_valAOAu_TE_numberedit->setEnabled(check_TE);
+
+                    groupBox = new QGroupBox ("Margin of error between BEM and polar data");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+                    groupBox->setLayout(pGrid);
+
+                    m_ReError_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::ReError, NumberEditType, m_ReError_numberedit,"Reynolds Error [%]:",1);
+
+                    m_MaError_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::MaError, NumberEditType, m_MaError_numberedit,"Mach Error [%]:",1);
+
+                    m_alphaError_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::alphaError, NumberEditType, m_alphaError_numberedit,"Alpha Error [%]:",1);
 
                             widget = new QWidget;
                             tabWidget->addTab(widget, "Quasi 3D Blade");
@@ -660,6 +671,14 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
 
     prepareOpPointRecords(id == NoiseParameter::MultiplePolars);
     fillOpPointView();
+
+//Sara
+    if(check_qs3D){
+        m_opPointScrollArea->setEnabled(true);
+        all_op_points->click();
+        m_opPointScrollArea->setEnabled(false);
+    }
+//Sara
 }
 
 void NoiseCreatorDialog::onPolarBoxChange() {
@@ -743,33 +762,6 @@ if (!pNoiseSimulation->progress_dlg_canceled){ //Sara
     }
 //Sara
 }
-
-//Sara begin
-//void NoiseCreatorDialog::onVerifyDeltaandValFor3D(){
-//if (check_qs3D){//if is qs3d
-
-//    QXDirect *pXDirect = (QXDirect *) g_mainFrame->m_pXDirect;
-//    QString message ("");
-//    if(pXDirect->AlphaDeltaNoise!=0){
-//        SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-//            double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-//            if (ldelta>0.25){
-//        message.prepend("\n- Use maximum 0.25º step angle resolution for noise prediction models in XDirect");
-//    }}
-////validation
-//NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_noiseModule;
-
-//if(pNoiseCalculation->alertLE() & pNoiseCalculation->alertTE()){
-//    message.prepend("\n- Leading-edge and trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-//else if(pNoiseCalculation->alertTE()){
-//    message.prepend("\n- Trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-//else if(pNoiseCalculation->alertLE()){
-//    message.prepend("\n- Leading-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-//if (message != NULL){message.prepend("The following error(s) occured:\n");
-//    QMessageBox::information(this, "- Create Noise Simulation",message, QMessageBox::Ok);
-//return;
-//}
-//}}
 
 void NoiseCreatorDialog::onVerifyWindfield(){
     if(g_windFieldStore.size() == 0){

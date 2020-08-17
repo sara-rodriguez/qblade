@@ -615,7 +615,7 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
         m_calculation.qs3D_log(stream);
 
      stream << Qt::endl;
-     stream << "[1]1 - Out of TE range. 2 - Out of LE range."<< Qt::endl;
+     stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range. 3 - Reynolds outside of error margin defined. 4 - Mach outside of error margin defined. 5 - Alpha outside of error margin defined."<< Qt::endl;
 
              stream.setRealNumberNotation(QTextStream::FixedNotation);
              stream.setRealNumberPrecision(5);
@@ -643,7 +643,7 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
                  Qt::endl;
 
                  stream << Qt::endl;
-                 stream << "[1]1 - Out of TE range. 2 - Out of LE range."<< Qt::endl;
+                 stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range."<< Qt::endl;
                  stream << Qt::endl;
          }
 
@@ -670,7 +670,7 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
                            Qt::endl;
 
                  stream << Qt::endl;
-                 stream << "[1]1 - Out of TE range. 2 - Out of LE range."<< Qt::endl;
+                 stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range."<< Qt::endl;
                  stream << Qt::endl;
          }
 }
@@ -992,6 +992,21 @@ else {value=m_parameter.state_ss_us;}
     case P::anglesteps:
         if(set) m_parameter.anglesteps = value.toInt();
         else {value = m_parameter.anglesteps;}
+        break;
+
+    case P::ReError:
+        if(set) {m_parameter.ReError = value.toDouble();}
+else {value=m_parameter.ReError;}
+        break;
+
+    case P::MaError:
+        if(set) {m_parameter.MaError = value.toDouble();}
+else {value=m_parameter.MaError;}
+        break;
+
+    case P::alphaError:
+        if(set) {m_parameter.alphaError = value.toDouble();}
+else {value=m_parameter.alphaError;}
         break;
     }
 // Sara

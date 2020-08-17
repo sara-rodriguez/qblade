@@ -1152,7 +1152,6 @@ void NoiseCalculation::setupVectors() {
     m_SPLLEdBBW.clear();
     m_SPLLEdBCW.clear();
     m_SPLlogLE.clear();
-//Sara
 
     m_OASPL.clear();
     m_OASPLA.clear();
@@ -1451,6 +1450,13 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBBW3d_4d_blade.clear();
     m_SPL_LEdBCW3d_4d_blade.clear();
 
+    m_DStarInterpolatedS3d.clear();
+    m_DStarInterpolatedP3d.clear();
+    m_Reynolds_polar.clear();
+    m_Mach_polar.clear();
+    m_alpha_polar.clear();
+    //Sara
+
     // Resize vectors acording to OpPoints total
     unsigned int sizea = 0;
     if (m_parameter->opPointSource == NoiseParameter::OnePolar ||
@@ -1465,6 +1471,13 @@ QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
 unsigned int number_of_segments = pBEM->dlg_elements;
 
 unsigned int size;
+
+m_Reynolds_polar.resize(number_of_segments);
+m_Mach_polar.resize(number_of_segments);
+m_alpha_polar.resize(number_of_segments);
+m_Reynolds_error.resize(number_of_segments);
+m_Mach_error.resize(number_of_segments);
+m_alpha_error.resize(number_of_segments);
 
 if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPLadB3d.resize(size);
@@ -3483,7 +3496,7 @@ ProgressBar(2);//Sara
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 setupVectorsqs3d();
 
-//D star interpolated
+//begin D star interpolated
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
     double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
@@ -3492,13 +3505,19 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
     int number_of_segments = pBEM->m_pBData->m_pos.size();
     double alpha[number_of_segments];
+    double Reynolds[number_of_segments];
+    double Mach[number_of_segments];
 
-    m_DStarInterpolatedS3d.resize(number_of_segments+1);
-    m_DStarInterpolatedP3d.resize(number_of_segments+1);
-    m_DStarInterpolatedS3d_min.resize(number_of_segments+1);
-    m_DStarInterpolatedP3d_min.resize(number_of_segments+1);
-    m_DStarInterpolatedS3d_max.resize(number_of_segments+1);
-    m_DStarInterpolatedP3d_max.resize(number_of_segments+1);
+    double Reynolds_nop[noiseOpPoints.size()];
+    double Mach_nop[noiseOpPoints.size()];
+    double alpha_nop[noiseOpPoints.size()];
+
+    m_DStarInterpolatedS3d.resize(number_of_segments);
+    m_DStarInterpolatedP3d.resize(number_of_segments);
+    m_DStarInterpolatedS3d_max.resize(number_of_segments);
+    m_DStarInterpolatedP3d_max.resize(number_of_segments);
+    m_DStarInterpolatedS3d_min.resize(number_of_segments);
+    m_DStarInterpolatedP3d_min.resize(number_of_segments);
     double TSR = m_parameter->TSRtd;
 
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
@@ -3506,33 +3525,146 @@ foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
 
 for (int i = 0; i < number_of_segments; ++i) {
 alpha[i] = bdata->m_alpha.value(i);
+Reynolds[i] = bdata->m_Reynolds.value(i);
+Mach[i]=bdata->m_Mach.value(i);
 
-//find nop of defined alpha
+//find nop of the corresponding Reynolds, Mach and alpha from each section
+int position_Reynolds=0;
+int position_Mach=0;
 int position=0;
+
+NoiseOpPoint *nop_0 = noiseOpPoints[0];
+
+double Reynolds_value_point=nop_0->getReynolds();
+double Mach_value_point=nop_0->getMach();
+
 for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    int posOpPointNext;
     NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
+Reynolds_nop[posOpPoint]=nop->getReynolds();
+Mach_nop[posOpPoint]=nop->getMach();
+alpha_nop[posOpPoint]=nop->getAlphaDegree();
+}
 
-    if(posOpPoint==noiseOpPoints.size()){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-    NoiseOpPoint *nop_next = noiseOpPoints[posOpPointNext];
+//for all polars
+if (m_parameter->opPointSource == NoiseParameter::MultiplePolars){
+for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+int posOpPointNext;
+if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
 
-    double alpha_nop = nop->getAlphaDegree();
-    double alpha_nop_next = nop_next->getAlphaDegree();
-    if (qFabs(alpha[i]-alpha_nop)>qFabs(alpha[i]-alpha_nop_next)){
-        position = posOpPointNext;
-    } else {break;}
+if (qFabs(Reynolds[i]-Reynolds_nop[posOpPoint])>qFabs(Reynolds[i]-Reynolds_nop[posOpPointNext])){
+    position_Reynolds = posOpPointNext;
+    Reynolds_value_point = Reynolds_nop[posOpPointNext];
+    position_Mach = position_Reynolds;
+    position = position_Reynolds;
+}
+}
 
-//NoiseOpPoint *nop = noiseOpPoints[position];
-//qDebug() << "nop: " << posOpPoint;
+int position_Reynolds_last=position_Reynolds;
+for (int posOpPoint = position_Reynolds; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+if(Reynolds_nop[posOpPoint]==Reynolds_value_point){
+position_Reynolds_last=posOpPoint;
+}
+}
+
+for (int posOpPoint = position_Reynolds; posOpPoint < position_Reynolds_last; ++posOpPoint) {
+int posOpPointNext;
+if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+if ((qFabs(Mach[i]-Mach_nop[posOpPoint])>qFabs(Mach[i]-Mach_nop[posOpPointNext]))){
+    position_Mach = posOpPointNext;
+    Mach_value_point = Mach_nop[posOpPointNext];
+    position = position_Mach;
+}
+}
+
+int position_Mach_last=position_Mach;
+for (int posOpPoint = position_Mach; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+if(Mach_nop[posOpPoint]==Mach_value_point){
+position_Mach_last=posOpPoint;
+}
+}
+
+for (int posOpPoint = position_Mach; posOpPoint < position_Mach_last; ++posOpPoint) {
+int posOpPointNext;
+if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
+    position = posOpPointNext;
+}else{break;}
+}
+
+NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
+//qDebug() << "nopx: " << position;
+
+//qDebug() << "position Re: " << position_Reynolds;
+//qDebug() << "Reynolds: " << Reynolds[i];
+//qDebug() << "Reynolds_nop: " << nopx->getReynolds();
+
+//qDebug() << "position Mach: " << position_Mach;
+//qDebug() << "Mach: " << Mach[i];
+//qDebug() << "Mach_nop: " << nopx->getMach();
+
 //qDebug() << "position: " << position;
 //qDebug() << "alpha: " << alpha[i];
 //qDebug() << "alpha_nop: " << nopx->getAlphaDegree();
 //qDebug() << "";
+
+bool dStarOrder = false;
+
+//When angle is negative D* search must be inverted
+if(alpha[i] < 0){dStarOrder = true;}
+
+//alpha interpolation to get delta starred value
+double chord_station = (bdata->m_pos.value(i)-bdata->m_pos.value(0))/(bdata->m_pos.value(number_of_segments-1)-bdata->m_pos.value(0));
+
+m_DStarInterpolatedS3d[i] = getDStarInterpolated3d(dStarOrder,chord_station,nopx);
+m_DStarInterpolatedP3d[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nopx);
+
+
+//qDebug() << "chord_station: " << chord_station;
+//qDebug() << "alpha_min: " << alpha_min;
+//qDebug() << "alpha: " << alpha[i];
+//qDebug() << "alpha_max: " << alpha_max;
+//qDebug() << "***";
+//qDebug() << "m_DStar S min: " << m_DStarInterpolatedS3d_min[i];
+//qDebug() << "m_DStar S: " << m_DStarInterpolatedS3d[i];
+//qDebug() << "m_DStar S max: " << m_DStarInterpolatedS3d_max[i];
+//qDebug() << "***";
+//qDebug() << "m_DStar P min: " << m_DStarInterpolatedP3d_min[i];
+//qDebug() << "m_DStar P: " << m_DStarInterpolatedP3d[i];
+//qDebug() << "m_DStar P max: " << m_DStarInterpolatedP3d_max[i];
+//qDebug() << "";
 }
 
-NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest alpha
+//for one polar
+if (m_parameter->opPointSource == NoiseParameter::OnePolar){
+for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+int posOpPointNext;
+if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
+    position = posOpPointNext;
+}else{break;}
+}
 
-//define min and max position to interpolate delta starred for the correct alpha value
+NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
+//qDebug() << "nopx: " << position;
+
+//qDebug() << "position Re: " << position_Reynolds;
+//qDebug() << "Reynolds: " << Reynolds[i];
+//qDebug() << "Reynolds_nop: " << nopx->getReynolds();
+
+//qDebug() << "position Mach: " << position_Mach;
+//qDebug() << "Mach: " << Mach[i];
+//qDebug() << "Mach_nop: " << nopx->getMach();
+
+//qDebug() << "position: " << position;
+//qDebug() << "alpha: " << alpha[i];
+//qDebug() << "alpha_nop: " << nopx->getAlphaDegree();
+//qDebug() << "";
+
+bool dStarOrder = false;
+
+//When angle is negative D* search must be inverted
+if(alpha[i] < 0){dStarOrder = true;}
+
 int pos_max;
 int pos_min;
 
@@ -3549,11 +3681,6 @@ if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_max=position;}
 
 NoiseOpPoint *nop_min = noiseOpPoints[pos_min];
 NoiseOpPoint *nop_max = noiseOpPoints[pos_max];
-
-bool dStarOrder = false;
-
-//When angle is negative D* search must be inverted
-if(alpha[i] < 0){dStarOrder = true;}
 
 //alpha interpolation to get delta starred value
 double chord_station = (bdata->m_pos.value(i)-bdata->m_pos.value(0))/(bdata->m_pos.value(number_of_segments-1)-bdata->m_pos.value(0));
@@ -3591,6 +3718,20 @@ m_DStarInterpolatedP3d[i]=(m_DStarInterpolatedP3d_max[i]-m_DStarInterpolatedP3d_
 //qDebug() << "m_DStar P: " << m_DStarInterpolatedP3d[i];
 //qDebug() << "m_DStar P max: " << m_DStarInterpolatedP3d_max[i];
 //qDebug() << "";
+}
+
+NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
+m_Reynolds_polar[i]=nopx->getReynolds();
+m_Mach_polar[i]=nopx->getMach();
+m_alpha_polar[i]=nopx->getAlphaDegree();
+
+m_Reynolds_error[i]=qFabs((Reynolds_polar()[i]-Reynolds[i])/Reynolds[i]*100.);
+m_Mach_error[i]=qFabs((Mach_polar()[i]-Mach[i])/Mach[i]*100.);
+m_alpha_error[i]=qFabs((alpha_polar()[i]-alpha[i])/alpha[i]*100.);
+
+if(Reynolds_error()[i]>m_Reynolds_max_error){m_Reynolds_max_error = Reynolds_error()[i];}
+if(Mach_error()[i]>m_Mach_max_error){m_Mach_max_error = Mach_error()[i];}
+if(alpha_error()[i]>m_alpha_max_error){m_alpha_max_error = alpha_error()[i];}
 }}
 z=z+ldelta;
 //}
@@ -4187,15 +4328,15 @@ void NoiseCalculation::qs3D_log(QTextStream &stream){
         double chord[number_of_segments];
         double Reynolds[number_of_segments];
         double Reynolds_BEM[number_of_segments];
-        double Reynolds_polar[number_of_segments];
-        double Reynolds_error[number_of_segments];
+        double Reynolds_po[number_of_segments];
+        double Reynolds_er[number_of_segments];
         double Mach_BEM[number_of_segments];
-        double Mach_polar[number_of_segments];
-        double Mach_error[number_of_segments];
+        double Mach_po[number_of_segments];
+        double Mach_er[number_of_segments];
         double alpha[number_of_segments];
         double alpha_BEM[number_of_segments];
-        double alpha_polar[number_of_segments];
-        double alpha_error[number_of_segments];
+        double alpha_po[number_of_segments];
+        double alpha_er[number_of_segments];
         double r_R[number_of_segments];
         double c_Rx[number_of_segments];
         double Mach[number_of_segments];
@@ -4205,44 +4346,30 @@ void NoiseCalculation::qs3D_log(QTextStream &stream){
     for (int i = 0; i < number_of_segments; ++i) {
 
         chord[i] = bdata->m_c_local.value(i);
+
         Reynolds[i] = bdata->m_Reynolds.value(i);
-
         Reynolds_BEM[i]=bdata->m_Reynolds.value(i);
-        Reynolds_polar[i]=noiseOpPoints[i]->getReynolds();
-        Reynolds_error[i]=qFabs(Reynolds_polar[i]-Reynolds_BEM[i])/Reynolds_BEM[i]*100.;
+        Reynolds_po[i]=Reynolds_polar()[i];
+        Reynolds_er[i]=Reynolds_error()[i];
 
-        Mach_polar[i]=noiseOpPoints[i]->getMach();
-        Mach[i]=bdata->m_Mach.value(i);
+        Mach_po[i]=noiseOpPoints[i]->getMach();
+        Mach[i]=Mach_polar()[i];
         Mach_BEM[i] = bdata->m_Mach.value(i);
+        Mach_er[i]=Mach_error()[i];
 
-        Mach_error[i]=qFabs(Mach_polar[i]-Mach_BEM[i])/Mach_BEM[i]*100.;
         alpha_BEM[i] = bdata->m_alpha.value(i);
-
-
-double aux_alpha_polar[noiseOpPoints.size()];
-for (int k=0;k<noiseOpPoints.size();++k){
-aux_alpha_polar[k]=qFabs(alpha_BEM[i]-noiseOpPoints[k]->getAlphaDegreeAbsolute());
-}
-
-double aux_alpha_polar_set=aux_alpha_polar[0];
-
-for (int k=1;k<noiseOpPoints.size();++k){
-if(aux_alpha_polar_set>aux_alpha_polar[k])
-{aux_alpha_polar_set=aux_alpha_polar[k];
-alpha_polar[i]=noiseOpPoints[k]->getAlphaDegreeAbsolute();
-}}
-
+        alpha_po[i]=alpha_polar()[i];
         alpha[i]=alpha_BEM[i];
-        alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+        alpha_er[i]=alpha_error()[i];
 
         r_R[i] = bdata->m_pos.value(i)/finalradius;
 
         QString c_R= QString::number(c_Rx[i], 'f', 5);
-        QString Mach_error_x= QString::number(Mach_error[i], 'f', 2);
-        QString Reynolds_error_x= QString::number(Reynolds_error[i], 'f', 2);
-        QString alpha_error_x= QString::number(alpha_error[i], 'f', 2);
+        QString Mach_error_x= QString::number(Mach_er[i], 'f', 2);
+        QString Reynolds_error_x= QString::number(Reynolds_er[i], 'f', 2);
+        QString alpha_error_x= QString::number(alpha_er[i], 'f', 2);
 
-alpha_error[i]=qFabs(alpha_polar[i]-alpha_BEM[i])/alpha_BEM[i]*100.;
+alpha_er[i]=alpha_error()[i];
 
 //error
 QString observations_x("");
@@ -4265,9 +4392,11 @@ if(Reynolds[i]>m_parameter->valReu_LE){LE_val=false;}
 if(Mach[i]<m_parameter->valMal_LE){LE_val=false;}
 if(Mach[i]>m_parameter->valMau_LE){LE_val=false;}}
 
-if(!TE_val & !LE_val){observations_x.append("1 2");}
-else if(!TE_val){observations_x.append("1");}
-else if(!LE_val){observations_x.append("2");}
+if(!TE_val){if(observations_x!=""){observations_x.append(" ");} observations_x.append("1");}
+if(!LE_val){if(observations_x!=""){observations_x.append(" ");} observations_x.append("2");}
+if(Reynolds_er[i]>m_parameter->ReError){if(observations_x!=""){observations_x.append(" ");}  observations_x.append("3");}
+if(Mach_er[i]>m_parameter->MaError){if(observations_x!=""){observations_x.append(" ");} observations_x.append("4");}
+if(alpha_er[i]>m_parameter->alphaError){if(observations_x!=""){observations_x.append(" ");} observations_x.append("5");}
 
 //uncomment to input data
     stream << qSetFieldWidth(14)  <<
@@ -4278,13 +4407,13 @@ else if(!LE_val){observations_x.append("2");}
                                     bdata->m_Windspeed.value(i) << ";" <<
                                     m_parameter->rot_speed << ";" <<
                                     m_parameter->TSRtd << ";" <<
-                                    Reynolds_polar[i] << ";" <<
+                                    Reynolds_po[i] << ";" <<
                                     Reynolds_BEM[i]  << ";" <<
                                     Reynolds_error_x  << ";" <<
-                                    Mach_polar[i] << ";" <<
+                                    Mach_po[i] << ";" <<
                                     Mach_BEM[i]  <<  ";" <<
                                     Mach_error_x  << ";" <<
-                                    alpha_polar[i] << ";" <<
+                                    alpha_po[i] << ";" <<
                                     alpha_BEM[i]   <<  ";" <<
                                     alpha_error_x    <<  ";" <<
                                     observations_x   <<  ";" <<
@@ -4306,106 +4435,27 @@ if (m_parameter->qs3DSim!=0){//if is qs3d
     }}
 //validation
 if(alertLE() & alertTE()){
-    message.prepend("\n- Leading-edge and trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    message.prepend("\n- Leading-edge and trailing-edge noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 else if(alertTE()){
-    message.prepend("\n- Trailing-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    message.prepend("\n- Trailing-edge noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 else if(alertLE()){
-    message.prepend("\n- Leading-edge noise data out of range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
-
-QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-int number_of_segments = pbem->dlg_elements;
+    message.prepend("\n- Leading-edge noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
-SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
-double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-double z=lstart;
-double alpha[number_of_segments];
-double Reynolds[number_of_segments];
-double Mach[number_of_segments];
+if((Reynolds_max_error()>m_parameter->ReError) & (Mach_max_error()>m_parameter->MaError) & (alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - Reynolds, Mach and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
-double alpha_nop[noiseOpPoints.size()];
-double Reynolds_nop[noiseOpPoints.size()];
-double Mach_nop[noiseOpPoints.size()];
+else if((Mach_max_error()>m_parameter->MaError) & (alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - Mach and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
-double alpha_min;
-double alpha_max;
-double Reynolds_min;
-double Reynolds_max;
-double Mach_min;
-double Mach_max;
+else if((Reynolds_max_error()>m_parameter->ReError) & (Mach_max_error()>m_parameter->MaError)){message.prepend("\n - Reynolds and Mach are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
-double alpha_nop_min;
-double alpha_nop_max;
-double Reynolds_nop_min;
-double Reynolds_nop_max;
-double Mach_nop_min;
-double Mach_nop_max;
+else if((Reynolds_max_error()>m_parameter->ReError) & (alpha_max_error()>m_parameter->MaError)){message.prepend("\n - Reynolds and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
-for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
-if (posOpPoint==0){
-alpha_nop_min = nop->getAlphaDegree();
-alpha_nop_max = nop->getAlphaDegree();
-Reynolds_nop_min = nop->getReynolds();
-Reynolds_nop_max = nop->getReynolds();
-Mach_nop_min = nop->getMach();
-Mach_nop_max = nop->getMach();
-}
+else if((Reynolds_max_error()>m_parameter->ReError)){message.prepend("\n - Reynolds is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
-    alpha_nop[posOpPoint] = nop->getAlphaDegree();
-    Reynolds_nop[posOpPoint] = nop->getReynolds();
-    Mach_nop[posOpPoint] = nop->getMach();
+else if((Mach_max_error()>m_parameter->MaError)){message.prepend("\n - Mach is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
-if(alpha_nop[posOpPoint]<alpha_nop_min){alpha_nop_min=alpha_nop[posOpPoint];}
-if(alpha_nop[posOpPoint]>alpha_nop_max){alpha_nop_max=alpha_nop[posOpPoint];}
-if(Reynolds_nop[posOpPoint]<Reynolds_nop_min){Reynolds_nop_min=Reynolds_nop[posOpPoint];}
-if(Reynolds_nop[posOpPoint]>Reynolds_nop_max){Reynolds_nop_max=Reynolds_nop[posOpPoint];}
-if(Mach_nop[posOpPoint]<Mach_nop_min){Mach_nop_min=Mach_nop[posOpPoint];}
-if(Mach_nop[posOpPoint]>Mach_nop_max){Mach_nop_max=Mach_nop[posOpPoint];}
-}
-
-foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-if (z==m_parameter->TSRtd){
-for (int i=0;i<number_of_segments;++i){
-
-if (i==0){
-alpha_min = bdata->m_alpha.value(i);
-alpha_max = bdata->m_alpha.value(i);
-Reynolds_min = bdata->m_Reynolds.value(i);
-Reynolds_max = bdata->m_Reynolds.value(i);
-Mach_min = bdata->m_Mach.value(i);
-Mach_max = bdata->m_Mach.value(i);
-}
-
-alpha[i]=bdata->m_alpha.value(i);
-Reynolds[i]=bdata->m_Reynolds.value(i);
-Mach[i]=bdata->m_Mach.value(i);
-
-if(alpha[i]<alpha_min){alpha_min=alpha[i];}
-if(alpha[i]>alpha_max){alpha_max=alpha[i];}
-if(Reynolds[i]<Reynolds_min){Reynolds_min=Reynolds[i];}
-if(Reynolds[i]>Reynolds_max){Reynolds_max=Reynolds[i];}
-if(Mach[i]<Mach_min){Mach_min=Mach[i];}
-if(Mach[i]>Mach_max){Mach_max=Mach[i];}
-}}
-z=z+ldelta;
-}
-
-//qDebug() << "alfa min: " << alpha_min << alpha_nop_min;
-//qDebug() << "alfa max: " << alpha_max << alpha_nop_max;
-//qDebug() << "Reynolds min: " << Reynolds_min << Reynolds_nop_min;
-//qDebug() << "Reynolds max: " << Reynolds_max << Reynolds_nop_max;
-//qDebug() << "Mach min: " << Mach_min << Mach_nop_min;
-//qDebug() << "Mach max: " << Mach_max << Mach_nop_max;
-
-if((alpha_nop_min>alpha_min) & (alpha_nop_max<alpha_max)){message.prepend(QString("\n- Alpha polar minimum range must be less than %1 and greater than %2").arg(alpha_min,1,'f',2).arg(alpha_max,1,'f',2));}
-else if(alpha_nop_min>alpha_min){message.prepend(QString("\n- Alpha polar minimum range must be less than %1").arg(alpha_min,1,'f',2));}
-else if(alpha_nop_max<alpha_max){message.prepend(QString("\n- Alpha polar maximum range must be greater than %1").arg(alpha_max,1,'f',2));}
-
-if((Reynolds_nop_min>Reynolds_max) || (Reynolds_nop_min<Reynolds_min)){message.prepend(QString("\n- Reynolds polar must be between %1 and %2").arg(Reynolds_min,1,'f',2).arg(Reynolds_max,1,'f',2));}
-if((Mach_nop_min>Mach_max) || (Mach_nop_min<Mach_min)){message.prepend(QString("\n- Mach polar must be between %1 and %2").arg(Mach_min,1,'f',2).arg(Mach_max,1,'f',2));}
+else if((alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - AOA is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
 if (message != NULL){message.prepend("The following error(s) occured:\n");
     QMessageBox::information(g_mainFrame, "- Create Noise Simulation",message, QMessageBox::Ok);

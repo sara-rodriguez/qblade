@@ -185,12 +185,12 @@ public:
 
     bool TE_alert=false;
     bool LE_alert=false;
+    bool m_onePolar;
     bool isVAWT;
     bool isHAWT;
 
     QString qs3D_val_blade = "";
     QString qs3D_val_rotor = "";
-
     QString qs3D_val_rotor_aux = "";
 //Sara end
 
@@ -246,15 +246,34 @@ public:
         QVector<double> SPLLEdBCW3d_rotor_loops() const { return m_SPLLEdBCW3d_rotor_loops;}
         QVector<double> SPLlogLE3d_rotor_loops() const { return m_SPLlogLE3d_rotor_loops; }
 
+        QVector<double> Reynolds_polar() const { return m_Reynolds_polar; }
+        QVector<double> Mach_polar() const { return m_Mach_polar; }
+        QVector<double> alpha_polar() const { return m_alpha_polar; }
+        QVector<double> Reynolds_error() const { return m_Reynolds_error; }
+        QVector<double> Mach_error() const { return m_Mach_error; }
+        QVector<double> alpha_error() const { return m_alpha_error; }
+
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
-        QVector<double> m_DStarInterpolatedS3d_min;
-        QVector<double> m_DStarInterpolatedP3d_min;
         QVector<double> m_DStarInterpolatedS3d_max;
         QVector<double> m_DStarInterpolatedP3d_max;
-        QVector<double> m_AlphaInterpolated3d;
-        QVector<double> m_ReynoldsInterpolated3d;
-        QVector<double> m_MachInterpolated3d;
+        QVector<double> m_DStarInterpolatedS3d_min;
+        QVector<double> m_DStarInterpolatedP3d_min;
+
+        QVector<double> m_Reynolds_polar;
+        QVector<double> m_Mach_polar;
+        QVector<double> m_alpha_polar;
+        QVector<double> m_Reynolds_error;
+        QVector<double> m_Mach_error;
+        QVector<double> m_alpha_error;
+
+        double Reynolds_max_error() const {return m_Reynolds_max_error; }
+        double Mach_max_error() const {return m_Mach_max_error; }
+        double alpha_max_error() const {return m_alpha_max_error; }
+
+        double m_Reynolds_max_error=0;
+        double m_Mach_max_error=0;
+        double m_alpha_max_error=0;
         double c_const;
         double d_const;
         int m_Lowson_type;

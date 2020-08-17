@@ -7,6 +7,7 @@
 
 NoiseOpPoint::NoiseOpPoint(OpPoint *opPoint)
 	: m_reynolds(-1), 
+      m_mach(-1),//Sara
 	  m_alpha(-1),
 	  m_opPoint(opPoint)
 {
