@@ -1455,6 +1455,12 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_Reynolds_polar.clear();
     m_Mach_polar.clear();
     m_alpha_polar.clear();
+    m_Reynolds_error_value.clear();
+    m_Mach_error_value.clear();
+    m_alpha_error_value.clear();
+    m_alpha_error_value_max.clear();
+    m_TopTr.clear();
+    m_BotTr.clear();
     //Sara
 
     // Resize vectors acording to OpPoints total
@@ -2901,9 +2907,9 @@ local_twist[i]=theta_BEM[i];
     }
     else if (m_parameter->dstar_type==1){
     //    BPM calculation
-        FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pctrlXDirectWidget;
-            double TopTrip=pFoilPolarDlg->m_XTopTr;
-            double BotTrip=pFoilPolarDlg->m_XBotTr;
+        double TopTrip=TopTr()[i];
+        double BotTrip=BotTr()[i];
+
         if((TopTrip==0) & (BotTrip==0)) {
         //        natural transition
             D_starred_S[i]=D_starred_N_S[i];
@@ -3518,7 +3524,10 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     m_DStarInterpolatedP3d_max.resize(number_of_segments);
     m_DStarInterpolatedS3d_min.resize(number_of_segments);
     m_DStarInterpolatedP3d_min.resize(number_of_segments);
+    m_BotTr.resize(number_of_segments);
+    m_TopTr.resize(number_of_segments);
     double TSR = m_parameter->TSRtd;
+    int w=0;
 
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
     if (z==TSR){
@@ -3617,7 +3626,6 @@ double chord_station = (bdata->m_pos.value(i)-bdata->m_pos.value(0))/(bdata->m_p
 
 m_DStarInterpolatedS3d[i] = getDStarInterpolated3d(dStarOrder,chord_station,nopx);
 m_DStarInterpolatedP3d[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nopx);
-
 
 //qDebug() << "chord_station: " << chord_station;
 //qDebug() << "alpha_min: " << alpha_min;
@@ -3728,6 +3736,28 @@ m_alpha_polar[i]=nopx->getAlphaDegree();
 m_Reynolds_error[i]=qFabs((Reynolds_polar()[i]-Reynolds[i])/Reynolds[i]*100.);
 m_Mach_error[i]=qFabs((Mach_polar()[i]-Mach[i])/Mach[i]*100.);
 m_alpha_error[i]=qFabs((alpha_polar()[i]-alpha[i])/alpha[i]*100.);
+
+m_BotTr[i]= g_polarStore.at(position)->m_XBot;
+m_TopTr[i]= g_polarStore.at(position)->m_XTop;
+
+if((Reynolds_error()[i]>m_parameter->ReError) || (Mach_error()[i]>m_parameter->MaError) || (alpha_error()[i]>m_parameter->alphaError)){//urgente
+m_Reynolds_error_value.resize(w+1);
+m_Mach_error_value.resize(w+1);
+m_alpha_error_value.resize(w+1);
+m_alpha_error_value_max.resize(w+1);
+double acrit = g_polarStore.at(position)->m_ACrit;
+double xbot = BotTr()[i];
+double xtop = TopTr()[i];
+double aspec = g_polarStore.at(position)->m_ASpec;
+enumPolarType polar_type = g_polarStore.at(position)->m_PolarType;
+
+//gerar matriz de polares
+m_Reynolds_error_value[w]=m_Reynolds_polar[i];
+m_Mach_error_value[w]=m_Mach_polar[i];
+m_alpha_error_value[w]=qRound(m_alpha_polar[i]-1);
+m_alpha_error_value_max[w]=qRound(m_alpha_polar[i]+1);
+++w;
+}
 
 if(Reynolds_error()[i]>m_Reynolds_max_error){m_Reynolds_max_error = Reynolds_error()[i];}
 if(Mach_error()[i]>m_Mach_max_error){m_Mach_max_error = Mach_error()[i];}

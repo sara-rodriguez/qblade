@@ -200,6 +200,7 @@ void NoiseModule::onqs3dGraphBlade(){
         m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S_blade[qs3D]", true, false});
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P_blade[qs3D]", true, false});
         m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_blade[qs3D] (dB)", true, false});//Alexandre MOD
+        m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE_blade[qs3D] (dB)", true, false});//Alexandre MOD
         m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_blade[qs3D] (dB)", true, false});
 }
 

@@ -252,6 +252,12 @@ public:
         QVector<double> Reynolds_error() const { return m_Reynolds_error; }
         QVector<double> Mach_error() const { return m_Mach_error; }
         QVector<double> alpha_error() const { return m_alpha_error; }
+        QVector<double> Reynolds_error_value() const { return m_Reynolds_error_value; }
+        QVector<double> Mach_error_value() const { return m_Mach_error_value; }
+        QVector<double> alpha_error_value() const { return m_alpha_error_value; }
+        QVector<double> alpha_error_value_max() const { return m_alpha_error_value_max; }
+        QVector<double> TopTr() const { return m_TopTr; }
+        QVector<double> BotTr() const { return m_BotTr; }
 
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
@@ -266,6 +272,12 @@ public:
         QVector<double> m_Reynolds_error;
         QVector<double> m_Mach_error;
         QVector<double> m_alpha_error;
+        QVector<double> m_Reynolds_error_value;
+        QVector<double> m_Mach_error_value;
+        QVector<double> m_alpha_error_value;
+        QVector<double> m_alpha_error_value_max;
+        QVector<double> m_TopTr;
+        QVector<double> m_BotTr;
 
         double Reynolds_max_error() const {return m_Reynolds_max_error; }
         double Mach_max_error() const {return m_Mach_max_error; }
@@ -276,6 +288,8 @@ public:
         double m_alpha_max_error=0;
         double c_const;
         double d_const;
+        double XBotTr;
+        double XTopTr;
         int m_Lowson_type;
         int m_qs3DSim;
     //Sara end

@@ -215,6 +215,8 @@ if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
                     m_selectFromButtons->addButton(one_polar_radiobutton, NoiseParameter::OnePolar);
                     grid->addWidget(one_polar_radiobutton, 0, 1, 1, 1);
                     m_airfoilComboBox = new FoilComboBox (&g_foilStore);
+                    m_airfoilComboBox->setCurrentIndex(foilindex);//Sara
+                    connect(m_airfoilComboBox, SIGNAL(valueChanged(int)), this, SLOT(onFoilBoxChange(int)));//Sara
                     grid->addWidget(m_airfoilComboBox, 0, 2, 1, 1);
                     m_polarComboBox = new PolarComboBox (&g_polarStore);
                     m_polarComboBox->setParentBox(m_airfoilComboBox);
@@ -680,6 +682,13 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
     }
 //Sara
 }
+
+//Sara
+void NoiseCreatorDialog::onFoilBoxChange(int index) {
+    g_mainFrame->m_pctrlFoil->setCurrentIndex(index);
+    foilindex=index;
+}
+//Sara
 
 void NoiseCreatorDialog::onPolarBoxChange() {
     prepareOpPointRecords(false);

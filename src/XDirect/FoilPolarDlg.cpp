@@ -165,7 +165,7 @@ void FoilPolarDlg::SetupLayout()
 	AeroGroup->setLayout(ReMachLayout);
 
 	QHBoxLayout *CommandButtons = new QHBoxLayout;
-	OKButton = new QPushButton(tr("OK"));
+    OKButton = new QPushButton(tr("OK"));
 	OKButton->setAutoDefault(false);
 	CancelButton = new QPushButton(tr("Cancel"));
 	CancelButton->setAutoDefault(false);

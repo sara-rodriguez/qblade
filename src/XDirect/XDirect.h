@@ -101,6 +101,8 @@ private slots:
 	void OnPolarFilter();
 	void OnInputChanged();
 	void OnAnalyze();
+    void OnAnalyzeAll();//Sara
+    void OnAnalyzeNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec);//Sara
 
 	void OnBatchAnalysis();
 	void OnMultiThreadedBatchAnalysis();
@@ -147,7 +149,7 @@ private slots:
 	void OnViscous();
 	void OnXDirectStyle();
 	void OnGraphSettings();
-
+    void OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec); //Sara urgente
 	void OnShowPolarOpps();
 	void OnHidePolarOpps();
 	void OnDeletePolarOpps();
@@ -290,7 +292,7 @@ private:
 
 	QCheckBox *m_pctrlViscous ;
 	QCheckBox *m_pctrlInitBL;
-    QPushButton *m_pctrlAnalyze, *m_pctrlNewPolar, *m_pctrlDeletePolar, *m_pctrlEditPolar;
+    QPushButton *m_pctrlAnalyze, *m_pctrlNewPolar, *m_pctrlDeletePolar, *m_pctrlEditPolar, *m_pctrlAnalyzeAll; //Sara analyzeall
 
 	QCheckBox *m_pctrlShowBL, *m_pctrlShowPressure;
 
