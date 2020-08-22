@@ -215,9 +215,9 @@ if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
                     m_selectFromButtons->addButton(one_polar_radiobutton, NoiseParameter::OnePolar);
                     grid->addWidget(one_polar_radiobutton, 0, 1, 1, 1);
                     m_airfoilComboBox = new FoilComboBox (&g_foilStore);
-                    m_airfoilComboBox->setCurrentIndex(foilindex);//Sara
-                    connect(m_airfoilComboBox, SIGNAL(valueChanged(int)), this, SLOT(onFoilBoxChange(int)));//Sara
+                    connect(m_airfoilComboBox, SIGNAL(valueChanged(int)), this, SLOT(onFoilBoxChange()));//Sara
                     grid->addWidget(m_airfoilComboBox, 0, 2, 1, 1);
+                    m_airfoilComboBox->setCurrentIndex(foilindex);
                     m_polarComboBox = new PolarComboBox (&g_polarStore);
                     m_polarComboBox->setParentBox(m_airfoilComboBox);
                     connect(m_polarComboBox, SIGNAL(valueChanged(int)), this, SLOT(onPolarBoxChange()));
@@ -369,7 +369,7 @@ else{check_LE=false;}
                     pGrid->addEdit(P::MaError, NumberEditType, m_MaError_numberedit,"Mach Error [%]:",1);
 
                     m_alphaError_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::alphaError, NumberEditType, m_alphaError_numberedit,"Alpha Error [%]:",1);
+                    pGrid->addEdit(P::alphaError, NumberEditType, m_alphaError_numberedit,"Alpha Error [%]:",3);
 
                             widget = new QWidget;
                             tabWidget->addTab(widget, "Quasi 3D Blade");
@@ -684,7 +684,8 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
 }
 
 //Sara
-void NoiseCreatorDialog::onFoilBoxChange(int index) {
+void NoiseCreatorDialog::onFoilBoxChange() {
+    int index = m_airfoilComboBox->currentIndex();
     g_mainFrame->m_pctrlFoil->setCurrentIndex(index);
     foilindex=index;
 }

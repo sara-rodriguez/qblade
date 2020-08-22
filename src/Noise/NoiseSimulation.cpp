@@ -12,6 +12,7 @@
 #include "../XBEM/TBEMData.h"
 #include "../XDMS/DData.h"
 #include "../XBEM/Blade.h"
+#include "../XDirect/XDirect.h"
 #include "NoiseException.h"
 #include "NoiseOpPoint.h"
 #include "NoiseCreatorDialog.h"
@@ -279,17 +280,19 @@ void NoiseSimulation::simulate() {
     pNoiseCreatorDialog->OnProgressDlg();//Sara
     m_calculation.setNoiseParam(&m_parameter);
     m_calculation.setInitialValues();//Sara
-
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate();}
+//Sara
     if (m_parameter.qs3DSim!=0){
-if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_graphics_loops();}//Sara
-if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_blade();}//Sara
+if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_graphics_loops();}
+if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_blade();}
     }
     if(m_parameter.qs3DSim==2){
-if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_rotor();}//Sara
+if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_rotor();}
     }
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){pNoiseCreatorDialog->m_progress_dlg->cancel();}
 m_calculation.onVerifyDeltaandValFor3D();
+errorReMaalphasize=m_calculation.Reynolds_error_value().size();
+//Sara
 }
 
 void NoiseSimulation::exportCalculation(QTextStream &stream) {
@@ -1040,3 +1043,50 @@ else {value=m_parameter.alphaError;}
 
     return (set ? QVariant() : value);
 }
+
+//urgente Sara
+void NoiseSimulation::loopsReMaalpha(){
+QXDirect *pXDirect = (QXDirect*) g_mainFrame->m_pXDirect;
+//QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
+
+int size = m_calculation.Reynolds_error_value().size();
+double Reynolds[size];
+double Mach[size];
+double alpha[size];
+double acrit[size];
+double xbot[size];
+double xtop[size];
+double aspec[size];
+double polar_type[size];
+double alpha_max[size];
+enumPolarType ptype;
+
+g_mainFrame->OnXDirect();
+
+for (int i=0;i<size;++i){
+Reynolds[i]=m_calculation.Reynolds_error_value().at(i);
+Mach[i]=m_calculation.Mach_error_value().at(i);
+alpha[i]=m_calculation.alpha_error_value().at(i);
+acrit[i]=m_calculation.acrit_error().at(i);
+xbot[i]=m_calculation.xbot_error().at(i);
+xtop[i]=m_calculation.xtop_error().at(i);
+aspec[i]=m_calculation.aspec_error().at(i);
+polar_type[i]=m_calculation.polar_type_error().at(i);
+alpha_max[i]=m_calculation.alpha_error_value_max().at(i);
+
+if(polar_type[i]==1){ptype = FIXEDSPEEDPOLAR;}
+else if(polar_type[i]==2){ptype = FIXEDLIFTPOLAR;}
+else if(polar_type[i]==3){ptype = RUBBERCHORDPOLAR;}
+else if(polar_type[i]==4){ptype = FIXEDAOAPOLAR;}
+
+//qDebug() << acrit[i] << xbot[i]<< xtop[i]<< Mach[i]<< Reynolds[i]<< ptype<< aspec[i]<<alpha[i]<<alpha_max[i];
+
+pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i]);
+}
+
+//qDebug() << acrit[i] << xbot[i]<< xtop[i]<< Mach[i]<< Reynolds[i]<< ptype<< aspec[i]<<alpha[i]<<alpha_max[i];
+
+//pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i]);
+
+}
+//Sara

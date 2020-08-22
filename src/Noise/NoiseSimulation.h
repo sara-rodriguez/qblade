@@ -13,8 +13,12 @@ class ParameterViewer;
 class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, public ParameterObject<Parameter::NoiseSimulation>
 {
 public:
+ //Sara
+    int y=0;
+    int errorReMaalphasize=0;//urgente
+    //Sara
 
-    int y=0; //Sara
+    bool isLoop=false;
 
     static NoiseSimulation* newBySerialize ();
     NoiseSimulation(ParameterViewer<Parameter::NoiseSimulation> *viewer);
@@ -35,6 +39,7 @@ public:
     void exportCalculationqs3DNoise_blade (QTextStream &stream); //Sara
     void exportCalculationqs3DNoise_rotor (QTextStream &stream); //Sara
     void exportqs3DLog (QTextStream &stream);//Sara
+    void loopsReMaalpha();//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
 

@@ -38,7 +38,7 @@ public:
     int phi_selection;
     int sum=2;
     int user_sel;
-    int foilindex=g_mainFrame->m_pctrlPolar->currentIndex();
+    int foilindex=g_mainFrame->m_pctrlFoil->currentIndex();
 
     bool rot_speed_in=false;
     bool u_wind_speed_in=true;
@@ -127,7 +127,7 @@ private:
 private slots:
     void onSelectButtonsClicked (int id);
     void onPolarBoxChange ();
-    void onFoilBoxChange (int index);//Sara
+    void onFoilBoxChange ();//Sara
     void onAllButtonToggled (bool pressed);
 
     void onCreateButtonClicked ();

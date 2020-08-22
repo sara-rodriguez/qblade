@@ -256,6 +256,11 @@ public:
         QVector<double> Mach_error_value() const { return m_Mach_error_value; }
         QVector<double> alpha_error_value() const { return m_alpha_error_value; }
         QVector<double> alpha_error_value_max() const { return m_alpha_error_value_max; }
+        QVector<double> acrit_error() const { return m_acrit_error; }
+        QVector<double> xbot_error() const { return m_xbot_error; }
+        QVector<double> xtop_error() const { return m_xtop_error; }
+        QVector<double> aspec_error() const { return m_aspec_error; }
+        QVector<double> polar_type_error() const { return m_polar_type_error; }
         QVector<double> TopTr() const { return m_TopTr; }
         QVector<double> BotTr() const { return m_BotTr; }
 
@@ -276,6 +281,12 @@ public:
         QVector<double> m_Mach_error_value;
         QVector<double> m_alpha_error_value;
         QVector<double> m_alpha_error_value_max;
+        QVector<double> m_acrit_error;
+        QVector<double> m_xbot_error;
+        QVector<double> m_xtop_error;
+        QVector<double> m_aspec_error;
+        QVector<double> m_polar_type_error;
+
         QVector<double> m_TopTr;
         QVector<double> m_BotTr;
 

@@ -40,6 +40,10 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     m_exportqs3DNoise_rotor_loops = new QAction("Export current Quasi 3D Noise Rotor", this);
     connect(m_exportqs3DNoise_rotor_loops, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor()));
     addAction(m_exportqs3DNoise_rotor_loops);
+
+    m_loopsReMaalpha = new QAction("Optimize values to minime error BEM x polar", this);
+    connect(m_loopsReMaalpha, SIGNAL(triggered()), this, SLOT(onloopsReMaalpha()));
+    addAction(m_loopsReMaalpha);
     //Sara
 }
 
@@ -56,6 +60,7 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
+        m_loopsReMaalpha->setEnabled(false);
     }
 
     else if (index==1){
@@ -63,6 +68,7 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
+        if(m_module->getShownSimulation()->errorReMaalphasize!=0){m_loopsReMaalpha->setEnabled(true);}else{m_loopsReMaalpha->setEnabled(false);}
     }
 
     else if (index==2){
@@ -70,12 +76,14 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(simulationAvailable);
+        if(m_module->getShownSimulation()->errorReMaalphasize!=0){m_loopsReMaalpha->setEnabled(true);}else{m_loopsReMaalpha->setEnabled(false);}
     }
     else {
         m_exportNoise->setEnabled(false);
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
+        m_loopsReMaalpha->setEnabled(false);
     }
     //Sara
 }
@@ -155,6 +163,10 @@ void NoiseMenu::onExportqs3DNoise_rotor() {
         m_module->getShownSimulation()->exportCalculationqs3DNoise_rotor(fileStream);
     }
     file.close();
+}
+
+void NoiseMenu::onloopsReMaalpha(){
+m_module->getShownSimulation()->loopsReMaalpha();
 }
 //Sara
 

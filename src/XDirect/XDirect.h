@@ -84,11 +84,19 @@ public:
     ~QXDirect();
     int AlphaDeltaNoise=0;//Sara
 
+     double Mach_noise, Reynolds_noise, alpha_noise;
+
+     void OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax);
+//Sara
+
 public slots:
 	void UpdateView();
 
-
 private slots:
+    //Sara
+    void OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec);
+    //Sara
+
 	void OnXFoilAdvanced();
     void OnEditPolar();
 
@@ -102,7 +110,6 @@ private slots:
 	void OnInputChanged();
 	void OnAnalyze();
     void OnAnalyzeAll();//Sara
-    void OnAnalyzeNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec);//Sara
 
 	void OnBatchAnalysis();
 	void OnMultiThreadedBatchAnalysis();
@@ -149,7 +156,6 @@ private slots:
 	void OnViscous();
 	void OnXDirectStyle();
 	void OnGraphSettings();
-    void OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec); //Sara urgente
 	void OnShowPolarOpps();
 	void OnHidePolarOpps();
 	void OnDeletePolarOpps();
@@ -189,7 +195,6 @@ private slots:
 	void OnOpPointProps();
 	void OnPolarProps();
 	void OnRenameFoil();
-
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
@@ -292,7 +297,7 @@ private:
 
 	QCheckBox *m_pctrlViscous ;
 	QCheckBox *m_pctrlInitBL;
-    QPushButton *m_pctrlAnalyze, *m_pctrlNewPolar, *m_pctrlDeletePolar, *m_pctrlEditPolar, *m_pctrlAnalyzeAll; //Sara analyzeall
+    QPushButton *m_pctrlAnalyze, *m_pctrlNewPolar, *m_pctrlDeletePolar, *m_pctrlEditPolar, *m_pctrlAnalyzeAll; //Sara
 
 	QCheckBox *m_pctrlShowBL, *m_pctrlShowPressure;
 

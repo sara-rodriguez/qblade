@@ -35,6 +35,8 @@
 #include "../MainFrame.h"
 #include "../Misc/EditPlrDlg.h"
 #include "../Misc/ObjectPropsDlg.h"
+#include "../Noise/NoiseSimulation.h"//Sara
+#include "../Noise/NoiseCalculation.h"//Sara
 #include "XDirect.h"
 
 #include "../TwoDWidget.h"
@@ -1918,10 +1920,8 @@ void QXDirect::OnInputChanged()
 	ReadParams();
 }
 
-
 void QXDirect::OnAnalyze()
-{
-
+{    
 	if(!g_pCurFoil || !m_pCurPolar) return;
 
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
@@ -2028,14 +2028,13 @@ void QXDirect::OnAnalyze()
 	UpdateView();
 }
 
-//Sara urgente
+//Sara
 void QXDirect::OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec)
 {
     int i,j;
     CPolar *pPolar;
     bool bFound;
     if(!g_pCurFoil) return;
-
 
     m_FoilPolarDlg.move(g_mainFrame->m_DlgPos);
     m_FoilPolarDlg.m_NCrit     = NCrit;
@@ -2048,11 +2047,14 @@ void QXDirect::OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, doubl
 
     m_FoilPolarDlg.InitDialog();
 
-//    int res = m_FoilPolarDlg.exec();
-
     g_mainFrame->m_DlgPos = m_FoilPolarDlg.pos();
-//    if (res == QDialog::Accepted) urgente
-//    {
+
+    bool repeated_name=false;
+    for (int i=0;i<g_polarStore.size();++i){
+    if(m_FoilPolarDlg.m_PlrName==g_polarStore.at(i)->getName()){repeated_name=true;  g_mainFrame->m_pctrlPolar->setCurrentIndex(i);}
+    }
+
+    if(!repeated_name){
         pPolar = new CPolar();
 
         pPolar->setSingleParent(g_pCurFoil);
@@ -2119,23 +2121,22 @@ void QXDirect::OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, doubl
         }
 
         SetPolar(m_pCurPolar);
-
         g_mainFrame->m_pctrlPolar->setCurrentObject(m_pCurPolar);
-
         g_mainFrame->UpdatePolars();
-
         SetBufferFoil();
-
         UpdateView();
         }
-//    }
     SetControls();
 }
+}
 
-void QXDirect::OnAnalyzeNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec)//urgente
+void QXDirect::OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax)
 {
 OnNewPolarNoise(NCrit, XBotTr, XTopTr, Mach, Reynolds, PolarType, ASpec);
-//OnNewPolarTeste(9, 0.1, 0.05, 0.10, 123456, ,0);
+
+m_pctrlAlphaMin->setValue(Alpha);
+m_pctrlAlphaMax->setValue(AlphaMax);
+m_pctrlAlphaDelta->setValue(0.25);
 
 OnAnalyze();
 }
