@@ -1174,7 +1174,7 @@ void NoiseCalculation::setupVectors() {
 
     //Sara
   QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-  unsigned int number_of_segments = pBEM->dlg_elements;
+  unsigned int number_of_segments = pBEM->m_pBData->m_pos.size();
 
   unsigned int size;
 
@@ -1274,6 +1274,7 @@ void NoiseCalculation::setupVectors() {
 
 //setup qs3D vectors
 void NoiseCalculation::setupVectorsqs3d() {
+
     m_SPLdB3d.clear();
     m_SPLdBAW3d.clear();
     m_SPLdBBW3d.clear();
@@ -1468,6 +1469,201 @@ void NoiseCalculation::setupVectorsqs3d() {
 
     m_TopTr.clear();
     m_BotTr.clear();
+
+    m_SPLdB3d.squeeze();
+    m_SPLdBAW3d.squeeze();
+    m_SPLdBBW3d.squeeze();
+    m_SPLdBCW3d.squeeze();
+    m_SPLpdB3d.squeeze();
+    m_SPLpdBAW3d.squeeze();
+    m_SPLpdBBW3d.squeeze();
+    m_SPLpdBCW3d.squeeze();
+    m_SPLsdB3d.squeeze();
+    m_SPLsdBAW3d.squeeze();
+    m_SPLsdBBW3d.squeeze();
+    m_SPLsdBCW3d.squeeze();
+    m_SPLadB3d.squeeze();
+    m_SPLadBAW3d.squeeze();
+    m_SPLadBBW3d.squeeze();
+    m_SPLadBCW3d.squeeze();
+    m_SPL_LEdB3d.squeeze();
+    m_SPL_LEdBAW3d.squeeze();
+    m_SPL_LEdBBW3d.squeeze();
+    m_SPL_LEdBCW3d.squeeze();
+    m_SPLLEdB3d.squeeze();
+    m_SPLLEdBAW3d.squeeze();
+    m_SPLLEdBBW3d.squeeze();
+    m_SPLLEdBCW3d.squeeze();
+    m_SPLlogLE3d.squeeze();
+    m_OASPL3d.squeeze();
+    m_OASPLA3d.squeeze();
+    m_OASPLB3d.squeeze();
+    m_OASPLC3d.squeeze();
+    m_SPLALOG3d.squeeze();
+    m_SPLSLOG3d.squeeze();
+    m_SPLPLOG3d.squeeze();
+
+    m_SPLdB3d_final.squeeze();
+    m_SPLdBAW3d_final.squeeze();
+    m_SPLdBBW3d_final.squeeze();
+    m_SPLdBCW3d_final.squeeze();
+    m_SPLpdB3d_final.squeeze();
+    m_SPLsdB3d_final.squeeze();
+    m_SPLadB3d_final.squeeze();
+    m_SPL_LEdB3d_final.squeeze();
+    m_SPL_LEdBAW3d_final.squeeze();
+    m_SPL_LEdBBW3d_final.squeeze();
+    m_SPL_LEdBCW3d_final.squeeze();
+
+    m_SPLdB3d_rotor.squeeze();
+    m_SPLdBAW3d_rotor.squeeze();
+    m_SPLdBBW3d_rotor.squeeze();
+    m_SPLdBCW3d_rotor.squeeze();
+    m_SPLpdB3d_rotor.squeeze();
+    m_SPLpdBAW3d_rotor.squeeze();
+    m_SPLpdBBW3d_rotor.squeeze();
+    m_SPLpdBCW3d_rotor.squeeze();
+    m_SPLsdB3d_rotor.squeeze();
+    m_SPLsdBAW3d_rotor.squeeze();
+    m_SPLsdBBW3d_rotor.squeeze();
+    m_SPLsdBCW3d_rotor.squeeze();
+    m_SPLadB3d_rotor.squeeze();
+    m_SPLadBAW3d_rotor.squeeze();
+    m_SPLadBBW3d_rotor.squeeze();
+    m_SPLadBCW3d_rotor.squeeze();
+    m_SPL_LEdB3d_rotor.squeeze();
+    m_SPL_LEdBAW3d_rotor.squeeze();
+    m_SPL_LEdBBW3d_rotor.squeeze();
+    m_SPL_LEdBCW3d_rotor.squeeze();
+    m_SPLLEdB3d_rotor.squeeze();
+    m_SPLLEdBAW3d_rotor.squeeze();
+    m_SPLLEdBBW3d_rotor.squeeze();
+    m_SPLLEdBCW3d_rotor.squeeze();
+    m_SPLlogLE3d_rotor.squeeze();
+    m_OASPL3d_rotor.squeeze();
+    m_OASPLA3d_rotor.squeeze();
+    m_OASPLB3d_rotor.squeeze();
+    m_OASPLC3d_rotor.squeeze();
+    m_SPLALOG3d_rotor.squeeze();
+    m_SPLSLOG3d_rotor.squeeze();
+    m_SPLPLOG3d_rotor.squeeze();
+
+    m_SPLdB3d_final_rotor.squeeze();
+    m_SPLdBAW3d_final_rotor.squeeze();
+    m_SPLdBBW3d_final_rotor.squeeze();
+    m_SPLdBCW3d_final_rotor.squeeze();
+    m_SPLpdB3d_final_rotor.squeeze();
+    m_SPLsdB3d_final_rotor.squeeze();
+    m_SPLadB3d_final_rotor.squeeze();
+    m_SPL_LEdB3d_final_rotor.squeeze();
+    m_SPL_LEdBAW3d_final_rotor.squeeze();
+    m_SPL_LEdBBW3d_final_rotor.squeeze();
+    m_SPL_LEdBCW3d_final_rotor.squeeze();
+
+    m_SPLdB3d_rotor_loops.squeeze();
+    m_SPLdBAW3d_rotor_loops.squeeze();
+    m_SPLdBBW3d_rotor_loops.squeeze();
+    m_SPLdBCW3d_rotor_loops.squeeze();
+    m_SPLpdB3d_rotor_loops.squeeze();
+    m_SPLpdBAW3d_rotor_loops.squeeze();
+    m_SPLpdBBW3d_rotor_loops.squeeze();
+    m_SPLpdBCW3d_rotor_loops.squeeze();
+    m_SPLsdB3d_rotor_loops.squeeze();
+    m_SPLsdBAW3d_rotor_loops.squeeze();
+    m_SPLsdBBW3d_rotor_loops.squeeze();
+    m_SPLsdBCW3d_rotor_loops.squeeze();
+    m_SPLadB3d_rotor_loops.squeeze();
+    m_SPLadBAW3d_rotor_loops.squeeze();
+    m_SPLadBBW3d_rotor_loops.squeeze();
+    m_SPLadBCW3d_rotor_loops.squeeze();
+    m_SPL_LEdB3d_rotor_loops.squeeze();
+    m_SPL_LEdBAW3d_rotor_loops.squeeze();
+    m_SPL_LEdBBW3d_rotor_loops.squeeze();
+    m_SPL_LEdBCW3d_rotor_loops.squeeze();
+    m_SPLLEdB3d_rotor_loops.squeeze();
+    m_SPLLEdBAW3d_rotor_loops.squeeze();
+    m_SPLLEdBBW3d_rotor_loops.squeeze();
+    m_SPLLEdBCW3d_rotor_loops.squeeze();
+    m_SPLlogLE3d_rotor_loops.squeeze();
+    m_OASPL3d_rotor_loops.squeeze();
+    m_OASPLA3d_rotor_loops.squeeze();
+    m_OASPLB3d_rotor_loops.squeeze();
+    m_OASPLC3d_rotor_loops.squeeze();
+    m_SPLALOG3d_rotor_loops.squeeze();
+    m_SPLSLOG3d_rotor_loops.squeeze();
+    m_SPLPLOG3d_rotor_loops.squeeze();
+
+    m_SPLdB3d_final_rotor_loops.squeeze();
+    m_SPLdBAW3d_final_rotor_loops.squeeze();
+    m_SPLdBBW3d_final_rotor_loops.squeeze();
+    m_SPLdBCW3d_final_rotor_loops.squeeze();
+    m_SPLpdB3d_final_rotor_loops.squeeze();
+    m_SPLsdB3d_final_rotor_loops.squeeze();
+    m_SPLadB3d_final_rotor_loops.squeeze();
+    m_SPL_LEdB3d_final_rotor_loops.squeeze();
+    m_SPL_LEdBAW3d_final_rotor_loops.squeeze();
+    m_SPL_LEdBBW3d_final_rotor_loops.squeeze();
+    m_SPL_LEdBCW3d_final_rotor_loops.squeeze();
+
+    m_SPLdB3d_4d.squeeze();
+    m_SPLdBAW3d_4d.squeeze();
+    m_SPLdBBW3d_4d.squeeze();
+    m_SPLdBCW3d_4d.squeeze();
+    m_SPLpdB3d_4d.squeeze();
+    m_SPLpdBAW3d_4d.squeeze();
+    m_SPLpdBBW3d_4d.squeeze();
+    m_SPLpdBCW3d_4d.squeeze();
+    m_SPLsdB3d_4d.squeeze();
+    m_SPLsdBAW3d_4d.squeeze();
+    m_SPLsdBBW3d_4d.squeeze();
+    m_SPLsdBCW3d_4d.squeeze();
+    m_SPLadB3d_4d.squeeze();
+    m_SPLadBAW3d_4d.squeeze();
+    m_SPLadBBW3d_4d.squeeze();
+    m_SPLadBCW3d_4d.squeeze();
+    m_SPL_LEdB3d_4d.squeeze();
+    m_SPL_LEdBAW3d_4d.squeeze();
+    m_SPL_LEdBBW3d_4d.squeeze();
+    m_SPL_LEdBCW3d_4d.squeeze();
+
+    m_SPLdB3d_4d_blade.squeeze();
+    m_SPLdBAW3d_4d_blade.squeeze();
+    m_SPLdBBW3d_4d_blade.squeeze();
+    m_SPLdBCW3d_4d_blade.squeeze();
+    m_SPLpdB3d_4d_blade.squeeze();
+    m_SPLpdBAW3d_4d_blade.squeeze();
+    m_SPLpdBBW3d_4d_blade.squeeze();
+    m_SPLpdBCW3d_4d_blade.squeeze();
+    m_SPLsdB3d_4d_blade.squeeze();
+    m_SPLsdBAW3d_4d_blade.squeeze();
+    m_SPLsdBBW3d_4d_blade.squeeze();
+    m_SPLsdBCW3d_4d_blade.squeeze();
+    m_SPLadB3d_4d_blade.squeeze();
+    m_SPLadBAW3d_4d_blade.squeeze();
+    m_SPLadBBW3d_4d_blade.squeeze();
+    m_SPLadBCW3d_4d_blade.squeeze();
+    m_SPL_LEdB3d_4d_blade.squeeze();
+    m_SPL_LEdBAW3d_4d_blade.squeeze();
+    m_SPL_LEdBBW3d_4d_blade.squeeze();
+    m_SPL_LEdBCW3d_4d_blade.squeeze();
+
+    m_DStarInterpolatedS3d.squeeze();
+    m_DStarInterpolatedP3d.squeeze();
+    m_Reynolds_polar.squeeze();
+    m_Mach_polar.squeeze();
+    m_alpha_polar.squeeze();
+    m_Reynolds_error_value.squeeze();
+    m_Mach_error_value.squeeze();
+    m_alpha_error_value.squeeze();
+    m_alpha_error_value_max.squeeze();
+    m_acrit_error.squeeze();
+    m_xbot_error.squeeze();
+    m_xtop_error.squeeze();
+    m_aspec_error.squeeze();
+    m_polar_type_error.squeeze();
+
+    m_TopTr.squeeze();
+    m_BotTr.squeeze();
     //Sara
 
     // Resize vectors acording to OpPoints total
@@ -1481,7 +1677,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     }
 
 QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-unsigned int number_of_segments = pBEM->dlg_elements;
+unsigned int number_of_segments = pBEM->m_pBData->m_pos.size();
 
 unsigned int size;
 
@@ -1762,7 +1958,7 @@ anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
 }
 
 angles_num = 360./anglesteps*number_of_rotations;
-
+//urgente
 for (unsigned int w = 0; w < size; ++w){
 for (unsigned int s = 0; s < FREQUENCY_TABLE_SIZE; ++s){
 for (unsigned int x = 0; x < blades_num; ++x){
@@ -1816,7 +2012,7 @@ if (sizea<size){
             m_SPL_LEdBAW3d_final[i][w]=0;
             m_SPL_LEdBBW3d_final[i][w]=0;
             m_SPL_LEdBCW3d_final[i][w]=0;
-
+qDebug() << "ok3";
             m_SPLadB3d_rotor[i][w]=0;
             m_SPLsdB3d_rotor[i][w]=0;
             m_SPLpdB3d_rotor[i][w]=0;
@@ -1839,7 +2035,7 @@ if (sizea<size){
             m_SPL_LEdBAW3d_final_rotor[i][w]=0;
             m_SPL_LEdBBW3d_final_rotor[i][w]=0;
             m_SPL_LEdBCW3d_final_rotor[i][w]=0;
-
+qDebug() << "ok4";
             m_SPLadB3d_rotor_loops[i][w]=0;
             m_SPLsdB3d_rotor_loops[i][w]=0;
             m_SPLpdB3d_rotor_loops[i][w]=0;
@@ -1863,7 +2059,7 @@ if (sizea<size){
             m_SPL_LEdBBW3d_final_rotor_loops[i][w]=0;
             m_SPL_LEdBCW3d_final_rotor_loops[i][w]=0;
 
-
+qDebug() << "ok5";
 
             for (unsigned int j = 0; j < blades_num; ++j){
                 for (int k = 0; k < angles_num; ++k){
@@ -1878,7 +2074,7 @@ if (sizea<size){
                     m_SPL_LEdBAW3d_4d[i][w][j][k]=0;
                     m_SPL_LEdBBW3d_4d[i][w][j][k]=0;
                     m_SPL_LEdBCW3d_4d[i][w][j][k]=0;
-
+qDebug() << "ok6";
                     m_SPLadB3d_4d_blade[i][w][j][k]=0;
                     m_SPLsdB3d_4d_blade[i][w][j][k]=0;
                     m_SPLpdB3d_4d_blade[i][w][j][k]=0;
@@ -2241,7 +2437,7 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
     if (z==TSR){
 
-int number_of_segments = pbem->dlg_elements;
+int number_of_segments = pbem->m_pBData->m_pos.size();
     double approaxing_wind_speed = m_parameter->u_wind_speed;
 
         double blade_pitch=pbem->m_pctrlFixedPitch->getValue();
@@ -3501,8 +3697,10 @@ z=z+ldelta;
 //calculation for rotor in loop
 void NoiseCalculation::calculateqs3d_graphics_loops(){
 ProgressBar(2);//Sara
+
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 setupVectorsqs3d();
+
 //begin D star interpolated
 SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
@@ -3727,24 +3925,20 @@ m_DStarInterpolatedP3d[i]=(m_DStarInterpolatedP3d_max[i]-m_DStarInterpolatedP3d_
 //qDebug() << "";
 }
 
-
-
 NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
 m_Reynolds_polar[i]=nopx->getReynolds();
 m_Mach_polar[i]=nopx->getMach();
 m_alpha_polar[i]=nopx->getAlphaDegree();
 
+int pos_polar=0;
+int size_polars = g_polarStore.size();
+for(int i=0;i<size_polars;++i){
+if(g_polarStore.at(i)->getName() ==nopx->getPolarName()){
+    pos_polar=i; break;}}
+
 m_Reynolds_error[i]=qFabs((Reynolds_polar()[i]-Reynolds[i])/Reynolds[i]*100.);
 m_Mach_error[i]=qFabs((Mach_polar()[i]-Mach[i])/Mach[i]*100.);
 m_alpha_error[i]=qFabs((alpha_polar()[i]-alpha[i])/alpha[i]*100.);
-
-//urgente erro aqui
-int size_polars = g_polarStore.size();
-int pos_polar=0;
-
-for(int i=0;i<size_polars;++i){
-if(g_polarStore.at(i)->getName()==g_oppointStore.at(position)->m_strPlrName){
-    pos_polar=i; break;}}
 
 m_BotTr[i]= g_polarStore.at(pos_polar)->m_XBot;
 m_TopTr[i]= g_polarStore.at(pos_polar)->m_XTop;
@@ -3760,12 +3954,13 @@ m_xtop_error.resize(w+1);
 m_aspec_error.resize(w+1);
 m_polar_type_error.resize(w+1);
 
-//gerar matriz de polares
+//matrix of polars
+
 m_Reynolds_error_value[w]=Reynolds[i];
 m_Mach_error_value[w]=Mach[i];
-m_alpha_error_value[w]=qRound(alpha[i]-1.5);
-m_alpha_error_value_max[w]=qRound(alpha[i]+1.5);
-m_acrit_error[w] = g_polarStore.at(pos_polar)->m_ACrit;
+m_alpha_error_value[w]=qRound(alpha[i]-0.5);
+m_alpha_error_value_max[w]=qRound(alpha[i]+0.5);
+m_acrit_error[w] = nopx->getACrit();
 m_xbot_error[w] = BotTr()[i];
 m_xtop_error[w] = TopTr()[i];
 m_aspec_error[w] = g_polarStore.at(pos_polar)->m_ASpec;
@@ -3813,7 +4008,7 @@ void NoiseCalculation::calculateqs3d_blade() {
 ProgressBar(3);//Sara
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-    unsigned int number_of_segments = pbem->dlg_elements;
+    unsigned int number_of_segments = pbem->m_pBData->m_pos.size();
 
         double aux_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
         double aux_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
@@ -3907,7 +4102,7 @@ ProgressBar(3);//Sara
     }
 
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-    unsigned int number_of_segments = pBEM->dlg_elements;
+    unsigned int number_of_segments = pBEM->m_pBData->m_pos.size();
 
     if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
@@ -4026,7 +4221,7 @@ ProgressBar(4);//Sara
 
     int angles_num=360./anglesteps*number_of_rotations;
 
-    unsigned int number_of_segments = pbem->dlg_elements;
+    unsigned int number_of_segments = pbem->m_pBData->m_pos.size();
 
     double aux_m_SPLadB3d_final_4d[FREQUENCY_TABLE_SIZE];
     double aux_m_SPLsdB3d_final_4d[FREQUENCY_TABLE_SIZE];
@@ -4396,8 +4591,8 @@ void NoiseCalculation::qs3D_log(QTextStream &stream){
         Reynolds_po[i]=Reynolds_polar()[i];
         Reynolds_er[i]=Reynolds_error()[i];
 
-        Mach_po[i]=noiseOpPoints[i]->getMach();
-        Mach[i]=Mach_polar()[i];
+        Mach_po[i]=Mach_polar()[i];
+        Mach[i]=bdata->m_Mach.value(i);
         Mach_BEM[i] = bdata->m_Mach.value(i);
         Mach_er[i]=Mach_error()[i];
 
@@ -4487,19 +4682,19 @@ else if(alertLE()){
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
-if((Reynolds_max_error()>m_parameter->ReError) & (Mach_max_error()>m_parameter->MaError) & (alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - Reynolds, Mach and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+if((Reynolds_max_error()>m_parameter->ReError) & (Mach_max_error()>m_parameter->MaError) & (alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - Reynolds, Mach and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
 
-else if((Mach_max_error()>m_parameter->MaError) & (alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - Mach and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if((Mach_max_error()>m_parameter->MaError) & (alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - Mach and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
 
-else if((Reynolds_max_error()>m_parameter->ReError) & (Mach_max_error()>m_parameter->MaError)){message.prepend("\n - Reynolds and Mach are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if((Reynolds_max_error()>m_parameter->ReError) & (Mach_max_error()>m_parameter->MaError)){message.prepend("\n - Reynolds and Mach are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
 
-else if((Reynolds_max_error()>m_parameter->ReError) & (alpha_max_error()>m_parameter->MaError)){message.prepend("\n - Reynolds and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if((Reynolds_max_error()>m_parameter->ReError) & (alpha_max_error()>m_parameter->MaError)){message.prepend("\n - Reynolds and alpha are outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
 
-else if((Reynolds_max_error()>m_parameter->ReError)){message.prepend("\n - Reynolds is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if((Reynolds_max_error()>m_parameter->ReError)){message.prepend("\n - Reynolds is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
 
-else if((Mach_max_error()>m_parameter->MaError)){message.prepend("\n - Mach is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if((Mach_max_error()>m_parameter->MaError)){message.prepend("\n - Mach is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
 
-else if((alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - AOA is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+else if((alpha_max_error()>m_parameter->alphaError)){message.prepend("\n - AOA is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
 
 if (message != NULL){message.prepend("The following error(s) occured:\n");
     QMessageBox::information(g_mainFrame, "- Create Noise Simulation",message, QMessageBox::Ok);

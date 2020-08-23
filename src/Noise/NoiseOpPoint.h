@@ -14,9 +14,13 @@ class NoiseOpPoint
 {
 public:
 	NoiseOpPoint(OpPoint *opPoint);
-    NoiseOpPoint(double reynolds, double mach, double alpha);
+    NoiseOpPoint(double reynolds, double mach, double alpha, double ACrit);
 	
-    double getMach();//Sara
+    //Sara
+    double getMach();
+    double getACrit();
+    //Sara
+
 	double getReynolds();
 	double getAlphaDegree();
 	double getAlphaDegreeAbsolute();
@@ -31,10 +35,11 @@ public:
     double getAlphaAt(int x, int y);
     double getReynoldsAt(int x, int y);
     double getMachAt(int x, int y);
+    QString getPolarName();
     //Sara
 	
 private:
-    double m_reynolds, m_mach, m_alpha, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos,  m_obs_x_pos_rotor, m_obs_y_pos_rotor, m_obs_z_pos_rotor, m_tower_to_hub_distance, m_initial_azimuth, m_time, m_shear_roughness, m_shear_height, m_shear_speed, m_yaw_angle, m_valRel_TE, m_valReu_TE, m_valMal_TE, m_valMau_TE, m_valAOAl_TE, m_valAOAu_TE, m_valRel_LE, m_valReu_LE, m_valMal_LE, m_valMau_LE, m_ReError, m_MaError, m_alphaError; //Sara
+    double m_reynolds, m_mach, m_alpha, m_ACrit, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos,  m_obs_x_pos_rotor, m_obs_y_pos_rotor, m_obs_z_pos_rotor, m_tower_to_hub_distance, m_initial_azimuth, m_time, m_shear_roughness, m_shear_height, m_shear_speed, m_yaw_angle, m_valRel_TE, m_valReu_TE, m_valMal_TE, m_valMau_TE, m_valAOAl_TE, m_valAOAu_TE, m_valRel_LE, m_valReu_LE, m_valMal_LE, m_valMau_LE, m_ReError, m_MaError, m_alphaError; //Sara
 	OpPoint *m_opPoint;
 //Sara
 bool m_rot_speed_check, m_u_wind_speed_check, m_TSR_check, m_shear_check, m_valRel_TE_check, m_valReu_TE_check, m_valMal_TE_check, m_valMau_TE_check, m_valAOAl_TE_check, m_valAOAu_TE_check, m_valRel_LE_check, m_valReu_LE_check, m_valMal_LE_check, m_valMau_LE_check;//Sara

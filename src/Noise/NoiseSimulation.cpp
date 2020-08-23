@@ -388,7 +388,8 @@ void NoiseSimulation::exportCalculationqs3DNoise_blade(QTextStream &stream) {
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-    int number_of_segments = pBEM->dlg_elements;
+    int number_of_segments = pBEM->m_pBData->m_pos.size();
+
     stream << Qt::endl;
     stream << Qt::endl;
     stream << "*********************************************" << Qt::endl;
@@ -536,7 +537,8 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
     QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-     int number_of_segments = pBEM->dlg_elements;
+    int number_of_segments = pBEM->m_pBData->m_pos.size();
+
      stream << Qt::endl;
      stream << Qt::endl;
      stream << "*********************************************" << Qt::endl;
@@ -1044,49 +1046,48 @@ else {value=m_parameter.alphaError;}
     return (set ? QVariant() : value);
 }
 
-//urgente Sara
-void NoiseSimulation::loopsReMaalpha(){
-QXDirect *pXDirect = (QXDirect*) g_mainFrame->m_pXDirect;
-//QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
+//Sara
+void NoiseSimulation::createPolars(int size){
+    QXDirect *pXDirect = (QXDirect*) g_mainFrame->m_pXDirect;
 
-int size = m_calculation.Reynolds_error_value().size();
-double Reynolds[size];
-double Mach[size];
-double alpha[size];
-double acrit[size];
-double xbot[size];
-double xtop[size];
-double aspec[size];
-double polar_type[size];
-double alpha_max[size];
-enumPolarType ptype;
+    double Reynolds[size];
+    double Mach[size];
+    double alpha[size];
+    double acrit[size];
+    double xbot[size];
+    double xtop[size];
+    double aspec[size];
+    double polar_type[size];
+    double alpha_max[size];
+    enumPolarType ptype;
 
-g_mainFrame->OnXDirect();
+    g_mainFrame->OnXDirect();
 
-for (int i=0;i<size;++i){
-Reynolds[i]=m_calculation.Reynolds_error_value().at(i);
-Mach[i]=m_calculation.Mach_error_value().at(i);
-alpha[i]=m_calculation.alpha_error_value().at(i);
-acrit[i]=m_calculation.acrit_error().at(i);
-xbot[i]=m_calculation.xbot_error().at(i);
-xtop[i]=m_calculation.xtop_error().at(i);
-aspec[i]=m_calculation.aspec_error().at(i);
-polar_type[i]=m_calculation.polar_type_error().at(i);
-alpha_max[i]=m_calculation.alpha_error_value_max().at(i);
+    for (int i=0;i<size;++i){
+    Reynolds[i]=m_calculation.Reynolds_error_value().at(i);
+    Mach[i]=m_calculation.Mach_error_value().at(i);
+    alpha[i]=m_calculation.alpha_error_value().at(i);
+    acrit[i]=m_calculation.acrit_error().at(i);
+    xbot[i]=m_calculation.xbot_error().at(i);
+    xtop[i]=m_calculation.xtop_error().at(i);
+    aspec[i]=m_calculation.aspec_error().at(i);
+    polar_type[i]=m_calculation.polar_type_error().at(i);
+    alpha_max[i]=m_calculation.alpha_error_value_max().at(i);
 
-if(polar_type[i]==1){ptype = FIXEDSPEEDPOLAR;}
-else if(polar_type[i]==2){ptype = FIXEDLIFTPOLAR;}
-else if(polar_type[i]==3){ptype = RUBBERCHORDPOLAR;}
-else if(polar_type[i]==4){ptype = FIXEDAOAPOLAR;}
+    if(polar_type[i]==1){ptype = FIXEDSPEEDPOLAR;}
+    else if(polar_type[i]==2){ptype = FIXEDLIFTPOLAR;}
+    else if(polar_type[i]==3){ptype = RUBBERCHORDPOLAR;}
+    else if(polar_type[i]==4){ptype = FIXEDAOAPOLAR;}
 
-//qDebug() << acrit[i] << xbot[i]<< xtop[i]<< Mach[i]<< Reynolds[i]<< ptype<< aspec[i]<<alpha[i]<<alpha_max[i];
+    pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i]);
+    }
 
-pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i]);
+    g_noiseModule->onActivationActionTriggered();
 }
 
-//qDebug() << acrit[i] << xbot[i]<< xtop[i]<< Mach[i]<< Reynolds[i]<< ptype<< aspec[i]<<alpha[i]<<alpha_max[i];
+void NoiseSimulation::loopsReMaalpha(){
+int size = m_calculation.Reynolds_error_value().size();
 
-//pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i]);
-
+createPolars(size);
 }
 //Sara

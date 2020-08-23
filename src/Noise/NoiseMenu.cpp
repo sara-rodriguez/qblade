@@ -41,7 +41,7 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     connect(m_exportqs3DNoise_rotor_loops, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor()));
     addAction(m_exportqs3DNoise_rotor_loops);
 
-    m_loopsReMaalpha = new QAction("Optimize values to minime error BEM x polar", this);
+    m_loopsReMaalpha = new QAction("Optimize BEM x polar values", this);
     connect(m_loopsReMaalpha, SIGNAL(triggered()), this, SLOT(onloopsReMaalpha()));
     addAction(m_loopsReMaalpha);
     //Sara

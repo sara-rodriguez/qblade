@@ -2136,7 +2136,7 @@ OnNewPolarNoise(NCrit, XBotTr, XTopTr, Mach, Reynolds, PolarType, ASpec);
 
 m_pctrlAlphaMin->setValue(Alpha);
 m_pctrlAlphaMax->setValue(AlphaMax);
-m_pctrlAlphaDelta->setValue(0.25);
+m_pctrlAlphaDelta->setValue(0.10);
 
 OnAnalyze();
 }

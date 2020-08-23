@@ -15,7 +15,7 @@ class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, publ
 public:
  //Sara
     int y=0;
-    int errorReMaalphasize=0;//urgente
+    int errorReMaalphasize=0;
     //Sara
 
     bool isLoop=false;
@@ -40,6 +40,7 @@ public:
     void exportCalculationqs3DNoise_rotor (QTextStream &stream); //Sara
     void exportqs3DLog (QTextStream &stream);//Sara
     void loopsReMaalpha();//Sara
+    void createPolars(int size);//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
 
