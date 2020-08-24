@@ -619,6 +619,11 @@ void QBEM::CheckButtons()
         if(m_pCurFoil->m_bisCircular) m_pctrlNew360->setEnabled(false);
         if(m_pCurFoil->m_bisCircular) m_pctrlDecompose360->setEnabled(false);
 
+//Sara
+        m_pctrlNew360All->setEnabled(!m_bNew360Polar && !m_bDecompose);
+        if(m_pCurFoil->m_bisCircular) m_pctrlNew360All->setEnabled(false);
+//Sara
+
         if(m_pCurFoil->m_bisCircular) m_pctrlStallModelMontg->setEnabled(false);
         else m_pctrlStallModelMontg->setEnabled(!m_bNew360Polar && !m_bDecompose);
         if(m_pCurFoil->m_bisCircular) m_pctrlStallModelVit->setEnabled(false);
@@ -627,6 +632,7 @@ void QBEM::CheckButtons()
     else
     {
         m_pctrlNew360->setEnabled(false);
+        m_pctrlNew360All->setEnabled(false); //Sara
         m_pctrlStallModelVit->setEnabled(false);
         m_pctrlStallModelMontg->setEnabled(false);
     }
@@ -845,6 +851,7 @@ void QBEM::CheckButtons()
     m_pctrlSave360->setVisible(m_pctrlSave360->isEnabled());
     m_pctrlCancel360->setVisible(m_pctrlCancel360->isEnabled());
     m_pctrlNew360->setVisible(!m_bNew360Polar && !m_bDecompose);
+    m_pctrlNew360All->setVisible(!m_bNew360Polar && !m_bDecompose);//Sara
     m_pctrlDelete360Polar->setVisible(!m_bNew360Polar && !m_bDecompose);
     m_pctrlDecompose360->setVisible(!m_bNew360Polar && !m_bDecompose);
     m_pctrlRename360Polar->setVisible(!m_bNew360Polar && !m_bDecompose);
@@ -1644,6 +1651,7 @@ connect(m_pctrlBlades,  SIGNAL(valueChanged(int)), this, SLOT(OnCellChanged()));
 
 
 connect(m_pctrlNew360, SIGNAL(clicked()),this, SLOT (OnNew360Polar()));
+connect(m_pctrlNew360All, SIGNAL(clicked()),this, SLOT (OnNew360PolarAll()));//Sara
 connect(m_pctrlDecompose360, SIGNAL(clicked()),this, SLOT (OnDecompose360Polar()));
 
 connect(m_pctrlCancel360, SIGNAL(clicked()),this, SLOT (OnDiscard360Polar()));
@@ -9982,6 +9990,18 @@ void QBEM::OnNew360Polar() {
 	FillComboBoxes();
 }
 
+//Sara
+void QBEM::OnNew360PolarAll() {
+for (int i=0;i<g_polarStore.size();++i){
+//aqui
+m_BEMToolBar->m_polarComboBox->setCurrentIndex(i);
+if (m_BEMToolBar->m_polar360ComboBox->count()==NULL){
+OnNew360Polar();
+OnSave360Polar();}
+}
+}
+//Sara
+
 void QBEM::OnNewBlade()
 {
     if (!g_360PolarStore.size()) return;
@@ -12104,6 +12124,7 @@ void QBEM::SetupLayout()
 
             m_pctrlSave360 = new QPushButton(tr("Save"));
             m_pctrlNew360 = new QPushButton(tr("Extrapolate"));
+            m_pctrlNew360All = new QPushButton(tr("Extrapolate All"));//Sara
 			m_pctrlCancel360 = new QPushButton(tr("Cancel"));
             m_pctrlDelete360Polar = new QPushButton(tr("Delete"));
             m_pctrlDecompose360 = new QPushButton(tr("Decompose"));
@@ -12209,7 +12230,11 @@ void QBEM::SetupLayout()
             NewDeleteRenameLayout->addWidget(m_pctrlDecompose360,0,1);
             NewDeleteRenameLayout->addWidget(m_pctrlDelete360Polar,1,0);
             NewDeleteRenameLayout->addWidget(m_pctrlNew360,1,1);
-
+            //Sara
+            int ButtonWidth = 230;
+            m_pctrlNew360All->setFixedWidth(ButtonWidth);
+            NewDeleteRenameLayout->addWidget(m_pctrlNew360All,2,0,2,-1, Qt::AlignCenter);
+            //Sara
 
             /////// new code JW //////////
             StallModel->addWidget(m_pctrlStallModelMontg);

@@ -1958,7 +1958,6 @@ anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
 }
 
 angles_num = 360./anglesteps*number_of_rotations;
-//urgente
 for (unsigned int w = 0; w < size; ++w){
 for (unsigned int s = 0; s < FREQUENCY_TABLE_SIZE; ++s){
 for (unsigned int x = 0; x < blades_num; ++x){

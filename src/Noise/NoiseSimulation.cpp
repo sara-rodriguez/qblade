@@ -1085,9 +1085,18 @@ void NoiseSimulation::createPolars(int size){
     g_noiseModule->onActivationActionTriggered();
 }
 
+void NoiseSimulation::create360Polars(){
+    QBEM *pQBEM = (QBEM *) g_mainFrame->m_pBEM;
+    pQBEM->On360View();
+    pQBEM->m_pctrlNew360All->click();
+}
+
 void NoiseSimulation::loopsReMaalpha(){
 int size = m_calculation.Reynolds_error_value().size();
 
 createPolars(size);
+
+create360Polars();
+//urgente
 }
 //Sara

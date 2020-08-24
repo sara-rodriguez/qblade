@@ -41,6 +41,7 @@ public:
     void exportqs3DLog (QTextStream &stream);//Sara
     void loopsReMaalpha();//Sara
     void createPolars(int size);//Sara
+    void create360Polars();//Sara
 
     double getDStarInterpolated(bool top, NoiseOpPoint * nop);//Sara
 
