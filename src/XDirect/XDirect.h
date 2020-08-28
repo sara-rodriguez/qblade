@@ -86,7 +86,7 @@ public:
 
      double Mach_noise, Reynolds_noise, alpha_noise;
 
-     void OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax);
+     void OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax, double delta);
 //Sara
 
 public slots:

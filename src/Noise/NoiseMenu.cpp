@@ -60,7 +60,7 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
-//        m_loopsReMaalpha->setEnabled(false); urgente
+        m_loopsReMaalpha->setEnabled(false);
     }
 
     else if (index==1){
@@ -68,7 +68,6 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
-//        if(m_module->getShownSimulation()->errorReMaalphasize!=0){m_loopsReMaalpha->setEnabled(true);}else{m_loopsReMaalpha->setEnabled(false);} urgente
     }
 
     else if (index==2){
@@ -76,14 +75,13 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(simulationAvailable);
-//        if(m_module->getShownSimulation()->errorReMaalphasize!=0){m_loopsReMaalpha->setEnabled(true);}else{m_loopsReMaalpha->setEnabled(false);} urgente
     }
     else {
         m_exportNoise->setEnabled(false);
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
-//        m_loopsReMaalpha->setEnabled(false); urgente
+        m_loopsReMaalpha->setEnabled(false);
     }
     //Sara
 }

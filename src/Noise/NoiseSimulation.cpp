@@ -276,6 +276,8 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
 }
 
 void NoiseSimulation::simulate() {
+    m_calculation.onVerifyDeltaandValFor3D();
+    errorReMaalphasize=m_calculation.Reynolds_error_value().size();
     NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;//Sara
     pNoiseCreatorDialog->OnProgressDlg();//Sara
     m_calculation.setNoiseParam(&m_parameter);
@@ -290,8 +292,6 @@ if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_rotor();}
     }
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){pNoiseCreatorDialog->m_progress_dlg->cancel();}
-m_calculation.onVerifyDeltaandValFor3D();
-errorReMaalphasize=m_calculation.Reynolds_error_value().size();
 //Sara
 }
 
@@ -1025,21 +1025,6 @@ else {value=m_parameter.state_ss_us;}
         if(set) m_parameter.anglesteps = value.toInt();
         else {value = m_parameter.anglesteps;}
         break;
-
-    case P::ReError:
-        if(set) {m_parameter.ReError = value.toDouble();}
-else {value=m_parameter.ReError;}
-        break;
-
-    case P::MaError:
-        if(set) {m_parameter.MaError = value.toDouble();}
-else {value=m_parameter.MaError;}
-        break;
-
-    case P::alphaError:
-        if(set) {m_parameter.alphaError = value.toDouble();}
-else {value=m_parameter.alphaError;}
-        break;
     }
 // Sara
 
@@ -1079,7 +1064,9 @@ void NoiseSimulation::createPolars(int size){
     else if(polar_type[i]==3){ptype = RUBBERCHORDPOLAR;}
     else if(polar_type[i]==4){ptype = FIXEDAOAPOLAR;}
 
-    pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i]);
+    double delta = 0.01;
+
+    pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i],delta);
     }
 
     g_noiseModule->onActivationActionTriggered();
@@ -1096,7 +1083,6 @@ int size = m_calculation.Reynolds_error_value().size();
 
 createPolars(size);
 
-create360Polars();
-//urgente
+//create360Polars();
 }
 //Sara

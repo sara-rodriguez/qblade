@@ -111,9 +111,6 @@ public:
     double valReu_LE;
     double valMal_LE;
     double valMau_LE;
-    double ReError;
-    double MaError;
-    double alphaError;
         //Sara
 
     //Turbulence parameters - Alexandre MOD

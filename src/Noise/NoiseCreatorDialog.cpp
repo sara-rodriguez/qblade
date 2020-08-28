@@ -362,15 +362,6 @@ else{check_LE=false;}
                     pGrid = new ParameterGrid<P>(this);
                     groupBox->setLayout(pGrid);
 
-                    m_ReError_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::ReError, NumberEditType, m_ReError_numberedit,"Reynolds Error [%]:",0.5);
-
-                    m_MaError_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::MaError, NumberEditType, m_MaError_numberedit,"Mach Error [%]:",10);
-
-                    m_alphaError_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::alphaError, NumberEditType, m_alphaError_numberedit,"Alpha Error [%]:",1.5);
-
                             widget = new QWidget;
                             tabWidget->addTab(widget, "Quasi 3D Blade");
                             vBox = new QVBoxLayout;

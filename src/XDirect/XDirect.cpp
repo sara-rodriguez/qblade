@@ -2130,13 +2130,13 @@ void QXDirect::OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, doubl
 }
 }
 
-void QXDirect::OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax)
+void QXDirect::OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax, double delta)
 {
 OnNewPolarNoise(NCrit, XBotTr, XTopTr, Mach, Reynolds, PolarType, ASpec);
 
 m_pctrlAlphaMin->setValue(Alpha);
 m_pctrlAlphaMax->setValue(AlphaMax);
-m_pctrlAlphaDelta->setValue(0.10);
+m_pctrlAlphaDelta->setValue(delta);
 
 OnAnalyze();
 }
@@ -5557,8 +5557,6 @@ void QXDirect::ReadParams()
 	m_bSequence = m_pctrlSequence->isChecked();
 	m_bInitBL   = m_pctrlInitBL->isChecked();
 	m_bViscous  = m_pctrlViscous->isChecked();
-
-    if (m_AlphaDelta>0.25){AlphaDeltaNoise=1;}else{AlphaDeltaNoise=0;} //Sara
 }
 
 

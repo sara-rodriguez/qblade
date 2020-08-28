@@ -4662,6 +4662,8 @@ if(alpha_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");} observat
 
 void NoiseCalculation::onVerifyDeltaandValFor3D(){
 if (m_parameter->qs3DSim!=0){//if is qs3d
+    
+//urgente
 
     QString message ("");
 
