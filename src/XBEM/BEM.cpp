@@ -9993,7 +9993,7 @@ void QBEM::OnNew360Polar() {
 //Sara
 void QBEM::OnNew360PolarAll() {
 for (int i=0;i<g_polarStore.size();++i){
-//aqui
+
 m_BEMToolBar->m_polarComboBox->setCurrentIndex(i);
 if (m_BEMToolBar->m_polar360ComboBox->count()==NULL){
 OnNew360Polar();

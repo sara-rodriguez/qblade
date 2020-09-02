@@ -265,6 +265,7 @@ public:
         QVector<double> polar_type_error() const { return m_polar_type_error; }
         QVector<double> TopTr() const { return m_TopTr; }
         QVector<double> BotTr() const { return m_BotTr; }
+        QVector<double> position() const {return m_position;}
 
         QVector<double> m_DStarInterpolatedS3d;
         QVector<double> m_DStarInterpolatedP3d;
@@ -291,6 +292,7 @@ public:
 
         QVector<double> m_TopTr;
         QVector<double> m_BotTr;
+        QVector<double> m_position;
 
         double Reynolds_max_error() const {return m_Reynolds_max_error; }
         double Mach_max_error() const {return m_Mach_max_error; }

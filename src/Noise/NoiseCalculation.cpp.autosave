@@ -1664,6 +1664,10 @@ void NoiseCalculation::setupVectorsqs3d() {
 
     m_TopTr.squeeze();
     m_BotTr.squeeze();
+
+    Reynolds_max_error();
+    Mach_max_error();
+    alpha_max_error();
     //Sara
 
     // Resize vectors acording to OpPoints total
@@ -1915,7 +1919,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
 QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
 unsigned int blades_num = pbem->m_pBData->blades; //number of blades
-
+//urgente
 for (unsigned int w = 0; w < size; ++w){
 for (unsigned int s = 0; s < FREQUENCY_TABLE_SIZE; ++s){
         m_SPLadB3d_4d[w][s].resize(blades_num);
@@ -2011,7 +2015,7 @@ if (sizea<size){
             m_SPL_LEdBAW3d_final[i][w]=0;
             m_SPL_LEdBBW3d_final[i][w]=0;
             m_SPL_LEdBCW3d_final[i][w]=0;
-qDebug() << "ok3";
+
             m_SPLadB3d_rotor[i][w]=0;
             m_SPLsdB3d_rotor[i][w]=0;
             m_SPLpdB3d_rotor[i][w]=0;
@@ -2033,8 +2037,7 @@ qDebug() << "ok3";
             m_SPL_LEdB3d_final_rotor[i][w]=0;
             m_SPL_LEdBAW3d_final_rotor[i][w]=0;
             m_SPL_LEdBBW3d_final_rotor[i][w]=0;
-            m_SPL_LEdBCW3d_final_rotor[i][w]=0;
-qDebug() << "ok4";
+
             m_SPLadB3d_rotor_loops[i][w]=0;
             m_SPLsdB3d_rotor_loops[i][w]=0;
             m_SPLpdB3d_rotor_loops[i][w]=0;
@@ -3712,10 +3715,6 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double Reynolds[number_of_segments];
     double Mach[number_of_segments];
 
-    double Reynolds_nop[noiseOpPoints.size()];
-    double Mach_nop[noiseOpPoints.size()];
-    double alpha_nop[noiseOpPoints.size()];
-
     m_DStarInterpolatedS3d.resize(number_of_segments);
     m_DStarInterpolatedP3d.resize(number_of_segments);
     m_DStarInterpolatedS3d_max.resize(number_of_segments);
@@ -3734,69 +3733,10 @@ alpha[i] = bdata->m_alpha.value(i);
 Reynolds[i] = bdata->m_Reynolds.value(i);
 Mach[i]=bdata->m_Mach.value(i);
 
-//find nop of the corresponding Reynolds, Mach and alpha from each section
-int position_Reynolds=0;
-int position_Mach=0;
-int position=0;
-
-NoiseOpPoint *nop_0 = noiseOpPoints[0];
-
-double Reynolds_value_point=nop_0->getReynolds();
-double Mach_value_point=nop_0->getMach();
-
-for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
-Reynolds_nop[posOpPoint]=nop->getReynolds();
-Mach_nop[posOpPoint]=nop->getMach();
-alpha_nop[posOpPoint]=nop->getAlphaDegree();
-}
-
 //for all polars
 if (m_parameter->opPointSource == NoiseParameter::MultiplePolars){
-for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-int posOpPointNext;
-if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
 
-if (qFabs(Reynolds[i]-Reynolds_nop[posOpPoint])>qFabs(Reynolds[i]-Reynolds_nop[posOpPointNext])){
-    position_Reynolds = posOpPointNext;
-    Reynolds_value_point = Reynolds_nop[posOpPointNext];
-    position_Mach = position_Reynolds;
-    position = position_Reynolds;
-}
-}
-
-int position_Reynolds_last=position_Reynolds;
-for (int posOpPoint = position_Reynolds; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-if(Reynolds_nop[posOpPoint]==Reynolds_value_point){
-position_Reynolds_last=posOpPoint;
-}
-}
-
-for (int posOpPoint = position_Reynolds; posOpPoint < position_Reynolds_last; ++posOpPoint) {
-int posOpPointNext;
-if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-if ((qFabs(Mach[i]-Mach_nop[posOpPoint])>qFabs(Mach[i]-Mach_nop[posOpPointNext]))){
-    position_Mach = posOpPointNext;
-    Mach_value_point = Mach_nop[posOpPointNext];
-    position = position_Mach;
-}
-}
-
-int position_Mach_last=position_Mach;
-for (int posOpPoint = position_Mach; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-if(Mach_nop[posOpPoint]==Mach_value_point){
-position_Mach_last=posOpPoint;
-}
-}
-for (int posOpPoint = position_Mach; posOpPoint < position_Mach_last; ++posOpPoint) {
-int posOpPointNext;
-if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
-    position = posOpPointNext;
-}else{break;}
-}
-
-NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
+NoiseOpPoint *nopx = noiseOpPoints[position()[i]]; //nearest Reynolds, Mach and alpha
 //qDebug() << "nopx: " << position;
 
 //qDebug() << "position Re: " << position_Reynolds;
@@ -3807,7 +3747,7 @@ NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
 //qDebug() << "Mach: " << Mach[i];
 //qDebug() << "Mach_nop: " << nopx->getMach();
 
-//qDebug() << "position: " << position;
+//qDebug() << "position: " << position()[i];
 //qDebug() << "alpha: " << alpha[i];
 //qDebug() << "alpha_nop: " << nopx->getAlphaDegree();
 //qDebug() << "";
@@ -3840,15 +3780,7 @@ m_DStarInterpolatedP3d[i] = getDStarInterpolated3d(!dStarOrder,chord_station,nop
 
 //for one polar
 if (m_parameter->opPointSource == NoiseParameter::OnePolar){
-for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-int posOpPointNext;
-if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-
-if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
-    position = posOpPointNext;
-}else{break;}
-}
-NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
+NoiseOpPoint *nopx = noiseOpPoints[position()[i]]; //nearest Reynolds, Mach and alpha
 //qDebug() << "nopx: " << position;
 
 //qDebug() << "position Re: " << position_Reynolds;
@@ -3872,15 +3804,15 @@ if(alpha[i] < 0){dStarOrder = true;}
 int pos_max;
 int pos_min;
 
-if(position == 0){pos_min=position; pos_max=position+1;}else{pos_min=position-1;}
-if(position == noiseOpPoints.size()-1){pos_min=position-1; pos_max=position;}else{pos_max=position+1;}
+if(position()[i] == 0){pos_min=position()[i]; pos_max=position()[i]+1;}else{pos_min=position()[i]-1;}
+if(position()[i] == noiseOpPoints.size()-1){pos_min=position()[i]-1; pos_max=position()[i];}else{pos_max=position()[i]+1;}
 
-if((position!=0) & (position!=noiseOpPoints.size()-1)){
-if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_min=position;}
-if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_max=position;}
+if((position()[i]!=0) & (position()[i]!=noiseOpPoints.size()-1)){
+if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_min=position()[i];}
+if((alpha[i]>0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_max=position()[i];}
 
-if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_min=position;}
-if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_max=position;}
+if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()<0)){pos_min=position()[i];}
+if((alpha[i]<0) & (alpha[i]-nopx->getAlphaDegree()>0)){pos_max=position()[i];}
 }
 
 NoiseOpPoint *nop_min = noiseOpPoints[pos_min];
@@ -3924,7 +3856,7 @@ m_DStarInterpolatedP3d[i]=(m_DStarInterpolatedP3d_max[i]-m_DStarInterpolatedP3d_
 //qDebug() << "";
 }
 
-NoiseOpPoint *nopx = noiseOpPoints[position]; //nearest Reynolds, Mach and alpha
+NoiseOpPoint *nopx = noiseOpPoints[position()[i]]; //nearest Reynolds, Mach and alpha
 m_Reynolds_polar[i]=nopx->getReynolds();
 m_Mach_polar[i]=nopx->getMach();
 m_alpha_polar[i]=nopx->getAlphaDegree();
@@ -3934,10 +3866,6 @@ int size_polars = g_polarStore.size();
 for(int i=0;i<size_polars;++i){
 if(g_polarStore.at(i)->getName() ==nopx->getPolarName()){
     pos_polar=i; break;}}
-
-m_Reynolds_error[i]=qFabs((Reynolds_polar()[i]-qRound(Reynolds[i]))/qRound(Reynolds[i])*100.);
-m_Mach_error[i]=qFabs((Mach_polar()[i]-qRound(Mach[i]*100)/100)/qRound(Mach[i]*100)/100*100.);
-m_alpha_error[i]=qFabs((alpha_polar()[i]-qRound(alpha[i]*100)/100)/qRound(alpha[i]*100)/100*100.);
 
 m_BotTr[i]= g_polarStore.at(pos_polar)->m_XBot;
 m_TopTr[i]= g_polarStore.at(pos_polar)->m_XTop;
@@ -3953,8 +3881,7 @@ m_xtop_error.resize(w+1);
 m_aspec_error.resize(w+1);
 m_polar_type_error.resize(w+1);
 
-//matrix of polars urgente
-
+//matrix of polars
 m_Reynolds_error_value[w]=Reynolds[i];
 m_Mach_error_value[w]=Mach[i];
 m_alpha_error_value[w]=alpha[i]-0.05;
@@ -3967,9 +3894,6 @@ m_polar_type_error[w] = g_polarStore.at(pos_polar)->m_PolarType;
 ++w;
 }
 
-if(Reynolds_error()[i]>m_Reynolds_max_error){m_Reynolds_max_error = Reynolds_error()[i];}
-if(Mach_error()[i]>m_Mach_max_error){m_Mach_max_error = Mach_error()[i];}
-if(alpha_error()[i]>m_alpha_max_error){m_alpha_max_error = alpha_error()[i];}
 }}
 z=z+ldelta;
 //}
@@ -4661,10 +4585,200 @@ if(alpha_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");} observat
 }}
 
 void NoiseCalculation::onVerifyDeltaandValFor3D(){
-if (m_parameter->qs3DSim!=0){//if is qs3d
-    
-//urgente
+m_Reynolds_max_error=0;
+m_Mach_max_error=0;
+m_alpha_max_error=0;
+m_position.clear();
 
+    QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+
+    setupVectorsqs3d();
+    //begin D star interpolated
+    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+        double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+        double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+        double z=lstart;
+
+        QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+        int number_of_segments = pBEM->m_pBData->m_pos.size();
+        double alpha[number_of_segments];
+        double Reynolds[number_of_segments];
+        double Mach[number_of_segments];
+        m_position.resize(number_of_segments);
+
+        double Reynolds_nop[noiseOpPoints.size()];
+        double Mach_nop[noiseOpPoints.size()];
+        double alpha_nop[noiseOpPoints.size()];
+
+        m_BotTr.resize(number_of_segments);
+        m_TopTr.resize(number_of_segments);
+        double TSR = m_parameter->TSRtd;
+        int w=0;
+    foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+        if (z==TSR){
+    for (int i = 0; i < number_of_segments; ++i) {
+    alpha[i] = bdata->m_alpha.value(i);
+    Reynolds[i] = bdata->m_Reynolds.value(i);
+    Mach[i]=bdata->m_Mach.value(i);
+    //find nop of the corresponding Reynolds, Mach and alpha from each section
+    m_position[i]=0;
+    int position_Reynolds=0;
+    int position_Mach=0;
+
+    //Lowson validation:
+
+    bool LE_validation=true;
+    if(m_parameter->Lowson_type!=0){
+    if(!m_parameter->valRel_LE_check & (Reynolds[i]<m_parameter->valRel_LE)){LE_validation=false;}
+    if(!m_parameter->valReu_LE_check & (Reynolds[i]>m_parameter->valReu_LE)){LE_validation=false;}
+    if(!m_parameter->valMal_LE_check & (Mach[i]<m_parameter->valMal_LE)){LE_validation=false;}
+    if(!m_parameter->valMau_LE_check & (Mach[i]>m_parameter->valMau_LE)){LE_validation=false;}
+
+    if(Reynolds[i]<m_parameter->valRel_LE){LE_alert=true;}
+    if(Reynolds[i]>m_parameter->valReu_LE){LE_alert=true;}
+    if(Mach[i]<m_parameter->valMal_LE){LE_alert=true;}
+    if(Mach[i]>m_parameter->valMau_LE){LE_alert=true;}}
+
+    //TE validation
+    bool BPM_validation=true;
+
+    if(m_parameter->suctionSide || m_parameter->pressureSide || m_parameter->separatedFlow){
+    if(!m_parameter->valRel_TE_check & (Reynolds[i]<m_parameter->valRel_TE)){BPM_validation=false;}
+    if(!m_parameter->valReu_TE_check & (Reynolds[i]>m_parameter->valReu_TE)){BPM_validation=false;}
+    if(!m_parameter->valMal_TE_check & (Mach[i]<m_parameter->valMal_TE)){BPM_validation=false;}
+    if(!m_parameter->valMau_TE_check & (Mach[i]>m_parameter->valMau_TE)){BPM_validation=false;}
+    if(!m_parameter->valAOAl_TE_check & (alpha[i]<m_parameter->valAOAl_TE)){BPM_validation=false;}
+    if(!m_parameter->valAOAu_TE_check & (alpha[i]>m_parameter->valAOAu_TE)){BPM_validation=false;}
+
+    if(Reynolds[i]<m_parameter->valRel_TE){TE_alert=true;}
+    if(Reynolds[i]>m_parameter->valReu_TE){TE_alert=true;}
+    if(Mach[i]<m_parameter->valMal_TE){TE_alert=true;}
+    if(Mach[i]>m_parameter->valMau_TE){TE_alert=true;}
+    if(alpha[i]<m_parameter->valAOAl_TE){TE_alert=true;}
+    if(alpha[i]>m_parameter->valAOAu_TE){TE_alert=true;}}
+
+    NoiseOpPoint *nop_0 = noiseOpPoints[0];
+
+    double Reynolds_value_point=nop_0->getReynolds();
+    double Mach_value_point=nop_0->getMach();
+
+    for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+        NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
+    Reynolds_nop[posOpPoint]=nop->getReynolds();
+    Mach_nop[posOpPoint]=nop->getMach();
+    alpha_nop[posOpPoint]=nop->getAlphaDegree();
+    }
+
+    //for all polars
+    if (m_parameter->opPointSource == NoiseParameter::MultiplePolars){
+    for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+    int posOpPointNext;
+    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+
+    if (qFabs(Reynolds[i]-Reynolds_nop[posOpPoint])>qFabs(Reynolds[i]-Reynolds_nop[posOpPointNext])){
+        position_Reynolds = posOpPointNext;
+        Reynolds_value_point = Reynolds_nop[posOpPointNext];
+        position_Mach = position_Reynolds;
+        m_position[i] = position_Reynolds;
+    }
+    }
+
+    int position_Reynolds_last=position_Reynolds;
+    for (int posOpPoint = position_Reynolds; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+    if(Reynolds_nop[posOpPoint]==Reynolds_value_point){
+    position_Reynolds_last=posOpPoint;
+    }
+    }
+
+    for (int posOpPoint = position_Reynolds; posOpPoint < position_Reynolds_last; ++posOpPoint) {
+    int posOpPointNext;
+    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+    if ((qFabs(Mach[i]-Mach_nop[posOpPoint])>qFabs(Mach[i]-Mach_nop[posOpPointNext]))){
+        position_Mach = posOpPointNext;
+        Mach_value_point = Mach_nop[posOpPointNext];
+        m_position[i] = position_Mach;
+    }
+    }
+
+    int position_Mach_last=position_Mach;
+    for (int posOpPoint = position_Mach; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+    if(Mach_nop[posOpPoint]==Mach_value_point){
+    position_Mach_last=posOpPoint;
+    }
+    }
+    for (int posOpPoint = position_Mach; posOpPoint < position_Mach_last; ++posOpPoint) {
+    int posOpPointNext;
+    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+    if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
+        m_position[i] = posOpPointNext;
+    }else{break;}
+    }
+    }
+
+    //for one polar
+    if (m_parameter->opPointSource == NoiseParameter::OnePolar){
+    for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+    int posOpPointNext;
+    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+
+    if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
+        m_position[i] = posOpPointNext;
+    }else{break;}
+    }
+    }
+
+    NoiseOpPoint *nopx = noiseOpPoints[position()[i]]; //nearest Reynolds, Mach and alpha
+    m_Reynolds_polar[i]=nopx->getReynolds();
+    m_Mach_polar[i]=nopx->getMach();
+    m_alpha_polar[i]=nopx->getAlphaDegree();
+
+    int pos_polar=0;
+    int size_polars = g_polarStore.size();
+    for(int i=0;i<size_polars;++i){
+    if(g_polarStore.at(i)->getName() ==nopx->getPolarName()){
+        pos_polar=i; break;}}
+
+    m_Reynolds_error[i]=qFabs((Reynolds_polar()[i]-qRound(Reynolds[i]))/qRound(Reynolds[i])*100.);
+    m_Mach_error[i]=qFabs((Mach_polar()[i]*100.-(qRound(Mach[i]*100.)))/(qRound(Mach[i]*100.))*100.);
+    m_alpha_error[i]=qFabs((alpha_polar()[i]*100.-(qRound(alpha[i]*100.)))/(qRound(alpha[i]*100.))*100.);
+
+    m_BotTr[i]= g_polarStore.at(pos_polar)->m_XBot;
+    m_TopTr[i]= g_polarStore.at(pos_polar)->m_XTop;
+
+    if((Reynolds_error()[i]>0.1) || (Mach_error()[i]>0.1) || (alpha_error()[i]>0.1)){
+    m_Reynolds_error_value.resize(w+1);
+    m_Mach_error_value.resize(w+1);
+    m_alpha_error_value.resize(w+1);
+    m_alpha_error_value_max.resize(w+1);
+    m_acrit_error.resize(w+1);
+    m_xbot_error.resize(w+1);
+    m_xtop_error.resize(w+1);
+    m_aspec_error.resize(w+1);
+    m_polar_type_error.resize(w+1);
+
+    //matrix of polars
+
+    m_Reynolds_error_value[w]=Reynolds[i];
+    m_Mach_error_value[w]=Mach[i];
+    m_alpha_error_value[w]=alpha[i]-0.05;
+    m_alpha_error_value_max[w]=alpha[i]+0.05;
+    m_acrit_error[w] = nopx->getACrit();
+    m_xbot_error[w] = BotTr()[i];
+    m_xtop_error[w] = TopTr()[i];
+    m_aspec_error[w] = g_polarStore.at(pos_polar)->m_ASpec;
+    m_polar_type_error[w] = g_polarStore.at(pos_polar)->m_PolarType;
+    ++w;
+    }
+
+    if(Reynolds_error()[i]>m_Reynolds_max_error){m_Reynolds_max_error = Reynolds_error()[i];}
+    if(Mach_error()[i]>m_Mach_max_error){m_Mach_max_error = Mach_error()[i];}
+    if(alpha_error()[i]>m_alpha_max_error){m_alpha_max_error = alpha_error()[i];}
+    }}
+    z=z+ldelta;
+    }
+}
+
+void NoiseCalculation::onVerifyDeltaandValFor3DAlerts(){
     QString message ("");
 
 //validation
@@ -4677,23 +4791,25 @@ else if(alertLE()){
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
-if((Reynolds_max_error()>0.1) & (Mach_max_error()>0.1) & (alpha_max_error()>0.1)){message.prepend("\n - Reynolds, Mach and alpha are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
+if((Reynolds_max_error()>0.01) & (Mach_max_error()>0.01) & (alpha_max_error()>0.01)){message.prepend("\n - Reynolds, Mach and alpha are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' for details");}
 
-else if((Mach_max_error()>0.1) & (alpha_max_error()>0.1)){message.prepend("\n - Mach and alpha are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
+else if((Mach_max_error()>0.01) & (alpha_max_error()>0.01)){message.prepend("\n - Mach and alpha are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' for details");}
 
-else if((Reynolds_max_error()>0.1) & (Mach_max_error()>0.1)){message.prepend("\n - Reynolds and Mach are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
+else if((Reynolds_max_error()>0.01) & (Mach_max_error()>0.01)){message.prepend("\n - Reynolds and Mach are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' for details");}
 
-else if((Reynolds_max_error()>0.1) & (alpha_max_error()>0.1)){message.prepend("\n - Reynolds and alpha are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
+else if((Reynolds_max_error()>0.01) & (alpha_max_error()>0.01)){message.prepend("\n - Reynolds and alpha are outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' for details");}
 
-else if((Reynolds_max_error()>0.1)){message.prepend("\n - Reynolds is outside the selected error margin, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
+else if((Reynolds_max_error()>0.01)){message.prepend("\n - Reynolds is outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' for details");}
 
-else if((Mach_max_error()>0.1)){message.prepend("\n - Mach is outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
+else if((Mach_max_error()>0.01)){message.prepend("\n - Mach is outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'', click on ''Export current Quasi 3D Noise Log'' for details");}
 
-else if((alpha_max_error()>0.1)){message.prepend("\n - AOA is outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log'' and/or click on ''Optimize BEM x polar values'' in the noise simulation menu");}
+else if((alpha_max_error()>0.01)){message.prepend("\n - AOA is outside the default error margin of 0.1%, click on ''Export current Quasi 3D Noise Log, click on ''Export current Quasi 3D Noise Log'' for details");}
 
-if (message != NULL){message.prepend("The following error(s) occured:\n");
-    QMessageBox::information(g_mainFrame, "- Create Noise Simulation",message, QMessageBox::Ok);
-return;
-}
+if (message != NULL){
+message.prepend("The following error(s) occured, continue simulation?\n");
+int resp = QMessageBox::question(g_mainFrame, "- Create Noise Simulation",message,                                 QMessageBox::Yes|QMessageBox::No);
+
+if(resp==QMessageBox::No){
+simulate_yes_no=false;}
 }}
     //Sara
