@@ -131,7 +131,6 @@ private slots:
     void onAllButtonToggled (bool pressed);
 
     void onCreateButtonClicked ();
-//    void onVerifyDeltaandValFor3D(); //Sara
     void onVerifyWindfield(); //Sara
     void onUnitsChanged () { }  // no need for this
 

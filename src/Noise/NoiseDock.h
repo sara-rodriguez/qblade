@@ -14,7 +14,7 @@ public:
 	NoiseDock(const QString &title, QMainWindow *parent, Qt::WindowFlags flags, NoiseModule *module);
 	~NoiseDock();
 	
-	bool isColorByOpPoint();
+    bool isColorByOpPoint();
 	
 private:
 	TwoDWidgetInterface* twoDInterface();
@@ -25,7 +25,7 @@ private:
 	
 private slots:
 	void onUnitsChanged();
-	void onEditCopyButtonClicked ();
+    void onEditCopyButtonClicked ();
 	void onRenameButtonClicked ();
 	void onDeleteButtonClicked ();
 	void onNewButtonClicked ();

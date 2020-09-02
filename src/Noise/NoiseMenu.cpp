@@ -40,10 +40,6 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     m_exportqs3DNoise_rotor_loops = new QAction("Export current Quasi 3D Noise Rotor", this);
     connect(m_exportqs3DNoise_rotor_loops, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor()));
     addAction(m_exportqs3DNoise_rotor_loops);
-
-    m_loopsReMaalpha = new QAction("Optimize BEM x polar values", this);
-    connect(m_loopsReMaalpha, SIGNAL(triggered()), this, SLOT(onloopsReMaalpha()));
-    addAction(m_loopsReMaalpha);
     //Sara
 }
 
@@ -161,10 +157,6 @@ void NoiseMenu::onExportqs3DNoise_rotor() {
         m_module->getShownSimulation()->exportCalculationqs3DNoise_rotor(fileStream);
     }
     file.close();
-}
-
-void NoiseMenu::onloopsReMaalpha(){
-m_module->getShownSimulation()->loopsReMaalpha();
 }
 //Sara
 

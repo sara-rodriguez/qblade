@@ -738,18 +738,45 @@ return;
     /* create new simulation */
     NoiseSimulation *newSimulation = new NoiseSimulation (this);
     NoiseSimulation *pNoiseSimulation = (NoiseSimulation *) g_mainFrame->m_pBEM;
+    int size_points=0;
 
     newSimulation->setSelectFrom(static_cast<NoiseParameter::OpPointSource> (m_selectFromButtons->checkedId()));
 
     QList<OpPoint*> analyzedOpPoints;
+    analyzedOpPoints.clear();//Sara
     for (int i = 0; i < m_opPointRecords.size(); ++i) {
         if (m_opPointRecords[i].checkBox->isChecked()) {
             analyzedOpPoints.append(m_opPointRecords[i].opPoint);
         }
     }
+    size_points=m_opPointRecords.size();
     newSimulation->setAnalyzedOpPoints(analyzedOpPoints.toVector());
-    try {
+
+try {
+if((multi_polars_radiobutton->isChecked())& (check_qs3D)){
+    newSimulation->pre_simulate();
+
+    prepareOpPointRecords(true);
+    fillOpPointView();
+
+    m_opPointScrollArea->setEnabled(true);
+    all_op_points->click();
+    m_opPointScrollArea->setEnabled(false);
+
+if(size_points != m_opPointRecords.size()){
+    analyzedOpPoints.clear();
+    for (int i = 0; i < m_opPointRecords.size(); ++i) {
+        if (m_opPointRecords[i].checkBox->isChecked()) {
+            analyzedOpPoints.append(m_opPointRecords[i].opPoint);
+        }
+    }
+
+    newSimulation->setAnalyzedOpPoints(analyzedOpPoints.toVector());
+}
+}
+
         newSimulation->simulate();
+
 if (!pNoiseSimulation->progress_dlg_canceled){ //Sara
         if (g_noiseSimulationStore.add(newSimulation)) {
             m_module->setShownSimulation(newSimulation);

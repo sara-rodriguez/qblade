@@ -15,7 +15,6 @@ class NoiseSimulation : public StorableObject, public ShowAsGraphInterface, publ
 public:
  //Sara
     int y=0;
-    int errorReMaalphasize=0;
     //Sara
 
     bool isLoop=false;
@@ -35,6 +34,7 @@ public:
     static QStringList prepareMissingObjectMessage();
 
     void simulate();  // can throw NoiseException
+    void pre_simulate();  // Sara
     void exportCalculation (QTextStream &stream);
     void exportCalculationqs3DNoise_blade (QTextStream &stream); //Sara
     void exportCalculationqs3DNoise_rotor (QTextStream &stream); //Sara

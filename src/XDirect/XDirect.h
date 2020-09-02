@@ -82,7 +82,6 @@ class QXDirect : public QWidget
 public:
 	QXDirect(QWidget *parent = NULL);
     ~QXDirect();
-    int AlphaDeltaNoise=0;//Sara
 
      double Mach_noise, Reynolds_noise, alpha_noise;
 

@@ -26,7 +26,6 @@ private slots:
     void onExportqs3DNoise_blade ();
     void onExportqs3DNoise_rotor ();
     void onExportqs3DNoiseLog  ();
-    void onloopsReMaalpha ();
     //Sara
 	void onModelValidityHint ();
 };

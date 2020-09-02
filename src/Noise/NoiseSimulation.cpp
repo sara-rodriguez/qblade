@@ -275,23 +275,45 @@ QStringList NoiseSimulation::prepareMissingObjectMessage() {
     }
 }
 
-void NoiseSimulation::simulate() {
-    m_calculation.onVerifyDeltaandValFor3D();
-    errorReMaalphasize=m_calculation.Reynolds_error_value().size();
-    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;//Sara
-    pNoiseCreatorDialog->OnProgressDlg();//Sara
-    m_calculation.setNoiseParam(&m_parameter);
-    m_calculation.setInitialValues();//Sara
-if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate();}
 //Sara
-    if (m_parameter.qs3DSim!=0){
+void NoiseSimulation::pre_simulate() {
+    m_calculation.setNoiseParam(&m_parameter);
+
+//Sara
+//verify and generate new polars when quasi 3d multiple polars options are active
+if ((m_parameter.qs3DSim!=0) & (m_parameter.opPointSource == NoiseParameter::MultiplePolars)){
+    m_calculation.onVerifyDeltaandValFor3D();
+    loopsReMaalpha();
+}
+}
+//Sara
+
+void NoiseSimulation::simulate() {
+    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;//Sara
+
+    m_calculation.setNoiseParam(&m_parameter);
+
+//Sara
+//verify and generate new polars when quasi 3d multiple polars options are active
+if (m_parameter.qs3DSim!=0){
+    m_calculation.onVerifyDeltaandValFor3D();
+    m_calculation.onVerifyDeltaandValFor3DAlerts();
+}
+
+if(m_calculation.simulate_yes_no){
+    pNoiseCreatorDialog->OnProgressDlg();
+    m_calculation.setInitialValues();
+if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate();}
+
+if (m_parameter.qs3DSim!=0){
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_graphics_loops();}
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_blade();}
     }
-    if(m_parameter.qs3DSim==2){
+if(m_parameter.qs3DSim==2){
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_rotor();}
     }
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){pNoiseCreatorDialog->m_progress_dlg->cancel();}
+}
 //Sara
 }
 
@@ -1079,10 +1101,10 @@ void NoiseSimulation::create360Polars(){
 }
 
 void NoiseSimulation::loopsReMaalpha(){
+if(m_parameter.qs3DSim!=0){
 int size = m_calculation.Reynolds_error_value().size();
 
-createPolars(size);
-
-//create360Polars();
-}
+if(size>0){
+createPolars(size);}
+}}
 //Sara

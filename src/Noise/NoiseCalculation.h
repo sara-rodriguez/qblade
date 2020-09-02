@@ -41,6 +41,7 @@ public:
 
     //Sara begin
     void onVerifyDeltaandValFor3D();
+    void onVerifyDeltaandValFor3DAlerts();
     void calculateqs3d_graphics(int blade, int E, double TSR);
     void calculateqs3d_graphics_loops();
     void calculateqs3d_blade();
@@ -49,6 +50,7 @@ public:
 
     bool alertTE(){return TE_alert;};
     bool alertLE(){return LE_alert;};
+    bool simulate_yes_no=true;
     //Sara end
 
     // NM the arrays containing the graph data
