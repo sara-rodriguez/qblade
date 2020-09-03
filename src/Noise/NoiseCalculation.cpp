@@ -1969,6 +1969,34 @@ for (unsigned int y = 0; y < angles_num; ++y){
 for (unsigned int x = 0; x < blades_num; ++x){
 for (unsigned int y = 0; y < angles_num; ++y){
 for (unsigned int w = 0; w < size; ++w){
+        m_SPLadB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+
+        m_SPLadB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLsdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLpdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdBAW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdBBW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPLdBCW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBAW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBBW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_LEdBCW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+}}}
+
+for (unsigned int x = 0; x < blades_num; ++x){
+for (unsigned int y = 0; y < angles_num; ++y){
+for (unsigned int w = 0; w < size; ++w){
     m_SPLadB3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPLsdB3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPLpdB3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);

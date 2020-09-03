@@ -683,7 +683,7 @@ void NoiseCreatorDialog::onFoilBoxChange() {
 //Sara
 
 void NoiseCreatorDialog::onPolarBoxChange() {
-    prepareOpPointRecords(false);
+    prepareOpPointRecords(multi_polars_radiobutton->isChecked());
     fillOpPointView();
 if(check_qs3D){
     m_opPointScrollArea->setEnabled(true);
@@ -756,7 +756,7 @@ try {
 if((multi_polars_radiobutton->isChecked())& (check_qs3D)){
     newSimulation->pre_simulate();
 
-    prepareOpPointRecords(true);
+    prepareOpPointRecords(multi_polars_radiobutton->isChecked());
     fillOpPointView();
 
     m_opPointScrollArea->setEnabled(true);
