@@ -4311,6 +4311,14 @@ ProgressBar(4);//Sara
             Final_qs3d_P_rotor_loops = 10*log10(Final_qs3d_P_aux_4d);
             Final_qs3d_LE_rotor_loops =  10*log10(Final_qs3d_LE_aux_4d);
             Final_qs3d_rotor_loops = 10*log10(Final_qs3d_aux_4d);
+            //urgente
+            qDebug() << "coordinates: " << m_parameter->obs_x_pos_rotor << m_parameter->obs_y_pos_rotor << m_parameter->obs_z_pos_rotor;
+            qDebug() <<"OASPL: " << Final_qs3d_rotor_loops; //validation directivity
+            qDebug() <<"SPL alpha: " << Final_qs3d_alpha_rotor_loops; //validation directivity
+            qDebug() <<"SPL S: " << Final_qs3d_S_rotor_loops; //validation directivity
+            qDebug() <<"SPL P: " << Final_qs3d_P_rotor_loops; //validation directivity
+            qDebug() <<"SPL LE: " << Final_qs3d_LE_rotor_loops; //validation directivity
+
 
         //calculation for the OASPL for the csv output file
         for (unsigned int i=0;i<size;++i){

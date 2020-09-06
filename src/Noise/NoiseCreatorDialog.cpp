@@ -668,7 +668,7 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
 //Sara
     if(check_qs3D){
         m_opPointScrollArea->setEnabled(true);
-        all_op_points->click();
+        if(!m_opPointRecords.isEmpty()){all_op_points->click();}
         m_opPointScrollArea->setEnabled(false);
     }
 //Sara
@@ -687,16 +687,17 @@ void NoiseCreatorDialog::onPolarBoxChange() {
     fillOpPointView();
 if(check_qs3D){
     m_opPointScrollArea->setEnabled(true);
-    all_op_points->click();
+    if(!m_opPointRecords.isEmpty()){all_op_points->click();}
     m_opPointScrollArea->setEnabled(false);
 }
 }
 
 void NoiseCreatorDialog::onAllButtonToggled(bool pressed) {
+    if(!m_opPointRecords.isEmpty()){
     for (const OpPointRecord &record : m_opPointRecords) {
         if (record.checkBox->isEnabled()){//Sara
         record.checkBox->setChecked(pressed);
-        }//Sara
+        }}//Sara
     }
 }
 
