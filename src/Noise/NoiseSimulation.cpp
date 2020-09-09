@@ -283,7 +283,7 @@ void NoiseSimulation::pre_simulate() {
 //verify and generate new polars when quasi 3d multiple polars options are active
 if ((m_parameter.qs3DSim!=0) & (m_parameter.opPointSource == NoiseParameter::MultiplePolars)){
     m_calculation.onVerifyDeltaandValFor3D();
-    loopsReMaalpha();
+    if(m_parameter.autopolars_check){loopsReMaalpha();}
 }
 }
 //Sara
@@ -905,6 +905,11 @@ else {value=m_parameter.valReu_LE;}
     case P::valMal_LE_check:
         if(set) {m_parameter.valMal_LE_check = value.toBool();}
 else {value=m_parameter.valMal_LE_check;}
+        break;
+
+    case P::autopolars_check:
+        if(set) {m_parameter.autopolars_check = value.toBool();}
+else {value=m_parameter.autopolars_check;}
         break;
 
     case P::valMau_LE_check:

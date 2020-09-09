@@ -70,6 +70,7 @@ public:
     bool valReu_LE_check;
     bool valMal_LE_check;
     bool valMau_LE_check;
+    bool autopolars_check;
 
     int qs3DSim;
     int phi_type;

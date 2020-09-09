@@ -248,17 +248,27 @@ if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
                     vBox = new QVBoxLayout;
                     hBox = new QHBoxLayout;
                     widget->setLayout(hBox);
-                    groupBox = new QGroupBox ("LE noise source validation range");
-                    hBox->addWidget(groupBox);
+                    hBox->addLayout(vBox);
+
+                    groupBox = new QGroupBox ("Minimize error between BEM and polar data");
+                    vBox->addWidget(groupBox);
                     pGrid = new ParameterGrid<P>(this);
+                    groupBox->setLayout(pGrid);
+                    groupBox->setMaximumHeight(90);
+                    m_autopolars_check = new QCheckBox("");
+                    pGrid->addEdit(P::autopolars_check, CheckBox, m_autopolars_check,"autogenerate polars:", true);
+
+                    groupBox = new QGroupBox ("LE noise source validation range");
+                    vBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
                     groupBox->setLayout(pGrid);
 
 if(Lowson_type_combobox->currentIndex()!=0){
     check_LE=true;}
 else{check_LE=false;}
 
-                    m_valReLabel = new QLabel("Reynolds Number:");
-                    pGrid->addWidget(m_valReLabel);
+                    pGrid->addRow("Reynolds Number:","");
 
                     m_valRel_LE_check = new QCheckBox("calculate below:");
                     pGrid->addEdit(P::valRel_LE_check, CheckBox, m_valRel_LE_check,"", false);
@@ -275,9 +285,9 @@ else{check_LE=false;}
                     m_valReu_LE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valReu_LE, NumberEditType, m_valReu_LE_numberedit,"Upper Re Value:",6*pow(10,5));
                     m_valReu_LE_numberedit->setEnabled(check_LE);
+                    pGrid->addRow("","");pGrid->addRow("","");
 
-                    m_valMaLabel = new QLabel("Mach Number:");
-                    pGrid->addWidget(m_valMaLabel);
+                    pGrid->addRow("Mach Number:","");
 
                     m_valMal_LE_check = new QCheckBox("calculate below:");
                     pGrid->addEdit(P::valRel_LE_check, CheckBox, m_valMal_LE_check,"", false);
@@ -298,11 +308,10 @@ else{check_LE=false;}
                     groupBox = new QGroupBox ("TE noise source validation range");
                     hBox->addWidget(groupBox);
                     pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
                     groupBox->setLayout(pGrid);
 
-                    m_valReLabel = new QLabel("Reynolds Number:");
-                    pGrid->addWidget(m_valReLabel);
-
+                    pGrid->addRow("Reynolds Number:","");
                     m_valRel_TE_check = new QCheckBox("calculate below:");
                     pGrid->addEdit(P::valRel_TE_check, CheckBox, m_valRel_TE_check,"", false);
                     m_valRel_TE_check->setEnabled(check_TE);
@@ -318,10 +327,9 @@ else{check_LE=false;}
                     m_valReu_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valReu_TE, NumberEditType, m_valReu_TE_numberedit,"Upper Re Value:",2.4*pow(10,6));
                     m_valReu_TE_numberedit->setEnabled(check_TE);
+                    pGrid->addRow("","");pGrid->addRow("","");
 
-                    m_valMaLabel = new QLabel("Mach Number:");
-                    pGrid->addWidget(m_valMaLabel);
-
+                    pGrid->addRow("Mach Number:","");
                     m_valMal_TE_check = new QCheckBox("calculate below:");
                     pGrid->addEdit(P::valRel_TE_check, CheckBox, m_valMal_TE_check,"", false);
                     m_valMal_TE_check->setEnabled(check_TE);
@@ -337,10 +345,9 @@ else{check_LE=false;}
                     m_valMau_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valMau_TE, NumberEditType, m_valMau_TE_numberedit,"Upper Ma Value:",0.21);
                     m_valMal_TE_numberedit->setEnabled(check_TE);
+                    pGrid->addRow("","");pGrid->addRow("","");
 
-                    m_valAOALabel = new QLabel("AOA Number:");
-                    pGrid->addWidget(m_valAOALabel);
-
+                    pGrid->addRow("AOA Number:","");
                     m_valAOAl_TE_check = new QCheckBox("calculate below:");
                     pGrid->addEdit(P::valAOAl_TE_check, CheckBox, m_valAOAl_TE_check,"", false);
                     m_valAOAl_TE_check->setEnabled(check_TE);
@@ -356,11 +363,6 @@ else{check_LE=false;}
                     m_valAOAu_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valAOAu_TE, NumberEditType, m_valAOAu_TE_numberedit,"Upper AOA Value [deg]:",19.8);
                     m_valAOAu_TE_numberedit->setEnabled(check_TE);
-
-                    groupBox = new QGroupBox ("Margin of error between BEM and polar data");
-                    hBox->addWidget(groupBox);
-                    pGrid = new ParameterGrid<P>(this);
-                    groupBox->setLayout(pGrid);
 
                             widget = new QWidget;
                             tabWidget->addTab(widget, "Quasi 3D Blade");
