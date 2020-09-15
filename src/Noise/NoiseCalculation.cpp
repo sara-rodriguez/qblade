@@ -1118,10 +1118,9 @@ m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
 //		}
 //	}
 
-//ProgressBar(1);//Sara
     if(m_parameter->qs3DSim==0){
         NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
-        pNoiseCreatorDialog->m_progress_dlg->setValue(progress_end);
+        pNoiseCreatorDialog->m_progress_dlg->setValue(progress_total);
     }
 }
 
@@ -2385,7 +2384,7 @@ windspeed = pow(Vrel2,0.5);
 //qDebug() << "vel: " << inflowspeed;
     }
 }
-z=z+ldelta;
+if(z<=m_parameter->TSRtd){z=z+ldelta;}else{break;}
 }
 return windspeed;
 }
@@ -2419,7 +2418,7 @@ double temp = pbem->dlg_temp;
 Mach = windspeed/sqrt(bdata->k_air*bdata->r_air*temp);
     }
 }
-    z=z+ldelta;
+if(z<=m_parameter->TSRtd){z=z+ldelta;}else{break;}
 }
 return Mach;
 }
@@ -2450,7 +2449,7 @@ Reynolds = bdata->m_Reynolds.value(section);
 Reynolds = windspeed*bdata->m_c_local.value(section)/bdata->visc;
     }
 }
-z=z+ldelta;
+if(z<=m_parameter->TSRtd){z=z+ldelta;}else{break;}
 }
 return Reynolds;
 }
@@ -3722,13 +3721,12 @@ m_SPL_LEdBBW3d_4d_blade[blade][E][i][j]=0;
 m_SPL_LEdBCW3d_4d_blade[blade][E][i][j]=0;
 }
 }}
-    }
-z=z+ldelta;
+}
+if(z<=m_parameter->TSRtd){z=z+ldelta;}else{break;}
 }}
 
-//calculation for rotor in loop
 void NoiseCalculation::calculateqs3d_graphics_loops(){
-ProgressBar(2);//Sara
+//ProgressBar(2);
 
 QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 setupVectorsqs3d();
@@ -3756,9 +3754,23 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     double TSR = m_parameter->TSRtd;
     int w=0;
 
+    NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+    double progress_begin = 0;
+    double progress_end = 0;
+    if(m_parameter->qs3DSim==2){
+    progress_begin = progress_total/4.*1.;
+    progress_end = progress_total/4.*2.-1.;
+    }else{
+    progress_begin = progress_total/3.*1.;
+    progress_end = progress_total/3.*2.-1.;
+    }
+
+    double progress_step = (progress_end-progress_begin)/number_of_segments;
+
 foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
     if (z==TSR){
 for (int i = 0; i < number_of_segments; ++i) {
+pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*i);
 alpha[i] = bdata->m_alpha.value(i);
 Reynolds[i] = bdata->m_Reynolds.value(i);
 Mach[i]=bdata->m_Mach.value(i);
@@ -3925,7 +3937,7 @@ m_polar_type_error[w] = g_polarStore.at(pos_polar)->m_PolarType;
 }
 
 }}
-z=z+ldelta;
+if(z<=m_parameter->TSRtd){z=z+ldelta;}else{break;}
 //}
 }
 //finish D star interpolated
@@ -3958,7 +3970,7 @@ if(m_parameter->qs3DSim==1){calculateqs3d_graphics(0,0,TSR);}
 
 //calculation for blade
 void NoiseCalculation::calculateqs3d_blade() {
-ProgressBar(3);//Sara
+//ProgressBar(3);
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     unsigned int number_of_segments = pbem->m_pBData->m_pos.size();
@@ -4016,7 +4028,23 @@ ProgressBar(3);//Sara
         double auxa_m_SPLLEdBCW3d[size];
         double auxa_m_SPLlogLE3d[size];
 
-    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+        if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+
+        NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
+        double progress_begin = 0;
+        double progress_end = 0;
+        if(m_parameter->qs3DSim==2){
+        progress_begin = progress_total/4.*2.;
+        progress_end = progress_total/4.*3.-1.;
+        }else{
+        progress_begin = progress_total/3.*2.;
+        progress_end = progress_total-1.;
+        }
+
+        double progress_step = (progress_end-progress_begin)/(2.*FREQUENCY_TABLE_SIZE+size);
+
+        for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+        pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*j);
         aux_m_SPLadB3d_final[j]=0;
         aux_m_SPLsdB3d_final[j]=0;
         aux_m_SPLpdB3d_final[j]=0;
@@ -4040,24 +4068,20 @@ ProgressBar(3);//Sara
         auxa_m_SPL_LEdBBW3d_final[j]=0;
         auxa_m_SPL_LEdBCW3d_final[j]=0;
 
-    for (unsigned int i = 0; i < number_of_segments; ++i) {
-        if (SPLadB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLadB3d_final[j] += 0;} else {auxa_m_SPLadB3d_final[j] += pow(10.,(SPLadB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLsdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLsdB3d_final[j] += 0;} else {auxa_m_SPLsdB3d_final[j] += pow(10.,(SPLsdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLpdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLpdB3d_final[j] += 0;} else {auxa_m_SPLpdB3d_final[j] += pow(10.,(SPLpdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLdB3d_final[j] += 0;} else {auxa_m_SPLdB3d_final[j] += pow(10.,(SPLdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdBAW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLdBAW3d_final[j] += 0;} else {auxa_m_SPLdBAW3d_final[j] += pow(10.,(SPLdBAW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdBBW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLdBBW3d_final[j] += 0;} else {auxa_m_SPLdBBW3d_final[j] += pow(10.,(SPLdBBW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdBCW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLdBCW3d_final[j] += 0;} else {auxa_m_SPLdBCW3d_final[j] += pow(10.,(SPLdBCW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPL_LEdB3d_final[j] += 0;} else {auxa_m_SPL_LEdB3d_final[j] += pow(10.,(SPL_LEdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdBAW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPL_LEdBAW3d_final[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final[j] += pow(10.,(SPL_LEdBAW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdBBW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPL_LEdBBW3d_final[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final[j] += pow(10.,(SPL_LEdBBW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdBCW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPL_LEdBCW3d_final[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final[j] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));}
-    }
-
-    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-    unsigned int number_of_segments = pBEM->m_pBData->m_pos.size();
-
-    if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
+        unsigned int i = 0;
+while(i < number_of_segments){
+        if (SPLadB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLadB3d_final[j] += pow(10.,(SPLadB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLsdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLsdB3d_final[j] += pow(10.,(SPLsdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLpdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLpdB3d_final[j] += pow(10.,(SPLpdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdB3d_final[j] += pow(10.,(SPLdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdBAW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdBAW3d_final[j] += pow(10.,(SPLdBAW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdBBW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdBBW3d_final[j] += pow(10.,(SPLdBBW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdBCW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdBCW3d_final[j] += pow(10.,(SPLdBCW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdB3d_final[j] += pow(10.,(SPL_LEdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdBAW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdBAW3d_final[j] += pow(10.,(SPL_LEdBAW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdBBW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdBBW3d_final[j] += pow(10.,(SPL_LEdBBW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdBCW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdBCW3d_final[j] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));}
+++i;}
 
     for (unsigned int i=0;i<size;++i){
     for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
@@ -4086,6 +4110,7 @@ ProgressBar(3);//Sara
     //OASPL complete for quasi 3d
     int i=number_of_segments-1;
     for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*(j+FREQUENCY_TABLE_SIZE));
     Final_qs3d_alpha_aux += pow(10.,(m_SPLadB3d_final[i][j])/10.);
     Final_qs3d_S_aux += pow(10.,(m_SPLsdB3d_final[i][j])/10.);
     Final_qs3d_P_aux += pow(10.,(m_SPLpdB3d_final[i][j])/10.);
@@ -4101,6 +4126,8 @@ ProgressBar(3);//Sara
 
     //calculation for the OASPL for the csv output file
     for (unsigned int i=0;i<size;++i){
+        pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*(i+2.*FREQUENCY_TABLE_SIZE));
+
         auxa_m_OASPL3d[i]=0;
         auxa_m_OASPLA3d[i]=0;
         auxa_m_OASPLB3d[i]=0;
@@ -4113,19 +4140,21 @@ ProgressBar(3);//Sara
         auxa_m_SPLLEdBCW3d[i]=0;
         auxa_m_SPLlogLE3d[i]=0;
 
-    for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-        if (SPLadB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLALOG3d[i] += 0;} else {auxa_m_SPLALOG3d[i] += pow(10.,(SPLadB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLsdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLSLOG3d[i] += 0;} else {auxa_m_SPLSLOG3d[i] += pow(10.,(SPLsdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLpdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLPLOG3d[i] += 0;} else {auxa_m_SPLPLOG3d[i] += pow(10.,(SPLpdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_OASPL3d[i] += 0;} else {auxa_m_OASPL3d[i]+= pow(10.,(SPLdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdBAW3d_4d_blade()[0][0][i][j]==0.){auxa_m_OASPLA3d[i] += 0;} else {auxa_m_OASPLA3d[i] += pow(10.,(SPLdBAW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdBBW3d_4d_blade()[0][0][i][j]==0.){auxa_m_OASPLB3d[i] += 0;} else {auxa_m_OASPLB3d[i] += pow(10.,(SPLdBBW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPLdBCW3d_4d_blade()[0][0][i][j]==0.){auxa_m_OASPLC3d[i] += 0;} else {auxa_m_OASPLC3d[i] += pow(10.,(SPLdBCW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdB3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLlogLE3d[i] += 0;} else {auxa_m_SPLlogLE3d[i] += pow(10.,(SPL_LEdB3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdBAW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLLEdBAW3d[i] += 0;} else {auxa_m_SPLLEdBAW3d[i] += pow(10.,(SPL_LEdBAW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdBBW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLLEdBBW3d[i] += 0;} else {auxa_m_SPLLEdBBW3d[i] += pow(10.,(SPL_LEdBBW3d_4d_blade()[0][0][i][j]/10.));}
-        if (SPL_LEdBCW3d_4d_blade()[0][0][i][j]==0.){auxa_m_SPLLEdBCW3d[i] += 0;} else {auxa_m_SPLLEdBCW3d[i] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));}
-    }
+int j= 0;
+
+while(j< FREQUENCY_TABLE_SIZE){
+    if (SPLadB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLALOG3d[i] += pow(10.,(SPLadB3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPLsdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLSLOG3d[i] += pow(10.,(SPLsdB3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPLpdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLPLOG3d[i] += pow(10.,(SPLpdB3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPLdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_OASPL3d[i]+= pow(10.,(SPLdB3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPLdBAW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_OASPLA3d[i] += pow(10.,(SPLdBAW3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPLdBBW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_OASPLB3d[i] += pow(10.,(SPLdBBW3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPLdBCW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_OASPLC3d[i] += pow(10.,(SPLdBCW3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPL_LEdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLlogLE3d[i] += pow(10.,(SPL_LEdB3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPL_LEdBAW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLLEdBAW3d[i] += pow(10.,(SPL_LEdBAW3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPL_LEdBBW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLLEdBBW3d[i] += pow(10.,(SPL_LEdBBW3d_4d_blade()[0][0][i][j]/10.));}
+    if (SPL_LEdBCW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLLEdBCW3d[i] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));}
+++j;}
     m_OASPL3d[i]=10*log10(auxa_m_OASPL3d[i]);
     m_OASPLA3d[i]=10*log10(auxa_m_OASPLA3d[i]);
     m_OASPLB3d[i]=10*log10(auxa_m_OASPLB3d[i]);
@@ -4146,16 +4175,15 @@ ProgressBar(3);//Sara
     m_SPLlogLE3d[i]=0;
     }}
 
-//ProgressBar(3);//Sara
 if(m_parameter->qs3DSim==1){
     NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
-    pNoiseCreatorDialog->m_progress_dlg->setValue(progress_end);
+    pNoiseCreatorDialog->m_progress_dlg->setValue(progress_total);
 }
 }
 
 //calculation for all blades in rotation movement
 void NoiseCalculation::calculateqs3d_rotor() {
-ProgressBar(4);
+//ProgressBar(4);
 NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
@@ -4231,7 +4259,13 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
     double auxa_m_SPLLEdBCW3d_rotor_loops[size];
     double auxa_m_SPLlogLE3d_rotor_loops[size];
 
+    double progress_begin = progress_total/4.*3.;
+    double progress_end = progress_total-1.;
+    double progress_step = (progress_end-progress_begin)/FREQUENCY_TABLE_SIZE;
+
     for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
+    pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*j);
+
         aux_m_SPLadB3d_final_4d[j]=0;
         aux_m_SPLsdB3d_final_4d[j]=0;
         aux_m_SPLpdB3d_final_4d[j]=0;
@@ -4255,21 +4289,28 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
         auxa_m_SPL_LEdBBW3d_final_4d[j]=0;
         auxa_m_SPL_LEdBCW3d_final_4d[j]=0;
 
-        for (int blade=0;blade<blades_num;++blade){
-        for (int E=0;E<angles_num;++E){
-       for (unsigned int i = 0; i < number_of_segments; ++i) {
-           if (SPLadB3d_4d()[blade][E][i][j]==0.){auxa_m_SPLadB3d_final_4d[j] += 0;} else {auxa_m_SPLadB3d_final_4d[j] += pow(10.,(SPLadB3d_4d()[blade][E][i][j]/10.));}
-           if (SPLsdB3d_4d()[blade][E][i][j]==0.){auxa_m_SPLsdB3d_final_4d[j] += 0;} else {auxa_m_SPLsdB3d_final_4d[j] += pow(10.,(SPLsdB3d_4d()[blade][E][i][j]/10.));}
-           if (SPLpdB3d_4d()[blade][E][i][j]==0.){auxa_m_SPLpdB3d_final_4d[j] += 0;} else {auxa_m_SPLpdB3d_final_4d[j] += pow(10.,(SPLpdB3d_4d()[blade][E][i][j]/10.));}
-           if (SPLdB3d_4d()[blade][E][i][j]==0.){auxa_m_SPLdB3d_final_4d[j] += 0;} else {auxa_m_SPLdB3d_final_4d[j] += pow(10.,(SPLdB3d_4d()[blade][E][i][j]/10.));}
-           if (SPLdBAW3d_4d()[blade][E][i][j]==0.){auxa_m_SPLdBAW3d_final_4d[j] += 0;} else {auxa_m_SPLdBAW3d_final_4d[j] += pow(10.,(SPLdBAW3d_4d()[blade][E][i][j]/10.));}
-           if (SPLdBBW3d_4d()[blade][E][i][j]==0.){auxa_m_SPLdBBW3d_final_4d[j] += 0;} else {auxa_m_SPLdBBW3d_final_4d[j] += pow(10.,(SPLdBBW3d_4d()[blade][E][i][j]/10.));}
-           if (SPLdBCW3d_4d()[blade][E][i][j]==0.){auxa_m_SPLdBCW3d_final_4d[j] += 0;} else {auxa_m_SPLdBCW3d_final_4d[j] += pow(10.,(SPLdBCW3d_4d()[blade][E][i][j]/10.));}
-           if (SPL_LEdB3d_4d()[blade][E][i][j]==0.){auxa_m_SPL_LEdB3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdB3d_final_4d[j] += pow(10.,(SPL_LEdB3d_4d()[blade][E][i][j]/10.));}
-           if (SPL_LEdBAW3d_4d()[blade][E][i][j]==0.){auxa_m_SPL_LEdBAW3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdBAW3d_final_4d[j] += pow(10.,(SPL_LEdBAW3d_4d()[blade][E][i][j]/10.));}
-           if (SPL_LEdBBW3d_4d()[blade][E][i][j]==0.){auxa_m_SPL_LEdBBW3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdBBW3d_final_4d[j] += pow(10.,(SPL_LEdBBW3d_4d()[blade][E][i][j]/10.));}
-           if (SPL_LEdBCW3d_4d()[blade][E][i][j]==0.){auxa_m_SPL_LEdBCW3d_final_4d[j] += 0;} else {auxa_m_SPL_LEdBCW3d_final_4d[j] += pow(10.,(SPL_LEdBCW3d_4d()[blade][E][i][j]/10.));}
-        }}}}
+int blade=0;
+int E=0;
+unsigned int i = 0;
+
+while (blade<blades_num){
+while(E<angles_num){
+while(i < number_of_segments) {
+    if (SPLadB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLadB3d_final_4d[j] += pow(10.,(SPLadB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLsdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLsdB3d_final_4d[j] += pow(10.,(SPLsdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLpdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLpdB3d_final_4d[j] += pow(10.,(SPLpdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdB3d_final_4d[j] += pow(10.,(SPLdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdBAW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdBAW3d_final_4d[j] += pow(10.,(SPLdBAW3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdBBW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdBBW3d_final_4d[j] += pow(10.,(SPLdBBW3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdBCW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdBCW3d_final_4d[j] += pow(10.,(SPLdBCW3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdB3d_final_4d[j] += pow(10.,(SPL_LEdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdBAW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdBAW3d_final_4d[j] += pow(10.,(SPL_LEdBAW3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdBBW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdBBW3d_final_4d[j] += pow(10.,(SPL_LEdBBW3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdBCW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdBCW3d_final_4d[j] += pow(10.,(SPL_LEdBCW3d_4d()[blade][E][i][j]/10.));}
+++i;}
+++E;}
+++blade;}
+}
 
         if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
@@ -4377,10 +4418,9 @@ if (m_parameter->Lowson_type!=0){
                         m_SPLLEdBCW3d_rotor_loops[y]=0;
                         m_SPLlogLE3d_rotor_loops[y]=0;
 }
-++y;
-}
+++y;}
 
-pNoiseCreatorDialog->m_progress_dlg->setValue(progress_end);
+pNoiseCreatorDialog->m_progress_dlg->setValue(progress_total);
 }
 
 //Sara
@@ -4486,9 +4526,9 @@ void NoiseCalculation::ProgressBar(int index){
     NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
     pNoiseSimulation->progress_dlg_canceled=false;
         int w=0;
-        if (m_parameter->qs3DSim==2){progress_end = 100000; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/4;}
-        else if (m_parameter->qs3DSim==1){progress_end = 100000; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/3;}
-        else {progress_end = 100000; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end;}
+        if (m_parameter->qs3DSim==2){progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/4;}
+        else if (m_parameter->qs3DSim==1){progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/3;}
+        else {progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end;}
 
 if(pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){
     pNoiseCreatorDialog->m_progress_dlg->cancel();
@@ -4628,202 +4668,201 @@ if(alpha_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");} observat
                                     observations_x   <<  ";" <<
                                     Qt::endl;
 }}
-     z=z+ldelta;
+if(z<=m_parameter->TSRtd){z=z+ldelta;}else{break;}
 }}
 
 void NoiseCalculation::onVerifyDeltaandValFor3D(){
-m_Reynolds_max_error=0;
-m_Mach_max_error=0;
-m_alpha_max_error=0;
-m_position.clear();
+    m_Reynolds_max_error=0;
+    m_Mach_max_error=0;
+    m_alpha_max_error=0;
+    m_position.clear();
 
-    QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+        QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
+        setupVectorsqs3d();
+        //begin D star interpolated
+        SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+            double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+            double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+            double z=lstart;
 
-    setupVectorsqs3d();
-    //begin D star interpolated
-    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-        double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
-        double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
-        double z=lstart;
+            QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+            int number_of_segments = pBEM->m_pBData->m_pos.size();
+            double alpha[number_of_segments];
+            double Reynolds[number_of_segments];
+            double Mach[number_of_segments];
+            m_position.resize(number_of_segments);
 
-        QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
-        int number_of_segments = pBEM->m_pBData->m_pos.size();
-        double alpha[number_of_segments];
-        double Reynolds[number_of_segments];
-        double Mach[number_of_segments];
-        m_position.resize(number_of_segments);
+            double Reynolds_nop[noiseOpPoints.size()];
+            double Mach_nop[noiseOpPoints.size()];
+            double alpha_nop[noiseOpPoints.size()];
 
-        double Reynolds_nop[noiseOpPoints.size()];
-        double Mach_nop[noiseOpPoints.size()];
-        double alpha_nop[noiseOpPoints.size()];
+            m_BotTr.resize(number_of_segments);
+            m_TopTr.resize(number_of_segments);
+            double TSR = m_parameter->TSRtd;
+            int w=0;
+        foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
+            if (z==TSR){
+        for (int i = 0; i < number_of_segments; ++i) {
+        alpha[i] = bdata->m_alpha.value(i);
+        Reynolds[i] = bdata->m_Reynolds.value(i);
+        Mach[i]=bdata->m_Mach.value(i);
+        //find nop of the corresponding Reynolds, Mach and alpha from each section
+        m_position[i]=0;
+        int position_Reynolds=0;
+        int position_Mach=0;
 
-        m_BotTr.resize(number_of_segments);
-        m_TopTr.resize(number_of_segments);
-        double TSR = m_parameter->TSRtd;
-        int w=0;
-    foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-        if (z==TSR){
-    for (int i = 0; i < number_of_segments; ++i) {
-    alpha[i] = bdata->m_alpha.value(i);
-    Reynolds[i] = bdata->m_Reynolds.value(i);
-    Mach[i]=bdata->m_Mach.value(i);
-    //find nop of the corresponding Reynolds, Mach and alpha from each section
-    m_position[i]=0;
-    int position_Reynolds=0;
-    int position_Mach=0;
+        //Lowson validation:
 
-    //Lowson validation:
+        bool LE_validation=true;
+        if(m_parameter->Lowson_type!=0){
+        if(!m_parameter->valRel_LE_check & (Reynolds[i]<m_parameter->valRel_LE)){LE_validation=false;}
+        if(!m_parameter->valReu_LE_check & (Reynolds[i]>m_parameter->valReu_LE)){LE_validation=false;}
+        if(!m_parameter->valMal_LE_check & (Mach[i]<m_parameter->valMal_LE)){LE_validation=false;}
+        if(!m_parameter->valMau_LE_check & (Mach[i]>m_parameter->valMau_LE)){LE_validation=false;}
 
-    bool LE_validation=true;
-    if(m_parameter->Lowson_type!=0){
-    if(!m_parameter->valRel_LE_check & (Reynolds[i]<m_parameter->valRel_LE)){LE_validation=false;}
-    if(!m_parameter->valReu_LE_check & (Reynolds[i]>m_parameter->valReu_LE)){LE_validation=false;}
-    if(!m_parameter->valMal_LE_check & (Mach[i]<m_parameter->valMal_LE)){LE_validation=false;}
-    if(!m_parameter->valMau_LE_check & (Mach[i]>m_parameter->valMau_LE)){LE_validation=false;}
+        if(Reynolds[i]<m_parameter->valRel_LE){LE_alert=true;}
+        if(Reynolds[i]>m_parameter->valReu_LE){LE_alert=true;}
+        if(Mach[i]<m_parameter->valMal_LE){LE_alert=true;}
+        if(Mach[i]>m_parameter->valMau_LE){LE_alert=true;}}
 
-    if(Reynolds[i]<m_parameter->valRel_LE){LE_alert=true;}
-    if(Reynolds[i]>m_parameter->valReu_LE){LE_alert=true;}
-    if(Mach[i]<m_parameter->valMal_LE){LE_alert=true;}
-    if(Mach[i]>m_parameter->valMau_LE){LE_alert=true;}}
+        //TE validation
+        bool BPM_validation=true;
 
-    //TE validation
-    bool BPM_validation=true;
+        if(m_parameter->suctionSide || m_parameter->pressureSide || m_parameter->separatedFlow){
+        if(!m_parameter->valRel_TE_check & (Reynolds[i]<m_parameter->valRel_TE)){BPM_validation=false;}
+        if(!m_parameter->valReu_TE_check & (Reynolds[i]>m_parameter->valReu_TE)){BPM_validation=false;}
+        if(!m_parameter->valMal_TE_check & (Mach[i]<m_parameter->valMal_TE)){BPM_validation=false;}
+        if(!m_parameter->valMau_TE_check & (Mach[i]>m_parameter->valMau_TE)){BPM_validation=false;}
+        if(!m_parameter->valAOAl_TE_check & (alpha[i]<m_parameter->valAOAl_TE)){BPM_validation=false;}
+        if(!m_parameter->valAOAu_TE_check & (alpha[i]>m_parameter->valAOAu_TE)){BPM_validation=false;}
 
-    if(m_parameter->suctionSide || m_parameter->pressureSide || m_parameter->separatedFlow){
-    if(!m_parameter->valRel_TE_check & (Reynolds[i]<m_parameter->valRel_TE)){BPM_validation=false;}
-    if(!m_parameter->valReu_TE_check & (Reynolds[i]>m_parameter->valReu_TE)){BPM_validation=false;}
-    if(!m_parameter->valMal_TE_check & (Mach[i]<m_parameter->valMal_TE)){BPM_validation=false;}
-    if(!m_parameter->valMau_TE_check & (Mach[i]>m_parameter->valMau_TE)){BPM_validation=false;}
-    if(!m_parameter->valAOAl_TE_check & (alpha[i]<m_parameter->valAOAl_TE)){BPM_validation=false;}
-    if(!m_parameter->valAOAu_TE_check & (alpha[i]>m_parameter->valAOAu_TE)){BPM_validation=false;}
+        if(Reynolds[i]<m_parameter->valRel_TE){TE_alert=true;}
+        if(Reynolds[i]>m_parameter->valReu_TE){TE_alert=true;}
+        if(Mach[i]<m_parameter->valMal_TE){TE_alert=true;}
+        if(Mach[i]>m_parameter->valMau_TE){TE_alert=true;}
+        if(alpha[i]<m_parameter->valAOAl_TE){TE_alert=true;}
+        if(alpha[i]>m_parameter->valAOAu_TE){TE_alert=true;}}
 
-    if(Reynolds[i]<m_parameter->valRel_TE){TE_alert=true;}
-    if(Reynolds[i]>m_parameter->valReu_TE){TE_alert=true;}
-    if(Mach[i]<m_parameter->valMal_TE){TE_alert=true;}
-    if(Mach[i]>m_parameter->valMau_TE){TE_alert=true;}
-    if(alpha[i]<m_parameter->valAOAl_TE){TE_alert=true;}
-    if(alpha[i]>m_parameter->valAOAu_TE){TE_alert=true;}}
+        NoiseOpPoint *nop_0 = noiseOpPoints[0];
 
-    NoiseOpPoint *nop_0 = noiseOpPoints[0];
+        double Reynolds_value_point=nop_0->getReynolds();
+        double Mach_value_point=nop_0->getMach();
 
-    double Reynolds_value_point=nop_0->getReynolds();
-    double Mach_value_point=nop_0->getMach();
+        for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+            NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
+        Reynolds_nop[posOpPoint]=nop->getReynolds();
+        Mach_nop[posOpPoint]=nop->getMach();
+        alpha_nop[posOpPoint]=nop->getAlphaDegree();
+        }
 
-    for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-        NoiseOpPoint *nop = noiseOpPoints[posOpPoint];
-    Reynolds_nop[posOpPoint]=nop->getReynolds();
-    Mach_nop[posOpPoint]=nop->getMach();
-    alpha_nop[posOpPoint]=nop->getAlphaDegree();
+        //for all polars
+        if (m_parameter->opPointSource == NoiseParameter::MultiplePolars){
+        for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+        int posOpPointNext;
+        if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+
+        if (qFabs(Reynolds[i]-Reynolds_nop[posOpPoint])>qFabs(Reynolds[i]-Reynolds_nop[posOpPointNext])){
+            position_Reynolds = posOpPointNext;
+            Reynolds_value_point = Reynolds_nop[posOpPointNext];
+            position_Mach = position_Reynolds;
+            m_position[i] = position_Reynolds;
+        }
+        }
+
+        int position_Reynolds_last=position_Reynolds;
+        for (int posOpPoint = position_Reynolds; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+        if(Reynolds_nop[posOpPoint]==Reynolds_value_point){
+        position_Reynolds_last=posOpPoint;
+        }
+        }
+
+        for (int posOpPoint = position_Reynolds; posOpPoint < position_Reynolds_last; ++posOpPoint) {
+        int posOpPointNext;
+        if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+        if ((qFabs(Mach[i]-Mach_nop[posOpPoint])>qFabs(Mach[i]-Mach_nop[posOpPointNext]))){
+            position_Mach = posOpPointNext;
+            Mach_value_point = Mach_nop[posOpPointNext];
+            m_position[i] = position_Mach;
+        }
+        }
+
+        int position_Mach_last=position_Mach;
+        for (int posOpPoint = position_Mach; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+        if(Mach_nop[posOpPoint]==Mach_value_point){
+        position_Mach_last=posOpPoint;
+        }
+        }
+        for (int posOpPoint = position_Mach; posOpPoint < position_Mach_last; ++posOpPoint) {
+        int posOpPointNext;
+        if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+        if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
+            m_position[i] = posOpPointNext;
+        }else{break;}
+        }
+        }
+
+        //for one polar
+        if (m_parameter->opPointSource == NoiseParameter::OnePolar){
+        for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
+        int posOpPointNext;
+        if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
+
+        if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
+            m_position[i] = posOpPointNext;
+        }else{break;}
+        }
+        }
+
+        NoiseOpPoint *nopx = noiseOpPoints[position()[i]]; //nearest Reynolds, Mach and alpha
+        m_Reynolds_polar[i]=nopx->getReynolds();
+        m_Mach_polar[i]=nopx->getMach();
+        m_alpha_polar[i]=nopx->getAlphaDegree();
+
+        int pos_polar=0;
+        int size_polars = g_polarStore.size();
+        for(int i=0;i<size_polars;++i){
+        if(g_polarStore.at(i)->getName() ==nopx->getPolarName()){
+            pos_polar=i; break;}}
+
+        m_Reynolds_error[i]=qFabs((Reynolds_polar()[i]-qRound(Reynolds[i]))/qRound(Reynolds[i])*100.);
+        m_Mach_error[i]=qFabs((Mach_polar()[i]*100.-(qRound(Mach[i]*100.)))/(qRound(Mach[i]*100.))*100.);
+        m_alpha_error[i]=qFabs((alpha_polar()[i]*100.-(qRound(alpha[i]*100.)))/(qRound(alpha[i]*100.))*100.);
+
+        m_BotTr[i]= g_polarStore.at(pos_polar)->m_XBot;
+        m_TopTr[i]= g_polarStore.at(pos_polar)->m_XTop;
+
+        if((Reynolds_error()[i]>0.1) || (Mach_error()[i]>0.1) || (alpha_error()[i]>0.1)){
+        m_Reynolds_error_value.resize(w+1);
+        m_Mach_error_value.resize(w+1);
+        m_alpha_error_value.resize(w+1);
+        m_alpha_error_value_max.resize(w+1);
+        m_acrit_error.resize(w+1);
+        m_xbot_error.resize(w+1);
+        m_xtop_error.resize(w+1);
+        m_aspec_error.resize(w+1);
+        m_polar_type_error.resize(w+1);
+
+        //matrix of polars
+
+        m_Reynolds_error_value[w]=Reynolds[i];
+        m_Mach_error_value[w]=Mach[i];
+        m_alpha_error_value[w]=alpha[i]-0.05;
+        m_alpha_error_value_max[w]=alpha[i]+0.05;
+        m_acrit_error[w] = nopx->getACrit();
+        m_xbot_error[w] = BotTr()[i];
+        m_xtop_error[w] = TopTr()[i];
+        m_aspec_error[w] = g_polarStore.at(pos_polar)->m_ASpec;
+        m_polar_type_error[w] = g_polarStore.at(pos_polar)->m_PolarType;
+        ++w;
+        }
+
+        if(Reynolds_error()[i]>m_Reynolds_max_error){m_Reynolds_max_error = Reynolds_error()[i];}
+        if(Mach_error()[i]>m_Mach_max_error){m_Mach_max_error = Mach_error()[i];}
+        if(alpha_error()[i]>m_alpha_max_error){m_alpha_max_error = alpha_error()[i];}
+        }}
+if(z<=m_parameter->TSRtd){z=z+ldelta;}else{break;}
+        }
     }
-
-    //for all polars
-    if (m_parameter->opPointSource == NoiseParameter::MultiplePolars){
-    for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    int posOpPointNext;
-    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-
-    if (qFabs(Reynolds[i]-Reynolds_nop[posOpPoint])>qFabs(Reynolds[i]-Reynolds_nop[posOpPointNext])){
-        position_Reynolds = posOpPointNext;
-        Reynolds_value_point = Reynolds_nop[posOpPointNext];
-        position_Mach = position_Reynolds;
-        m_position[i] = position_Reynolds;
-    }
-    }
-
-    int position_Reynolds_last=position_Reynolds;
-    for (int posOpPoint = position_Reynolds; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    if(Reynolds_nop[posOpPoint]==Reynolds_value_point){
-    position_Reynolds_last=posOpPoint;
-    }
-    }
-
-    for (int posOpPoint = position_Reynolds; posOpPoint < position_Reynolds_last; ++posOpPoint) {
-    int posOpPointNext;
-    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-    if ((qFabs(Mach[i]-Mach_nop[posOpPoint])>qFabs(Mach[i]-Mach_nop[posOpPointNext]))){
-        position_Mach = posOpPointNext;
-        Mach_value_point = Mach_nop[posOpPointNext];
-        m_position[i] = position_Mach;
-    }
-    }
-
-    int position_Mach_last=position_Mach;
-    for (int posOpPoint = position_Mach; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    if(Mach_nop[posOpPoint]==Mach_value_point){
-    position_Mach_last=posOpPoint;
-    }
-    }
-    for (int posOpPoint = position_Mach; posOpPoint < position_Mach_last; ++posOpPoint) {
-    int posOpPointNext;
-    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-    if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
-        m_position[i] = posOpPointNext;
-    }else{break;}
-    }
-    }
-
-    //for one polar
-    if (m_parameter->opPointSource == NoiseParameter::OnePolar){
-    for (int posOpPoint = 0; posOpPoint < noiseOpPoints.size(); ++posOpPoint) {
-    int posOpPointNext;
-    if(posOpPoint==(noiseOpPoints.size()-1)){posOpPointNext = posOpPoint;} else {posOpPointNext = posOpPoint+1;}
-
-    if((qFabs(alpha[i]-alpha_nop[posOpPoint])>qFabs(alpha[i]-alpha_nop[posOpPointNext]))){
-        m_position[i] = posOpPointNext;
-    }else{break;}
-    }
-    }
-
-    NoiseOpPoint *nopx = noiseOpPoints[position()[i]]; //nearest Reynolds, Mach and alpha
-    m_Reynolds_polar[i]=nopx->getReynolds();
-    m_Mach_polar[i]=nopx->getMach();
-    m_alpha_polar[i]=nopx->getAlphaDegree();
-
-    int pos_polar=0;
-    int size_polars = g_polarStore.size();
-    for(int i=0;i<size_polars;++i){
-    if(g_polarStore.at(i)->getName() ==nopx->getPolarName()){
-        pos_polar=i; break;}}
-
-    m_Reynolds_error[i]=qFabs((Reynolds_polar()[i]-qRound(Reynolds[i]))/qRound(Reynolds[i])*100.);
-    m_Mach_error[i]=qFabs((Mach_polar()[i]*100.-(qRound(Mach[i]*100.)))/(qRound(Mach[i]*100.))*100.);
-    m_alpha_error[i]=qFabs((alpha_polar()[i]*100.-(qRound(alpha[i]*100.)))/(qRound(alpha[i]*100.))*100.);
-
-    m_BotTr[i]= g_polarStore.at(pos_polar)->m_XBot;
-    m_TopTr[i]= g_polarStore.at(pos_polar)->m_XTop;
-
-    if((Reynolds_error()[i]>0.1) || (Mach_error()[i]>0.1) || (alpha_error()[i]>0.1)){
-    m_Reynolds_error_value.resize(w+1);
-    m_Mach_error_value.resize(w+1);
-    m_alpha_error_value.resize(w+1);
-    m_alpha_error_value_max.resize(w+1);
-    m_acrit_error.resize(w+1);
-    m_xbot_error.resize(w+1);
-    m_xtop_error.resize(w+1);
-    m_aspec_error.resize(w+1);
-    m_polar_type_error.resize(w+1);
-
-    //matrix of polars
-
-    m_Reynolds_error_value[w]=Reynolds[i];
-    m_Mach_error_value[w]=Mach[i];
-    m_alpha_error_value[w]=alpha[i]-0.05;
-    m_alpha_error_value_max[w]=alpha[i]+0.05;
-    m_acrit_error[w] = nopx->getACrit();
-    m_xbot_error[w] = BotTr()[i];
-    m_xtop_error[w] = TopTr()[i];
-    m_aspec_error[w] = g_polarStore.at(pos_polar)->m_ASpec;
-    m_polar_type_error[w] = g_polarStore.at(pos_polar)->m_PolarType;
-    ++w;
-    }
-
-    if(Reynolds_error()[i]>m_Reynolds_max_error){m_Reynolds_max_error = Reynolds_error()[i];}
-    if(Mach_error()[i]>m_Mach_max_error){m_Mach_max_error = Mach_error()[i];}
-    if(alpha_error()[i]>m_alpha_max_error){m_alpha_max_error = alpha_error()[i];}
-    }}
-    z=z+ldelta;
-    }
-}
 
 void NoiseCalculation::onVerifyDeltaandValFor3DAlerts(){
     QString message ("");

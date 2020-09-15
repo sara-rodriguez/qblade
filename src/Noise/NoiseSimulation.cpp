@@ -1073,7 +1073,7 @@ void NoiseSimulation::createPolars(int size){
     double alpha_max[size];
     enumPolarType ptype;
 
-    g_mainFrame->OnXDirect();
+//    g_mainFrame->OnXDirect();
 
     for (int i=0;i<size;++i){
     Reynolds[i]=m_calculation.Reynolds_error_value().at(i);
@@ -1096,12 +1096,12 @@ void NoiseSimulation::createPolars(int size){
     pXDirect->OnNoiseLoop(acrit[i], xbot[i], xtop[i], Mach[i], Reynolds[i], ptype, aspec[i],alpha[i],alpha_max[i],delta);
     }
 
-    g_noiseModule->onActivationActionTriggered();
+//    g_noiseModule->onActivationActionTriggered();
 }
 
 void NoiseSimulation::create360Polars(){
     QBEM *pQBEM = (QBEM *) g_mainFrame->m_pBEM;
-    pQBEM->On360View();
+//    pQBEM->On360View();
     pQBEM->m_pctrlNew360All->click();
 }
 

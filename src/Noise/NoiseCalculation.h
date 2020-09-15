@@ -180,6 +180,7 @@ public:
     double Final_qs3d_LE_rotor_loops;
     double Final_qs3d_rotor_loops;
     double qs3D_val_line = -1;
+    double progress_total = 100000;
 
     int user_sel=0;//user selection graphics for 2d, blade or rotor
     int repeat_alert=0;
