@@ -907,14 +907,14 @@ else {value=m_parameter.valReu_LE;}
 else {value=m_parameter.valMal_LE_check;}
         break;
 
-    case P::autopolars_check:
-        if(set) {m_parameter.autopolars_check = value.toBool();}
-else {value=m_parameter.autopolars_check;}
-        break;
-
     case P::valMau_LE_check:
         if(set) {m_parameter.valMau_LE_check = value.toBool();}
 else {value=m_parameter.valMau_LE_check;}
+        break;
+
+    case P::autopolars_check:
+        if(set) {m_parameter.autopolars_check = value.toBool();}
+else {value=m_parameter.autopolars_check;}
         break;
 
     case P::valMal_LE:

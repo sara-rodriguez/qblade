@@ -23,23 +23,28 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
     m_modelValidityHint = new QAction("Model Validity Hint", this);
     connect(m_modelValidityHint, SIGNAL(triggered()), this, SLOT(onModelValidityHint()));
     addAction(m_modelValidityHint);
+    m_modelValidityHint->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_0));
 
     m_exportNoise = new QAction("Export current Noise Simulation", this);
     connect(m_exportNoise, SIGNAL(triggered()), this, SLOT(onExportNoise()));
     addAction(m_exportNoise);
+    m_exportNoise->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_1));
 
     //Sara
     m_exportqs3DNoiseLog = new QAction("Export current Quasi 3D Noise Log", this);
     connect(m_exportqs3DNoiseLog, SIGNAL(triggered()), this, SLOT(onExportqs3DNoiseLog()));
     addAction(m_exportqs3DNoiseLog);
+    m_exportqs3DNoiseLog->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_2));
 
     m_exportqs3DNoise_blade = new QAction("Export current Quasi 3D Noise Blade", this);
     connect(m_exportqs3DNoise_blade, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_blade()));
     addAction(m_exportqs3DNoise_blade);
+    m_exportqs3DNoise_blade->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_3));
 
     m_exportqs3DNoise_rotor_loops = new QAction("Export current Quasi 3D Noise Rotor", this);
     connect(m_exportqs3DNoise_rotor_loops, SIGNAL(triggered()), this, SLOT(onExportqs3DNoise_rotor()));
     addAction(m_exportqs3DNoise_rotor_loops);
+    m_exportqs3DNoise_rotor_loops->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_4));
     //Sara
 }
 
