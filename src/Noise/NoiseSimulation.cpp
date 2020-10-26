@@ -98,9 +98,9 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 6: *vector = m_calculation.SPL_LEdBBW()[opPointIndex]; zeroY = true; break;
             case 7: *vector = m_calculation.SPL_LEdBCW()[opPointIndex]; zeroY = true; break;
             case 8: *vector = m_calculation.SPLdB()[opPointIndex]; break;
-            case 9: *vector = m_calculation.SPLdBAW()[opPointIndex]; break;
-            case 10: *vector = m_calculation.SPLdBBW()[opPointIndex]; break;
-            case 11: *vector = m_calculation.SPLdBCW()[opPointIndex]; break;
+            case 9: *vector = m_calculation.SPLdBAW()[opPointIndex]; zeroY = true; break;
+            case 10: *vector = m_calculation.SPLdBBW()[opPointIndex]; zeroY = true; break;
+            case 11: *vector = m_calculation.SPLdBCW()[opPointIndex]; zeroY = true; break;
             case 12: *vector = m_calculation.SPLadB3d()[opPointIndex]; zeroY = true; break;
             case 13: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
             case 14: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
@@ -141,9 +141,9 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 17: *vector = m_calculation.SPL_LEdBBW3d_final()[opPointIndex]; zeroY = true; break;
             case 18: *vector = m_calculation.SPL_LEdBCW3d_final()[opPointIndex]; zeroY = true; break;
             case 19: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 20: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; break;
-            case 21: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; break;
-            case 22: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; break;
+            case 20: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; zeroY = true; break;
+            case 21: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; zeroY = true; break;
+            case 22: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; zeroY = true; break;
             case 23: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break;
             case 24: *vector = m_calculation.SPLsdB3d()[opPointIndex];break;
             case 25: *vector = m_calculation.SPLpdB3d()[opPointIndex];break;
@@ -192,9 +192,9 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 28: *vector = m_calculation.SPL_LEdBBW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
             case 29: *vector = m_calculation.SPL_LEdBCW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
             case 30: *vector = m_calculation.SPLdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 31: *vector = m_calculation.SPLdBAW3d_final_rotor_loops()[opPointIndex]; break;
-            case 32: *vector = m_calculation.SPLdBBW3d_final_rotor_loops()[opPointIndex]; break;
-            case 33: *vector = m_calculation.SPLdBCW3d_final_rotor_loops()[opPointIndex]; break;
+            case 31: *vector = m_calculation.SPLdBAW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 32: *vector = m_calculation.SPLdBBW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 33: *vector = m_calculation.SPLdBCW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
             case 34: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break;
             case 35: *vector = m_calculation.SPLsdB3d()[opPointIndex];zeroY = true; break;
             case 36: *vector = m_calculation.SPLpdB3d()[opPointIndex];zeroY = true; break;
