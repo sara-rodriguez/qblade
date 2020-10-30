@@ -3997,6 +3997,17 @@ void NoiseCalculation::calculateqs3d_blade() {
         double auxa_m_SPL_LEdBAW3d_final[FREQUENCY_TABLE_SIZE];
         double auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
         double auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPLpdB3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPLdB3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPLdBAW3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPLdBBW3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPLdBCW3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPL_LEdB3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPL_LEdBAW3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
 
         double Final_qs3d_alpha_aux=0;
         double Final_qs3d_S_aux=0;
@@ -4067,37 +4078,62 @@ void NoiseCalculation::calculateqs3d_blade() {
         auxa_m_SPL_LEdBAW3d_final[j]=0;
         auxa_m_SPL_LEdBBW3d_final[j]=0;
         auxa_m_SPL_LEdBCW3d_final[j]=0;
+        number_auxa_m_SPLadB3d_final[j]=0;
+        number_auxa_m_SPLsdB3d_final[j]=0;
+        number_auxa_m_SPLpdB3d_final[j]=0;
+        number_auxa_m_SPLdB3d_final[j]=0;
+        number_auxa_m_SPLdBAW3d_final[j]=0;
+        number_auxa_m_SPLdBBW3d_final[j]=0;
+        number_auxa_m_SPLdBCW3d_final[j]=0;
+        number_auxa_m_SPL_LEdB3d_final[j]=0;
+        number_auxa_m_SPL_LEdBAW3d_final[j]=0;
+        number_auxa_m_SPL_LEdBBW3d_final[j]=0;
+        number_auxa_m_SPL_LEdBCW3d_final[j]=0;
 
         unsigned int i = 0;
-while(i < number_of_segments){
-        if (SPLadB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLadB3d_final[j] += pow(10.,(SPLadB3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPLsdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLsdB3d_final[j] += pow(10.,(SPLsdB3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPLpdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLpdB3d_final[j] += pow(10.,(SPLpdB3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPLdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdB3d_final[j] += pow(10.,(SPLdB3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPLdBAW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdBAW3d_final[j] += pow(10.,(SPLdBAW3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPLdBBW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdBBW3d_final[j] += pow(10.,(SPLdBBW3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPLdBCW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPLdBCW3d_final[j] += pow(10.,(SPLdBCW3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPL_LEdB3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdB3d_final[j] += pow(10.,(SPL_LEdB3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPL_LEdBAW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdBAW3d_final[j] += pow(10.,(SPL_LEdBAW3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPL_LEdBBW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdBBW3d_final[j] += pow(10.,(SPL_LEdBBW3d_4d_blade()[0][0][i][j]/10.));}
-                if (SPL_LEdBCW3d_4d_blade()[0][0][i][j]!=0.){auxa_m_SPL_LEdBCW3d_final[j] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));}
+while(i < number_of_segments){ //teste é para colocar aqui
+        if (SPLadB3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPLadB3d_final[j]; auxa_m_SPLadB3d_final[j] += pow(10.,(SPLadB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLsdB3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPLsdB3d_final[j]; auxa_m_SPLsdB3d_final[j] += pow(10.,(SPLsdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLpdB3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPLpdB3d_final[j]; auxa_m_SPLpdB3d_final[j] += pow(10.,(SPLpdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdB3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPLdB3d_final[j]; auxa_m_SPLdB3d_final[j] += pow(10.,(SPLdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdBAW3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPLdBAW3d_final[j]; auxa_m_SPLdBAW3d_final[j] += pow(10.,(SPLdBAW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdBBW3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPLdBBW3d_final[j]; auxa_m_SPLdBBW3d_final[j] += pow(10.,(SPLdBBW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPLdBCW3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPLdBCW3d_final[j]; auxa_m_SPLdBCW3d_final[j] += pow(10.,(SPLdBCW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdB3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPL_LEdB3d_final[j]; auxa_m_SPL_LEdB3d_final[j] += pow(10.,(SPL_LEdB3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdBAW3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPL_LEdBAW3d_final[j]; auxa_m_SPL_LEdBAW3d_final[j] += pow(10.,(SPL_LEdBAW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdBBW3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPL_LEdBBW3d_final[j]; auxa_m_SPL_LEdBBW3d_final[j] += pow(10.,(SPL_LEdBBW3d_4d_blade()[0][0][i][j]/10.));}
+                if (SPL_LEdBCW3d_4d_blade()[0][0][i][j]!=0.){++ number_auxa_m_SPL_LEdBCW3d_final[j]; auxa_m_SPL_LEdBCW3d_final[j] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));}
 ++i;}
 
-    for (unsigned int i=0;i<size;++i){
+    for (unsigned int i=0;i<size;++i){       
     for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
     //    3d curves
-        m_SPLadB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final[j]);
-        m_SPLsdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final[j]);
-        m_SPLpdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final[j]);
-        m_SPLdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final[j]);
-        m_SPLdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final[j]);
-        m_SPLdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final[j]);
-        m_SPLdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final[j]);
+//        m_SPLadB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final[j]);
+//        m_SPLsdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final[j]);
+//        m_SPLpdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final[j]);
+//        m_SPLdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final[j]);
+//        m_SPLdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final[j]);
+//        m_SPLdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final[j]);
+//        m_SPLdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final[j]);
+
+//        if (m_parameter->Lowson_type!=0){
+//        m_SPL_LEdB3d_final[i][j]=10*log10((1./number_of_segments*auxa_m_SPL_LEdB3d_final[j]);
+//        m_SPL_LEdBAW3d_final[i][j]=10*log10((1./number_of_segments*auxa_m_SPL_LEdBAW3d_final[j]);
+//        m_SPL_LEdBBW3d_final[i][j]=10*log10((1./number_of_segments*auxa_m_SPL_LEdBBW3d_final[j]);
+//        m_SPL_LEdBCW3d_final[i][j]=10*log10((1./number_of_segments*auxa_m_SPL_LEdBCW3d_final[j]);
+
+        m_SPLadB3d_final[i][j]=10*log10(number_auxa_m_SPLadB3d_final[j]*auxa_m_SPLadB3d_final[j]);
+        m_SPLsdB3d_final[i][j]=10*log10(number_auxa_m_SPLsdB3d_final[j]*auxa_m_SPLsdB3d_final[j]);
+        m_SPLpdB3d_final[i][j]=10*log10(number_auxa_m_SPLpdB3d_final[j]*auxa_m_SPLpdB3d_final[j]);
+        m_SPLdB3d_final[i][j]=10*log10(number_auxa_m_SPLdB3d_final[j]*auxa_m_SPLdB3d_final[j]);
+        m_SPLdBAW3d_final[i][j]=10*log10(number_auxa_m_SPLdBAW3d_final[j]*auxa_m_SPLdBAW3d_final[j]);
+        m_SPLdBBW3d_final[i][j]=10*log10(number_auxa_m_SPLdBBW3d_final[j]*auxa_m_SPLdBBW3d_final[j]);
+        m_SPLdBCW3d_final[i][j]=10*log10(number_auxa_m_SPLdBCW3d_final[j]*auxa_m_SPLdBCW3d_final[j]);
         if (m_parameter->Lowson_type!=0){
-        m_SPL_LEdB3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final[j]);
-        m_SPL_LEdBAW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final[j]);
-        m_SPL_LEdBBW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final[j]);
-        m_SPL_LEdBCW3d_final[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final[j]);
+        m_SPL_LEdB3d_final[i][j]=10*log10(number_auxa_m_SPL_LEdB3d_final[j]*auxa_m_SPL_LEdB3d_final[j]);
+        m_SPL_LEdBAW3d_final[i][j]=10*log10(number_auxa_m_SPL_LEdBAW3d_final[j]*auxa_m_SPL_LEdBAW3d_final[j]);
+        m_SPL_LEdBBW3d_final[i][j]=10*log10(number_auxa_m_SPL_LEdBBW3d_final[j]*auxa_m_SPL_LEdBBW3d_final[j]);
+        m_SPL_LEdBCW3d_final[i][j]=10*log10(number_auxa_m_SPL_LEdBCW3d_final[j]*auxa_m_SPL_LEdBCW3d_final[j]);
         }
         else{
         m_SPL_LEdB3d_final[i][j]=0;
@@ -4227,6 +4263,17 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
     double auxa_m_SPL_LEdBAW3d_final_4d[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPL_LEdBBW3d_final_4d[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPL_LEdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPLadB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPLsdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPLpdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPLdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPLdBAW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPLdBBW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPLdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPL_LEdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPL_LEdBAW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPL_LEdBBW3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPL_LEdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
 
     double Final_qs3d_alpha_aux_4d=0;
     double Final_qs3d_S_aux_4d=0;
@@ -4288,6 +4335,17 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
         auxa_m_SPL_LEdBAW3d_final_4d[j]=0;
         auxa_m_SPL_LEdBBW3d_final_4d[j]=0;
         auxa_m_SPL_LEdBCW3d_final_4d[j]=0;
+        number_auxa_m_SPLadB3d_final_4d[j]=0;
+        number_auxa_m_SPLsdB3d_final_4d[j]=0;
+        number_auxa_m_SPLpdB3d_final_4d[j]=0;
+        number_auxa_m_SPLdB3d_final_4d[j]=0;
+        number_auxa_m_SPLdBAW3d_final_4d[j]=0;
+        number_auxa_m_SPLdBBW3d_final_4d[j]=0;
+        number_auxa_m_SPLdBCW3d_final_4d[j]=0;
+        number_auxa_m_SPL_LEdB3d_final_4d[j]=0;
+        number_auxa_m_SPL_LEdBAW3d_final_4d[j]=0;
+        number_auxa_m_SPL_LEdBBW3d_final_4d[j]=0;
+        number_auxa_m_SPL_LEdBCW3d_final_4d[j]=0;
 
 int blade=0;
 int E=0;
@@ -4296,17 +4354,17 @@ unsigned int i = 0;
 while (blade<blades_num){
 while(E<angles_num){
 while(i < number_of_segments) {
-    if (SPLadB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLadB3d_final_4d[j] += pow(10.,(SPLadB3d_4d()[blade][E][i][j]/10.));}
-    if (SPLsdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLsdB3d_final_4d[j] += pow(10.,(SPLsdB3d_4d()[blade][E][i][j]/10.));}
-    if (SPLpdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLpdB3d_final_4d[j] += pow(10.,(SPLpdB3d_4d()[blade][E][i][j]/10.));}
-    if (SPLdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdB3d_final_4d[j] += pow(10.,(SPLdB3d_4d()[blade][E][i][j]/10.));}
-    if (SPLdBAW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdBAW3d_final_4d[j] += pow(10.,(SPLdBAW3d_4d()[blade][E][i][j]/10.));}
-    if (SPLdBBW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdBBW3d_final_4d[j] += pow(10.,(SPLdBBW3d_4d()[blade][E][i][j]/10.));}
-    if (SPLdBCW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPLdBCW3d_final_4d[j] += pow(10.,(SPLdBCW3d_4d()[blade][E][i][j]/10.));}
-    if (SPL_LEdB3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdB3d_final_4d[j] += pow(10.,(SPL_LEdB3d_4d()[blade][E][i][j]/10.));}
-    if (SPL_LEdBAW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdBAW3d_final_4d[j] += pow(10.,(SPL_LEdBAW3d_4d()[blade][E][i][j]/10.));}
-    if (SPL_LEdBBW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdBBW3d_final_4d[j] += pow(10.,(SPL_LEdBBW3d_4d()[blade][E][i][j]/10.));}
-    if (SPL_LEdBCW3d_4d()[blade][E][i][j]!=0.){auxa_m_SPL_LEdBCW3d_final_4d[j] += pow(10.,(SPL_LEdBCW3d_4d()[blade][E][i][j]/10.));}
+    if (SPLadB3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPLadB3d_final_4d[j]; auxa_m_SPLadB3d_final_4d[j] += pow(10.,(SPLadB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLsdB3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPLsdB3d_final_4d[j]; auxa_m_SPLsdB3d_final_4d[j] += pow(10.,(SPLsdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLpdB3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPLpdB3d_final_4d[j]; auxa_m_SPLpdB3d_final_4d[j] += pow(10.,(SPLpdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdB3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPLdB3d_final_4d[j]; auxa_m_SPLdB3d_final_4d[j] += pow(10.,(SPLdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdBAW3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPLdBAW3d_final_4d[j]; auxa_m_SPLdBAW3d_final_4d[j] += pow(10.,(SPLdBAW3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdBBW3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPLdBBW3d_final_4d[j]; auxa_m_SPLdBBW3d_final_4d[j] += pow(10.,(SPLdBBW3d_4d()[blade][E][i][j]/10.));}
+    if (SPLdBCW3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPLdBCW3d_final_4d[j]; auxa_m_SPLdBCW3d_final_4d[j] += pow(10.,(SPLdBCW3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdB3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPL_LEdB3d_final_4d[j]; auxa_m_SPL_LEdB3d_final_4d[j] += pow(10.,(SPL_LEdB3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdBAW3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPL_LEdBAW3d_final_4d[j]; auxa_m_SPL_LEdBAW3d_final_4d[j] += pow(10.,(SPL_LEdBAW3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdBBW3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPL_LEdBBW3d_final_4d[j]; auxa_m_SPL_LEdBBW3d_final_4d[j] += pow(10.,(SPL_LEdBBW3d_4d()[blade][E][i][j]/10.));}
+    if (SPL_LEdBCW3d_4d()[blade][E][i][j]!=0.){++number_auxa_m_SPL_LEdBCW3d_final_4d[j]; auxa_m_SPL_LEdBCW3d_final_4d[j] += pow(10.,(SPL_LEdBCW3d_4d()[blade][E][i][j]/10.));}
 ++i;}
 ++E;}
 ++blade;}
@@ -4316,19 +4374,32 @@ while(i < number_of_segments) {
 
         for (unsigned int i=0;i<size;++i){
         for (int j= 0; j< FREQUENCY_TABLE_SIZE;++j){
-        //    3d curves
-            m_SPLadB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final_4d[j]);
-            m_SPLsdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final_4d[j]);
-            m_SPLpdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final_4d[j]);
-            m_SPLdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final_4d[j]);
-            m_SPLdBAW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final_4d[j]);
-            m_SPLdBBW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final_4d[j]);
-            m_SPLdBCW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final_4d[j]);
+        //    3d curves //teste não é number of segments
+//            m_SPLadB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLadB3d_final_4d[j]);
+//            m_SPLsdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLsdB3d_final_4d[j]);
+//            m_SPLpdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLpdB3d_final_4d[j]);
+//            m_SPLdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdB3d_final_4d[j]);
+//            m_SPLdBAW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBAW3d_final_4d[j]);
+//            m_SPLdBBW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBBW3d_final_4d[j]);
+//            m_SPLdBCW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPLdBCW3d_final_4d[j]);
+//            if (m_parameter->Lowson_type!=0){
+//            m_SPL_LEdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final_4d[j]);
+//            m_SPL_LEdBAW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final_4d[j]);
+//            m_SPL_LEdBBW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final_4d[j]);
+//            m_SPL_LEdBCW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final_4d[j]);
+
+            m_SPLadB3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPLadB3d_final_4d[j]*auxa_m_SPLadB3d_final_4d[j]);
+            m_SPLsdB3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPLsdB3d_final_4d[j]*auxa_m_SPLsdB3d_final_4d[j]);
+            m_SPLpdB3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPLpdB3d_final_4d[j]*auxa_m_SPLpdB3d_final_4d[j]);
+            m_SPLdB3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPLdB3d_final_4d[j]*auxa_m_SPLdB3d_final_4d[j]);
+            m_SPLdBAW3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPLdBAW3d_final_4d[j]*auxa_m_SPLdBAW3d_final_4d[j]);
+            m_SPLdBBW3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPLdBBW3d_final_4d[j]*auxa_m_SPLdBBW3d_final_4d[j]);
+            m_SPLdBCW3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPLdBCW3d_final_4d[j]*auxa_m_SPLdBCW3d_final_4d[j]);
             if (m_parameter->Lowson_type!=0){
-            m_SPL_LEdB3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdB3d_final_4d[j]);
-            m_SPL_LEdBAW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBAW3d_final_4d[j]);
-            m_SPL_LEdBBW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBBW3d_final_4d[j]);
-            m_SPL_LEdBCW3d_final_rotor_loops[i][j]=10*log10((1./number_of_segments)*auxa_m_SPL_LEdBCW3d_final_4d[j]);
+            m_SPL_LEdB3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPL_LEdB3d_final_4d[j]*auxa_m_SPL_LEdB3d_final_4d[j]);
+            m_SPL_LEdBAW3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPL_LEdBAW3d_final_4d[j]*auxa_m_SPL_LEdBAW3d_final_4d[j]);
+            m_SPL_LEdBBW3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPL_LEdBBW3d_final_4d[j]*auxa_m_SPL_LEdBBW3d_final_4d[j]);
+            m_SPL_LEdBCW3d_final_rotor_loops[i][j]=10*log10(number_auxa_m_SPL_LEdBCW3d_final_4d[j]*auxa_m_SPL_LEdBCW3d_final_4d[j]);
             }
             else{
             m_SPL_LEdB3d_final_rotor_loops[i][j]=0;
