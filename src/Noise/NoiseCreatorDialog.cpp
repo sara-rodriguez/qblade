@@ -114,7 +114,7 @@ connect(m_TE_b_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
 connect(m_TE_c_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
 
                 //Sara
-                groupBox = new QGroupBox ("LE noise source contributions");
+                groupBox = new QGroupBox ("LE noise source contribution");
                 vBox->addWidget(groupBox);
                 pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
@@ -138,6 +138,13 @@ m_valReu_LE_numberedit->setEnabled(check_LE);
 m_valMal_LE_numberedit->setEnabled(check_LE);
 m_valMau_LE_numberedit->setEnabled(check_LE);
 });
+
+groupBox = new QGroupBox ("LBL-VS noise source contribution");
+vBox->addWidget(groupBox);
+pGrid = new ParameterGrid<P>(this);
+groupBox->setLayout(pGrid);
+m_LBLVS_check = new QCheckBox("");
+pGrid->addEdit(P::LBLVS,CheckBox,m_LBLVS_check,"enable:",false);
 
 QGroupBox *groupBox_qs3d = new QGroupBox ("Quasi 3D Simulation");
 vBox->addWidget(groupBox_qs3d);

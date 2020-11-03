@@ -68,6 +68,10 @@ public:
     TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; }
     //Alexandre MOD
 
+//Sara LBL VS
+    TwoDVector SPL_LBLVSdB() const { return m_SPL_LBLVSdB; }
+//Sara LBL VS
+
 //Sara begin
     TwoDVector SPLadB3d() const { return m_SPLadB3d; }
     TwoDVector SPLsdB3d() const { return m_SPLsdB3d; }
@@ -80,6 +84,7 @@ public:
     TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW3d; }
     TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW3d; }
     TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW3d; }
+    TwoDVector SPL_LBLVSdB3d() const { return m_SPL_LBLVSdB3d; }
     TwoDVector SPLadB3d_final() const { return m_SPLadB3d_final; }
     TwoDVector SPLsdB3d_final() const { return m_SPLsdB3d_final; }
     TwoDVector SPLpdB3d_final() const { return m_SPLpdB3d_final; }
@@ -88,6 +93,7 @@ public:
     TwoDVector SPLdBBW3d_final() const { return m_SPLdBBW3d_final; }
     TwoDVector SPLdBCW3d_final() const { return m_SPLdBCW3d_final; }
     TwoDVector SPL_LEdB3d_final() const { return m_SPL_LEdB3d_final; }
+    TwoDVector SPL_LBLVSdB3d_final() const { return m_SPL_LBLVSdB3d_final; }
     TwoDVector SPL_LEdBAW3d_final() const { return m_SPL_LEdBAW3d_final; }
     TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
     TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
@@ -100,6 +106,7 @@ public:
     TwoDVector SPLdBBW3d_rotor() const { return m_SPLdBBW3d_rotor; }
     TwoDVector SPLdBCW3d_rotor() const { return m_SPLdBCW3d_rotor; }
     TwoDVector SPL_LEdB3d_rotor() const { return m_SPL_LEdB3d_rotor; }
+    TwoDVector SPL_LBLVSdB3d_rotor() const { return m_SPL_LBLVSdB3d_rotor; }
     TwoDVector SPL_LEdBAW3d_rotor() const { return m_SPL_LEdBAW3d_rotor; }
     TwoDVector SPL_LEdBBW3d_rotor() const { return m_SPL_LEdBBW3d_rotor; }
     TwoDVector SPL_LEdBCW3d_rotor() const { return m_SPL_LEdBCW3d_rotor; }
@@ -111,6 +118,7 @@ public:
     TwoDVector SPLdBBW3d_final_rotor() const { return m_SPLdBBW3d_final_rotor; }
     TwoDVector SPLdBCW3d_final_rotor() const { return m_SPLdBCW3d_final_rotor; }
     TwoDVector SPL_LEdB3d_final_rotor() const { return m_SPL_LEdB3d_final_rotor; }
+    TwoDVector SPL_LBLVSdB3d_final_rotor() const { return m_SPL_LBLVSdB3d_final_rotor; }
     TwoDVector SPL_LEdBAW3d_final_rotor() const { return m_SPL_LEdBAW3d_final_rotor; }
     TwoDVector SPL_LEdBBW3d_final_rotor() const { return m_SPL_LEdBBW3d_final_rotor; }
     TwoDVector SPL_LEdBCW3d_final_rotor() const { return m_SPL_LEdBCW3d_final_rotor; }
@@ -126,6 +134,7 @@ public:
     TwoDVector SPL_LEdBAW3d_rotor_loops() const { return m_SPL_LEdBAW3d_rotor_loops; }
     TwoDVector SPL_LEdBBW3d_rotor_loops() const { return m_SPL_LEdBBW3d_rotor_loops; }
     TwoDVector SPL_LEdBCW3d_rotor_loops() const { return m_SPL_LEdBCW3d_rotor_loops; }
+    TwoDVector SPL_LBLVSdB3d_rotor_loops() const { return m_SPL_LBLVSdB3d_rotor_loops; }
     TwoDVector SPLadB3d_final_rotor_loops() const { return m_SPLadB3d_final_rotor_loops; }
     TwoDVector SPLsdB3d_final_rotor_loops() const { return m_SPLsdB3d_final_rotor_loops; }
     TwoDVector SPLpdB3d_final_rotor_loops() const { return m_SPLpdB3d_final_rotor_loops; }
@@ -137,6 +146,7 @@ public:
     TwoDVector SPL_LEdBAW3d_final_rotor_loops() const { return m_SPL_LEdBAW3d_final_rotor_loops; }
     TwoDVector SPL_LEdBBW3d_final_rotor_loops() const { return m_SPL_LEdBBW3d_final_rotor_loops; }
     TwoDVector SPL_LEdBCW3d_final_rotor_loops() const { return m_SPL_LEdBCW3d_final_rotor_loops; }
+    TwoDVector SPL_LBLVSdB3d_final_rotor_loops() const { return m_SPL_LBLVSdB3d_final_rotor_loops; }
 
     FourDVector SPLadB3d_4d_blade() const { return m_SPLadB3d_4d_blade; }
     FourDVector SPLsdB3d_4d_blade() const { return m_SPLsdB3d_4d_blade; }
@@ -149,6 +159,7 @@ public:
     FourDVector SPL_LEdBAW3d_4d_blade() const { return m_SPL_LEdBAW3d_4d_blade; }
     FourDVector SPL_LEdBBW3d_4d_blade() const { return m_SPL_LEdBBW3d_4d_blade; }
     FourDVector SPL_LEdBCW3d_4d_blade() const { return m_SPL_LEdBCW3d_4d_blade; }
+    FourDVector SPL_LBLVSdB3d_4d_blade() const { return m_SPL_LBLVSdB3d_4d_blade; }
 
     FourDVector SPLadB3d_4d() const { return m_SPLadB3d_4d; }
     FourDVector SPLsdB3d_4d() const { return m_SPLsdB3d_4d; }
@@ -161,23 +172,27 @@ public:
     FourDVector SPL_LEdBAW3d_4d() const { return m_SPL_LEdBAW3d_4d; }
     FourDVector SPL_LEdBBW3d_4d() const { return m_SPL_LEdBBW3d_4d; }
     FourDVector SPL_LEdBCW3d_4d() const { return m_SPL_LEdBCW3d_4d; }
+    FourDVector SPL_LBLVSdB3d_4d() const { return m_SPL_LBLVSdB3d_4d; }
 
     double Final_qs3d_alpha;
     double Final_qs3d_S;
     double Final_qs3d_P;
     double Final_qs3d_LE;
+    double Final_qs3d_LBLVS;
     double Final_qs3d;
 
     double Final_qs3d_alpha_rotor;
     double Final_qs3d_S_rotor;
     double Final_qs3d_P_rotor;
     double Final_qs3d_LE_rotor;
+    double Final_qs3d_LBLVS_rotor;
     double Final_qs3d_rotor;
 
     double Final_qs3d_alpha_rotor_loops;
     double Final_qs3d_S_rotor_loops;
     double Final_qs3d_P_rotor_loops;
     double Final_qs3d_LE_rotor_loops;
+    double Final_qs3d_LBLVS_rotor_loops;
     double Final_qs3d_rotor_loops;
     double qs3D_val_line = -1;
     double progress_total = 100000;
@@ -212,6 +227,10 @@ public:
         QVector<double> SPLlogLE() const { return m_SPLlogLE; }
 //Alexandre MOD
 
+//Sara LBL VS
+        QVector<double> SPLlogLBLVS() const { return m_SPLlogLBLVS; }
+//Sara LBL VS
+
         //Sara begin
         QVector<double> OASPL3d() const { return m_OASPL3d; }
         QVector<double> OASPLA3d() const { return m_OASPLA3d; }
@@ -224,6 +243,7 @@ public:
         QVector<double> SPLLEdBBW3d() const { return m_SPLLEdBBW3d;}
         QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW3d;}
         QVector<double> SPLlogLE3d() const { return m_SPLlogLE3d; }
+        QVector<double> SPLlogLBLVS3d() const { return m_SPLlogLBLVS3d; }
 
         QVector<double> OASPL3d_rotor() const { return m_OASPL3d_rotor; }
         QVector<double> OASPLA3d_rotor() const { return m_OASPLA3d_rotor; }
@@ -236,6 +256,7 @@ public:
         QVector<double> SPLLEdBBW3d_rotor() const { return m_SPLLEdBBW3d_rotor;}
         QVector<double> SPLLEdBCW3d_rotor() const { return m_SPLLEdBCW3d_rotor;}
         QVector<double> SPLlogLE3d_rotor() const { return m_SPLlogLE3d_rotor; }
+        QVector<double> SPLlogLBLVS3d_rotor() const { return m_SPLlogLBLVS3d_rotor; }
 
         QVector<double> OASPL3d_rotor_loops() const { return m_OASPL3d_rotor_loops; }
         QVector<double> OASPLA3d_rotor_loops() const { return m_OASPLA3d_rotor_loops; }
@@ -248,6 +269,7 @@ public:
         QVector<double> SPLLEdBBW3d_rotor_loops() const { return m_SPLLEdBBW3d_rotor_loops;}
         QVector<double> SPLLEdBCW3d_rotor_loops() const { return m_SPLLEdBCW3d_rotor_loops;}
         QVector<double> SPLlogLE3d_rotor_loops() const { return m_SPLlogLE3d_rotor_loops; }
+        QVector<double> SPLlogLBLVS3d_rotor_loops() const { return m_SPLlogLBLVS3d_rotor_loops; }
 
         QVector<double> Reynolds_polar() const { return m_Reynolds_polar; }
         QVector<double> Mach_polar() const { return m_Mach_polar; }
@@ -335,6 +357,8 @@ private:
     void calcSPLp(int posOpPoint,int posFreq);
     void LECalc(int posOpPoint, int posFreq, NoiseOpPoint* nop); //Alexandre MOD
     //Sara begin
+    void LBLVSCalc(int posOpPoint, int posFreq, NoiseOpPoint* nop); //Alexandre MOD
+    double calcLBLVS(int freq, double Reynolds, double Mach, double alpha, double delta_p, double r); //Alexandre MOD
     double calcao(double Reynolds);
     double calcBR_b(double B_min, double B_max);
     double calcB_min(double b);
@@ -405,6 +429,11 @@ private:
     QVector<double> m_SPLLEdBCW_rotor;
     QVector<double> m_SPLlogLE_rotor;
 
+    QVector<double> m_SPLLBLVSdB;
+    QVector<double> m_SPLlogLBLVS;
+    QVector<double> m_SPLLBLVSdB_rotor;
+    QVector<double> m_SPLlogLBLVS_rotor;
+
     QVector<double> m_OASPL3d;
     QVector<double> m_OASPLA3d;
     QVector<double> m_OASPLB3d;
@@ -413,10 +442,12 @@ private:
     QVector<double> m_SPLSLOG3d;
     QVector<double> m_SPLPLOG3d;
     QVector<double> m_SPLLEdB3d;
+    QVector<double> m_SPLLBLVSdB3d;
     QVector<double> m_SPLLEdBAW3d;
     QVector<double> m_SPLLEdBBW3d;
     QVector<double> m_SPLLEdBCW3d;
     QVector<double> m_SPLlogLE3d;
+    QVector<double> m_SPLlogLBLVS3d;
 
     QVector<double> m_OASPL3d_rotor;
     QVector<double> m_OASPLA3d_rotor;
@@ -426,10 +457,12 @@ private:
     QVector<double> m_SPLSLOG3d_rotor;
     QVector<double> m_SPLPLOG3d_rotor;
     QVector<double> m_SPLLEdB3d_rotor;
+    QVector<double> m_SPLLBLVSdB3d_rotor;
     QVector<double> m_SPLLEdBAW3d_rotor;
     QVector<double> m_SPLLEdBBW3d_rotor;
     QVector<double> m_SPLLEdBCW3d_rotor;
     QVector<double> m_SPLlogLE3d_rotor;
+    QVector<double> m_SPLlogLBLVS3d_rotor;
 
     QVector<double> m_OASPL3d_rotor_loops;
     QVector<double> m_OASPLA3d_rotor_loops;
@@ -439,10 +472,12 @@ private:
     QVector<double> m_SPLSLOG3d_rotor_loops;
     QVector<double> m_SPLPLOG3d_rotor_loops;
     QVector<double> m_SPLLEdB3d_rotor_loops;
+    QVector<double> m_SPLLBLVSdB3d_rotor_loops;
     QVector<double> m_SPLLEdBAW3d_rotor_loops;
     QVector<double> m_SPLLEdBBW3d_rotor_loops;
     QVector<double> m_SPLLEdBCW3d_rotor_loops;
     QVector<double> m_SPLlogLE3d_rotor_loops;
+    QVector<double> m_SPLlogLBLVS3d_rotor_loops;
     //Sara end
 
     //For SPLa
@@ -513,6 +548,9 @@ private:
     double m_originalMach;
     double m_wettedLength;
 
+    //For LBL VS Sara
+    TwoDVector m_SPL_LBLVSdB; //Store db of SPL_LE
+
     //Sara begin
     TwoDVector m_SPLadB3d;
     TwoDVector m_SPLadBAW3d;
@@ -530,6 +568,7 @@ private:
     TwoDVector m_SPL_LEdBAW3d;
     TwoDVector m_SPL_LEdBBW3d;
     TwoDVector m_SPL_LEdBCW3d;
+    TwoDVector m_SPL_LBLVSdB3d;
     TwoDVector m_SPLsdB3d;
     TwoDVector m_SPLsdBAW3d;
     TwoDVector m_SPLsdBBW3d;
@@ -555,6 +594,7 @@ private:
     TwoDVector m_SPLsdBAW3d_rotor;
     TwoDVector m_SPLsdBBW3d_rotor;
     TwoDVector m_SPLsdBCW3d_rotor;
+    TwoDVector m_SPL_LBLVSdB3d_rotor;
 
     TwoDVector m_SPLadB3d_rotor_loops;
     TwoDVector m_SPLadBAW3d_rotor_loops;
@@ -576,6 +616,7 @@ private:
     TwoDVector m_SPLsdBAW3d_rotor_loops;
     TwoDVector m_SPLsdBBW3d_rotor_loops;
     TwoDVector m_SPLsdBCW3d_rotor_loops;
+    TwoDVector m_SPL_LBLVSdB3d_rotor_loops;
 
     FourDVector m_SPLadB3d_4d_blade;
     FourDVector m_SPLadBAW3d_4d_blade;
@@ -597,6 +638,7 @@ private:
     FourDVector m_SPLsdBAW3d_4d_blade;
     FourDVector m_SPLsdBBW3d_4d_blade;
     FourDVector m_SPLsdBCW3d_4d_blade;
+    FourDVector m_SPL_LBLVSdB3d_4d_blade;
 
     FourDVector m_SPLadB3d_4d;
     FourDVector m_SPLadBAW3d_4d;
@@ -618,6 +660,7 @@ private:
     FourDVector m_SPLsdBAW3d_4d;
     FourDVector m_SPLsdBBW3d_4d;
     FourDVector m_SPLsdBCW3d_4d;
+    FourDVector m_SPL_LBLVSdB3d_4d;
 
     TwoDVector m_SPLadB3d_final;
     TwoDVector m_SPLpdB3d_final;
@@ -630,6 +673,7 @@ private:
     TwoDVector m_SPL_LEdBBW3d_final;
     TwoDVector m_SPL_LEdBCW3d_final;
     TwoDVector m_SPLsdB3d_final;
+    TwoDVector m_SPL_LBLVSdB3d_final;
 
     TwoDVector m_SPLadB3d_final_rotor;
     TwoDVector m_SPLpdB3d_final_rotor;
@@ -642,6 +686,7 @@ private:
     TwoDVector m_SPL_LEdBBW3d_final_rotor;
     TwoDVector m_SPL_LEdBCW3d_final_rotor;
     TwoDVector m_SPLsdB3d_final_rotor;
+    TwoDVector m_SPL_LBLVSdB3d_final_rotor;
 
     TwoDVector m_SPLadB3d_final_rotor_loops;
     TwoDVector m_SPLpdB3d_final_rotor_loops;
@@ -654,6 +699,7 @@ private:
     TwoDVector m_SPL_LEdBBW3d_final_rotor_loops;
     TwoDVector m_SPL_LEdBCW3d_final_rotor_loops;
     TwoDVector m_SPLsdB3d_final_rotor_loops;
+    TwoDVector m_SPL_LBLVSdB3d_final_rotor_loops;
     //Sara end
 };
 

@@ -97,21 +97,23 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 5: *vector = m_calculation.SPL_LEdBAW()[opPointIndex]; zeroY = true; break;
             case 6: *vector = m_calculation.SPL_LEdBBW()[opPointIndex]; zeroY = true; break;
             case 7: *vector = m_calculation.SPL_LEdBCW()[opPointIndex]; zeroY = true; break;
-            case 8: *vector = m_calculation.SPLdB()[opPointIndex]; zeroY = true; break;
-            case 9: *vector = m_calculation.SPLdBAW()[opPointIndex]; zeroY = true; break;
-            case 10: *vector = m_calculation.SPLdBBW()[opPointIndex]; zeroY = true; break;
-            case 11: *vector = m_calculation.SPLdBCW()[opPointIndex]; zeroY = true; break;
-            case 12: *vector = m_calculation.SPLadB3d()[opPointIndex]; zeroY = true; break;
-            case 13: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
-            case 14: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
-            case 15: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; zeroY = true; break;
-            case 16: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex]; zeroY = true; break;
-            case 17: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; zeroY = true; break;
-            case 18: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; zeroY = true; break;
-            case 19: *vector = m_calculation.SPLdB3d()[opPointIndex]; zeroY = true; break;
-            case 20: *vector = m_calculation.SPLdBAW3d()[opPointIndex]; zeroY = true; break;
-            case 21: *vector = m_calculation.SPLdBBW3d()[opPointIndex]; zeroY = true; break;
-            case 22: *vector = m_calculation.SPLdBCW3d()[opPointIndex]; zeroY = true; break;
+            case 8: *vector = m_calculation.SPL_LBLVSdB()[opPointIndex]; zeroY = true; break;
+            case 9: *vector = m_calculation.SPLdB()[opPointIndex]; zeroY = true; break;
+            case 10: *vector = m_calculation.SPLdBAW()[opPointIndex]; zeroY = true; break;
+            case 11: *vector = m_calculation.SPLdBBW()[opPointIndex]; zeroY = true; break;
+            case 12: *vector = m_calculation.SPLdBCW()[opPointIndex]; zeroY = true; break;
+            case 13: *vector = m_calculation.SPLadB3d()[opPointIndex]; zeroY = true; break;
+            case 14: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
+            case 15: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
+            case 16: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; zeroY = true; break;
+            case 17: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex]; zeroY = true; break;
+            case 18: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; zeroY = true; break;
+            case 19: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; zeroY = true; break;
+            case 20: *vector = m_calculation.SPL_LBLVSdB3d()[opPointIndex]; zeroY = true; break;
+            case 21: *vector = m_calculation.SPLdB3d()[opPointIndex]; zeroY = true; break;
+            case 22: *vector = m_calculation.SPLdBAW3d()[opPointIndex]; zeroY = true; break;
+            case 23: *vector = m_calculation.SPLdBBW3d()[opPointIndex]; zeroY = true; break;
+            case 24: *vector = m_calculation.SPLdBCW3d()[opPointIndex]; zeroY = true; break;
 
             default: return nullptr;
             }
@@ -129,29 +131,32 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 5: *vector = m_calculation.SPL_LEdBAW()[opPointIndex]; zeroY = true; break;
             case 6: *vector = m_calculation.SPL_LEdBBW()[opPointIndex]; zeroY = true; break;
             case 7: *vector = m_calculation.SPL_LEdBCW()[opPointIndex]; zeroY = true; break;
-            case 8: *vector = m_calculation.SPLdB()[opPointIndex]; zeroY = true; break;
-            case 9: *vector = m_calculation.SPLdBAW()[opPointIndex]; zeroY = true; break;
-            case 10: *vector = m_calculation.SPLdBBW()[opPointIndex]; zeroY = true; break;
-            case 11: *vector = m_calculation.SPLdBCW()[opPointIndex]; zeroY = true; break;
-            case 12: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
-            case 13: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 14: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 15: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 16: *vector = m_calculation.SPL_LEdBAW3d_final()[opPointIndex]; zeroY = true; break;
-            case 17: *vector = m_calculation.SPL_LEdBBW3d_final()[opPointIndex]; zeroY = true; break;
-            case 18: *vector = m_calculation.SPL_LEdBCW3d_final()[opPointIndex]; zeroY = true; break;
-            case 19: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 20: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; zeroY = true; break;
-            case 21: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; zeroY = true; break;
-            case 22: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; zeroY = true; break;
-            case 23: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break;
-            case 24: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
-            case 25: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
-            case 26: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; zeroY = true; break;
-            case 27: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex]; zeroY = true; break;
-            case 28: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; zeroY = true; break;
-            case 29: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; zeroY = true; break;
-            case 30: *vector = m_calculation.SPLdB3d()[opPointIndex]; zeroY = true; break;
+            case 8: *vector = m_calculation.SPL_LBLVSdB()[opPointIndex]; zeroY = true; break; //Alexandre MOD Sara
+            case 9: *vector = m_calculation.SPLdB()[opPointIndex]; zeroY = true; break;
+            case 10: *vector = m_calculation.SPLdBAW()[opPointIndex]; zeroY = true; break;
+            case 11: *vector = m_calculation.SPLdBBW()[opPointIndex]; zeroY = true; break;
+            case 12: *vector = m_calculation.SPLdBCW()[opPointIndex]; zeroY = true; break;
+            case 13: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
+            case 14: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 15: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 16: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 17: *vector = m_calculation.SPL_LEdBAW3d_final()[opPointIndex]; zeroY = true; break;
+            case 18: *vector = m_calculation.SPL_LEdBBW3d_final()[opPointIndex]; zeroY = true; break;
+            case 19: *vector = m_calculation.SPL_LEdBCW3d_final()[opPointIndex]; zeroY = true; break;
+            case 20: *vector = m_calculation.SPL_LBLVSdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 21: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 22: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; zeroY = true; break;
+            case 23: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; zeroY = true; break;
+            case 24: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; zeroY = true; break;
+            case 25: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break;
+            case 26: *vector = m_calculation.SPLsdB3d()[opPointIndex]; zeroY = true; break;
+            case 27: *vector = m_calculation.SPLpdB3d()[opPointIndex]; zeroY = true; break;
+            case 28: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; zeroY = true; break;
+            case 29: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex]; zeroY = true; break;
+            case 30: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; zeroY = true; break;
+            case 31: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; zeroY = true; break;
+            case 32: *vector = m_calculation.SPL_LBLVSdB3d()[opPointIndex]; zeroY = true; break;
+            case 33: *vector = m_calculation.SPLdB3d()[opPointIndex]; zeroY = true; break;
 
             default: return nullptr;
             }
@@ -169,40 +174,44 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             case 5: *vector = m_calculation.SPL_LEdBAW()[opPointIndex]; zeroY = true; break;
             case 6: *vector = m_calculation.SPL_LEdBBW()[opPointIndex]; zeroY = true; break;
             case 7: *vector = m_calculation.SPL_LEdBCW()[opPointIndex]; zeroY = true; break;
-            case 8: *vector = m_calculation.SPLdB()[opPointIndex];  zeroY = true; break;//Sara
-            case 9: *vector = m_calculation.SPLdBAW()[opPointIndex]; zeroY = true; break;
-            case 10: *vector = m_calculation.SPLdBBW()[opPointIndex]; zeroY = true; break;
-            case 11: *vector = m_calculation.SPLdBCW()[opPointIndex]; zeroY = true; break;
-            case 12: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
-            case 13: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 14: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 15: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 16: *vector = m_calculation.SPL_LEdBAW3d_final()[opPointIndex]; zeroY = true; break;
-            case 17: *vector = m_calculation.SPL_LEdBBW3d_final()[opPointIndex]; zeroY = true; break;
-            case 18: *vector = m_calculation.SPL_LEdBCW3d_final()[opPointIndex]; zeroY = true; break;
-            case 19: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; zeroY = true; break;
-            case 20: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; zeroY = true; break;
-            case 21: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; zeroY = true; break;
-            case 22: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; zeroY = true; break;
-            case 23: *vector = m_calculation.SPLadB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 24: *vector = m_calculation.SPLsdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 25: *vector = m_calculation.SPLpdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 26: *vector = m_calculation.SPL_LEdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 27: *vector = m_calculation.SPL_LEdBAW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 28: *vector = m_calculation.SPL_LEdBBW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 29: *vector = m_calculation.SPL_LEdBCW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 30: *vector = m_calculation.SPLdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 31: *vector = m_calculation.SPLdBAW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 32: *vector = m_calculation.SPLdBBW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 33: *vector = m_calculation.SPLdBCW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
-            case 34: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break;
-            case 35: *vector = m_calculation.SPLsdB3d()[opPointIndex];zeroY = true; break;
-            case 36: *vector = m_calculation.SPLpdB3d()[opPointIndex];zeroY = true; break;
-            case 37: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; zeroY = true; break;
-            case 38: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex];zeroY = true; break;
-            case 39: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; zeroY = true; break;
-            case 40: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; zeroY = true; break;
-            case 41: *vector = m_calculation.SPLdB3d()[opPointIndex]; zeroY = true; break;
+            case 8: *vector = m_calculation.SPL_LBLVSdB()[opPointIndex]; zeroY = true; break; //Sara
+            case 9: *vector = m_calculation.SPLdB()[opPointIndex];  zeroY = true; break;//Sara
+            case 10: *vector = m_calculation.SPLdBAW()[opPointIndex]; zeroY = true; break;
+            case 11: *vector = m_calculation.SPLdBBW()[opPointIndex]; zeroY = true; break;
+            case 12: *vector = m_calculation.SPLdBCW()[opPointIndex]; zeroY = true; break;
+            case 13: *vector = m_calculation.SPLadB3d_final()[opPointIndex]; zeroY = true; break;
+            case 14: *vector = m_calculation.SPLsdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 15: *vector = m_calculation.SPLpdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 16: *vector = m_calculation.SPL_LEdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 17: *vector = m_calculation.SPL_LEdBAW3d_final()[opPointIndex]; zeroY = true; break;
+            case 18: *vector = m_calculation.SPL_LEdBBW3d_final()[opPointIndex]; zeroY = true; break;
+            case 19: *vector = m_calculation.SPL_LEdBCW3d_final()[opPointIndex]; zeroY = true; break;
+            case 20: *vector = m_calculation.SPL_LBLVSdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 21: *vector = m_calculation.SPLdB3d_final()[opPointIndex]; zeroY = true; break;
+            case 22: *vector = m_calculation.SPLdBAW3d_final()[opPointIndex]; zeroY = true; break;
+            case 23: *vector = m_calculation.SPLdBBW3d_final()[opPointIndex]; zeroY = true; break;
+            case 24: *vector = m_calculation.SPLdBCW3d_final()[opPointIndex]; zeroY = true; break;
+            case 25: *vector = m_calculation.SPLadB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 26: *vector = m_calculation.SPLsdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 27: *vector = m_calculation.SPLpdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 28: *vector = m_calculation.SPL_LEdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 29: *vector = m_calculation.SPL_LEdBAW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 30: *vector = m_calculation.SPL_LEdBBW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 31: *vector = m_calculation.SPL_LEdBCW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 32: *vector = m_calculation.SPL_LBLVSdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 33: *vector = m_calculation.SPLdB3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 34: *vector = m_calculation.SPLdBAW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 35: *vector = m_calculation.SPLdBBW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 36: *vector = m_calculation.SPLdBCW3d_final_rotor_loops()[opPointIndex]; zeroY = true; break;
+            case 37: *vector = m_calculation.SPLadB3d()[opPointIndex];zeroY = true; break;
+            case 38: *vector = m_calculation.SPLsdB3d()[opPointIndex];zeroY = true; break;
+            case 39: *vector = m_calculation.SPLpdB3d()[opPointIndex];zeroY = true; break;
+            case 40: *vector = m_calculation.SPL_LEdB3d()[opPointIndex]; zeroY = true; break;
+            case 41: *vector = m_calculation.SPL_LEdBAW3d()[opPointIndex];zeroY = true; break;
+            case 42: *vector = m_calculation.SPL_LEdBBW3d()[opPointIndex]; zeroY = true; break;
+            case 43: *vector = m_calculation.SPL_LEdBCW3d()[opPointIndex]; zeroY = true; break;
+            case 44: *vector = m_calculation.SPL_LBLVSdB3d()[opPointIndex]; zeroY = true; break;
+            case 45: *vector = m_calculation.SPLdB3d()[opPointIndex]; zeroY = true; break;
 
             default: return nullptr;
             }
@@ -222,7 +231,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
 QStringList NoiseSimulation::getAvailableVariables_rotor(NewGraph::GraphType /*graphType*/) {
     QStringList variables;
     // WARNING: when changing any variables list, change newCurve as well!
-    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_LE_blade[qs3D] (dB(A))" << "SPL_LE_blade[qs3D] (dB(B))" << "SPL_LE_blade[qs3D] (dB(C))" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" << "SPL_alpha_rotor[qs3D]" << "SPL_S_rotor[qs3D]" << "SPL_P_rotor[qs3D]" << "SPL_LE_rotor[qs3D] (dB)" << "SPL_LE_rotor[qs3D] (dB(A))" << "SPL_LE_rotor[qs3D] (dB(B))" << "SPL_LE_rotor[qs3D] (dB(C))" << "SPL_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB(A))" << "SPL_rotor[qs3D] (dB(B))" << "SPL_rotor[qs3D] (dB(C))" <<  "SPL_alpha_multi[qs3D]" << "SPL_S_multi[qs3D]" << "SPL_P_multi[qs3D]" << "SPL_LE_multi[qs3D] (dB)" << "SPL_LE_multi[qs3D] (dB(A))" << "SPL_LE_multi[qs3D] (dB(B))" << "SPL_LE_multi[qs3D] (dB(C))" << "SPL_multi[qs3D] (dB)" ; //Alexandre MOD Sara
+    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL_LBL_VS (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_LE_blade[qs3D] (dB(A))" << "SPL_LE_blade[qs3D] (dB(B))" << "SPL_LE_blade[qs3D] (dB(C))" << "SPL_LBL_VS_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" << "SPL_alpha_rotor[qs3D]" << "SPL_S_rotor[qs3D]" << "SPL_P_rotor[qs3D]" << "SPL_LE_rotor[qs3D] (dB)" << "SPL_LE_rotor[qs3D] (dB(A))" << "SPL_LE_rotor[qs3D] (dB(B))" << "SPL_LE_rotor[qs3D] (dB(C))" << "SPL_LBL_VS_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB)" << "SPL_rotor[qs3D] (dB(A))" << "SPL_rotor[qs3D] (dB(B))" << "SPL_rotor[qs3D] (dB(C))" <<  "SPL_alpha_multi[qs3D]" << "SPL_S_multi[qs3D]" << "SPL_P_multi[qs3D]" << "SPL_LE_multi[qs3D] (dB)" << "SPL_LE_multi[qs3D] (dB(A))" << "SPL_LE_multi[qs3D] (dB(B))" << "SPL_LE_multi[qs3D] (dB(C))" << "SPL_LBL_VS_multi[qs3D] (dB)" << "SPL_multi[qs3D] (dB)"; //Alexandre MOD Sara
 
     return variables;
 }
@@ -230,7 +239,7 @@ QStringList NoiseSimulation::getAvailableVariables_rotor(NewGraph::GraphType /*g
 QStringList NoiseSimulation::getAvailableVariables_blade(NewGraph::GraphType /*graphType*/) {
     QStringList variables;
     // WARNING: when changing any variables list, change newCurve as well!
-    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_LE_blade[qs3D] (dB(A))" << "SPL_LE_blade[qs3D] (dB(B))" << "SPL_LE_blade[qs3D] (dB(C))" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" <<  "SPL_alpha_multi[qs3D]" << "SPL_S_multi[qs3D]" << "SPL_P_multi[qs3D]" << "SPL_LE_multi[qs3D] (dB)" <<"SPL_LE_multi[qs3D] (dB(A))" <<"SPL_LE_multi[qs3D] (dB(B))" <<"SPL_LE_multi[qs3D] (dB(C))" << "SPL_multi[qs3D] (dB)" << "SPL_multi[qs3D] (dB(A))" << "SPL_multi[qs3D] (dB(B))" << "SPL_multi[qs3D] (dB(C))"; //Alexandre MOD Sara
+    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL_LBL_VS (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))" << "SPL_alpha_blade[qs3D]" << "SPL_S_blade[qs3D]" << "SPL_P_blade[qs3D]" << "SPL_LE_blade[qs3D] (dB)" << "SPL_LE_blade[qs3D] (dB(A))" << "SPL_LE_blade[qs3D] (dB(B))" << "SPL_LE_blade[qs3D] (dB(C))" << "SPL_LBL_VS_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB)" << "SPL_blade[qs3D] (dB(A))" << "SPL_blade[qs3D] (dB(B))" << "SPL_blade[qs3D] (dB(C))" <<  "SPL_alpha_multi[qs3D]" << "SPL_S_multi[qs3D]" << "SPL_P_multi[qs3D]" << "SPL_LE_multi[qs3D] (dB)" <<"SPL_LE_multi[qs3D] (dB(A))" <<"SPL_LE_multi[qs3D] (dB(B))" <<"SPL_LE_multi[qs3D] (dB(C))" << "SPL_LBL_VS_multi[qs3D] (dB)" << "SPL_multi[qs3D] (dB)" << "SPL_multi[qs3D] (dB(A))" << "SPL_multi[qs3D] (dB(B))" << "SPL_multi[qs3D] (dB(C))"; //Alexandre MOD Sara
 
     return variables;
 }
@@ -239,7 +248,7 @@ QStringList NoiseSimulation::getAvailableVariables_blade(NewGraph::GraphType /*g
 QStringList NoiseSimulation::getAvailableVariables(NewGraph::GraphType /*graphType*/) {
     QStringList variables;
     // WARNING: when changing any variables list, change newCurve as well!
-    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))"; //Alexandre MOD Sara
+    variables << "Freq [Hz]" << "SPL_alpha" << "SPL_S" << "SPL_P" << "SPL_LE (dB)" << "SPL_LE (dB(A))" << "SPL_LE (dB(B))" << "SPL_LE (dB(C))" << "SPL_LBL_VS (dB)" << "SPL (dB)" << "SPL (dB(A))" << "SPL (dB(B))" << "SPL (dB(C))"; //Alexandre MOD Sara
 
     return variables;
 }
@@ -336,60 +345,117 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
         if(m_parameter.Lowson_type!=0){
         stream << "SPL_LE: " << m_calculation.SPLlogLE()[i] << " dB" << Qt::endl;
         }
+        if(m_parameter.LBLVS!=0){
+        stream << "SPL_LBLVS: " << m_calculation.SPLlogLBLVS()[i] << " dB" << Qt::endl;
+        }
         stream << "OASPL: " << m_calculation.OASPL()[i] << " dB" << Qt::endl;
         stream << "OASPL (A): " << m_calculation.OASPLA()[i] << " dB(A)" << Qt::endl;
         stream << "OASPL (B): " << m_calculation.OASPLB()[i] << " dB(B)" << Qt::endl;
         stream << "OASPL (C): " << m_calculation.OASPLC()[i] << " dB(C)" << Qt::endl;
         stream << Qt::endl;
-               if(m_parameter.Lowson_type!=0){
+               if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" <<
                   "SPLa" <<
                   "SPLs" <<
                   "SPLp" <<
                   "SPL_LE (dB)" <<
+                  "SPL_LBL_VS (dB)" <<
                   "SPL (dB)" <<
                   "SPL (dB(A))" <<
                   "SPL (dB(B))" <<
                   "SPL (dB(C))" <<
                   Qt::endl; //Alexandre MOD
                }
-               else{
+else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
                    stream << qSetFieldWidth(14) <<
                              "Freq [Hz]" <<
                              "SPLa" <<
                              "SPLs" <<
                              "SPLp" <<
+                             "SPL_LE (dB)" <<
                              "SPL (dB)" <<
                              "SPL (dB(A))" <<
                              "SPL (dB(B))" <<
-                             "SPL (dB(C))" << Qt::endl; //Alexandre MOD
-               }
+                             "SPL (dB(C))" <<
+                             Qt::endl; //Alexandre MOD
+                          }
+               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+                                  stream << qSetFieldWidth(14) <<
+                                            "Freq [Hz]" <<
+                                            "SPLa" <<
+                                            "SPLs" <<
+                                            "SPLp" <<
+                                            "SPL (dB)" <<
+                                            "SPL (dB(A))" <<
+                                            "SPL (dB(B))" <<
+                                            "SPL (dB(C))" <<
+                                            Qt::endl; //Alexandre MOD
+                                         }
+               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+                                  stream << qSetFieldWidth(14) <<
+                                            "Freq [Hz]" <<
+                                            "SPLa" <<
+                                            "SPLs" <<
+                                            "SPLp" <<
+                                            "SPL_LBL_VS (dB)" <<
+                                            "SPL (dB)" <<
+                                            "SPL (dB(A))" <<
+                                            "SPL (dB(B))" <<
+                                            "SPL (dB(C))" <<
+                                            Qt::endl; //Alexandre MOD
+                                         }
 
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
- if(m_parameter.Lowson_type!=0){
+ if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
             stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
                       m_calculation.SPLpdB()[i][j] <<
                       m_calculation.SPL_LEdB()[i][j] <<
+                      m_calculation.SPL_LBLVSdB()[i][j] <<
                       m_calculation.SPLdB()[i][j] <<
                       m_calculation.SPLdBAW()[i][j] <<
                       m_calculation.SPLdBBW()[i][j] <<
                       m_calculation.SPLdBCW()[i][j] <<
                       Qt::endl; //Alexandre MOD
         }
-else{
+else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
      stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                m_calculation.SPLadB()[i][j] <<
                m_calculation.SPLsdB()[i][j] <<
                m_calculation.SPLpdB()[i][j] <<
+               m_calculation.SPL_LEdB()[i][j] <<
                m_calculation.SPLdB()[i][j] <<
                m_calculation.SPLdBAW()[i][j] <<
                m_calculation.SPLdBBW()[i][j] <<
-               m_calculation.SPLdBCW()[i][j] << Qt::endl;
+               m_calculation.SPLdBCW()[i][j] <<
+               Qt::endl; //Alexandre MOD
  }
+ if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+            stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
+                      m_calculation.SPLadB()[i][j] <<
+                      m_calculation.SPLsdB()[i][j] <<
+                      m_calculation.SPLpdB()[i][j] <<
+                      m_calculation.SPL_LBLVSdB()[i][j] <<
+                      m_calculation.SPLdB()[i][j] <<
+                      m_calculation.SPLdBAW()[i][j] <<
+                      m_calculation.SPLdBBW()[i][j] <<
+                      m_calculation.SPLdBCW()[i][j] <<
+                      Qt::endl; //Alexandre MOD
+        }
+ if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+            stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
+                      m_calculation.SPLadB()[i][j] <<
+                      m_calculation.SPLsdB()[i][j] <<
+                      m_calculation.SPLpdB()[i][j] <<
+                      m_calculation.SPLdB()[i][j] <<
+                      m_calculation.SPLdBAW()[i][j] <<
+                      m_calculation.SPLdBBW()[i][j] <<
+                      m_calculation.SPLdBCW()[i][j] <<
+                      Qt::endl; //Alexandre MOD
+        }
         }
         stream << Qt::endl;
         stream << Qt::endl;
@@ -422,6 +488,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_blade(QTextStream &stream) {
     stream << "SPL S: " << m_calculation.Final_qs3d_S << Qt::endl;
     stream << "SPL P: " << m_calculation.Final_qs3d_P << Qt::endl;
     if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
+    if (m_parameter.LBLVS!=0){stream << "SPL LBL-VS: " << m_calculation.Final_qs3d_LBLVS;}
     stream << Qt::endl;
     stream << "*********************************************" << Qt::endl;
     stream << Qt::endl;
@@ -432,54 +499,105 @@ stream << qSetFieldWidth(0);
 //        stream << Qt::endl;
 stream << "Section: " << (i+1)<<"/"<<number_of_segments << Qt::endl;
         stream << Qt::endl;
-               if(m_parameter.Lowson_type!=0){
+if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
                   "SPLa" << ";" <<
                   "SPLs" << ";" <<
                   "SPLp" << ";" <<
                   "SPL_LE (dB)" << ";" <<
+                  "SPL_LBL_VS (dB)" << ";" <<
                   "SPL (dB)" << ";" <<
                   "SPL (dB(A))" << ";" <<
                   "SPL (dB(B))" << ";" <<
                   "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
                }
-               else{
-                   stream << qSetFieldWidth(14) <<
-                             "Freq [Hz]" << ";" <<
-                             "SPLa" << ";" <<
-                             "SPLs" << ";" <<
-                             "SPLp" << ";" <<
-                             "SPL (dB)" << ";" <<
-                             "SPL (dB(A))" << ";" <<
-                             "SPL (dB(B))" << ";" <<
-                             "SPL (dB(C))" << Qt::endl; //Alexandre MOD
+else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
+    stream << qSetFieldWidth(14) <<
+              "Freq [Hz]" << ";" <<
+              "SPLa" << ";" <<
+              "SPLs" << ";" <<
+              "SPLp" << ";" <<
+              "SPL_LE (dB)" << ";" <<
+              "SPL (dB)" << ";" <<
+              "SPL (dB(A))" << ";" <<
+              "SPL (dB(B))" << ";" <<
+              "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
+           }
+else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+        stream << qSetFieldWidth(14) <<
+                  "Freq [Hz]" << ";" <<
+                  "SPLa" << ";" <<
+                  "SPLs" << ";" <<
+                  "SPLp" << ";" <<
+                  "SPL_LBL_VS (dB)" << ";" <<
+                  "SPL (dB)" << ";" <<
+                  "SPL (dB(A))" << ";" <<
+                  "SPL (dB(B))" << ";" <<
+                  "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
+               }
+else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+        stream << qSetFieldWidth(14) <<
+                  "Freq [Hz]" << ";" <<
+                  "SPLa" << ";" <<
+                  "SPLs" << ";" <<
+                  "SPLp" << ";" <<
+                  "SPL (dB)" << ";" <<
+                  "SPL (dB(A))" << ";" <<
+                  "SPL (dB(B))" << ";" <<
+                  "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
                }
 //int i=0;
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
-            if(m_parameter.Lowson_type!=0){
+            if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
                        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                                  m_calculation.SPLadB3d()[i][j] << ";" <<
                                  m_calculation.SPLsdB3d()[i][j] << ";" <<
                                  m_calculation.SPLpdB3d()[i][j] << ";" <<
                                  m_calculation.SPL_LEdB3d()[i][j] << ";" <<
+                                 m_calculation.SPL_LBLVSdB3d()[i][j] << ";" <<
                                  m_calculation.SPLdB3d()[i][j] << ";" <<
                                  m_calculation.SPLdBAW3d()[i][j] << ";" <<
                                  m_calculation.SPLdBBW3d()[i][j] << ";" <<
                                  m_calculation.SPLdBCW3d()[i][j] << ";" <<
                                  Qt::endl; //Alexandre MOD
                    }
-           else{
-                stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-                          m_calculation.SPLadB3d()[i][j] << ";" <<
-                          m_calculation.SPLsdB3d()[i][j] << ";" <<
-                          m_calculation.SPLpdB3d()[i][j] << ";" <<
-                          m_calculation.SPLdB3d()[i][j] << ";" <<
-                          m_calculation.SPLdBAW3d()[i][j] << ";" <<
-                          m_calculation.SPLdBBW3d()[i][j] << ";" <<
-                          m_calculation.SPLdBCW3d()[i][j] << ";" << Qt::endl;
-            }
+else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
+                    stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                              m_calculation.SPLadB3d()[i][j] << ";" <<
+                              m_calculation.SPLsdB3d()[i][j] << ";" <<
+                              m_calculation.SPLpdB3d()[i][j] << ";" <<
+                              m_calculation.SPL_LEdB3d()[i][j] << ";" <<
+                              m_calculation.SPLdB3d()[i][j] << ";" <<
+                              m_calculation.SPLdBAW3d()[i][j] << ";" <<
+                              m_calculation.SPLdBBW3d()[i][j] << ";" <<
+                              m_calculation.SPLdBCW3d()[i][j] << ";" <<
+                              Qt::endl; //Alexandre MOD
+                }
+            else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+                                stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                                          m_calculation.SPLadB3d()[i][j] << ";" <<
+                                          m_calculation.SPLsdB3d()[i][j] << ";" <<
+                                          m_calculation.SPLpdB3d()[i][j] << ";" <<
+                                          m_calculation.SPL_LBLVSdB3d()[i][j] << ";" <<
+                                          m_calculation.SPLdB3d()[i][j] << ";" <<
+                                          m_calculation.SPLdBAW3d()[i][j] << ";" <<
+                                          m_calculation.SPLdBBW3d()[i][j] << ";" <<
+                                          m_calculation.SPLdBCW3d()[i][j] << ";" <<
+                                          Qt::endl; //Alexandre MOD
+                            }
+            else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+                                stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+                                          m_calculation.SPLadB3d()[i][j] << ";" <<
+                                          m_calculation.SPLsdB3d()[i][j] << ";" <<
+                                          m_calculation.SPLpdB3d()[i][j] << ";" <<
+                                          m_calculation.SPLdB3d()[i][j] << ";" <<
+                                          m_calculation.SPLdBAW3d()[i][j] << ";" <<
+                                          m_calculation.SPLdBBW3d()[i][j] << ";" <<
+                                          m_calculation.SPLdBCW3d()[i][j] << ";" <<
+                                          Qt::endl; //Alexandre MOD
+                            }
         }
         stream << Qt::endl;
         stream << qSetFieldWidth(0);
@@ -488,6 +606,8 @@ stream << "Section: " << (i+1)<<"/"<<number_of_segments << Qt::endl;
         stream << "SPL_p: " << m_calculation.SPLPLOG3d()[i] << "" << Qt::endl;
         if(m_parameter.Lowson_type!=0){
         stream << "SPL_LE: " << m_calculation.SPLlogLE3d()[i] << " dB" << Qt::endl;}
+        if(m_parameter.LBLVS!=0){
+        stream << "SPL_LBL_VS: " << m_calculation.SPLlogLBLVS3d()[i] << " dB" << Qt::endl;}
         stream << "OASPL: " << m_calculation.OASPL3d()[i] << " dB" << Qt::endl;
         stream << "OASPL (A): " << m_calculation.OASPLA3d()[i] << " dB(A)" << Qt::endl;
         stream << "OASPL (B): " << m_calculation.OASPLB3d()[i] << " dB(B)" << Qt::endl;
@@ -497,53 +617,105 @@ stream << "Section: " << (i+1)<<"/"<<number_of_segments << Qt::endl;
 
 if(i==(number_of_segments-1)){
 stream << "********** FINAL **********" << Qt::endl;
-if(m_parameter.Lowson_type!=0){
+if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
 stream << qSetFieldWidth(14) <<
    "Freq [Hz]" << ";" <<
    "SPLa" << ";" <<
    "SPLs" << ";" <<
    "SPLp" << ";" <<
    "SPL_LE (dB)" << ";" <<
+   "SPL_LBL_VS (dB)" << ";" <<
    "SPL (dB)" << ";" <<
    "SPL (dB(A))" << ";" <<
    "SPL (dB(B))" << ";" <<
    "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
 }
-else{
+else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
     stream << qSetFieldWidth(14) <<
-              "Freq [Hz]" << ";" <<
-              "SPLa" << ";" <<
-              "SPLs" << ";" <<
-              "SPLp" << ";" <<
-              "SPL (dB)" << ";" <<
-              "SPL (dB(A))" << ";" <<
-              "SPL (dB(B))" << ";" <<
-              "SPL (dB(C))" << Qt::endl; //Alexandre MOD
+       "Freq [Hz]" << ";" <<
+       "SPLa" << ";" <<
+       "SPLs" << ";" <<
+       "SPLp" << ";" <<
+       "SPL_LE (dB)" << ";" <<
+       "SPL (dB)" << ";" <<
+       "SPL (dB(A))" << ";" <<
+       "SPL (dB(B))" << ";" <<
+       "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
+    }
+else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+    stream << qSetFieldWidth(14) <<
+       "Freq [Hz]" << ";" <<
+       "SPLa" << ";" <<
+       "SPLs" << ";" <<
+       "SPLp" << ";" <<
+       "SPL_LBL_VS (dB)" << ";" <<
+       "SPL (dB)" << ";" <<
+       "SPL (dB(A))" << ";" <<
+       "SPL (dB(B))" << ";" <<
+       "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
+    }
+if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+stream << qSetFieldWidth(14) <<
+   "Freq [Hz]" << ";" <<
+   "SPLa" << ";" <<
+   "SPLs" << ";" <<
+   "SPLp" << ";" <<
+   "SPL (dB)" << ";" <<
+   "SPL (dB(A))" << ";" <<
+   "SPL (dB(B))" << ";" <<
+   "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
 }
 for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
-if(m_parameter.Lowson_type!=0){
+if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
         stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                   m_calculation.SPLadB3d_final()[i][j] << ";" <<
                   m_calculation.SPLsdB3d_final()[i][j] << ";" <<
                   m_calculation.SPLpdB3d_final()[i][j] << ";" <<
                   m_calculation.SPL_LEdB3d_final()[i][j] << ";" <<
+                  m_calculation.SPL_LBLVSdB3d_final()[i][j] << ";" <<
                   m_calculation.SPLdB3d_final()[i][j] << ";" <<
                   m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
                   m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
                   m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
                   Qt::endl; //Alexandre MOD
     }
-else{
- stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-           m_calculation.SPLadB3d_final()[i][j] << ";" <<
-           m_calculation.SPLsdB3d_final()[i][j] << ";" <<
-           m_calculation.SPLpdB3d_final()[i][j] << ";" <<
-           m_calculation.SPLdB3d_final()[i][j] << ";" <<
-           m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
-           m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
-           m_calculation.SPLdBCW3d_final()[i][j] << ";" << Qt::endl;
-}}
+else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
+    stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+              m_calculation.SPLadB3d_final()[i][j] << ";" <<
+              m_calculation.SPLsdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLpdB3d_final()[i][j] << ";" <<
+              m_calculation.SPL_LEdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
+              Qt::endl; //Alexandre MOD
+}
+else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+    stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+              m_calculation.SPLadB3d_final()[i][j] << ";" <<
+              m_calculation.SPLsdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLpdB3d_final()[i][j] << ";" <<
+              m_calculation.SPL_LBLVSdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
+              Qt::endl; //Alexandre MOD
+}
+else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+    stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+              m_calculation.SPLadB3d_final()[i][j] << ";" <<
+              m_calculation.SPLsdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLpdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLdB3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBAW3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBBW3d_final()[i][j] << ";" <<
+              m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
+              Qt::endl; //Alexandre MOD
+}
+}
 stream << Qt::endl;
 }}}
 
@@ -571,6 +743,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
      stream << "SPL S: " << m_calculation.Final_qs3d_S_rotor_loops << Qt::endl;
      stream << "SPL P: " << m_calculation.Final_qs3d_P_rotor_loops << Qt::endl;
      if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE_rotor_loops;}
+     if (m_parameter.LBLVS!=0){stream << "SPL LBL-VS: " << m_calculation.Final_qs3d_LBLVS_rotor_loops;}
      stream << Qt::endl;
      stream << "*********************************************" << Qt::endl;
      stream << Qt::endl;
@@ -581,53 +754,104 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
 
  if(i==(number_of_segments-1)){
 // stream << "********** FINAL **********" << Qt::endl;
- if(m_parameter.Lowson_type!=0){
+ if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
  stream << qSetFieldWidth(14) <<
     "Freq [Hz]" << ";" <<
     "SPLa" << ";" <<
     "SPLs" << ";" <<
     "SPLp" << ";" <<
     "SPL_LE (dB)" << ";" <<
+    "SPL_LBL_VS (dB)" << ";" <<
     "SPL (dB)" << ";" <<
     "SPL (dB(A))" << ";" <<
     "SPL (dB(B))" << ";" <<
     "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
  }
- else{
+ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
      stream << qSetFieldWidth(14) <<
-               "Freq [Hz]" << ";" <<
-               "SPLa" << ";" <<
-               "SPLs" << ";" <<
-               "SPLp" << ";" <<
-               "SPL (dB)" << ";" <<
-               "SPL (dB(A))" << ";" <<
-               "SPL (dB(B))" << ";" <<
-               "SPL (dB(C))" <<Qt::endl; //Alexandre MOD
- }
+        "Freq [Hz]" << ";" <<
+        "SPLa" << ";" <<
+        "SPLs" << ";" <<
+        "SPLp" << ";" <<
+        "SPL_LE (dB)" << ";" <<
+        "SPL (dB)" << ";" <<
+        "SPL (dB(A))" << ";" <<
+        "SPL (dB(B))" << ";" <<
+        "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
+     }
+ else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+     stream << qSetFieldWidth(14) <<
+        "Freq [Hz]" << ";" <<
+        "SPLa" << ";" <<
+        "SPLs" << ";" <<
+        "SPLp" << ";" <<
+        "SPL_LBL_VS (dB)" << ";" <<
+        "SPL (dB)" << ";" <<
+        "SPL (dB(A))" << ";" <<
+        "SPL (dB(B))" << ";" <<
+        "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
+     }
+ else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+     stream << qSetFieldWidth(14) <<
+        "Freq [Hz]" << ";" <<
+        "SPLa" << ";" <<
+        "SPLs" << ";" <<
+        "SPLp" << ";" <<
+        "SPL (dB)" << ";" <<
+        "SPL (dB(A))" << ";" <<
+        "SPL (dB(B))" << ";" <<
+        "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
+     }
  for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
- if(m_parameter.Lowson_type!=0){
+ if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0)){
          stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                    m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLpdB3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPL_LEdB3d_final_rotor_loops()[i][j] << ";" <<
+                   m_calculation.SPL_LBLVSdB3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLdB3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLdBAW3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLdBBW3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                    Qt::endl; //Alexandre MOD
      }
- else{
-  stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
-            m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
-            m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
-            m_calculation.SPLpdB3d_final_rotor_loops()[i][j] << ";" <<
-            m_calculation.SPLdB3d_final_rotor_loops()[i][j] << ";" <<
-            m_calculation.SPLdBAW3d_final_rotor_loops()[i][j] << ";" <<
-            m_calculation.SPLdBBW3d_final_rotor_loops()[i][j] << ";" <<
-            m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" << Qt::endl;
-}
+ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0)){
+     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+               m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLpdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPL_LEdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBAW3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBBW3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
+               Qt::endl; //Alexandre MOD
+ }
+ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0)){
+     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+               m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLpdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPL_LBLVSdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBAW3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBBW3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
+               Qt::endl; //Alexandre MOD
+ }
+ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0)){
+     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
+               m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLpdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdB3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBAW3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBBW3d_final_rotor_loops()[i][j] << ";" <<
+               m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
+               Qt::endl; //Alexandre MOD
+ }
 }
 stream << Qt::endl;
 }}}
@@ -802,6 +1026,10 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
             else value = m_parameter.TurbulenceIntensity; break;
 
         //Sara
+    case P::LBLVS:
+        if(set) m_parameter.LBLVS = value.toBool();
+        else value = m_parameter.LBLVS; break;
+
     case P::TSR_check:
         if(set) m_parameter.TSR_check = value.toBool();
         else {value=m_parameter.TSR_check;}

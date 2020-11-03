@@ -36,6 +36,7 @@ public:
 	bool suctionSide; //SPLs
 	bool pressureSide; //SPLp
 	bool separatedFlow; //SPLa
+    bool LBLVS;//LBL Sara
 
     //Sara
     //LE
