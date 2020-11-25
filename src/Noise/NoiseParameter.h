@@ -31,12 +31,14 @@ public:
 	double distanceObsever;
 	double directivityGreek;
 	double directivityPhi;
+    double h_blunt;//Sara
 	bool highFreq;  // NM the two frequency members are not included in the GUI
 	bool lowFreq;
 	bool suctionSide; //SPLs
 	bool pressureSide; //SPLp
 	bool separatedFlow; //SPLa
     bool LBLVS;//LBL Sara
+    bool blunt_check;//blunt Sara
 
     //Sara
     //LE

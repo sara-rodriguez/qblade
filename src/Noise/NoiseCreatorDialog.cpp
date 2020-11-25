@@ -45,11 +45,12 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
 
     QWidget *widget = new QWidget;
     tabWidget->addTab(widget, "Parameters");
-        QHBoxLayout *hBox = new QHBoxLayout;
-        setMinimumSize(950,540);//Sara
-        widget->setLayout(hBox);
+    QGridLayout *gridx = new QGridLayout;//Sara
+
+        setMinimumSize(1200,550);//Sara
+        widget->setLayout(gridx);
             QGroupBox *groupBox = new QGroupBox ("Simulation Parameters");
-            hBox->addWidget(groupBox);
+            gridx->addWidget(groupBox, 0,0,6,1, Qt::AlignJustify);
                 ParameterGrid<P> *pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
                     pGrid->addEdit(P::Name, LineEdit, new QLineEdit, "Name of Simulation:", "Noise Simulation");
@@ -80,74 +81,24 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                                   "δ* scaling factor:", 1);//Sara
                     pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
                                   "Eddy Convection Mach number []:", 0.8, PERCENT);
-            QVBoxLayout *vBox = new QVBoxLayout;
-            hBox->addLayout(vBox);
+
+
                 QLabel *imageLabel = new QLabel;
                 imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
-                vBox->addWidget(imageLabel, 0, Qt::AlignHCenter);
+                gridx->addWidget(imageLabel, 0,1,4,1, Qt::AlignVCenter);
 
 //Sara
                 groupBox = new QGroupBox ("Directivity Angles");
-                vBox->addWidget(groupBox);
+                gridx->addWidget(groupBox,4,1);
                 pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
                 pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
                               "θe [deg]:", 90);//Sara
                 pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
                               "ψe [deg]:", 90);//Sara
-//Sara
-
-                groupBox = new QGroupBox ("TE noise source contributions");
-                vBox->addWidget(groupBox);
-                pGrid = new ParameterGrid<P>(this);
-                groupBox->setLayout(pGrid);
-                //Sara
-                m_TE_a_check = new QCheckBox ("enable");//Sara
-                m_TE_b_check = new QCheckBox ("enable");//Sara
-                m_TE_c_check = new QCheckBox ("enable");//Sara
-                //Sara
-                pGrid->addEdit(P::SeparatedFlow, CheckBox,m_TE_a_check ,"Separated flow on the suction side (high Reynolds flow):", true);//Sara
-connect(m_TE_a_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
-                pGrid->addEdit(P::SuctionSide, CheckBox, m_TE_b_check,"Suction side of airfoil (attached flow):", true);
-connect(m_TE_b_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
-                pGrid->addEdit(P::PressureSide, CheckBox, m_TE_c_check,"Pressure side of airfoil (attached flow):", true);
-connect(m_TE_c_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
-
-                //Sara
-                groupBox = new QGroupBox ("LE noise source contribution");
-                vBox->addWidget(groupBox);
-                pGrid = new ParameterGrid<P>(this);
-                groupBox->setLayout(pGrid);
-QComboBox *Lowson_type_combobox = new QComboBox;
-pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","");
-Lowson_type_combobox->insertItem(0,"None");
-Lowson_type_combobox->insertItem(1,"Von Kármán");
-Lowson_type_combobox->insertItem(2,"Rapid Distortion");
-connect(Lowson_type_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-    [=](int index){
-    check_LE=false;
-if (index != 0){
-    check_LE=true;
-}
-m_valRel_LE_check->setEnabled(check_LE);
-m_valReu_LE_check->setEnabled(check_LE);
-m_valMal_LE_check->setEnabled(check_LE);
-m_valMau_LE_check->setEnabled(check_LE);
-m_valRel_LE_numberedit->setEnabled(check_LE);
-m_valReu_LE_numberedit->setEnabled(check_LE);
-m_valMal_LE_numberedit->setEnabled(check_LE);
-m_valMau_LE_numberedit->setEnabled(check_LE);
-});
-
-groupBox = new QGroupBox ("LBL-VS noise source contribution");
-vBox->addWidget(groupBox);
-pGrid = new ParameterGrid<P>(this);
-groupBox->setLayout(pGrid);
-m_LBLVS_check = new QCheckBox("");
-pGrid->addEdit(P::LBLVS,CheckBox,m_LBLVS_check,"enable:",false);
 
 QGroupBox *groupBox_qs3d = new QGroupBox ("Quasi 3D Simulation");
-vBox->addWidget(groupBox_qs3d);
+gridx->addWidget(groupBox_qs3d,5,1);
 pGrid = new ParameterGrid<P>(this);
 groupBox_qs3d->setLayout(pGrid);
 QComboBox *qs3DSim_combobox = new QComboBox;
@@ -199,20 +150,92 @@ if(index!=0){
 //qs3d visible just for HAWT:
 groupBox_qs3d->setVisible(g_mainFrame->isHAWT);
 if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
+//Sara
+
+                groupBox = new QGroupBox ("TE noise source contributions");
+                gridx->addWidget(groupBox,0,2,2,1);
+                pGrid = new ParameterGrid<P>(this);
+                groupBox->setLayout(pGrid);
                 //Sara
-                vBox->addStretch();
+                m_TE_a_check = new QCheckBox ("enable");//Sara
+                m_TE_b_check = new QCheckBox ("enable");//Sara
+                m_TE_c_check = new QCheckBox ("enable");//Sara
+                //Sara
+                pGrid->addEdit(P::SeparatedFlow, CheckBox,m_TE_a_check ,"Separated flow on the suction side (high Reynolds flow):", true);//Sara
+connect(m_TE_a_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
+                pGrid->addEdit(P::SuctionSide, CheckBox, m_TE_b_check,"Suction side of airfoil (attached flow):", true);
 
+connect(m_TE_b_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
+                pGrid->addEdit(P::PressureSide, CheckBox, m_TE_c_check,"Pressure side of airfoil (attached flow):", true);
+connect(m_TE_c_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
 
-    widget = new QWidget;
-    tabWidget->addTab(widget, "Op. Points");
-        hBox = new QHBoxLayout;
-        widget->setLayout(hBox);
-            groupBox = new QGroupBox ("Operational Points");
-            groupBox->setMinimumHeight(300);
-            hBox->addWidget(groupBox);
-                QGridLayout *grid = new QGridLayout;
-                grid->setColumnStretch(5, 1);
-                groupBox->setLayout(grid);
+m_blunt_check = new QGroupBox("Bluntness noise source contribution");
+pGrid = new ParameterGrid<P>(this);
+//m_blunt_check->setLayout(pGrid);
+pGrid->addEdit(P::blunt_check, CheckGroupBox, m_blunt_check,"", false);
+
+m_blunt_check->setCheckable(true);
+groupBox = new QGroupBox ("Bluntness noise source contribution");
+gridx->addWidget(m_blunt_check,2,2);
+pGrid = new ParameterGrid<P>(this);
+m_blunt_check->setLayout(pGrid);
+
+connect(m_blunt_check,SIGNAL(toggled(bool)),this,SLOT(OnBluntCheck(bool)));
+
+m_h_blunt_numberedit= new NumberEdit;
+pGrid->addEdit(P::h_blunt, NumberEditType, m_h_blunt_numberedit,"LE thickness (h) []:", 2, LENGTH);
+m_h_blunt_numberedit->setEnabled(m_blunt_check->isChecked());
+m_h_blunt_numberedit->setToolTip("0 for a sharp TE");
+
+//Sara
+groupBox = new QGroupBox ("LE noise source contribution");
+gridx->addWidget(groupBox,3,2);
+pGrid = new ParameterGrid<P>(this);
+groupBox->setLayout(pGrid);
+QComboBox *Lowson_type_combobox = new QComboBox;
+pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","");
+Lowson_type_combobox->insertItem(0,"None");
+Lowson_type_combobox->insertItem(1,"Von Kármán");
+Lowson_type_combobox->insertItem(2,"Rapid Distortion");
+connect(Lowson_type_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+[=](int index){
+check_LE=false;
+if (index != 0){
+check_LE=true;
+}
+m_valRel_LE_check->setEnabled(check_LE);
+m_valReu_LE_check->setEnabled(check_LE);
+m_valMal_LE_check->setEnabled(check_LE);
+m_valMau_LE_check->setEnabled(check_LE);
+m_valRel_LE_numberedit->setEnabled(check_LE);
+m_valReu_LE_numberedit->setEnabled(check_LE);
+m_valMal_LE_numberedit->setEnabled(check_LE);
+m_valMau_LE_numberedit->setEnabled(check_LE);
+});
+
+groupBox = new QGroupBox ("LBL-VS noise source contribution");
+gridx->addWidget(groupBox, 4,2);
+pGrid = new ParameterGrid<P>(this);
+groupBox->setLayout(pGrid);
+m_LBLVS_check = new QCheckBox("");
+pGrid->addEdit(P::LBLVS,CheckBox,m_LBLVS_check,"enable:",false);
+
+widget = new QWidget;
+tabWidget->addTab(widget, "Op. Points");
+
+    QHBoxLayout *hBox = new QHBoxLayout; //Sara
+    QVBoxLayout *vBox = new QVBoxLayout; //Sara
+
+    vBox = new QVBoxLayout;
+    hBox = new QHBoxLayout;
+    widget->setLayout(hBox);
+
+    groupBox = new QGroupBox ("Operational Points");
+    groupBox->setMinimumHeight(300);
+        hBox->addWidget(groupBox);
+            QGridLayout *grid = new QGridLayout;
+            grid->setColumnStretch(5, 1);
+            groupBox->setLayout(grid);
 
                     QLabel *label = new QLabel ("Select operational points from");
                     grid->addWidget(label, 0, 0, 1, 1);
@@ -377,6 +400,7 @@ else{check_LE=false;}
                             vBox = new QVBoxLayout;
                             hBox = new QHBoxLayout;
                             widget->setLayout(hBox);
+
                             groupBox = new QGroupBox ("quasi 3D Blade Simulation Parameters");
                             hBox->addWidget(groupBox);
                             pGrid = new ParameterGrid<P>(this);
@@ -436,35 +460,40 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                             pGrid->addWidget(buttonle,9,1);//,8,2
                             connect(buttonle,SIGNAL(clicked()),this,SLOT(OnImportStarredD()));
 
-                            hBox->addLayout(vBox);
-                                QLabel *imageLabela = new QLabel;
+                                 QLabel *imageLabela = new QLabel;
                                 imageLabela->setPixmap(QPixmap(":/images/noise_3d_position.png"));
-                                vBox->addWidget(imageLabela, 0, Qt::AlignHCenter);
+                             hBox->addWidget(imageLabela);
 
-                                groupBox = new QGroupBox ("Observer Position");
-                                vBox->addWidget(groupBox);
-                                pGrid = new ParameterGrid<P>(this);
-                                groupBox->setLayout(pGrid);
+//                           hBox->addLayout(vBox);
+                            groupBox = new QGroupBox ("Observer Position");
+                            hBox->addWidget(groupBox);
+                            pGrid = new ParameterGrid<P>(this);
+                            groupBox->setLayout(pGrid);
 
-                                pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
-                                pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
+                            pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
+                            pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
-                                QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-                                if((g_bemdataStore.size()!=NULL)){
-                                double hub_radius=pbem->m_pBlade->m_HubRadius;
-                                outer_radius=pbem->m_pTData->OuterRadius;
-                                blade_radius=(outer_radius-hub_radius);}
-                                double z_pos=blade_radius/2.;
+                            QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+                            if((g_bemdataStore.size()!=NULL)){
+                            double hub_radius=pbem->m_pBlade->m_HubRadius;
+                            outer_radius=pbem->m_pTData->OuterRadius;
+                            blade_radius=(outer_radius-hub_radius);}
+                            double z_pos=blade_radius/2.;
 
-                                pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
+                            pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
 
                                 widget = new QWidget;
                                 tabWidget->addTab(widget, "Quasi 3D Rotor");
                                 vBox = new QVBoxLayout;
                                 hBox = new QHBoxLayout;
-                                widget->setLayout(hBox);
+//                                widget->setLayout(hBox);
+
+                                QGridLayout *gridy = new QGridLayout;//Sara
+
+                                widget->setLayout(gridy);
+
                                 groupBox = new QGroupBox ("quasi 3D Rotor Simulation Parameters");
-                                hBox->addWidget(groupBox);
+                                gridy->addWidget(groupBox,0,0,10,1);
                                 pGrid = new ParameterGrid<P>(this);
                                 groupBox->setLayout(pGrid);
                                 mode_combobox = new QComboBox;
@@ -521,8 +550,13 @@ pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower
                                 pGrid->addEdit(P::timesteps, NumberEditType, m_timesteps_numberedit,"Timesteps [ms]:",5);
                                 m_timesteps_numberedit->setEnabled(timesteps_in);
 
+//                                hBox->addLayout(vBox);
+                                QLabel *imageLabelb = new QLabel;
+                                imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
+                                gridy->addWidget(imageLabelb, 0, 1,10,1, Qt::AlignCenter);
+
                                 groupBox = new QGroupBox ("Observer Position");
-                                vBox->addWidget(groupBox);
+                                gridy->addWidget(groupBox,0,2,5,1);
                                 pGrid = new ParameterGrid<P>(this);
                                 groupBox->setLayout(pGrid);
                                 double distx = 1.5*outer_radius;
@@ -530,12 +564,20 @@ pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower
                                 pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YF:", 0);
                                 pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZF:", 0);
 
-    groupBox = new QGroupBox ("Shear layer effect");
-    vBox->addWidget(groupBox);
+m_shear_check = new QGroupBox("Shear layer effect");
+pGrid = new ParameterGrid<P>(this);
+//m_shear_check->setLayout(pGrid);♣
+pGrid->addEdit(P::shear_check, CheckGroupBox, m_shear_check,"", shear_in);
+
+m_shear_check->setCheckable(true);
+//m_shear_check->setChecked(shear_in);
+
+//    groupBox = new QGroupBox ("Shear layer effect");
+    gridy->addWidget(m_shear_check,5,2,5,1);
     pGrid = new ParameterGrid<P>(this);
-    groupBox->setLayout(pGrid);
-    m_shear_check = new QCheckBox("Shear layer:");
-    pGrid->addEdit(P::shear_check, CheckBox, m_shear_check,"", shear_in);
+    m_shear_check->setLayout(pGrid);
+//    m_shear_check = new QCheckBox("Shear layer:");
+//    pGrid->addEdit(P::shear_check, CheckBox, m_shear_check,"", shear_in);
     connect(m_shear_check,SIGNAL(toggled(bool)),this,SLOT(OnShearLayerCheck(bool)));
 
     m_shear_roughness_numberedit = new NumberEdit();
@@ -551,10 +593,10 @@ pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower
     pGrid->addEdit(P::shear_speed, NumberEditType, m_shear_speed_numberedit,"Mean Wind Speed []:", 13, SPEED);
     m_shear_speed_numberedit->setEnabled(m_shear_check->isChecked());
 
-    hBox->addLayout(vBox);
-    QLabel *imageLabelb = new QLabel;
-    imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
-    hBox->addWidget(imageLabelb, 0, Qt::AlignHCenter);
+//    hBox->addLayout(vBox);
+//    QLabel *imageLabelb = new QLabel;
+//    imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
+//    hBox->addWidget(imageLabelb, 0, Qt::AlignHCenter);
 
     tabWidget->setTabEnabled(2, (qs3DSim_combobox->currentIndex()!=0));
     tabWidget->setTabEnabled(3, (qs3DSim_combobox->currentIndex()!=0));
@@ -953,6 +995,11 @@ m_u_wind_speed_numberedit->setEnabled(index);
 void NoiseCreatorDialog::OnTSRCheck(bool index){
 TSR_in=index;
 m_TSR_spinbox->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnBluntCheck(bool index){
+blunt_in=index;
+m_h_blunt_numberedit->setEnabled(index);
 }
 
 void NoiseCreatorDialog::OnShearLayerCheck(bool index){
