@@ -3,8 +3,8 @@
 # -------------------------------------------------
 
 # switch here to build either for 32bit or 64bit
-CONFIG += build32bit //Sara
-#CONFIG += build64bit //Sara
+#CONFIG += build32bit
+CONFIG += build64bit
 
 # specify which Qt modules are needed.
 QT += core gui widgets opengl xml
@@ -19,7 +19,7 @@ TEMPLATE = app
 RESOURCES += qblade.qrc
 
 # set the icon of the executable application file
-win32:RC_FILE = win/qblade.rc
+win64:RC_FILE = win/qblade.rc
 
 # from gcc 4.8.1 on the c++11 implementation is feature complete
 QMAKE_CXXFLAGS += -std=gnu++11  # usually it would be fine to give c++11 but the OpenCL part apparently needs gnu extensions

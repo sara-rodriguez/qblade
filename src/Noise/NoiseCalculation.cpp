@@ -1048,7 +1048,7 @@ double aux_SPL_blunt=G0+G4+G5;
 
      qDebug() << "final: " << aux_SPL_blunt;
 
-    m_SPL_bluntdB[posOpPoint][posFreq] = qFabs(aux_SPL_blunt);
+    m_SPL_bluntdB[posOpPoint][posFreq] = aux_SPL_blunt;
 } else {m_SPL_LBLVSdB[posOpPoint][posFreq] = 0;}
 }
 //Sara blunt end

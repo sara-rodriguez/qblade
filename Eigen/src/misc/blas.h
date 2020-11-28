@@ -8,7 +8,7 @@ extern "C"
 
 #define BLASFUNC(FUNC) FUNC##_
 
-#ifdef __WIN64__
+#ifdef __WIN32__
 typedef long long BLASLONG;
 typedef unsigned long long BLASULONG;
 #else

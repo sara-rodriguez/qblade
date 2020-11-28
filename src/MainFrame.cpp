@@ -101,7 +101,7 @@ MainFrame::MainFrame (QWidget *parent, Qt::WindowFlags flags)
     setContextMenuPolicy(Qt::NoContextMenu);  // NM deactivate the default context menu
     /////////// end new NM ///////////////
 
-    m_VersionName = QString::fromLatin1("QBlade v0.96 Beta 32bits");//Sara
+    m_VersionName = QString::fromLatin1("QBlade v0.96 Beta 64bits");//Sara
 
     setWindowTitle(m_VersionName);
     setWindowIcon(QIcon(":/images/blank_logo.png"));
