@@ -32,6 +32,7 @@ public:
 	double directivityGreek;
 	double directivityPhi;
     double h_blunt;//Sara
+    double psi_blunt;//Sara
 	bool highFreq;  // NM the two frequency members are not included in the GUI
 	bool lowFreq;
 	bool suctionSide; //SPLs

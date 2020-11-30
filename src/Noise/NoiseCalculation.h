@@ -372,10 +372,10 @@ private:
     //Sara begin
     void LBLVSCalc(int posOpPoint, int posFreq, NoiseOpPoint* nop); //Alexandre MOD
     double calcLBLVS(int freq, double Reynolds, double Mach, double alpha, double delta_p, double r); //Alexandre MOD
-    void BluntCalc(int posOpPoint, int posFreq, double d_star_avg, double Dh, double h);
+    void BluntCalc(int posOpPoint, int posFreq, double Dh, double d_star_avg, double h_mm);
     double BluntG5Calc(double psi, double aux_rel, double freq, double h, double U);
     //Sara blunt
-    double calcBlunt(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h); //Sara blunt
+    double calcBlunt(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h_mm); //Sara blunt
     double calcao(double Reynolds);
     double calcBR_b(double B_min, double B_max);
     double calcB_min(double b);

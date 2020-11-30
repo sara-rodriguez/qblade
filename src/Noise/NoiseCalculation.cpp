@@ -359,7 +359,7 @@ double NoiseCalculation::getDL() {
 double NoiseCalculation::getDH() {
     //Dh, High Freq. Directivity Factor
     if (m_parameter->highFreq)
-    {return (2 * pow((sin((qDegreesToRadians(m_parameter->directivityGreek)/2))),2) * pow((sin(qDegreesToRadians(m_parameter->directivityPhi))),2)) /
+    {return (2 * pow((sin((qDegreesToRadians(m_parameter->directivityGreek)/2.))),2) * pow((sin(qDegreesToRadians(m_parameter->directivityPhi))),2)) /
                     ((1+m_parameter->originalMach * cos(qDegreesToRadians(m_parameter->directivityGreek))) *
                      (pow((1+(m_parameter->originalMach-m_EddyMachNumber) * cos(qDegreesToRadians(m_parameter->directivityPhi))),2))); //Sara
      } else {
@@ -623,7 +623,7 @@ void NoiseCalculation::preCalcSPLs(NoiseOpPoint *nop) {
     m_SplsSt1 = getSt1();
     m_SplsSt2 = getSt2(nop);
     m_SplsK1 = getK1(nop);
-    m_SplsSt1Bar = (m_SplsSt1+m_SplsSt2)/2;
+    m_SplsSt1Bar = (m_SplsSt1+m_SplsSt2)/2.;
     m_SplsK13 = m_SplsK1-3;
 
 //    qDebug() << "SPLs st1: " << m_SplsSt1;
@@ -1009,8 +1009,8 @@ void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d
     if (m_parameter->blunt_check!=0){
     double U=m_parameter->originalVelocity;
     double aux_rel=0;
-//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2;
-    double psi=m_parameter->directivityPhi;
+//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
+    double psi=m_parameter->psi_blunt;
     double G4=0;
     double aux_rel0=0;
     double G5_14=0;
@@ -1029,7 +1029,6 @@ if(aux_rel<=5.){
 else{
     G4=169.7-1.114*psi;
 }
-qDebug() << "G4: " << G4;
 
 aux_rel0=6.724*pow(aux_rel,2)-4.019*aux_rel+1.107;
 
@@ -1037,16 +1036,10 @@ G5_14=BluntG5Calc(14,aux_rel,freq,h,U);
 G5_0=BluntG5Calc(0,aux_rel0,freq,h,U);
 
 G5=G5_0+0.0714*psi*(G5_14-G5_0);
-qDebug() << "G5_0: " << G5_0;
-qDebug() << "G5_14: " << G5_14;
-qDebug() << "G5: " << G5;
 
 G0=10*log10(h*pow(Mach,5.5)*m_parameter->wettedLength * Dh/pow(r,2));
-qDebug() << "G0: " << G0;
 
 double aux_SPL_blunt=G0+G4+G5;
-
-     qDebug() << "final: " << aux_SPL_blunt;
 
     m_SPL_bluntdB[posOpPoint][posFreq] = aux_SPL_blunt;
 } else {m_SPL_LBLVSdB[posOpPoint][posFreq] = 0;}
@@ -1224,8 +1217,8 @@ ProgressBar(1);//Sara
                 //Sara
             LBLVSCalc(posOpPoint, posFreq, nop);
 
-            double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2;
-;            BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,m_parameter->h_blunt);
+            double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
+;            BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,m_parameter->h_blunt/1000.);
             //Sara
 
             double splDbConsolidated = 0.0;
@@ -2871,7 +2864,7 @@ double NoiseCalculation::calcBlunt(int freq, double Mach, double wetted_length, 
     if (m_parameter->blunt_check!=0){
 //    double U=m_parameter->originalVelocity;
     double aux_rel=0;
-//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2;
+//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
 //    double psi=m_parameter->directivityPhi;
     double G4=0;
     double aux_rel0=0;
@@ -3283,7 +3276,7 @@ int number_of_segments = pbem->m_pBData->m_pos.size();
             axial_ind_fact[i] = bdata->m_a_axial.value(i);
            if (i==(number_of_segments-1)){axial_ind_fact_n[i] = bdata->m_a_axial.value(i);}else {axial_ind_fact_n[i] = bdata->m_a_axial.value(i+1);}
 
-            if (i<number_of_segments/2) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
+            if (i<number_of_segments/2.) {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact[i]);}
             else {axial_velocity[i] = approaxing_wind_speed*(1.f-axial_ind_fact_n[i]);}
 
             tangential_speed[i] = omega*bdata->m_pos.value(i)*(1.+bdata->m_a_tangential.value(i));
@@ -3929,7 +3922,6 @@ aux4_le_rotor[i]=pow(K_le,3)/pow(1+(pow(K_le,2)),c_const_le);
 aux5_le_rotor[i]=10.*log10(aux0_le_rotor[i]*aux4_le_rotor[i]);
 //rotor
 
-
 delta_p=D_starred_P[i]/0.34;
 delta_p_rotor=D_starred_P_rotor[i]/0.34;
 SPL_LblvsdB[j]=calcLBLVS(CENTRAL_BAND_FREQUENCY[j],Reynolds[i],Mach[i],alpha[i],delta_p,dist_obs[i]);
@@ -3939,12 +3931,14 @@ SPL_LblvsdB_rotor[j]=calcLBLVS(CENTRAL_BAND_FREQUENCY[j],Reynolds_rotor[i],Mach_
 double d_star_avg=(D_starred_S[i]+D_starred_P[i])/2.;
 double d_star_avg_rotor=(D_starred_S_rotor[i]+D_starred_P_rotor[i])/2.;
 
-SPL_BluntdB[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],u_le,phi_e[i],dist_obs[i],d_star_avg,Dh[i], m_parameter->h_blunt);
-SPL_BluntdB_rotor[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],u_le,phi_e_rotor[i],dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], m_parameter->h_blunt);
+double psi = theta_BEM[i];
+
+SPL_BluntdB[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],vel[i],psi,dist_obs[i],d_star_avg,Dh[i], m_parameter->h_blunt/1000.);
+SPL_BluntdB_rotor[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],vel_rotor[i],psi,dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], m_parameter->h_blunt/1000.);
 
 //Validation:
 
-//BPM validation:
+//BPM validation:v
 //p 66 C_Project_Log_Text_15_jan_16
 
 BPM_validation=true;

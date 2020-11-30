@@ -183,9 +183,14 @@ m_blunt_check->setLayout(pGrid);
 connect(m_blunt_check,SIGNAL(toggled(bool)),this,SLOT(OnBluntCheck(bool)));
 
 m_h_blunt_numberedit= new NumberEdit;
-pGrid->addEdit(P::h_blunt, NumberEditType, m_h_blunt_numberedit,"LE thickness (h) []:", 2, LENGTH);
+pGrid->addEdit(P::h_blunt, NumberEditType, m_h_blunt_numberedit,"LE thickness (h) [mm]:", 2.5);
 m_h_blunt_numberedit->setEnabled(m_blunt_check->isChecked());
 m_h_blunt_numberedit->setToolTip("0 for a sharp TE");
+
+m_psi_blunt_numberedit= new NumberEdit;
+pGrid->addEdit(P::psi_blunt, NumberEditType, m_psi_blunt_numberedit,"ψ [deg]:", 14);
+m_psi_blunt_numberedit->setEnabled(m_blunt_check->isChecked());
+m_psi_blunt_numberedit->setToolTip("angle parameter related to surface slope at TE");
 
 //Sara
 groupBox = new QGroupBox ("LE noise source contribution");

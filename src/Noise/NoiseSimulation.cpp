@@ -1108,6 +1108,10 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
         if(set) m_parameter.h_blunt = value.toDouble();
         else value = m_parameter.h_blunt; break;
 
+    case P::psi_blunt:
+        if(set) m_parameter.psi_blunt = value.toDouble();
+        else value = m_parameter.psi_blunt; break;
+
     case P::TSR_check:
         if(set) m_parameter.TSR_check = value.toBool();
         else {value=m_parameter.TSR_check;}
