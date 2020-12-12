@@ -8,6 +8,7 @@
 #include "NoiseException.h"
 #include "../XBEM/BEM.h" //Sara
 #include "../Objects/Polar.h"//Sara
+#include "../XBEM/Blade.h"//Sara
 
 //Sara
 #include "../Objects/OpPoint.h"
@@ -64,6 +65,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LBLVSdB); //Sara
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_bluntdB); //Sara
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_tipvortexdB); //Sara
 
     g_serializer.readOrWriteDoubleVector1D(&m_OASPL);
     g_serializer.readOrWriteDoubleVector1D(&m_OASPLA);
@@ -91,6 +93,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LBLVSdB3d); //Sara
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_bluntdB3d); //Sara
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_tipvortexdB3d); //Sara
 
 //    blade
     g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_final);
@@ -108,6 +111,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LBLVSdB3d_final);
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_bluntdB3d_final);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_tipvortexdB3d_final);
 
 //    rotor
     g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_rotor);
@@ -125,6 +129,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LBLVSdB3d_rotor);
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_bluntdB3d_rotor);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_tipvortexdB3d_rotor);
 
     //    rotor loops
     g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_rotor_loops);
@@ -142,6 +147,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LBLVSdB3d_rotor_loops);
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_bluntdB3d_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_tipvortexdB3d_rotor_loops);
 
     //    final rotor loops
     g_serializer.readOrWriteDoubleVector2D(&m_SPLadB3d_final_rotor_loops);
@@ -159,6 +165,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_LBLVSdB3d_final_rotor_loops);
     g_serializer.readOrWriteDoubleVector2D(&m_SPL_bluntdB3d_final_rotor_loops);
+    g_serializer.readOrWriteDoubleVector2D(&m_SPL_tipvortexdB3d_final_rotor_loops);
 
 //4d
     g_serializer.readOrWriteDoubleVector4D(&m_SPLadB3d_4d);
@@ -176,6 +183,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector4D(&m_SPL_LBLVSdB3d_4d);
     g_serializer.readOrWriteDoubleVector4D(&m_SPL_bluntdB3d_4d);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_tipvortexdB3d_4d);
 
     g_serializer.readOrWriteDoubleVector4D(&m_SPLadB3d_4d_blade);
     g_serializer.readOrWriteDoubleVector4D(&m_SPLsdB3d_4d_blade);
@@ -192,6 +200,7 @@ void NoiseCalculation::serialize() {
 
     g_serializer.readOrWriteDoubleVector4D(&m_SPL_LBLVSdB3d_4d_blade);
     g_serializer.readOrWriteDoubleVector4D(&m_SPL_bluntdB3d_4d_blade);
+    g_serializer.readOrWriteDoubleVector4D(&m_SPL_tipvortexdB3d_4d_blade);
 
 //OASPLs
     g_serializer.readOrWriteDoubleVector1D(&m_OASPL3d);
@@ -1005,12 +1014,11 @@ double NoiseCalculation::BluntG5Calc(double psi, double aux_rel, double freq, do
     return G5;
 }
 
-void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d_star_avg, double h) {
+void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d_star_avg, double psi, double h) {
     if (m_parameter->blunt_check!=0){
     double U=m_parameter->originalVelocity;
     double aux_rel=0;
 //    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
-    double psi=m_parameter->psi_blunt;
     double G4=0;
     double aux_rel0=0;
     double G5_14=0;
@@ -1020,6 +1028,8 @@ void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d
     double freq=CENTRAL_BAND_FREQUENCY[posFreq];
     const double Mach = m_parameter->originalMach;
     double r = m_parameter->distanceObsever;
+
+    if(psi>14){psi=14;}
 
     aux_rel=h/d_star_avg;
 
@@ -1042,9 +1052,52 @@ G0=10*log10(h*pow(Mach,5.5)*m_parameter->wettedLength * Dh/pow(r,2));
 double aux_SPL_blunt=G0+G4+G5;
 
     m_SPL_bluntdB[posOpPoint][posFreq] = aux_SPL_blunt;
+
 } else {m_SPL_LBLVSdB[posOpPoint][posFreq] = 0;}
 }
 //Sara blunt end
+
+//Sara tip vortex begin
+void NoiseCalculation::TipVortexCalc(int posOpPoint, int posFreq, double alpha_tip, NoiseOpPoint* nop) {
+    if (m_parameter->tipvortex_check!=0){
+const double M = m_parameter->originalMach;
+double Dh=getDH();
+double re = m_parameter->distanceObsever;
+double f=CENTRAL_BAND_FREQUENCY[posFreq];
+double c=m_parameter->originalChordLength;
+
+double aux1=0;
+double aux2=0;
+double l=0;
+double St2lin=0;
+double M_max=0;
+double U_max=0;
+double l_c=0;
+double c0=343.8889; //medium speed of sound
+
+l_c=0.008*alpha_tip;
+
+//another shape
+//if((0<=alpha_tip) & (alpha_tip<2)){l_c=0.0230+0.0169*alpha_tip;}
+//if(2<alpha_tip){l_c=0.0378+0.0095*alpha_tip;}
+
+l=l_c*c;
+
+M_max=(1+0.036*alpha_tip)*M;
+
+U_max=c0*M_max;
+
+St2lin=f*l/U_max;
+
+aux1=10*log10(pow(M,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(re,2);
+
+aux2=-30.5*pow(log10(St2lin)+0.3,2)+126;
+
+m_SPL_tipvortexdB[posOpPoint][posFreq]=aux1+aux2;
+    } else {m_SPL_tipvortexdB[posOpPoint][posFreq]=0;}
+}
+//Sara tip vortex end
+
 
 //calculation for 2D noise
 void NoiseCalculation::calculate() {
@@ -1077,6 +1130,9 @@ ProgressBar(1);//Sara
 
         m_SPLbluntdB[posOpPoint] = 0;
         m_SPLlogblunt[posOpPoint] = 0;
+
+        m_SPLtipvortexdB[posOpPoint] = 0;
+        m_SPLlogtipvortex[posOpPoint] = 0;
 //Sara
 
 //        qDebug() << "======================== OpPoint ========================";
@@ -1217,8 +1273,26 @@ ProgressBar(1);//Sara
                 //Sara
             LBLVSCalc(posOpPoint, posFreq, nop);
 
+            //blunt calculations
             double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
-;            BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,m_parameter->h_blunt/1000.);
+
+                QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+                m_Blade = pbem->m_BEMToolBar->m_rotorComboBox->currentObject();
+
+                int num_panels = m_Blade->m_NPanel;
+
+                double panel=m_parameter->dStarChordStation*num_panels;
+
+                double h_blunt;
+
+                if(!m_parameter->hblunt_check){h_blunt = m_Blade->getThickness_TE(panel,m_parameter->originalChordLength);} else {h_blunt = m_parameter->hblunt/1000.;}
+
+
+                double psi_blunt = m_Blade->getAngle_TE(panel);
+
+            BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,psi_blunt, h_blunt);
+
+            TipVortexCalc(posOpPoint,posFreq,10,nop); //urgente
             //Sara
 
             double splDbConsolidated = 0.0;
@@ -1243,6 +1317,10 @@ ProgressBar(1);//Sara
 
             if(m_parameter->blunt_check!=0){
                 splDbConsolidated += pow(10,(m_SPL_bluntdB[posOpPoint][posFreq]/10));
+            }
+
+            if(m_parameter->tipvortex_check!=0){
+                splDbConsolidated += pow(10,(m_SPL_tipvortexdB[posOpPoint][posFreq]/10));
             }
 //Sara
 
@@ -1289,6 +1367,12 @@ ProgressBar(1);//Sara
             }else{
             m_SPLlogblunt[posOpPoint] = 0;
             }
+
+            if (m_parameter->tipvortex_check!=0){
+            m_SPLlogtipvortex[posOpPoint] += pow(10,(m_SPL_tipvortexdB[posOpPoint][posFreq]/10));
+            }else{
+            m_SPLlogtipvortex[posOpPoint] = 0;
+            }
 //Sara
         }
 
@@ -1310,6 +1394,8 @@ m_SPLLEdBCW[posOpPoint] = 10*log10(m_SPLLEdBCW[posOpPoint]);
 m_SPLlogLBLVS[posOpPoint] = 10*log10(m_SPLlogLBLVS[posOpPoint]);
 
 m_SPLlogblunt[posOpPoint] = 10*log10(m_SPLlogblunt[posOpPoint]);
+
+m_SPLlogtipvortex[posOpPoint] = 10*log10(m_SPLlogtipvortex[posOpPoint]);
 //Sara
     }
     qDeleteAll(noiseOpPoints);
@@ -1365,6 +1451,9 @@ void NoiseCalculation::setupVectors() {
 
     m_SPLbluntdB.clear();
     m_SPLlogblunt.clear();
+
+    m_SPLtipvortexdB.clear();
+    m_SPLlogtipvortex.clear();
 
     m_OASPL.clear();
     m_OASPLA.clear();
@@ -1422,6 +1511,9 @@ void NoiseCalculation::setupVectors() {
     m_SPL_bluntdB.resize(size);
     m_SPLbluntdB.resize(size);
 
+    m_SPL_tipvortexdB.resize(size);
+    m_SPLtipvortexdB.resize(size);
+
     m_SPLLEdBAW.resize(size);
     m_SPLLEdBBW.resize(size);
     m_SPLLEdBCW.resize(size);
@@ -1430,6 +1522,8 @@ void NoiseCalculation::setupVectors() {
     m_SPLlogLBLVS.resize(size);
 
     m_SPLlogblunt.resize(size);
+
+    m_SPLlogtipvortex.resize(size);
 //Sara
     m_OASPL.resize  (size);
     m_OASPLA.resize (size);
@@ -1464,6 +1558,7 @@ void NoiseCalculation::setupVectors() {
         m_SPL_LEdBCW[i].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB[i].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB[i].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB[i].resize(FREQUENCY_TABLE_SIZE);
     }
 
 //Sara
@@ -1492,6 +1587,7 @@ void NoiseCalculation::setupVectors() {
                 m_SPL_LEdBCW[i][w]=0;
                 m_SPL_LBLVSdB[i][w]=0;
                 m_SPL_bluntdB[i][w]=0;
+                m_SPL_tipvortexdB[i][w]=0;
             }
         }
     }
@@ -1523,15 +1619,18 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBCW3d.clear();
     m_SPL_LBLVSdB3d.clear();
     m_SPL_bluntdB3d.clear();
+    m_SPL_tipvortexdB3d.clear();
     m_SPLLEdB3d.clear();
     m_SPLLEdBAW3d.clear();
     m_SPLLEdBBW3d.clear();
     m_SPLLEdBCW3d.clear();
     m_SPLLBLVSdB3d.clear();
     m_SPLbluntdB3d.clear();
+    m_SPLtipvortexdB3d.clear();
     m_SPLlogLE3d.clear();
     m_SPLlogLBLVS3d.clear();
     m_SPLlogblunt3d.clear();
+    m_SPLlogtipvortex3d.clear();
     m_OASPL3d.clear();
     m_OASPLA3d.clear();
     m_OASPLB3d.clear();
@@ -1553,6 +1652,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBCW3d_final.clear();
     m_SPL_LBLVSdB3d_final.clear();
     m_SPL_bluntdB3d_final.clear();
+    m_SPL_tipvortexdB3d_final.clear();
 
     m_SPLdB3d_rotor.clear();
     m_SPLdBAW3d_rotor.clear();
@@ -1576,15 +1676,18 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBCW3d_rotor.clear();
     m_SPL_LBLVSdB3d_rotor.clear();
     m_SPL_bluntdB3d_rotor.clear();
+    m_SPL_tipvortexdB3d_rotor.clear();
     m_SPLLEdB3d_rotor.clear();
     m_SPLLEdBAW3d_rotor.clear();
     m_SPLLEdBBW3d_rotor.clear();
     m_SPLLEdBCW3d_rotor.clear();
     m_SPLLBLVSdB3d_rotor.clear();
     m_SPLbluntdB3d_rotor.clear();
+    m_SPLtipvortexdB3d_rotor.clear();
     m_SPLlogLE3d_rotor.clear();
     m_SPLlogLBLVS3d_rotor.clear();
     m_SPLlogblunt3d_rotor.clear();
+    m_SPLlogtipvortex3d_rotor.clear();
     m_OASPL3d_rotor.clear();
     m_OASPLA3d_rotor.clear();
     m_OASPLB3d_rotor.clear();
@@ -1606,6 +1709,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBCW3d_final_rotor.clear();
     m_SPL_LBLVSdB3d_final_rotor.clear();
     m_SPL_bluntdB3d_final_rotor.clear();
+    m_SPL_tipvortexdB3d_final_rotor.clear();
 
     m_SPLdB3d_rotor_loops.clear();
     m_SPLdBAW3d_rotor_loops.clear();
@@ -1629,6 +1733,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBCW3d_rotor_loops.clear();
     m_SPL_LBLVSdB3d_rotor_loops.clear();
     m_SPL_bluntdB3d_rotor_loops.clear();
+    m_SPL_tipvortexdB3d_rotor_loops.clear();
     m_SPLLEdB3d_rotor_loops.clear();
     m_SPLLEdBAW3d_rotor_loops.clear();
     m_SPLLEdBBW3d_rotor_loops.clear();
@@ -1636,8 +1741,10 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPLlogLE3d_rotor_loops.clear();
     m_SPLLBLVSdB3d_rotor_loops.clear();
     m_SPLbluntdB3d_rotor_loops.clear();
+    m_SPLtipvortexdB3d_rotor_loops.clear();
     m_SPLlogLBLVS3d_rotor_loops.clear();
     m_SPLlogblunt3d_rotor_loops.clear();
+    m_SPLlogtipvortex3d_rotor_loops.clear();
     m_OASPL3d_rotor_loops.clear();
     m_OASPLA3d_rotor_loops.clear();
     m_OASPLB3d_rotor_loops.clear();
@@ -1659,6 +1766,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBCW3d_final_rotor_loops.clear();
     m_SPL_LBLVSdB3d_final_rotor_loops.clear();
     m_SPL_bluntdB3d_final_rotor_loops.clear();
+    m_SPL_tipvortexdB3d_final_rotor_loops.clear();
 
     m_SPLdB3d_4d.clear();
     m_SPLdBAW3d_4d.clear();
@@ -1679,6 +1787,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_4d.clear();
     m_SPL_LBLVSdB3d_4d.clear();
     m_SPL_bluntdB3d_4d.clear();
+    m_SPL_tipvortexdB3d_4d.clear();
     m_SPL_LEdBAW3d_4d.clear();
     m_SPL_LEdBBW3d_4d.clear();
     m_SPL_LEdBCW3d_4d.clear();
@@ -1705,6 +1814,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdBCW3d_4d_blade.clear();
     m_SPL_LBLVSdB3d_4d_blade.clear();
     m_SPL_bluntdB3d_4d_blade.clear();
+    m_SPL_tipvortexdB3d_4d_blade.clear();
 
     m_DStarInterpolatedS3d.clear();
     m_DStarInterpolatedP3d.clear();
@@ -1747,14 +1857,17 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPLLEdB3d.squeeze();
     m_SPL_LBLVSdB3d.squeeze();
     m_SPL_bluntdB3d.squeeze();
+    m_SPL_tipvortexdB3d.squeeze();
     m_SPLLBLVSdB3d.squeeze();
     m_SPLbluntdB3d.squeeze();
+    m_SPLtipvortexdB3d.squeeze();
     m_SPLLEdBAW3d.squeeze();
     m_SPLLEdBBW3d.squeeze();
     m_SPLLEdBCW3d.squeeze();
     m_SPLlogLE3d.squeeze();
     m_SPLlogLBLVS3d.squeeze();
     m_SPLlogblunt3d.squeeze();
+    m_SPLlogtipvortex3d.squeeze();
     m_OASPL3d.squeeze();
     m_OASPLA3d.squeeze();
     m_OASPLB3d.squeeze();
@@ -1773,6 +1886,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_final.squeeze();
     m_SPL_LBLVSdB3d_final.squeeze();
     m_SPL_bluntdB3d_final.squeeze();
+    m_SPL_tipvortexdB3d_final.squeeze();
     m_SPL_LEdBAW3d_final.squeeze();
     m_SPL_LEdBBW3d_final.squeeze();
     m_SPL_LEdBCW3d_final.squeeze();
@@ -1796,17 +1910,21 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_rotor.squeeze();
     m_SPL_LBLVSdB3d_rotor.squeeze();
     m_SPL_bluntdB3d_rotor.squeeze();
+    m_SPL_tipvortexdB3d_rotor.squeeze();
     m_SPL_LEdBAW3d_rotor.squeeze();
     m_SPL_LEdBBW3d_rotor.squeeze();
     m_SPL_LEdBCW3d_rotor.squeeze();
     m_SPLLEdB3d_rotor.squeeze();
     m_SPLLBLVSdB3d_rotor.squeeze();
     m_SPLbluntdB3d_rotor.squeeze();
+    m_SPLtipvortexdB3d_rotor.squeeze();
     m_SPLLEdBAW3d_rotor.squeeze();
     m_SPLLEdBBW3d_rotor.squeeze();
     m_SPLLEdBCW3d_rotor.squeeze();
     m_SPLlogLE3d_rotor.squeeze();
     m_SPLlogLBLVS3d_rotor.squeeze();
+    m_SPLlogblunt3d_rotor.squeeze();
+    m_SPLlogtipvortex3d_rotor.squeeze();
     m_OASPL3d_rotor.squeeze();
     m_OASPLA3d_rotor.squeeze();
     m_OASPLB3d_rotor.squeeze();
@@ -1825,6 +1943,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_final_rotor.squeeze();
     m_SPL_LBLVSdB3d_final_rotor.squeeze();
     m_SPL_bluntdB3d_final_rotor.squeeze();
+    m_SPL_tipvortexdB3d_final_rotor.squeeze();
     m_SPL_LEdBAW3d_final_rotor.squeeze();
     m_SPL_LEdBBW3d_final_rotor.squeeze();
     m_SPL_LEdBCW3d_final_rotor.squeeze();
@@ -1848,18 +1967,21 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_rotor_loops.squeeze();
     m_SPL_LBLVSdB3d_rotor_loops.squeeze();
     m_SPL_bluntdB3d_rotor_loops.squeeze();
+    m_SPL_tipvortexdB3d_rotor_loops.squeeze();
     m_SPL_LEdBAW3d_rotor_loops.squeeze();
     m_SPL_LEdBBW3d_rotor_loops.squeeze();
     m_SPL_LEdBCW3d_rotor_loops.squeeze();
     m_SPLLEdB3d_rotor_loops.squeeze();
     m_SPLLBLVSdB3d_rotor_loops.squeeze();
     m_SPLbluntdB3d_rotor_loops.squeeze();
+    m_SPLtipvortexdB3d_rotor_loops.squeeze();
     m_SPLLEdBAW3d_rotor_loops.squeeze();
     m_SPLLEdBBW3d_rotor_loops.squeeze();
     m_SPLLEdBCW3d_rotor_loops.squeeze();
     m_SPLlogLE3d_rotor_loops.squeeze();
     m_SPLlogLBLVS3d_rotor_loops.squeeze();
     m_SPLlogblunt3d_rotor_loops.squeeze();
+    m_SPLlogtipvortex3d_rotor_loops.squeeze();
     m_OASPL3d_rotor_loops.squeeze();
     m_OASPLA3d_rotor_loops.squeeze();
     m_OASPLB3d_rotor_loops.squeeze();
@@ -1878,6 +2000,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_final_rotor_loops.squeeze();
     m_SPL_LBLVSdB3d_final_rotor_loops.squeeze();
     m_SPL_bluntdB3d_final_rotor_loops.squeeze();
+    m_SPL_tipvortexdB3d_final_rotor_loops.squeeze();
     m_SPL_LEdBAW3d_final_rotor_loops.squeeze();
     m_SPL_LEdBBW3d_final_rotor_loops.squeeze();
     m_SPL_LEdBCW3d_final_rotor_loops.squeeze();
@@ -1901,6 +2024,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_4d.squeeze();
     m_SPL_LBLVSdB3d_4d.squeeze();
     m_SPL_bluntdB3d_4d.squeeze();
+    m_SPL_tipvortexdB3d_4d.squeeze();
     m_SPL_LEdBAW3d_4d.squeeze();
     m_SPL_LEdBBW3d_4d.squeeze();
     m_SPL_LEdBCW3d_4d.squeeze();
@@ -1924,6 +2048,7 @@ void NoiseCalculation::setupVectorsqs3d() {
     m_SPL_LEdB3d_4d_blade.squeeze();
     m_SPL_LBLVSdB3d_4d_blade.squeeze();
     m_SPL_bluntdB3d_4d_blade.squeeze();
+    m_SPL_tipvortexdB3d_4d_blade.squeeze();
     m_SPL_LEdBAW3d_4d_blade.squeeze();
     m_SPL_LEdBBW3d_4d_blade.squeeze();
     m_SPL_LEdBCW3d_4d_blade.squeeze();
@@ -1984,6 +2109,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdB3d.resize(size);
     m_SPL_LBLVSdB3d.resize(size);
     m_SPL_bluntdB3d.resize(size);
+    m_SPL_tipvortexdB3d.resize(size);
     m_SPL_LEdBAW3d.resize(size);
     m_SPL_LEdBBW3d.resize(size);
     m_SPL_LEdBCW3d.resize(size);
@@ -1997,18 +2123,21 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdB3d_final.resize(size);
     m_SPL_LBLVSdB3d_final.resize(size);
     m_SPL_bluntdB3d_final.resize(size);
+    m_SPL_tipvortexdB3d_final.resize(size);
     m_SPL_LEdBAW3d_final.resize(size);
     m_SPL_LEdBBW3d_final.resize(size);
     m_SPL_LEdBCW3d_final.resize(size);
     m_SPLLEdB3d.resize(size);
     m_SPLLBLVSdB3d.resize(size);
     m_SPLbluntdB3d.resize(size);
+    m_SPLtipvortexdB3d.resize(size);
     m_SPLLEdBAW3d.resize(size);
     m_SPLLEdBBW3d.resize(size);
     m_SPLLEdBCW3d.resize(size);
     m_SPLlogLE3d.resize(size);
     m_SPLlogLBLVS3d.resize(size);
     m_SPLlogblunt3d.resize(size);
+    m_SPLlogtipvortex3d.resize(size);
     m_OASPL3d.resize(size);
     m_OASPLA3d.resize(size);
     m_OASPLB3d.resize(size);
@@ -2027,6 +2156,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdB3d_rotor.resize(size);
     m_SPL_LBLVSdB3d_rotor.resize(size);
     m_SPL_bluntdB3d_rotor.resize(size);
+    m_SPL_tipvortexdB3d_rotor.resize(size);
     m_SPL_LEdBAW3d_rotor.resize(size);
     m_SPL_LEdBBW3d_rotor.resize(size);
     m_SPL_LEdBCW3d_rotor.resize(size);
@@ -2040,18 +2170,21 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdB3d_final_rotor.resize(size);
     m_SPL_LBLVSdB3d_final_rotor.resize(size);
     m_SPL_bluntdB3d_final_rotor.resize(size);
+    m_SPL_tipvortexdB3d_final_rotor.resize(size);
     m_SPL_LEdBAW3d_final_rotor.resize(size);
     m_SPL_LEdBBW3d_final_rotor.resize(size);
     m_SPL_LEdBCW3d_final_rotor.resize(size);
     m_SPLLEdB3d_rotor.resize(size);
     m_SPLLBLVSdB3d_rotor.resize(size);
     m_SPLbluntdB3d_rotor.resize(size);
+    m_SPLtipvortexdB3d_rotor.resize(size);
     m_SPLLEdBAW3d_rotor.resize(size);
     m_SPLLEdBBW3d_rotor.resize(size);
     m_SPLLEdBCW3d_rotor.resize(size);
     m_SPLlogLE3d_rotor.resize(size);
     m_SPLlogLBLVS3d_rotor.resize(size);
     m_SPLlogblunt3d_rotor.resize(size);
+    m_SPLlogtipvortex3d_rotor.resize(size);
     m_OASPL3d_rotor.resize(size);
     m_OASPLA3d_rotor.resize(size);
     m_OASPLB3d_rotor.resize(size);
@@ -2070,6 +2203,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdB3d_rotor_loops.resize(size);
     m_SPL_LBLVSdB3d_rotor_loops.resize(size);
     m_SPL_bluntdB3d_rotor_loops.resize(size);
+    m_SPL_tipvortexdB3d_rotor_loops.resize(size);
     m_SPL_LEdBAW3d_rotor_loops.resize(size);
     m_SPL_LEdBBW3d_rotor_loops.resize(size);
     m_SPL_LEdBCW3d_rotor_loops.resize(size);
@@ -2083,18 +2217,21 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
     m_SPL_LEdB3d_final_rotor_loops.resize(size);
     m_SPL_LBLVSdB3d_final_rotor_loops.resize(size);
     m_SPL_bluntdB3d_final_rotor_loops.resize(size);
+    m_SPL_tipvortexdB3d_final_rotor_loops.resize(size);
     m_SPL_LEdBAW3d_final_rotor_loops.resize(size);
     m_SPL_LEdBBW3d_final_rotor_loops.resize(size);
     m_SPL_LEdBCW3d_final_rotor_loops.resize(size);
     m_SPLLEdB3d_rotor_loops.resize(size);
     m_SPLLBLVSdB3d_rotor_loops.resize(size);
     m_SPLbluntdB3d_rotor_loops.resize(size);
+    m_SPLtipvortexdB3d_rotor_loops.resize(size);
     m_SPLLEdBAW3d_rotor_loops.resize(size);
     m_SPLLEdBBW3d_rotor_loops.resize(size);
     m_SPLLEdBCW3d_rotor_loops.resize(size);
     m_SPLlogLE3d_rotor_loops.resize(size);
     m_SPLlogLBLVS3d_rotor_loops.resize(size);
     m_SPLlogblunt3d_rotor_loops.resize(size);
+    m_SPLlogtipvortex3d_rotor_loops.resize(size);
     m_OASPL3d_rotor_loops.resize(size);
     m_OASPLA3d_rotor_loops.resize(size);
     m_OASPLB3d_rotor_loops.resize(size);
@@ -2114,6 +2251,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdB3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d[w].resize(FREQUENCY_TABLE_SIZE);
@@ -2127,6 +2265,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdB3d_final[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d_final[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d_final[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d_final[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d_final[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_final[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_final[w].resize(FREQUENCY_TABLE_SIZE);
@@ -2141,6 +2280,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_rotor[w].resize(FREQUENCY_TABLE_SIZE);
@@ -2154,6 +2294,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdB3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_final_rotor[w].resize(FREQUENCY_TABLE_SIZE);
@@ -2168,6 +2309,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
@@ -2181,6 +2323,7 @@ if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
         m_SPL_LEdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_final_rotor_loops[w].resize(FREQUENCY_TABLE_SIZE);
@@ -2214,6 +2357,7 @@ m_SPLdBCW3d_4d.resize(blades_num);
 m_SPL_LEdB3d_4d.resize(blades_num);
 m_SPL_LBLVSdB3d_4d.resize(blades_num);
 m_SPL_bluntdB3d_4d.resize(blades_num);
+m_SPL_tipvortexdB3d_4d.resize(blades_num);
 m_SPL_LEdBAW3d_4d.resize(blades_num);
 m_SPL_LEdBBW3d_4d.resize(blades_num);
 m_SPL_LEdBCW3d_4d.resize(blades_num);
@@ -2228,6 +2372,7 @@ m_SPLdBCW3d_4d_blade.resize(blades_num);
 m_SPL_LEdB3d_4d_blade.resize(blades_num);
 m_SPL_LBLVSdB3d_4d_blade.resize(blades_num);
 m_SPL_bluntdB3d_4d_blade.resize(blades_num);
+m_SPL_tipvortexdB3d_4d_blade.resize(blades_num);
 m_SPL_LEdBAW3d_4d_blade.resize(blades_num);
 m_SPL_LEdBBW3d_4d_blade.resize(blades_num);
 m_SPL_LEdBCW3d_4d_blade.resize(blades_num);
@@ -2243,6 +2388,7 @@ for (unsigned int x = 0; x < blades_num; ++x){
     m_SPL_LEdB3d_4d[x].resize(angles_num);
     m_SPL_LBLVSdB3d_4d[x].resize(angles_num);
     m_SPL_bluntdB3d_4d[x].resize(angles_num);
+    m_SPL_tipvortexdB3d_4d[x].resize(angles_num);
     m_SPL_LEdBAW3d_4d[x].resize(angles_num);
     m_SPL_LEdBBW3d_4d[x].resize(angles_num);
     m_SPL_LEdBCW3d_4d[x].resize(angles_num);
@@ -2257,6 +2403,7 @@ for (unsigned int x = 0; x < blades_num; ++x){
     m_SPL_LEdB3d_4d_blade[x].resize(angles_num);
     m_SPL_LBLVSdB3d_4d_blade[x].resize(angles_num);
     m_SPL_bluntdB3d_4d_blade[x].resize(angles_num);
+    m_SPL_tipvortexdB3d_4d_blade[x].resize(angles_num);
     m_SPL_LEdBAW3d_4d_blade[x].resize(angles_num);
     m_SPL_LEdBBW3d_4d_blade[x].resize(angles_num);
     m_SPL_LEdBCW3d_4d_blade[x].resize(angles_num);
@@ -2274,6 +2421,7 @@ for (unsigned int y = 0; y < angles_num; ++y){
     m_SPL_LEdB3d_4d[x][y].resize(size);
     m_SPL_LBLVSdB3d_4d[x][y].resize(size);
     m_SPL_bluntdB3d_4d[x][y].resize(size);
+    m_SPL_tipvortexdB3d_4d[x][y].resize(size);
     m_SPL_LEdBAW3d_4d[x][y].resize(size);
     m_SPL_LEdBBW3d_4d[x][y].resize(size);
     m_SPL_LEdBCW3d_4d[x][y].resize(size);
@@ -2288,6 +2436,7 @@ for (unsigned int y = 0; y < angles_num; ++y){
     m_SPL_LEdB3d_4d_blade[x][y].resize(size);
     m_SPL_LBLVSdB3d_4d_blade[x][y].resize(size);
     m_SPL_bluntdB3d_4d_blade[x][y].resize(size);
+    m_SPL_tipvortexdB3d_4d_blade[x][y].resize(size);
     m_SPL_LEdBAW3d_4d_blade[x][y].resize(size);
     m_SPL_LEdBBW3d_4d_blade[x][y].resize(size);
     m_SPL_LEdBCW3d_4d_blade[x][y].resize(size);
@@ -2306,6 +2455,7 @@ for (unsigned int w = 0; w < size; ++w){
         m_SPL_LEdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_4d[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
@@ -2320,6 +2470,7 @@ for (unsigned int w = 0; w < size; ++w){
         m_SPL_LEdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LBLVSdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_bluntdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
+        m_SPL_tipvortexdB3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBAW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBBW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
         m_SPL_LEdBCW3d_4d_blade[x][y][w].reserve(FREQUENCY_TABLE_SIZE);
@@ -2338,6 +2489,7 @@ for (unsigned int w = 0; w < size; ++w){
     m_SPL_LEdB3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LBLVSdB3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_bluntdB3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
+    m_SPL_tipvortexdB3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LEdBAW3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LEdBBW3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LEdBCW3d_4d[x][y][w].resize(FREQUENCY_TABLE_SIZE);
@@ -2352,6 +2504,7 @@ for (unsigned int w = 0; w < size; ++w){
     m_SPL_LEdB3d_4d_blade[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LBLVSdB3d_4d_blade[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_bluntdB3d_4d_blade[x][y][w].resize(FREQUENCY_TABLE_SIZE);
+    m_SPL_tipvortexdB3d_4d_blade[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LEdBAW3d_4d_blade[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LEdBBW3d_4d_blade[x][y][w].resize(FREQUENCY_TABLE_SIZE);
     m_SPL_LEdBCW3d_4d_blade[x][y][w].resize(FREQUENCY_TABLE_SIZE);
@@ -2370,6 +2523,7 @@ if (sizea<size){
             m_SPL_LEdB3d[i][w]=0;
             m_SPL_LBLVSdB3d[i][w]=0;
             m_SPL_bluntdB3d[i][w]=0;
+            m_SPL_tipvortexdB3d[i][w]=0;
             m_SPL_LEdBAW3d[i][w]=0;
             m_SPL_LEdBBW3d[i][w]=0;
             m_SPL_LEdBCW3d[i][w]=0;
@@ -2383,6 +2537,7 @@ if (sizea<size){
             m_SPL_LEdB3d_final[i][w]=0;
             m_SPL_LBLVSdB3d_final[i][w]=0;
             m_SPL_bluntdB3d_final[i][w]=0;
+            m_SPL_tipvortexdB3d_final[i][w]=0;
             m_SPL_LEdBAW3d_final[i][w]=0;
             m_SPL_LEdBBW3d_final[i][w]=0;
             m_SPL_LEdBCW3d_final[i][w]=0;
@@ -2397,6 +2552,7 @@ if (sizea<size){
             m_SPL_LEdB3d_rotor[i][w]=0;
             m_SPL_LBLVSdB3d_rotor[i][w]=0;
             m_SPL_bluntdB3d_rotor[i][w]=0;
+            m_SPL_tipvortexdB3d_rotor[i][w]=0;
             m_SPL_LEdBAW3d_rotor[i][w]=0;
             m_SPL_LEdBBW3d_rotor[i][w]=0;
             m_SPL_LEdBCW3d_rotor[i][w]=0;
@@ -2410,6 +2566,7 @@ if (sizea<size){
             m_SPL_LEdB3d_final_rotor[i][w]=0;
             m_SPL_LBLVSdB3d_final_rotor[i][w]=0;
             m_SPL_bluntdB3d_final_rotor[i][w]=0;
+            m_SPL_tipvortexdB3d_final_rotor[i][w]=0;
             m_SPL_LEdBAW3d_final_rotor[i][w]=0;
             m_SPL_LEdBBW3d_final_rotor[i][w]=0;
 
@@ -2423,6 +2580,7 @@ if (sizea<size){
             m_SPL_LEdB3d_rotor_loops[i][w]=0;
             m_SPL_LBLVSdB3d_rotor_loops[i][w]=0;
             m_SPL_bluntdB3d_rotor_loops[i][w]=0;
+            m_SPL_tipvortexdB3d_rotor_loops[i][w]=0;
             m_SPL_LEdBAW3d_rotor_loops[i][w]=0;
             m_SPL_LEdBBW3d_rotor_loops[i][w]=0;
             m_SPL_LEdBCW3d_rotor_loops[i][w]=0;
@@ -2436,6 +2594,7 @@ if (sizea<size){
             m_SPL_LEdB3d_final_rotor_loops[i][w]=0;
             m_SPL_LBLVSdB3d_final_rotor_loops[i][w]=0;
             m_SPL_bluntdB3d_final_rotor_loops[i][w]=0;
+            m_SPL_tipvortexdB3d_final_rotor_loops[i][w]=0;
             m_SPL_LEdBAW3d_final_rotor_loops[i][w]=0;
             m_SPL_LEdBBW3d_final_rotor_loops[i][w]=0;
             m_SPL_LEdBCW3d_final_rotor_loops[i][w]=0;
@@ -2452,6 +2611,7 @@ if (sizea<size){
                     m_SPL_LEdB3d_4d[j][k][i][w]=0;
                     m_SPL_LBLVSdB3d_4d[j][k][i][w]=0;
                     m_SPL_bluntdB3d_4d[j][k][i][w]=0;
+                    m_SPL_tipvortexdB3d_4d[j][k][i][w]=0;
                     m_SPL_LEdBAW3d_4d[j][k][i][w]=0;
                     m_SPL_LEdBBW3d_4d[j][k][i][w]=0;
                     m_SPL_LEdBCW3d_4d[j][k][i][w]=0;
@@ -2466,6 +2626,7 @@ if (sizea<size){
                     m_SPL_LEdB3d_4d_blade[j][k][i][w]=0;
                     m_SPL_LBLVSdB3d_4d_blade[j][k][i][w]=0;
                     m_SPL_bluntdB3d_4d_blade[j][k][i][w]=0;
+                    m_SPL_tipvortexdB3d_4d_blade[j][k][i][w]=0;
                     m_SPL_LEdBAW3d_4d_blade[j][k][i][w]=0;
                     m_SPL_LEdBBW3d_4d_blade[j][k][i][w]=0;
                     m_SPL_LEdBCW3d_4d_blade[j][k][i][w]=0;
@@ -2873,6 +3034,7 @@ double NoiseCalculation::calcBlunt(int freq, double Mach, double wetted_length, 
     double G5=0;
     double G0=0;
 //    double r = m_parameter->distanceObsever;
+    if(psi>14){psi=14;}
 
     aux_rel=h/d_star_avg;
 
@@ -2895,6 +3057,44 @@ G0=10*log10(h*pow(Mach,5.5)*wetted_length * dh/pow(r,2));
 double aux_SPL_blunt=G0+G4+G5;
 
 return aux_SPL_blunt;
+} else {return 0;}
+}
+
+double NoiseCalculation::calcTipVortex(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h){
+    if (m_parameter->tipvortex_check!=0){
+//    double U=m_parameter->originalVelocity;
+    double aux_rel=0;
+//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
+//    double psi=m_parameter->directivityPhi;
+    double G4=0;
+    double aux_rel0=0;
+    double G5_14=0;
+    double G5_0=0;
+    double G5=0;
+    double G0=0;
+//    double r = m_parameter->distanceObsever;
+
+//    aux_rel=h/d_star_avg;
+
+//if(aux_rel<=5.){
+//    G4=17.5*log10(aux_rel)+157.5-1.114*psi;
+//}
+//else{
+//    G4=169.7-1.114*psi;
+//}
+
+//aux_rel0=6.724*pow(aux_rel,2)-4.019*aux_rel+1.107;
+
+//G5_14=BluntG5Calc(14,aux_rel,freq,h,U);
+//G5_0=BluntG5Calc(0,aux_rel0,freq,h,U);
+
+//G5=G5_0+0.0714*psi*(G5_14-G5_0);
+
+//G0=10*log10(h*pow(Mach,5.5)*wetted_length * dh/pow(r,2));
+
+double aux_SPL_tipvortex=G0+G4+G5;
+
+return aux_SPL_tipvortex;
 } else {return 0;}
 }
 
@@ -3138,6 +3338,7 @@ int number_of_segments = pbem->m_pBData->m_pos.size();
         double aux_m_SPL_LEdBCW3d=0;
         double aux_m_SPL_LBLVSdB3d=0;
         double aux_m_SPL_bluntdB3d=0;
+        double aux_m_SPL_tipvortexdB3d=0;
 
         double aux_m_SPLadB3d_rotor=0;
         double aux_m_SPLsdB3d_rotor=0;
@@ -3152,6 +3353,7 @@ int number_of_segments = pbem->m_pBData->m_pos.size();
         double aux_m_SPL_LEdBCW3d_rotor=0;
         double aux_m_SPL_LBLVSdB3d_rotor=0;
         double aux_m_SPL_bluntdB3d_rotor=0;
+        double aux_m_SPL_tipvortexdB3d_rotor=0;
 
         double r_R0  =  0.05; double c_R0 = 0.05500;
         double r_R1  =  0.25; double c_R1 = 0.07500;
@@ -3170,6 +3372,7 @@ int number_of_segments = pbem->m_pBData->m_pos.size();
                 double SPL_LedB[w];
                 double SPL_LblvsdB[w];
                 double SPL_BluntdB[w];
+                double SPL_TipVortexdB[w];
                 double SPL_C[w];
                 double SPL_B[w];
                 double SPL_A[w];
@@ -3187,6 +3390,7 @@ int number_of_segments = pbem->m_pBData->m_pos.size();
                 double SPL_LedB_rotor[w];
                 double SPL_LblvsdB_rotor[w];
                 double SPL_BluntdB_rotor[w];
+                double SPL_TipVortexdB_rotor[w];
                 double SPL_C_rotor[w];
                 double SPL_B_rotor[w];
                 double SPL_A_rotor[w];
@@ -3864,6 +4068,7 @@ else {SPL_P[j]=-999999999999.; SPL_P_rotor[j]=-999999999999.;}
     SPL_LedBCW[w]=0;
     SPL_LblvsdB[w]=0;
     SPL_BluntdB[w]=0;
+    SPL_TipVortexdB[w]=0;
 
     //rotor
     SPL_A_rotor[j]=0;
@@ -3875,6 +4080,7 @@ else {SPL_P[j]=-999999999999.; SPL_P_rotor[j]=-999999999999.;}
     SPL_LedBCW_rotor[w]=0;
     SPL_LblvsdB_rotor[w]=0;
     SPL_BluntdB_rotor[w]=0;
+    SPL_TipVortexdB_rotor[w]=0;
     //rotor
 
     u_le=approaxing_wind_speed;
@@ -3931,10 +4137,24 @@ SPL_LblvsdB_rotor[j]=calcLBLVS(CENTRAL_BAND_FREQUENCY[j],Reynolds_rotor[i],Mach_
 double d_star_avg=(D_starred_S[i]+D_starred_P[i])/2.;
 double d_star_avg_rotor=(D_starred_S_rotor[i]+D_starred_P_rotor[i])/2.;
 
-double psi = theta_BEM[i];
+m_Blade = pbem->m_BEMToolBar->m_rotorComboBox->currentObject();
 
-SPL_BluntdB[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],vel[i],psi,dist_obs[i],d_star_avg,Dh[i], m_parameter->h_blunt/1000.);
-SPL_BluntdB_rotor[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],vel_rotor[i],psi,dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], m_parameter->h_blunt/1000.);
+int num_panels = m_Blade->m_NPanel;
+
+double panel=i*1.f/(number_of_segments-1.f)*num_panels;
+
+double h_blunt;
+
+if(!m_parameter->hblunt_check){h_blunt = m_Blade->getThickness_TE(panel,chord[i]);} else {h_blunt = m_parameter->hblunt/1000.;}
+
+double psi_blunt = m_Blade->getAngle_TE(panel);
+
+SPL_BluntdB[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],vel[i],psi_blunt,dist_obs[i],d_star_avg,Dh[i], h_blunt);
+SPL_BluntdB_rotor[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],vel_rotor[i],psi_blunt,dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], h_blunt);
+
+//urgente
+SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],vel[i],psi_blunt,dist_obs[i],d_star_avg,Dh[i], h_blunt);
+SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],vel_rotor[i],psi_blunt,dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], h_blunt);
 
 //Validation:
 
@@ -3966,7 +4186,7 @@ if(!BPM_validation){
 SPL_alpha[j]=-999999999999.;
 SPL_S[j]=-999999999999.;
 SPL_P[j]=-999999999999.;
-SPL_dB[j]=-999999999999.;
+SPL_BluntdB[j]=-999999999999.;
 SPL_A[j]=-999999999999.;
 SPL_B[j]=-999999999999.;
 SPL_C[j]=-999999999999.;
@@ -4008,6 +4228,23 @@ SPL_LedBBW[j]=-999999999999.;
 SPL_LedBCW[j]=-999999999999.;
 }
 
+//validation no errors
+if(qIsNaN(SPL_alpha[j]) || qIsInf(SPL_alpha[j])){SPL_alpha[j]=-999999999999.;}
+if(qIsNaN(SPL_S[j]) || qIsInf(SPL_S[j])){SPL_S[j]=-999999999999.;}
+if(qIsNaN(SPL_P[j]) || qIsInf(SPL_P[j])){SPL_P[j]=-999999999999.;}
+if(qIsNaN(SPL_LedB[j]) || qIsInf(SPL_LedB[j])){SPL_LedB[j]=-999999999999.;}
+if(qIsNaN(SPL_LblvsdB[j]) || qIsInf(SPL_LblvsdB[j])){SPL_LblvsdB[j]=-999999999999.;}
+if(qIsNaN(SPL_BluntdB[j]) || qIsInf(SPL_BluntdB[j])){SPL_BluntdB[j]=-999999999999.;}
+if(qIsNaN(SPL_TipVortexdB[j]) || qIsInf(SPL_TipVortexdB[j])){SPL_TipVortexdB[j]=-999999999999.;}
+
+if(qIsNaN(SPL_alpha_rotor[j]) || qIsInf(SPL_alpha_rotor[j])){SPL_alpha_rotor[j]=-999999999999.;}
+if(qIsNaN(SPL_S_rotor[j]) || qIsInf(SPL_S_rotor[j])){SPL_S_rotor[j]=-999999999999.;}
+if(qIsNaN(SPL_P_rotor[j]) || qIsInf(SPL_P_rotor[j])){SPL_P_rotor[j]=-999999999999.;}
+if(qIsNaN(SPL_LedB_rotor[j]) || qIsInf(SPL_LedB_rotor[j])){SPL_LedB_rotor[j]=-999999999999.;}
+if(qIsNaN(SPL_LblvsdB_rotor[j]) || qIsInf(SPL_LblvsdB_rotor[j])){SPL_LblvsdB_rotor[j]=-999999999999.;}
+if(qIsNaN(SPL_BluntdB[j]) || qIsInf(SPL_BluntdB_rotor[j])){SPL_BluntdB_rotor[j]=-999999999999.;}
+if(qIsNaN(SPL_TipVortexdB_rotor[j]) || qIsInf(SPL_TipVortexdB_rotor[j])){SPL_TipVortexdB_rotor[j]=-999999999999.;}
+
 //create validation log error
 QString Re_val_num;
 QString Ma_val_num;
@@ -4036,31 +4273,58 @@ qs3D_val_rotor.append(QString("%1 ; %2 ; %3 ; %4 ; %5 ; %6 ; %7 ; \n").arg(blade
 qs3D_val_rotor_aux=aux;
 }}
 
-if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.)));
-SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.)));
+if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
 }
-else if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.)));
+else if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+    SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.)));
+    }
+else if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.)));
         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.)));
         }
-
-else if ((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.)));
+else if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.)));
+        }
+else if ((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if ((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.)));
         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.)));
         }
-else if ((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.)));
+else if ((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if ((m_parameter->Lowson_type!=0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LedB[j]/10.)));
         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LedB_rotor[j]/10.)));
         }
-
-else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.)));
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.)));
         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.)));
         }
-else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS==0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.)));
         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.)));
         }
-
-else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.)));
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check!=0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_BluntdB[j]/10.)));
         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_BluntdB_rotor[j]/10.)));
         }
-else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.)));
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check!=0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_TipVortexdB[j]/10.)));
+        SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_TipVortexdB_rotor[j]/10.)));
+        }
+else if ((m_parameter->Lowson_type==0) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check==0)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.)));
         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.)));
         }
 
@@ -4134,6 +4398,9 @@ aux_m_SPL_LBLVSdB3d_rotor=SPL_LblvsdB_rotor[j];
 aux_m_SPL_bluntdB3d=SPL_BluntdB[j];
 aux_m_SPL_bluntdB3d_rotor=SPL_BluntdB_rotor[j];
 
+aux_m_SPL_tipvortexdB3d=SPL_TipVortexdB[j];
+aux_m_SPL_tipvortexdB3d_rotor=SPL_TipVortexdB_rotor[j];
+
 if(qIsInf(aux_m_SPLadB3d) || qIsNaN(aux_m_SPLadB3d)){aux_m_SPLadB3d=0;}
 if(qIsInf(aux_m_SPLsdB3d) || qIsNaN(aux_m_SPLsdB3d)){aux_m_SPLsdB3d=0;}
 if(qIsInf(aux_m_SPLpdB3d) || qIsNaN(aux_m_SPLpdB3d)){aux_m_SPLpdB3d=0;}
@@ -4147,6 +4414,7 @@ if(qIsInf(aux_m_SPL_LEdBBW3d) || qIsNaN(aux_m_SPL_LEdBBW3d)){aux_m_SPL_LEdBBW3d=
 if(qIsInf(aux_m_SPL_LEdBCW3d) || qIsNaN(aux_m_SPL_LEdBCW3d)){aux_m_SPL_LEdBCW3d=0;}
 if(qIsInf(aux_m_SPL_LBLVSdB3d) || qIsNaN(aux_m_SPL_LBLVSdB3d)){aux_m_SPL_LBLVSdB3d=0;}
 if(qIsInf(aux_m_SPL_bluntdB3d) || qIsNaN(aux_m_SPL_bluntdB3d)){aux_m_SPL_bluntdB3d=0;}
+if(qIsInf(aux_m_SPL_tipvortexdB3d) || qIsNaN(aux_m_SPL_tipvortexdB3d)){aux_m_SPL_tipvortexdB3d=0;}
 
 if(qIsInf(aux_m_SPLadB3d_rotor) || qIsNaN(aux_m_SPLadB3d_rotor)){aux_m_SPLadB3d_rotor=0;}
 if(qIsInf(aux_m_SPLsdB3d_rotor) || qIsNaN(aux_m_SPLsdB3d_rotor)){aux_m_SPLsdB3d_rotor=0;}
@@ -4161,6 +4429,7 @@ if(qIsInf(aux_m_SPL_LEdBBW3d_rotor) || qIsNaN(aux_m_SPL_LEdBBW3d_rotor)){aux_m_S
 if(qIsInf(aux_m_SPL_LEdBCW3d_rotor) || qIsNaN(aux_m_SPL_LEdBCW3d_rotor)){aux_m_SPL_LEdBCW3d_rotor=0;}
 if(qIsInf(aux_m_SPL_LBLVSdB3d_rotor) || qIsNaN(aux_m_SPL_LBLVSdB3d_rotor)){aux_m_SPL_LBLVSdB3d_rotor=0;}
 if(qIsInf(aux_m_SPL_bluntdB3d_rotor) || qIsNaN(aux_m_SPL_bluntdB3d_rotor)){aux_m_SPL_bluntdB3d_rotor=0;}
+if(qIsInf(aux_m_SPL_tipvortexdB3d_rotor) || qIsNaN(aux_m_SPL_tipvortexdB3d_rotor)){aux_m_SPL_tipvortexdB3d_rotor=0;}
 
 //multi 3D curves
 if((blade==0) & (E==0)){
@@ -4197,6 +4466,13 @@ m_SPL_bluntdB3d[i][j]=aux_m_SPL_bluntdB3d;
 }
 else{
 m_SPL_bluntdB3d[i][j]=0;
+}
+
+if(m_parameter->tipvortex_check!=0){
+m_SPL_tipvortexdB3d[i][j]=aux_m_SPL_tipvortexdB3d;
+}
+else{
+m_SPL_tipvortexdB3d[i][j]=0;
 }
 }
 
@@ -4255,6 +4531,15 @@ m_SPL_bluntdB3d_4d[blade][E][i][j]=aux_m_SPL_bluntdB3d_rotor;
 else{
 m_SPL_bluntdB3d_4d[blade][E][i][j]=0;
 m_SPL_bluntdB3d_4d_blade[blade][E][i][j]=0;
+}
+
+if(m_parameter->tipvortex_check!=0){
+m_SPL_tipvortexdB3d_4d_blade[blade][E][i][j]=aux_m_SPL_tipvortexdB3d;
+m_SPL_tipvortexdB3d_4d[blade][E][i][j]=aux_m_SPL_tipvortexdB3d_rotor;
+}
+else{
+m_SPL_tipvortexdB3d_4d[blade][E][i][j]=0;
+m_SPL_tipvortexdB3d_4d_blade[blade][E][i][j]=0;
 }
 }}
 }
@@ -4526,6 +4811,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         double aux_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
         double aux_m_SPL_LBLVSdB3d_final[FREQUENCY_TABLE_SIZE];
         double aux_m_SPL_bluntdB3d_final[FREQUENCY_TABLE_SIZE];
+        double aux_m_SPL_tipvortexdB3d_final[FREQUENCY_TABLE_SIZE];
         double auxa_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
         double auxa_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
         double auxa_m_SPLpdB3d_final[FREQUENCY_TABLE_SIZE];
@@ -4539,6 +4825,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         double auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
         double auxa_m_SPL_LBLVSdB3d_final[FREQUENCY_TABLE_SIZE];
         double auxa_m_SPL_bluntdB3d_final[FREQUENCY_TABLE_SIZE];
+        double auxa_m_SPL_tipvortexdB3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPLadB3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPLsdB3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPLpdB3d_final[FREQUENCY_TABLE_SIZE];
@@ -4549,6 +4836,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         int number_auxa_m_SPL_LEdB3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPL_LBLVSdB3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPL_bluntdB3d_final[FREQUENCY_TABLE_SIZE];
+        int number_auxa_m_SPL_tipvortexdB3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPL_LEdBAW3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPL_LEdBBW3d_final[FREQUENCY_TABLE_SIZE];
         int number_auxa_m_SPL_LEdBCW3d_final[FREQUENCY_TABLE_SIZE];
@@ -4559,6 +4847,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         double Final_qs3d_LE_aux=0;
         double Final_qs3d_LBLVS_aux=0;
         double Final_qs3d_blunt_aux=0;
+        double Final_qs3d_tipvortex_aux=0;
         double Final_qs3d_aux=0;
 
         // Resize vectors acording to OpPoints total
@@ -4586,6 +4875,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         double auxa_m_SPLlogLE3d[size];
         double auxa_m_SPLlogLBLVS3d[size];
         double auxa_m_SPLlogblunt3d[size];
+        double auxa_m_SPLlogtipvortex3d[size];
 
         if (number_of_segments>sizea){size = number_of_segments;} else {size = sizea;}
 
@@ -4614,6 +4904,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         aux_m_SPL_LEdB3d_final[j]=0;
         aux_m_SPL_LBLVSdB3d_final[j]=0;
         aux_m_SPL_bluntdB3d_final[j]=0;
+        aux_m_SPL_tipvortexdB3d_final[j]=0;
         aux_m_SPL_LEdBAW3d_final[j]=0;
         aux_m_SPL_LEdBBW3d_final[j]=0;
         aux_m_SPL_LEdBCW3d_final[j]=0;
@@ -4627,6 +4918,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         auxa_m_SPL_LEdB3d_final[j]=0;
         auxa_m_SPL_LBLVSdB3d_final[j]=0;
         auxa_m_SPL_bluntdB3d_final[j]=0;
+        auxa_m_SPL_tipvortexdB3d_final[j]=0;
         auxa_m_SPL_LEdBAW3d_final[j]=0;
         auxa_m_SPL_LEdBBW3d_final[j]=0;
         auxa_m_SPL_LEdBCW3d_final[j]=0;
@@ -4640,6 +4932,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         number_auxa_m_SPL_LEdB3d_final[j]=0;
         number_auxa_m_SPL_LBLVSdB3d_final[j]=0;
         number_auxa_m_SPL_bluntdB3d_final[j]=0;
+        number_auxa_m_SPL_tipvortexdB3d_final[j]=0;
         number_auxa_m_SPL_LEdBAW3d_final[j]=0;
         number_auxa_m_SPL_LEdBBW3d_final[j]=0;
         number_auxa_m_SPL_LEdBCW3d_final[j]=0;
@@ -4659,6 +4952,7 @@ while(i < number_of_segments){
         auxa_m_SPL_LEdBCW3d_final[j] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));
         auxa_m_SPL_LBLVSdB3d_final[j] += pow(10.,(SPL_LBLVSdB3d_4d_blade()[0][0][i][j]/10.));
         auxa_m_SPL_bluntdB3d_final[j] += pow(10.,(SPL_bluntdB3d_4d_blade()[0][0][i][j]/10.));
+        auxa_m_SPL_tipvortexdB3d_final[j] += pow(10.,(SPL_tipvortexdB3d_4d_blade()[0][0][i][j]/10.));
 ++i;}
 
     for (unsigned int i=0;i<size;++i){       
@@ -4698,6 +4992,13 @@ while(i < number_of_segments){
         else{
         m_SPL_bluntdB3d_final[i][j]=0;
         }
+
+        if (m_parameter->tipvortex_check!=0){
+        m_SPL_tipvortexdB3d_final[i][j]=10*log10(auxa_m_SPL_tipvortexdB3d_final[j]);
+        }
+        else{
+        m_SPL_tipvortexdB3d_final[i][j]=0;
+        }
     }}}
 
     //OASPL complete for quasi 3d
@@ -4710,6 +5011,7 @@ pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*(j+FR
    if(m_parameter->Lowson_type!=0) {Final_qs3d_LE_aux += pow(10.,(m_SPL_LEdB3d_final[i][j])/10.);} else{Final_qs3d_LE_aux=0;}
    if(m_parameter->LBLVS!=0) {Final_qs3d_LBLVS_aux += pow(10.,(m_SPL_LBLVSdB3d_final[i][j])/10.);} else{Final_qs3d_LBLVS_aux=0;}
    if(m_parameter->blunt_check!=0) {Final_qs3d_blunt_aux += pow(10.,(m_SPL_bluntdB3d_final[i][j])/10.);} else{Final_qs3d_blunt_aux=0;}
+   if(m_parameter->tipvortex_check!=0) {Final_qs3d_tipvortex_aux += pow(10.,(m_SPL_tipvortexdB3d_final[i][j])/10.);} else{Final_qs3d_tipvortex_aux=0;}
     Final_qs3d_aux += pow(10.,(m_SPLdB3d_final[i][j])/10.);
         }
 
@@ -4719,6 +5021,7 @@ pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*(j+FR
     if(m_parameter->Lowson_type!=0) {Final_qs3d_LE =  10*log10(Final_qs3d_LE_aux);}else{Final_qs3d_LE=0;}
     if(m_parameter->LBLVS!=0) {Final_qs3d_LBLVS =  10*log10(Final_qs3d_LBLVS_aux);}else{Final_qs3d_LBLVS=0;}
     if(m_parameter->blunt_check!=0) {Final_qs3d_blunt =  10*log10(Final_qs3d_blunt_aux);}else{Final_qs3d_blunt=0;}
+    if(m_parameter->tipvortex_check!=0) {Final_qs3d_tipvortex =  10*log10(Final_qs3d_tipvortex_aux);}else{Final_qs3d_tipvortex=0;}
     Final_qs3d = 10*log10(Final_qs3d_aux);
 
     //calculation for the OASPL for the csv output file
@@ -4738,6 +5041,7 @@ pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*(j+FR
         auxa_m_SPLlogLE3d[i]=0;
         auxa_m_SPLlogLBLVS3d[i]=0;
         auxa_m_SPLlogblunt3d[i]=0;
+        auxa_m_SPLlogtipvortex3d[i]=0;
 
 int j= 0;
 
@@ -4752,6 +5056,7 @@ while(j< FREQUENCY_TABLE_SIZE){
     auxa_m_SPLlogLE3d[i] += pow(10.,(SPL_LEdB3d_4d_blade()[0][0][i][j]/10.));
     auxa_m_SPLlogLBLVS3d[i] += pow(10.,(SPL_LBLVSdB3d_4d_blade()[0][0][i][j]/10.));
     auxa_m_SPLlogblunt3d[i] += pow(10.,(SPL_bluntdB3d_4d_blade()[0][0][i][j]/10.));
+    auxa_m_SPLlogtipvortex3d[i] += pow(10.,(SPL_tipvortexdB3d_4d_blade()[0][0][i][j]/10.));
     auxa_m_SPLLEdBAW3d[i] += pow(10.,(SPL_LEdBAW3d_4d_blade()[0][0][i][j]/10.));
     auxa_m_SPLLEdBBW3d[i] += pow(10.,(SPL_LEdBBW3d_4d_blade()[0][0][i][j]/10.));
     auxa_m_SPLLEdBCW3d[i] += pow(10.,(SPL_LEdBCW3d_4d_blade()[0][0][i][j]/10.));
@@ -4787,6 +5092,14 @@ while(j< FREQUENCY_TABLE_SIZE){
     }
     else{
     m_SPLlogblunt3d[i]=0;
+    }
+
+
+    if (m_parameter->tipvortex_check!=0){
+    m_SPLlogtipvortex3d[i]=10*log10(auxa_m_SPLlogtipvortex3d[i]);
+    }
+    else{
+    m_SPLlogtipvortex3d[i]=0;
     }
 
     }
@@ -4834,6 +5147,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
     double aux_m_SPL_LEdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
     double aux_m_SPL_LBLVSdB3d_final_4d[FREQUENCY_TABLE_SIZE];
     double aux_m_SPL_bluntdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double aux_m_SPL_tipvortexdB3d_final_4d[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPLadB3d_final_4d[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPLsdB3d_final_4d[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPLpdB3d_final_4d[FREQUENCY_TABLE_SIZE];
@@ -4847,6 +5161,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
     double auxa_m_SPL_LEdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPL_LBLVSdB3d_final_4d[FREQUENCY_TABLE_SIZE];
     double auxa_m_SPL_bluntdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    double auxa_m_SPL_tipvortexdB3d_final_4d[FREQUENCY_TABLE_SIZE];
     int number_auxa_m_SPLadB3d_final_4d[FREQUENCY_TABLE_SIZE];
     int number_auxa_m_SPLsdB3d_final_4d[FREQUENCY_TABLE_SIZE];
     int number_auxa_m_SPLpdB3d_final_4d[FREQUENCY_TABLE_SIZE];
@@ -4860,6 +5175,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
     int number_auxa_m_SPL_LEdBCW3d_final_4d[FREQUENCY_TABLE_SIZE];
     int number_auxa_m_SPL_LBLVSdB3d_final_4d[FREQUENCY_TABLE_SIZE];
     int number_auxa_m_SPL_bluntdB3d_final_4d[FREQUENCY_TABLE_SIZE];
+    int number_auxa_m_SPL_tipvortexdB3d_final_4d[FREQUENCY_TABLE_SIZE];
 
     double Final_qs3d_alpha_aux_4d=0;
     double Final_qs3d_S_aux_4d=0;
@@ -4867,6 +5183,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
     double Final_qs3d_LE_aux_4d=0;
     double Final_qs3d_LBLVS_aux_4d=0;
     double Final_qs3d_blunt_aux_4d=0;
+    double Final_qs3d_tipvortex_aux_4d=0;
     double Final_qs3d_aux_4d=0;
 
         // Resize vectors acording to OpPoints total
@@ -4895,6 +5212,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
     double auxa_m_SPLlogLE3d_rotor_loops[size];
     double auxa_m_SPLlogLBLVS3d_rotor_loops[size];
     double auxa_m_SPLlogblunt3d_rotor_loops[size];
+    double auxa_m_SPLlogtipvortex3d_rotor_loops[size];
 
     double progress_begin = progress_total/4.*3.;
     double progress_end = progress_total-1.;
@@ -4913,6 +5231,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
         aux_m_SPL_LEdB3d_final_4d[j]=0;
         aux_m_SPL_LBLVSdB3d_final_4d[j]=0;
         aux_m_SPL_bluntdB3d_final_4d[j]=0;
+        aux_m_SPL_tipvortexdB3d_final_4d[j]=0;
         aux_m_SPL_LEdBAW3d_final_4d[j]=0;
         aux_m_SPL_LEdBBW3d_final_4d[j]=0;
         aux_m_SPL_LEdBCW3d_final_4d[j]=0;
@@ -4926,6 +5245,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
         auxa_m_SPL_LEdB3d_final_4d[j]=0;
         auxa_m_SPL_LBLVSdB3d_final_4d[j]=0;
         auxa_m_SPL_bluntdB3d_final_4d[j]=0;
+        auxa_m_SPL_tipvortexdB3d_final_4d[j]=0;
         auxa_m_SPL_LEdBAW3d_final_4d[j]=0;
         auxa_m_SPL_LEdBBW3d_final_4d[j]=0;
         auxa_m_SPL_LEdBCW3d_final_4d[j]=0;
@@ -4939,6 +5259,7 @@ NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_
         number_auxa_m_SPL_LEdB3d_final_4d[j]=0;
         number_auxa_m_SPL_LBLVSdB3d_final_4d[j]=0;
         number_auxa_m_SPL_bluntdB3d_final_4d[j]=0;
+        number_auxa_m_SPL_tipvortexdB3d_final_4d[j]=0;
         number_auxa_m_SPL_LEdBAW3d_final_4d[j]=0;
         number_auxa_m_SPL_LEdBBW3d_final_4d[j]=0;
         number_auxa_m_SPL_LEdBCW3d_final_4d[j]=0;
@@ -4963,6 +5284,7 @@ while(i < number_of_segments) {
     auxa_m_SPL_LEdBCW3d_final_4d[j] += pow(10.,(SPL_LEdBCW3d_4d()[blade][E][i][j]/10.));
     if (m_parameter->LBLVS!=0){auxa_m_SPL_LBLVSdB3d_final_4d[j] += pow(10.,(SPL_LBLVSdB3d_4d()[blade][E][i][j]/10.));}else{auxa_m_SPL_LBLVSdB3d_final_4d[j]=0;}
     if (m_parameter->blunt_check!=0){auxa_m_SPL_bluntdB3d_final_4d[j] += pow(10.,(SPL_bluntdB3d_4d()[blade][E][i][j]/10.));}else{auxa_m_SPL_bluntdB3d_final_4d[j]=0;}
+    if (m_parameter->tipvortex_check!=0){auxa_m_SPL_tipvortexdB3d_final_4d[j] += pow(10.,(SPL_tipvortexdB3d_4d()[blade][E][i][j]/10.));}else{auxa_m_SPL_tipvortexdB3d_final_4d[j]=0;}
 ++i;}
 ++E;}
 ++blade;}
@@ -5004,6 +5326,12 @@ while(i < number_of_segments) {
             else{
             m_SPL_bluntdB3d_final_rotor_loops[i][j]=0;
             }
+            if (m_parameter->tipvortex_check!=0){
+            m_SPL_tipvortexdB3d_final_rotor_loops[i][j]=10*log10(auxa_m_SPL_tipvortexdB3d_final_4d[j]);
+            }
+            else{
+            m_SPL_tipvortexdB3d_final_rotor_loops[i][j]=0;
+            }
         }}
 
         //OASPL complete for quasi 3d
@@ -5015,6 +5343,7 @@ while(i < number_of_segments) {
             Final_qs3d_LE_aux_4d += pow(10.,(m_SPL_LEdB3d_final_rotor_loops[i][j])/10.);
             Final_qs3d_LBLVS_aux_4d += pow(10.,(m_SPL_LBLVSdB3d_final_rotor_loops[i][j])/10.);
             Final_qs3d_blunt_aux_4d += pow(10.,(m_SPL_bluntdB3d_final_rotor_loops[i][j])/10.);
+            Final_qs3d_tipvortex_aux_4d += pow(10.,(m_SPL_tipvortexdB3d_final_rotor_loops[i][j])/10.);
             Final_qs3d_aux_4d += pow(10.,(m_SPLdB3d_final_rotor_loops[i][j])/10.);
                 }
 
@@ -5024,6 +5353,7 @@ while(i < number_of_segments) {
             if (m_parameter->Lowson_type!=0){Final_qs3d_LE_rotor_loops =  10*log10(Final_qs3d_LE_aux_4d);} else {Final_qs3d_LE_rotor_loops=0;}
             if (m_parameter->LBLVS!=0){Final_qs3d_LBLVS_rotor_loops =  10*log10(Final_qs3d_LBLVS_aux_4d);} else {Final_qs3d_LBLVS_rotor_loops=0;}
             if (m_parameter->blunt_check!=0){Final_qs3d_blunt_rotor_loops =  10*log10(Final_qs3d_blunt_aux_4d);} else {Final_qs3d_blunt_rotor_loops=0;}
+            if (m_parameter->tipvortex_check!=0){Final_qs3d_tipvortex_rotor_loops =  10*log10(Final_qs3d_tipvortex_aux_4d);} else {Final_qs3d_tipvortex_rotor_loops=0;}
             Final_qs3d_rotor_loops = 10*log10(Final_qs3d_aux_4d);
 
             //validation directivity
@@ -5035,6 +5365,7 @@ while(i < number_of_segments) {
             qDebug() <<"SPL LE: " << Final_qs3d_LE_rotor_loops;
             qDebug() <<"SPL LBL-VS: " << Final_qs3d_LBLVS_rotor_loops;
             qDebug() <<"SPL blunt: " << Final_qs3d_blunt_rotor_loops;
+            qDebug() <<"SPL tip vortex: " << Final_qs3d_tipvortex_rotor_loops;
             qDebug() <<"**************";
             //validation directivity
 
@@ -5058,6 +5389,7 @@ while(i < number_of_segments) {
                         auxa_m_SPLlogLE3d_rotor_loops[y]=0;
                         auxa_m_SPLlogLBLVS3d_rotor_loops[y]=0;
                         auxa_m_SPLlogblunt3d_rotor_loops[y]=0;
+                        auxa_m_SPLlogtipvortex3d_rotor_loops[y]=0;
 
 while(blade<blades_num){
 while(E<angles_num){
@@ -5073,6 +5405,7 @@ if (m_parameter->Lowson_type!=0){
                         auxa_m_SPLlogLE3d_rotor_loops[y] += pow(10.,(SPL_LEdB3d_4d()[blade][E][y][j]/10.));
                         auxa_m_SPLlogLBLVS3d_rotor_loops[y] += pow(10.,(SPL_LBLVSdB3d_4d()[blade][E][y][j]/10.));
                         auxa_m_SPLlogblunt3d_rotor_loops[y] += pow(10.,(SPL_bluntdB3d_4d()[blade][E][y][j]/10.));
+                        auxa_m_SPLlogtipvortex3d_rotor_loops[y] += pow(10.,(SPL_tipvortexdB3d_4d()[blade][E][y][j]/10.));
                         auxa_m_SPLLEdBAW3d_rotor_loops[y] += pow(10.,(SPL_LEdBAW3d_4d()[blade][E][y][j]/10.));
                         auxa_m_SPLLEdBBW3d_rotor_loops[y] += pow(10.,(SPL_LEdBBW3d_4d()[blade][E][y][j]/10.));
                         auxa_m_SPLLEdBCW3d_rotor_loops[y] += pow(10.,(SPL_LEdBCW3d_4d()[blade][E][y][j]/10.));}
@@ -5110,6 +5443,12 @@ if (m_parameter->Lowson_type!=0){
                         }
                         else{
                         m_SPLlogblunt3d_rotor_loops[y]=0;
+}
+                        if (m_parameter->tipvortex_check!=0){
+                        m_SPLlogtipvortex3d_rotor_loops[y]=10*log10(auxa_m_SPLlogtipvortex3d_rotor_loops[y]);
+                        }
+                        else{
+                        m_SPLlogtipvortex3d_rotor_loops[y]=0;
 }
 ++y;}
 

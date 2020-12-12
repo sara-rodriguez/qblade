@@ -19,13 +19,14 @@ public:
 	BEMToolbar(QMainWindow *parent);
 	void setState (ToolBarState newState);
 	void EnableAll();
-	void DisableAll();
+    void DisableAll();
+
+    RotorComboBox *m_rotorComboBox; //Sara
 
 private:
 	QAction *m_SingleGraphAct, *m_HideWidgetsAct, *m_rotorBox, *m_rotorSimulationBox, *m_tipSpeedRationBox, *m_multiParameterSimulationBox, *m_windspeedBox,
 			*m_rotationalSpeedBox, *m_pitchBox, *m_turbineBox, *m_turbineSimulationBox, *m_foilBox, *m_polarBox, *m_polar360Box, *m_turbinewindspeedBox;
-	QComboBox *m_rotComboBox, *m_pitchComboBox, *m_tsrComboBox, *m_windspeedComboBox, *m_turbinewindspeedComboBox;
-	RotorComboBox *m_rotorComboBox;
+    QComboBox *m_rotComboBox, *m_pitchComboBox, *m_tsrComboBox, *m_windspeedComboBox, *m_turbinewindspeedComboBox;
 	BEMDataComboBox *m_bemdataComboBox;
 	TBEMDataComboBox *m_tbemdataComboBox;
 	CBEMDataComboBox *m_cbemdataComboBox;

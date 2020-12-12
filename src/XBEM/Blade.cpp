@@ -96,7 +96,7 @@ CBlade::CBlade (QString name, StorableObject *parent)
 	m_TFoilPAxisX[0]=0.25;
 	m_TFoilPAxisX[1]=0.25;
 	m_TFoilPAxisZ[0]=0;
-	m_TFoilPAxisZ[1]=0;
+    m_TFoilPAxisZ[1]=0;
 	
 	double length = m_TLength[0] + m_HubRadius;
 	for (int i = 0; i <= MAXSPANSECTIONS; ++i) {
@@ -772,7 +772,6 @@ void CBlade::CreateLLTPanels(int discType, int numPanels, bool isVawt)
         TFoilPAxisX.append(m_TFoilPAxisX[m_NPanel]);
         TFoilPAxisZ.append(m_TFoilPAxisZ[m_NPanel]);
         TTwist.append(m_TTwist[m_NPanel]);
-
     }
     else{
         double pos = 0;
@@ -791,7 +790,7 @@ void CBlade::CreateLLTPanels(int discType, int numPanels, bool isVawt)
             for (int j=0;j<m_NPanel;j++){
                 if (TPos.at(i) >= m_TPos[j] && TPos.at(i) < m_TPos[j+1]){
                     TOffsetX.append(m_TOffsetX[j]+(TPos.at(i)-m_TPos[j])/(m_TPos[j+1]-m_TPos[j])*(m_TOffsetX[j+1]-m_TOffsetX[j]));
-                    TThickness.append(g_mainFrame->GetFoil(m_Airfoils[j])->m_fThickness+(TPos.at(i)-m_TPos[j])/(m_TPos[j+1]-m_TPos[j])*(g_mainFrame->GetFoil(m_Airfoils[j+1])->m_fThickness-g_mainFrame->GetFoil(m_Airfoils[j])->m_fThickness));
+                    TThickness.append(g_mainFrame->GetFoil(m_Airfoils[m_NPanel])->m_fThickness);
                     TOffsetZ.append(m_TOffsetZ[j]+(TPos.at(i)-m_TPos[j])/(m_TPos[j+1]-m_TPos[j])*(m_TOffsetZ[j+1]-m_TOffsetZ[j]));
                     TDihedral.append(m_TDihedral[j]+(TPos.at(i)-m_TPos[j])/(m_TPos[j+1]-m_TPos[j])*(m_TDihedral[j+1]-m_TDihedral[j]));
                     TChord.append(m_TChord[j]+(TPos.at(i)-m_TPos[j])/(m_TPos[j+1]-m_TPos[j])*(m_TChord[j+1]-m_TChord[j]));
@@ -1230,3 +1229,62 @@ void CBlade::ScaleTwist(double Twist)
 	}
 	ComputeGeometry();
 }
+
+//Sara
+double CBlade::getThickness_TE(double panel,double chord)
+{
+    double thickness=0;
+    double thickness_up=0;
+    double thickness_down=0;
+    int panel_up=0;
+    int panel_down=0;
+    double prop=0.99;
+
+    if(round(panel)==0){panel_up=1; panel_down=0;}else{
+    panel_up = round(panel);
+    panel_down = panel_up-1;}
+
+double foil_length = g_mainFrame->GetFoil(m_Airfoils[panel])->GetLength()*prop;
+
+thickness_up = g_mainFrame->GetFoil(m_Airfoils[panel_up])->GetThickness(foil_length);
+thickness_down = g_mainFrame->GetFoil(m_Airfoils[panel_down])->GetThickness(foil_length);
+
+thickness=(thickness_up-thickness_down)/(panel_up-panel_down)*(panel-panel_down)+thickness_down;
+
+double thickness_scaled = thickness*chord;
+
+return thickness_scaled;
+}
+
+double CBlade::getAngle_TE(double panel)
+{
+double upper_ya=0;
+double lower_ya=0;
+double upper_yb=0;
+double lower_yb=0;
+double psi_blunt=0;
+int panel_a=0;
+int panel_b=0;
+double prop=0.8;
+
+if(round(panel)==0){panel_a=1; panel_b=0;}else{
+panel_a = round(panel);
+panel_b = panel_a-1;}
+
+double foil_length = g_mainFrame->GetFoil(m_Airfoils[panel])->GetLength();
+
+upper_ya=g_mainFrame->GetFoil(m_Airfoils[panel_a])->GetUpperY(foil_length*prop);
+lower_ya=g_mainFrame->GetFoil(m_Airfoils[panel_a])->GetLowerY(foil_length*prop);
+
+upper_yb=g_mainFrame->GetFoil(m_Airfoils[panel_b])->GetUpperY(foil_length*prop);
+lower_yb=g_mainFrame->GetFoil(m_Airfoils[panel_b])->GetLowerY(foil_length*prop);
+
+double psi_blunt_a = (qAtan(upper_ya)/(foil_length-foil_length*prop)-qAtan(lower_ya)/(foil_length-foil_length*prop))*180./M_PI;
+
+double psi_blunt_b = (qAtan(upper_yb/(foil_length-foil_length*prop))-qAtan(lower_yb/(foil_length-foil_length*prop)))*180./M_PI;
+
+psi_blunt=(psi_blunt_a-psi_blunt_b)/(panel_a-panel_b)*(panel-panel_b)+psi_blunt_b;
+
+return psi_blunt;
+}
+//Sara

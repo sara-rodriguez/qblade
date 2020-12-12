@@ -50,7 +50,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
         setMinimumSize(1200,550);//Sara
         widget->setLayout(gridx);
             QGroupBox *groupBox = new QGroupBox ("Simulation Parameters");
-            gridx->addWidget(groupBox, 0,0,6,1, Qt::AlignJustify);
+            gridx->addWidget(groupBox, 0,0,7,1, Qt::AlignJustify);
                 ParameterGrid<P> *pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
                     pGrid->addEdit(P::Name, LineEdit, new QLineEdit, "Name of Simulation:", "Noise Simulation");
@@ -89,7 +89,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
 
 //Sara
                 groupBox = new QGroupBox ("Directivity Angles");
-                gridx->addWidget(groupBox,4,1);
+                gridx->addWidget(groupBox,4,1,2,1);
                 pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
                 pGrid->addEdit(P::DirectivityTheta, NumberEditType, new NumberEdit(),
@@ -98,7 +98,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                               "ψe [deg]:", 90);//Sara
 
 QGroupBox *groupBox_qs3d = new QGroupBox ("Quasi 3D Simulation");
-gridx->addWidget(groupBox_qs3d,5,1);
+gridx->addWidget(groupBox_qs3d,6,1);
 pGrid = new ParameterGrid<P>(this);
 groupBox_qs3d->setLayout(pGrid);
 QComboBox *qs3DSim_combobox = new QComboBox;
@@ -171,30 +171,28 @@ connect(m_TE_c_check,SIGNAL(toggled(bool)),this,SLOT(OnTECheck()));//Sara
 
 m_blunt_check = new QGroupBox("Bluntness noise source contribution");
 pGrid = new ParameterGrid<P>(this);
-//m_blunt_check->setLayout(pGrid);
 pGrid->addEdit(P::blunt_check, CheckGroupBox, m_blunt_check,"", false);
+connect(m_blunt_check,SIGNAL(toggled(bool)),this,SLOT(OnBluntCheck(bool)));
 
 m_blunt_check->setCheckable(true);
-groupBox = new QGroupBox ("Bluntness noise source contribution");
-gridx->addWidget(m_blunt_check,2,2);
+groupBox = new QGroupBox ();
+gridx->addWidget(m_blunt_check,2,2,2,1);
 pGrid = new ParameterGrid<P>(this);
 m_blunt_check->setLayout(pGrid);
 
-connect(m_blunt_check,SIGNAL(toggled(bool)),this,SLOT(OnBluntCheck(bool)));
+m_hblunt_check = new QCheckBox();
+pGrid->addEdit(P::hblunt_check, CheckBox, m_hblunt_check,"set:", false);
+m_hblunt_check->setEnabled(m_blunt_check->isChecked());
+m_hblunt_check->setToolTip("Check for user set or use the airfoil geometry");
+connect(m_hblunt_check,SIGNAL(toggled(bool)),this,SLOT(OnhBluntCheck(bool)));
 
-m_h_blunt_numberedit= new NumberEdit;
-pGrid->addEdit(P::h_blunt, NumberEditType, m_h_blunt_numberedit,"LE thickness (h) [mm]:", 2.5);
-m_h_blunt_numberedit->setEnabled(m_blunt_check->isChecked());
-m_h_blunt_numberedit->setToolTip("0 for a sharp TE");
+m_hblunt_numberedit = new NumberEdit ();
+m_hblunt_numberedit->setEnabled(m_hblunt_check->isChecked());
+pGrid->addEdit(P::hblunt, NumberEditType, m_hblunt_numberedit,"TE thickness [mm]:",2.4);
+m_hblunt_numberedit->setEnabled(m_hblunt_check->isChecked());
 
-m_psi_blunt_numberedit= new NumberEdit;
-pGrid->addEdit(P::psi_blunt, NumberEditType, m_psi_blunt_numberedit,"ψ [deg]:", 14);
-m_psi_blunt_numberedit->setEnabled(m_blunt_check->isChecked());
-m_psi_blunt_numberedit->setToolTip("angle parameter related to surface slope at TE");
-
-//Sara
 groupBox = new QGroupBox ("LE noise source contribution");
-gridx->addWidget(groupBox,3,2);
+gridx->addWidget(groupBox,4,2);
 pGrid = new ParameterGrid<P>(this);
 groupBox->setLayout(pGrid);
 QComboBox *Lowson_type_combobox = new QComboBox;
@@ -219,11 +217,23 @@ m_valMau_LE_numberedit->setEnabled(check_LE);
 });
 
 groupBox = new QGroupBox ("LBL-VS noise source contribution");
-gridx->addWidget(groupBox, 4,2);
+gridx->addWidget(groupBox, 5,2);
 pGrid = new ParameterGrid<P>(this);
 groupBox->setLayout(pGrid);
 m_LBLVS_check = new QCheckBox("");
 pGrid->addEdit(P::LBLVS,CheckBox,m_LBLVS_check,"enable:",false);
+
+m_tipvortex_check = new QGroupBox("Tip vortex noise source contribution");
+pGrid = new ParameterGrid<P>(this);
+pGrid->addEdit(P::tipvortex_check, CheckGroupBox, m_tipvortex_check,"", false);
+
+m_tipvortex_check->setCheckable(true);
+groupBox = new QGroupBox ();
+gridx->addWidget(m_tipvortex_check,6,2);
+pGrid = new ParameterGrid<P>(this);
+m_tipvortex_check->setLayout(pGrid);
+
+connect(m_tipvortex_check,SIGNAL(toggled(bool)),this,SLOT(OnTipVortexCheck(bool)));
 
 widget = new QWidget;
 tabWidget->addTab(widget, "Op. Points");
@@ -1004,7 +1014,16 @@ m_TSR_spinbox->setEnabled(index);
 
 void NoiseCreatorDialog::OnBluntCheck(bool index){
 blunt_in=index;
-m_h_blunt_numberedit->setEnabled(index);
+m_hblunt_check->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnhBluntCheck(bool index){
+m_hblunt_numberedit->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnTipVortexCheck(bool index){
+tipvortex_in=index;
+//m_h_tipvortex_numberedit->setEnabled(index);
 }
 
 void NoiseCreatorDialog::OnShearLayerCheck(bool index){

@@ -31,8 +31,6 @@ public:
 	double distanceObsever;
 	double directivityGreek;
 	double directivityPhi;
-    double h_blunt;//Sara
-    double psi_blunt;//Sara
 	bool highFreq;  // NM the two frequency members are not included in the GUI
 	bool lowFreq;
 	bool suctionSide; //SPLs
@@ -40,6 +38,8 @@ public:
 	bool separatedFlow; //SPLa
     bool LBLVS;//LBL Sara
     bool blunt_check;//blunt Sara
+    bool hblunt_check;//blunt Sara
+    bool tipvortex_check;//tip vortex Sara
 
     //Sara
     //LE
@@ -116,6 +116,7 @@ public:
     double valReu_LE;
     double valMal_LE;
     double valMau_LE;
+    double hblunt;
         //Sara
 
     //Turbulence parameters - Alexandre MOD

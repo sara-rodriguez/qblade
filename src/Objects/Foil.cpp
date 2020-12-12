@@ -58,7 +58,7 @@ CFoil::CFoil(QString name)
 	m_fCamber     = 0.0;
 	m_fXCamber    = 0.0;
 	m_fThickness  = 0.0;
-	m_fXThickness = 0.0;
+    m_fXThickness = 0.0;
 
 	n = 0;
 	memset(x, 0, sizeof(x));
@@ -160,7 +160,7 @@ bool CFoil::CompMidLine(bool bParams)
 		m_fThickness  = 0.0;
 		m_fCamber     = 0.0;
 		m_fXCamber    = 0.0;
-		m_fXThickness = 0.0;
+        m_fXThickness = 0.0;
 	}
 
 	m_rpMid[0].x    = 0.0;
@@ -185,6 +185,7 @@ bool CFoil::CompMidLine(bool bParams)
                                 m_fThickness  = fabs(yex-yin);
 				m_fXThickness = xt;
 			}
+
                         if(fabs(m_rpMid[l].y)>fabs(m_fCamber))
                         {
 				m_fCamber  = m_rpMid[l].y;
@@ -222,7 +223,7 @@ void CFoil::CopyFoil(CFoil *pSrcFoil)
 	m_fThickness  = pSrcFoil->m_fThickness;
 	m_fXThickness = pSrcFoil->m_fXThickness;
 	m_fCamber     = pSrcFoil->m_fCamber;
-	m_fXCamber    = pSrcFoil->m_fXCamber;
+    m_fXCamber    = pSrcFoil->m_fXCamber;
 
 	n  = pSrcFoil->n;
 	nb = pSrcFoil->nb;
@@ -692,8 +693,17 @@ void CFoil::GetUpperY(double x, double &y, double &normx, double &normy)
 	}
 }
 
+//Sara
+double CFoil::GetThickness(double const &x)
+{
+    //returns the airfoil thickness at position x
 
- 
+    double y_upper = GetBaseUpperY(x);
+    double y_lower = GetBaseLowerY(x);
+    return fabs(y_upper-y_lower);
+    }
+//Sara
+
 bool CFoil::InitFoil()
 {
 	//Initializes the foil geometry,
