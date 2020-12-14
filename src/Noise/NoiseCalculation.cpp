@@ -1058,43 +1058,44 @@ double aux_SPL_blunt=G0+G4+G5;
 //Sara blunt end
 
 //Sara tip vortex begin
-void NoiseCalculation::TipVortexCalc(int posOpPoint, int posFreq, double alpha_tip, NoiseOpPoint* nop) {
+void NoiseCalculation::TipVortexCalc(int posOpPoint, int posFreq, double alpha_tip) {
     if (m_parameter->tipvortex_check!=0){
-const double M = m_parameter->originalMach;
+const double Mach = m_parameter->originalMach;
 double Dh=getDH();
 double re = m_parameter->distanceObsever;
-double f=CENTRAL_BAND_FREQUENCY[posFreq];
+double freq=CENTRAL_BAND_FREQUENCY[posFreq];
 double c=m_parameter->originalChordLength;
 
-double aux1=0;
-double aux2=0;
-double l=0;
-double St2lin=0;
-double M_max=0;
-double U_max=0;
-double l_c=0;
-double c0=343.8889; //medium speed of sound
+    double aux1=0;
+    double aux2=0;
+    double l=0;
+    double St2lin=0;
+    double M_max=0;
+    double U_max=0;
+    double l_c=0;
+    double c0=343.8889; //medium speed of sound
+    bool flat_tip=m_parameter->flat_tip_check;
 
-l_c=0.008*alpha_tip;
+    if(!flat_tip){l_c=0.008*alpha_tip;}
+    else{
+    if((0<=alpha_tip) & (alpha_tip<2)){l_c=0.0230+0.0169*alpha_tip;}
+    if(2<alpha_tip){l_c=0.0378+0.0095*alpha_tip;}
+    }
 
-//another shape
-//if((0<=alpha_tip) & (alpha_tip<2)){l_c=0.0230+0.0169*alpha_tip;}
-//if(2<alpha_tip){l_c=0.0378+0.0095*alpha_tip;}
+    l=l_c*c;
 
-l=l_c*c;
+    M_max=(1+0.036*alpha_tip)*Mach;
 
-M_max=(1+0.036*alpha_tip)*M;
+    U_max=c0*M_max;
 
-U_max=c0*M_max;
+    St2lin=freq*l/U_max;
 
-St2lin=f*l/U_max;
+    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(re,2);
 
-aux1=10*log10(pow(M,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(re,2);
-
-aux2=-30.5*pow(log10(St2lin)+0.3,2)+126;
+    aux2=-30.5*pow(log10(St2lin)+0.3,2)+126;
 
 m_SPL_tipvortexdB[posOpPoint][posFreq]=aux1+aux2;
-    } else {m_SPL_tipvortexdB[posOpPoint][posFreq]=0;}
+} else {m_SPL_tipvortexdB[posOpPoint][posFreq]=0;}
 }
 //Sara tip vortex end
 
@@ -1287,12 +1288,13 @@ ProgressBar(1);//Sara
 
                 if(!m_parameter->hblunt_check){h_blunt = m_Blade->getThickness_TE(panel,m_parameter->originalChordLength);} else {h_blunt = m_parameter->hblunt/1000.;}
 
-
                 double psi_blunt = m_Blade->getAngle_TE(panel);
 
             BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,psi_blunt, h_blunt);
 
-            TipVortexCalc(posOpPoint,posFreq,10,nop); //urgente
+            double alpha_tip=getAlphaTip();
+
+            TipVortexCalc(posOpPoint,posFreq,alpha_tip); //urgente
             //Sara
 
             double splDbConsolidated = 0.0;
@@ -2803,6 +2805,25 @@ return ao;
 }
 
 //Sara
+double NoiseCalculation::getAlphaTip(){
+    double alpha_tip=0;
+    double TSR = m_parameter->TSRtd;
+    SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
+        double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
+        double ldelta  =   pSimuWidget->m_pctrlLDLineEdit->getValue();
+        double z=lstart;
+    QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
+foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
+        if (z==TSR){
+int number_of_segments = pbem->m_pBData->m_pos.size();
+alpha_tip=bdata->m_alpha.value(number_of_segments-1);
+break;
+        }
+z+=ldelta;
+}
+return alpha_tip;
+}
+
 double NoiseCalculation::getInputWindSpeed(int blade, int E, int section, double TSR){
     double windspeed=0;
     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
@@ -3060,39 +3081,36 @@ return aux_SPL_blunt;
 } else {return 0;}
 }
 
-double NoiseCalculation::calcTipVortex(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h){
+double NoiseCalculation::calcTipVortex(int freq, double Mach, double dist_obs, double Dh, double alpha_tip, double chord, bool flat_tip, double lift_span){
     if (m_parameter->tipvortex_check!=0){
-//    double U=m_parameter->originalVelocity;
-    double aux_rel=0;
-//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
-//    double psi=m_parameter->directivityPhi;
-    double G4=0;
-    double aux_rel0=0;
-    double G5_14=0;
-    double G5_0=0;
-    double G5=0;
-    double G0=0;
-//    double r = m_parameter->distanceObsever;
+    double aux1=0;
+    double aux2=0;
+    double l=0;
+    double St2lin=0;
+    double M_max=0;
+    double U_max=0;
+    double l_c=0;
+    double c0=343.8889; //medium speed of sound
 
-//    aux_rel=h/d_star_avg;
+    if(!flat_tip){l_c=0.008*alpha_tip;}
+    else{
+    if((0<=alpha_tip) & (alpha_tip<2)){l_c=0.0230+0.0169*alpha_tip;}
+    if(2<alpha_tip){l_c=0.0378+0.0095*alpha_tip;}
+    }
 
-//if(aux_rel<=5.){
-//    G4=17.5*log10(aux_rel)+157.5-1.114*psi;
-//}
-//else{
-//    G4=169.7-1.114*psi;
-//}
+    l=l_c*chord;
 
-//aux_rel0=6.724*pow(aux_rel,2)-4.019*aux_rel+1.107;
+    M_max=(1+0.036*alpha_tip)*Mach;
 
-//G5_14=BluntG5Calc(14,aux_rel,freq,h,U);
-//G5_0=BluntG5Calc(0,aux_rel0,freq,h,U);
+    U_max=c0*M_max;
 
-//G5=G5_0+0.0714*psi*(G5_14-G5_0);
+    St2lin=freq*l/U_max;
 
-//G0=10*log10(h*pow(Mach,5.5)*wetted_length * dh/pow(r,2));
+    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(dist_obs,2); qDebug() << "Mach: " << Mach << "M_max: " <<  M_max << "l: " << l << "dist_obs: " << dist_obs << "aux1: " << aux1;
 
-double aux_SPL_tipvortex=G0+G4+G5;
+    aux2=-30.5*pow(log10(St2lin)+0.3,2)+126;
+
+double aux_SPL_tipvortex=aux1+aux2;
 
 return aux_SPL_tipvortex;
 } else {return 0;}
@@ -3741,7 +3759,10 @@ c_i[i]=(c_0[i]+c_1[i])/2.;
 
 local_twist[i]=theta_BEM[i];
 
-    b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));
+if(i==(number_of_segments-1)){
+    b[i]=0;
+} else{
+    b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));}
 
 //    the angle a is the total angle between the YB ZB blade reference system plane and the local midsection chord line p 75 handout
     a[i]=local_twist[i]+blade_pitch;
@@ -4152,9 +4173,21 @@ double psi_blunt = m_Blade->getAngle_TE(panel);
 SPL_BluntdB[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],vel[i],psi_blunt,dist_obs[i],d_star_avg,Dh[i], h_blunt);
 SPL_BluntdB_rotor[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],vel_rotor[i],psi_blunt,dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], h_blunt);
 
+double cl = pbem->m_pBData->m_CL.at(number_of_segments-1);
+
+double airfoil_area= m_Blade->getAirfoilArea(panel)*pow(chord[i],2);
+
+double lift = cl*1./2.*rho*pow(vel[i],2)*airfoil_area;
+double lift_rotor = cl*1./2.*rho*pow(vel_rotor[i],2)*airfoil_area;
+
 //urgente
-SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],vel[i],psi_blunt,dist_obs[i],d_star_avg,Dh[i], h_blunt);
-SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],vel_rotor[i],psi_blunt,dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], h_blunt);
+
+double alpha_tip = alpha[number_of_segments-1];
+
+bool flat_tip = m_parameter->flat_tip_check;
+
+SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],dist_obs[i],Dh[i],alpha_tip,chord[i],flat_tip,0);
+SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_tip,chord[i],flat_tip,0);
 
 //Validation:
 
@@ -4244,6 +4277,9 @@ if(qIsNaN(SPL_LedB_rotor[j]) || qIsInf(SPL_LedB_rotor[j])){SPL_LedB_rotor[j]=-99
 if(qIsNaN(SPL_LblvsdB_rotor[j]) || qIsInf(SPL_LblvsdB_rotor[j])){SPL_LblvsdB_rotor[j]=-999999999999.;}
 if(qIsNaN(SPL_BluntdB[j]) || qIsInf(SPL_BluntdB_rotor[j])){SPL_BluntdB_rotor[j]=-999999999999.;}
 if(qIsNaN(SPL_TipVortexdB_rotor[j]) || qIsInf(SPL_TipVortexdB_rotor[j])){SPL_TipVortexdB_rotor[j]=-999999999999.;}
+
+if(i==39){
+qDebug() << "valores tip vortex: " <<  i << SPL_TipVortexdB[j] << SPL_TipVortexdB_rotor[j];}
 
 //create validation log error
 QString Re_val_num;

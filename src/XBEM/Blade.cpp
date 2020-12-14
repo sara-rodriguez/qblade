@@ -1287,4 +1287,21 @@ psi_blunt=(psi_blunt_a-psi_blunt_b)/(panel_a-panel_b)*(panel-panel_b)+psi_blunt_
 
 return psi_blunt;
 }
+
+double CBlade::getAirfoilArea(double panel)
+{
+double panel_a=0, panel_b=0;
+double area_a=0, area_b=0, area=0;
+
+    if(round(panel)==0){panel_a=1; panel_b=0;}else{
+    panel_a = round(panel);
+    panel_b = panel_a-1;}
+
+area_a = g_mainFrame->GetFoil(m_Airfoils[panel_a])->GetArea();
+area_b = g_mainFrame->GetFoil(m_Airfoils[panel_b])->GetArea();
+
+area=(area_a-area_b)/(panel_a-panel_b)*(panel-panel_b)+area_b;
+
+return area;
+}
 //Sara

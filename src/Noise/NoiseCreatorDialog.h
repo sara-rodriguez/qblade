@@ -96,7 +96,7 @@ private:
     QList<OpPointRecord> m_opPointRecords;  // store a sorted list of all OpPoints
 
     //Sara begin
-    QCheckBox *m_rot_speed_check, *m_TSR_check, *m_u_wind_speed_check, *m_valRel_TE_check, *m_valReu_TE_check, *m_valRel_LE_check, *m_valReu_LE_check, *m_TE_a_check, *m_TE_b_check, *m_TE_c_check, *m_valMal_TE_check, *m_valMau_TE_check, *m_valAOAl_TE_check, *m_valAOAu_TE_check, *m_valMal_LE_check, *m_valMau_LE_check, *m_LBLVS_check, *m_autopolars_check, *m_hblunt_check;
+    QCheckBox *m_rot_speed_check, *m_TSR_check, *m_u_wind_speed_check, *m_valRel_TE_check, *m_valReu_TE_check, *m_valRel_LE_check, *m_valReu_LE_check, *m_TE_a_check, *m_TE_b_check, *m_TE_c_check, *m_valMal_TE_check, *m_valMau_TE_check, *m_valAOAl_TE_check, *m_valAOAu_TE_check, *m_valMal_LE_check, *m_valMau_LE_check, *m_LBLVS_check, *m_autopolars_check, *m_hblunt_check, *m_flat_tip_check;
 
     QGroupBox *m_blunt_check, *m_shear_check, *m_tipvortex_check;
 

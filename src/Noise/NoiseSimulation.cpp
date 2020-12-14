@@ -1946,6 +1946,10 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
         if(set) m_parameter.tipvortex_check = value.toBool();
         else value = m_parameter.tipvortex_check; break;
 
+    case P::flat_tip_check:
+        if(set) m_parameter.flat_tip_check = value.toBool();
+        else value = m_parameter.flat_tip_check; break;
+
     case P::TSR_check:
         if(set) m_parameter.TSR_check = value.toBool();
         else {value=m_parameter.TSR_check;}

@@ -40,6 +40,7 @@ public:
     bool blunt_check;//blunt Sara
     bool hblunt_check;//blunt Sara
     bool tipvortex_check;//tip vortex Sara
+    bool flat_tip_check;//tir vortex Sara
 
     //Sara
     //LE

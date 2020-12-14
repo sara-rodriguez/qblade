@@ -389,13 +389,14 @@ private:
     void calcSPLp(int posOpPoint,int posFreq);
     void LECalc(int posOpPoint, int posFreq, NoiseOpPoint* nop); //Alexandre MOD
     //Sara begin
+    double getAlphaTip();
     void LBLVSCalc(int posOpPoint, int posFreq, NoiseOpPoint* nop);
     double calcLBLVS(int freq, double Reynolds, double Mach, double alpha, double delta_p, double r); //Alexandre MOD
     void BluntCalc(int posOpPoint, int posFreq, double Dh, double d_star_avg, double psi, double h_mm);
     double BluntG5Calc(double psi, double aux_rel, double freq, double h, double U);
     double calcBlunt(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h_mm); //Sara blunt
-    void TipVortexCalc(int posOpPoint, int posFreq, double alfa_tip, NoiseOpPoint* nop);
-    double calcTipVortex(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h_mm); //Sara tip vortex
+    void TipVortexCalc(int posOpPoint, int posFreq, double alfa_tip);
+    double calcTipVortex(int freq, double Mach, double dist_obs, double Dh, double alpha_tip, double chord, bool flat_tip,double lift_span); //Sara tip vortex
     double calcao(double Reynolds);
     double calcBR_b(double B_min, double B_max);
     double calcB_min(double b);

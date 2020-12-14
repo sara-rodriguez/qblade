@@ -235,6 +235,10 @@ m_tipvortex_check->setLayout(pGrid);
 
 connect(m_tipvortex_check,SIGNAL(toggled(bool)),this,SLOT(OnTipVortexCheck(bool)));
 
+m_flat_tip_check = new QCheckBox();
+pGrid->addEdit(P::flat_tip_check, CheckBox, m_flat_tip_check,"flat tip:", false);
+m_flat_tip_check->setEnabled(m_tipvortex_check->isChecked());
+
 widget = new QWidget;
 tabWidget->addTab(widget, "Op. Points");
 
@@ -1023,7 +1027,7 @@ m_hblunt_numberedit->setEnabled(index);
 
 void NoiseCreatorDialog::OnTipVortexCheck(bool index){
 tipvortex_in=index;
-//m_h_tipvortex_numberedit->setEnabled(index);
+m_flat_tip_check->setEnabled(index);
 }
 
 void NoiseCreatorDialog::OnShearLayerCheck(bool index){
