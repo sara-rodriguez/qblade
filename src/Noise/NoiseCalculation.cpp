@@ -1297,6 +1297,16 @@ ProgressBar(1);//Sara
             TipVortexCalc(posOpPoint,posFreq,alpha_tip); //urgente
             //Sara
 
+            //validation no errors Sara
+            if(qIsNaN(m_SPLadB[posOpPoint][posFreq]) || qIsInf(m_SPLadB[posOpPoint][posFreq])){m_SPLadB[posOpPoint][posFreq]=-999999999999.;}
+            if(qIsNaN(m_SPLsdB[posOpPoint][posFreq]) || qIsInf(m_SPLsdB[posOpPoint][posFreq])){m_SPLsdB[posOpPoint][posFreq]=-999999999999.;}
+            if(qIsNaN(m_SPLpdB[posOpPoint][posFreq]) || qIsInf(m_SPLpdB[posOpPoint][posFreq])){m_SPLpdB[posOpPoint][posFreq]=-999999999999.;}
+            if(qIsNaN(m_SPL_LEdB[posOpPoint][posFreq]) || qIsInf(m_SPL_LEdB[posOpPoint][posFreq])){m_SPL_LEdB[posOpPoint][posFreq]=-999999999999.;}
+            if(qIsNaN(m_SPL_LBLVSdB[posOpPoint][posFreq]) || qIsInf(m_SPL_LBLVSdB[posOpPoint][posFreq])){m_SPL_LBLVSdB[posOpPoint][posFreq]=-999999999999.;}
+            if(qIsNaN(m_SPL_bluntdB[posOpPoint][posFreq]) || qIsInf(m_SPL_bluntdB[posOpPoint][posFreq])){m_SPL_bluntdB[posOpPoint][posFreq]=-999999999999.;}
+            if(qIsNaN(m_SPL_tipvortexdB[posOpPoint][posFreq]) || qIsInf(m_SPL_tipvortexdB[posOpPoint][posFreq])){m_SPL_tipvortexdB[posOpPoint][posFreq]=-999999999999.;}
+            //Sara
+
             double splDbConsolidated = 0.0;
 
             if(m_CalcSeparatedFlow)

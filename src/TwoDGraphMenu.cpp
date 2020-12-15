@@ -54,6 +54,7 @@ void TwoDGraphMenu::onAboutToShow() {
 	m_fourGraphsAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::Quad);
     m_fourGraphsVerticalAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::QuadVertical);
     m_fiveGraphsAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::Quint);//Sara
+    m_eightGraphsAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::Oct);//Sara
 }
 
 void TwoDGraphMenu::onGraphArrangementChanged() {
@@ -71,5 +72,7 @@ void TwoDGraphMenu::onGraphArrangementChanged() {
         m_module->setGraphArrangement(TwoDWidgetInterface::QuadVertical);
     } else if (QObject::sender() == m_fiveGraphsAction) { //Sara
         m_module->setGraphArrangement(TwoDWidgetInterface::Quint);
+    } else if (QObject::sender() == m_eightGraphsAction) { //Sara
+        m_module->setGraphArrangement(TwoDWidgetInterface::Oct);
     }
 }

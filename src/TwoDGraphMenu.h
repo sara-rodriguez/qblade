@@ -17,7 +17,7 @@ public:
 private:
 	TwoDModule *m_module;
 	QAction *m_singleGraphAction, *m_twoHorizontalGraphsAction, *m_twoVerticalGraphsAction,
-            *m_threeGraphsAction, *m_fourGraphsAction, *m_fourGraphsVerticalAction, *m_fiveGraphsAction;//Sara
+            *m_threeGraphsAction, *m_fourGraphsAction, *m_fourGraphsVerticalAction, *m_fiveGraphsAction, *m_eightGraphsAction;//Sara
 	
 private slots:
 	void onAboutToShow ();

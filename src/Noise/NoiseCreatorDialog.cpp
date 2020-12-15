@@ -748,7 +748,8 @@ void NoiseCreatorDialog::onSelectButtonsClicked(int id) {
 //Sara
 void NoiseCreatorDialog::onFoilBoxChange() {
     int index = m_airfoilComboBox->currentIndex();
-    g_mainFrame->m_pctrlFoil->setCurrentIndex(index);
+    int index_panel = g_mainFrame->m_pctrlFoil->currentIndex();
+    if(index!=index_panel){g_mainFrame->m_pctrlFoil->setCurrentIndex(index);}
     foilindex=index;
 }
 //Sara
