@@ -196,7 +196,7 @@ void NoiseModule::onqs3dGraph2d(){
         m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
         m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
         m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_LBL_VS (dB)", true, false});//Sara
-        m_graph[5] = new NewGraph ("NoiseGraphSix",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_blunt", true, false});//Sara
+        m_graph[5] = new NewGraph ("NoiseGraphSix",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_blunt (dB)", true, false});//Sara
         m_graph[6] = new NewGraph ("NoiseGraphSeven",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_tipvortex (dB)", true, false});//Sara
         m_graph[7] = new NewGraph ("NoiseGraphEight",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
 }

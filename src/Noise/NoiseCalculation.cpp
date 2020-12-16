@@ -4197,7 +4197,7 @@ double alpha_tip = alpha[number_of_segments-1];
 bool flat_tip = m_parameter->flat_tip_check;
 
 SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],dist_obs[i],Dh[i],alpha_tip,chord[i],flat_tip,0);
-SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_tip,chord[i],flat_tip,0);}
+SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_tip,chord[i],flat_tip,0);
 
 //Validation:
 
@@ -4288,7 +4288,7 @@ if(qIsNaN(SPL_LblvsdB_rotor[j]) || qIsInf(SPL_LblvsdB_rotor[j])){SPL_LblvsdB_rot
 if(qIsNaN(SPL_BluntdB[j]) || qIsInf(SPL_BluntdB_rotor[j])){SPL_BluntdB_rotor[j]=-999999999999.;}
 if(qIsNaN(SPL_TipVortexdB_rotor[j]) || qIsInf(SPL_TipVortexdB_rotor[j])){SPL_TipVortexdB_rotor[j]=-999999999999.;}
 
-if(i==39){
+if(i==38){
 qDebug() << "valores tip vortex: " <<  i << SPL_TipVortexdB[j] << SPL_TipVortexdB_rotor[j];}
 
 //create validation log error
