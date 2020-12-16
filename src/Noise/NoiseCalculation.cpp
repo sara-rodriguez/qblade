@@ -42,6 +42,11 @@ const double NoiseCalculation::BWeighting[] = {38.2, -33.3, -28.3, -24.2, -20.4,
 const double NoiseCalculation::CWeighting[] = {-14.3, -11.2, -8.5, -6.2, -4.4,  -3.0,  -2.0,  -1.3,  -0.8,  -0.5,  -0.3,  -0.2, -0.1,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0, 0.0,   0.0,  -0.1,  -0.2,  -0.3,  -0.5,  -0.8,  -1.3,-2.0,-3.0,  -4.4,  -6.2,  -8.5, -11.2};
 const QVector<double> NoiseCalculation::CENTRAL_BAND_FREQUENCY ({10, 12.5, 16, 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,200, 250, 315, 400, 500, 630, 800, 1000,1250, 1600, 2000, 2500, 3150, 4000, 5000,6300, 8000, 10000, 12500, 16000, 20000});
 
+//Sara
+const double NoiseCalculation::alpha_tip_over_alpha_t[] = {0.95, 0.89, 0.79, 0.71, 0.62, 0.54};
+const double NoiseCalculation::aspect_ratio[] = {24, 12, 6, 4, 2.67, 2};
+//Sara
+
 NoiseCalculation::NoiseCalculation() {
     m_parameter = nullptr; //Alexandre MOD - changed NULL for nullptr
     m_CalcSeparatedFlow = false;
@@ -1058,7 +1063,7 @@ double aux_SPL_blunt=G0+G4+G5;
 //Sara blunt end
 
 //Sara tip vortex begin
-void NoiseCalculation::TipVortexCalc(int posOpPoint, int posFreq, double alpha_tip) {
+void NoiseCalculation::TipVortexCalc(int posOpPoint, int posFreq, double alpha_t) {
     if (m_parameter->tipvortex_check!=0){
 const double Mach = m_parameter->originalMach;
 double Dh=getDH();
@@ -1076,21 +1081,21 @@ double c=m_parameter->originalChordLength;
     double c0=343.8889; //medium speed of sound
     bool flat_tip=m_parameter->flat_tip_check;
 
-    if(!flat_tip){l_c=0.008*alpha_tip;}
+    if(!flat_tip){l_c=0.008*alpha_t;}
     else{
-    if((0<=alpha_tip) & (alpha_tip<2)){l_c=0.0230+0.0169*alpha_tip;}
-    if(2<alpha_tip){l_c=0.0378+0.0095*alpha_tip;}
+    if((0<=alpha_t) & (alpha_t<2)){l_c=0.0230+0.0169*alpha_t;}
+    if(2<alpha_t){l_c=0.0378+0.0095*alpha_t;}
     }
 
     l=l_c*c;
 
-    M_max=(1+0.036*alpha_tip)*Mach;
+    M_max=(1+0.036*alpha_t)*Mach;
 
     U_max=c0*M_max;
 
     St2lin=freq*l/U_max;
 
-    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(re,2);
+    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh/pow(re,2));
 
     aux2=-30.5*pow(log10(St2lin)+0.3,2)+126;
 
@@ -1292,9 +1297,9 @@ ProgressBar(1);//Sara
 
             BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,psi_blunt, h_blunt);
 
-            double alpha_tip=getAlphaTip();
+            double alpha_t=getAlphaT_2d();
 
-            TipVortexCalc(posOpPoint,posFreq,alpha_tip); //urgente
+            TipVortexCalc(posOpPoint,posFreq,alpha_t);
             //Sara
 
             //validation no errors Sara
@@ -2815,8 +2820,10 @@ return ao;
 }
 
 //Sara
-double NoiseCalculation::getAlphaTip(){
+double NoiseCalculation::getAlphaT_2d(){
+    double alpha_t=0;
     double alpha_tip=0;
+    double aspect_ratio=0;
     double TSR = m_parameter->TSRtd;
     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
         double lstart  =   pSimuWidget->m_pctrlLSLineEdit->getValue();
@@ -2827,11 +2834,39 @@ foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
         if (z==TSR){
 int number_of_segments = pbem->m_pBData->m_pos.size();
 alpha_tip=bdata->m_alpha.value(number_of_segments-1);
+aspect_ratio = pbem->m_AR;
+alpha_t = getAlphaT(aspect_ratio,alpha_tip);
 break;
         }
 z+=ldelta;
 }
-return alpha_tip;
+return alpha_t;
+}
+
+double NoiseCalculation::getAlphaT(double AR, double alpha_tip){
+double tip_t_a=0;
+double tip_t_b=0;
+double tip_t=0;
+double AR_a=0;
+double AR_b=0;
+double alpha_t=0;
+int x=0;
+
+while (aspect_ratio[x]>AR){
+    ++x;
+}
+
+int a=x+1;
+int b=x;
+
+tip_t_a=alpha_tip_over_alpha_t[a];
+tip_t_b=alpha_tip_over_alpha_t[b];
+AR_a=aspect_ratio[a];
+AR_b=aspect_ratio[b];
+
+tip_t=(AR-AR_a)/(AR_b-AR_a)*(tip_t_b-tip_t_a)+tip_t_a;
+alpha_t=alpha_tip/tip_t;
+return alpha_t;
 }
 
 double NoiseCalculation::getInputWindSpeed(int blade, int E, int section, double TSR){
@@ -3091,7 +3126,7 @@ return aux_SPL_blunt;
 } else {return 0;}
 }
 
-double NoiseCalculation::calcTipVortex(int freq, double Mach, double dist_obs, double Dh, double alpha_tip, double chord, bool flat_tip, double lift_span){
+double NoiseCalculation::calcTipVortex(int freq, double Mach, double dist_obs, double Dh, double alpha_t, double chord, bool flat_tip){
     if (m_parameter->tipvortex_check!=0){
     double aux1=0;
     double aux2=0;
@@ -3102,21 +3137,21 @@ double NoiseCalculation::calcTipVortex(int freq, double Mach, double dist_obs, d
     double l_c=0;
     double c0=343.8889; //medium speed of sound
 
-    if(!flat_tip){l_c=0.008*alpha_tip;}
+    if(!flat_tip){l_c=0.008*alpha_t;}
     else{
-    if((0<=alpha_tip) & (alpha_tip<2)){l_c=0.0230+0.0169*alpha_tip;}
-    if(2<alpha_tip){l_c=0.0378+0.0095*alpha_tip;}
+    if((0<=alpha_t) & (alpha_t<2)){l_c=0.0230+0.0169*alpha_t;}
+    if(2<alpha_t){l_c=0.0378+0.0095*alpha_t;}
     }
 
     l=l_c*chord;
 
-    M_max=(1+0.036*alpha_tip)*Mach;
+    M_max=(1+0.036*alpha_t)*Mach;
 
     U_max=c0*M_max;
 
     St2lin=freq*l/U_max;
 
-    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(dist_obs,2);
+    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh/pow(dist_obs,2));
 
     aux2=-30.5*pow(log10(St2lin)+0.3,2)+126;
 
@@ -4183,21 +4218,29 @@ double psi_blunt = m_Blade->getAngle_TE(panel);
 SPL_BluntdB[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach[i],L[i],vel[i],psi_blunt,dist_obs[i],d_star_avg,Dh[i], h_blunt);
 SPL_BluntdB_rotor[j]=calcBlunt(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],L[i],vel_rotor[i],psi_blunt,dist_obs_rotor[i],d_star_avg_rotor,Dh_rotor[i], h_blunt);
 
-double cl = pbem->m_pBData->m_CL.at(number_of_segments-1);
+//double cl = pbem->m_pBData->m_CL.at(number_of_segments-1);
 
-double airfoil_area= m_Blade->getAirfoilArea(panel)*pow(chord[i],2);
+//double airfoil_area= m_Blade->getAirfoilArea(panel)*pow(chord[i],2);
 
-double lift = cl*1./2.*rho*pow(vel[i],2)*airfoil_area;
-double lift_rotor = cl*1./2.*rho*pow(vel_rotor[i],2)*airfoil_area;
+//double lift = cl*1./2.*rho*pow(vel[i],2)*airfoil_area;
+//double lift_rotor = cl*1./2.*rho*pow(vel_rotor[i],2)*airfoil_area;
 
-//urgente
+//double L_lin = rho*vel[i]*lift;
+//double L_lin_rotor = rho*vel_rotor[i]*lift_rotor;
+
+//double alpha_0=lift/(M_PI*vel[i]*chord[i]);
+//double alpha_0_rotor=lift_rotor/(M_PI*vel_rotor[i]*chord[i]);
+
+double aspect_ratio = pbem->m_AR;
 
 double alpha_tip = alpha[number_of_segments-1];
 
+double alpha_t = getAlphaT(aspect_ratio,alpha_tip);
+
 bool flat_tip = m_parameter->flat_tip_check;
 
-SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],dist_obs[i],Dh[i],alpha_tip,chord[i],flat_tip,0);
-SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_tip,chord[i],flat_tip,0);
+SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],dist_obs[i],Dh[i],alpha_t,chord[i],flat_tip);
+SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_t,chord[i],flat_tip);
 
 //Validation:
 
@@ -4287,9 +4330,6 @@ if(qIsNaN(SPL_LedB_rotor[j]) || qIsInf(SPL_LedB_rotor[j])){SPL_LedB_rotor[j]=-99
 if(qIsNaN(SPL_LblvsdB_rotor[j]) || qIsInf(SPL_LblvsdB_rotor[j])){SPL_LblvsdB_rotor[j]=-999999999999.;}
 if(qIsNaN(SPL_BluntdB[j]) || qIsInf(SPL_BluntdB_rotor[j])){SPL_BluntdB_rotor[j]=-999999999999.;}
 if(qIsNaN(SPL_TipVortexdB_rotor[j]) || qIsInf(SPL_TipVortexdB_rotor[j])){SPL_TipVortexdB_rotor[j]=-999999999999.;}
-
-if(i==38){
-qDebug() << "valores tip vortex: " <<  i << SPL_TipVortexdB[j] << SPL_TipVortexdB_rotor[j];}
 
 //create validation log error
 QString Re_val_num;

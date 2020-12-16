@@ -150,8 +150,6 @@ void NoiseModule::onHideDocks(bool hide) {
 }
 
 //Sara
-int index_qs3d=-1;
-int index = 0;
 void NoiseModule::onqs3dGraphs(bool){
 ++index_qs3d;
 

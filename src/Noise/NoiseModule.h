@@ -25,6 +25,8 @@ public:
 	int getHighlightIndex(NewGraph::GraphType graphTypeMulti);
 	QStringList prepareMissingObjectMessage();
 	bool isColorByOpPoint();
+    int index_qs3d=-1; //Sara
+    int index = 0; //Sara
 	
 private:
 	void showAll();
@@ -45,11 +47,11 @@ public slots:
     void onqs3dGraphBlade();//Sara
     void onqs3dGraphRotor();//Sara
     void onqs3dGraphRotorLoops();//Sara
-	void setShownSimulation(NoiseSimulation *newSimulation, bool forceReload = false);
+    void setShownSimulation(NoiseSimulation *newSimulation, bool forceReload = false);
 	NoiseSimulation* getShownSimulation() { return m_shownSimulation; }
 
 	void onNeedUpdate() { update(); }
-	void reloadAllGraphs () { reloadAllGraphCurves(); }	
+    void reloadAllGraphs () {index_qs3d=0; index = 1; onqs3dGraph2d();  reloadAllGraphCurves(); }  //Sara
 };
 
 extern NoiseModule *g_noiseModule;
