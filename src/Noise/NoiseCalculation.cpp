@@ -1053,7 +1053,7 @@ double aux_SPL_blunt=G0+G4+G5;
 
     m_SPL_bluntdB[posOpPoint][posFreq] = aux_SPL_blunt;
 
-} else {m_SPL_LBLVSdB[posOpPoint][posFreq] = 0;}
+} else {m_SPL_bluntdB[posOpPoint][posFreq] = 0;}
 }
 //Sara blunt end
 
@@ -1284,7 +1284,7 @@ ProgressBar(1);//Sara
 
                 double panel=m_parameter->dStarChordStation*num_panels;
 
-                double h_blunt;
+                double h_blunt=0;
 
                 if(!m_parameter->hblunt_check){h_blunt = m_Blade->getThickness_TE(panel,m_parameter->originalChordLength);} else {h_blunt = m_parameter->hblunt/1000.;}
 
@@ -3116,7 +3116,7 @@ double NoiseCalculation::calcTipVortex(int freq, double Mach, double dist_obs, d
 
     St2lin=freq*l/U_max;
 
-    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(dist_obs,2); qDebug() << "Mach: " << Mach << "M_max: " <<  M_max << "l: " << l << "dist_obs: " << dist_obs << "aux1: " << aux1;
+    aux1=10*log10(pow(Mach,2)*pow(M_max,3)*pow(l,2)*Dh)/pow(dist_obs,2);
 
     aux2=-30.5*pow(log10(St2lin)+0.3,2)+126;
 
@@ -4197,7 +4197,7 @@ double alpha_tip = alpha[number_of_segments-1];
 bool flat_tip = m_parameter->flat_tip_check;
 
 SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],dist_obs[i],Dh[i],alpha_tip,chord[i],flat_tip,0);
-SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_tip,chord[i],flat_tip,0);
+SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_tip,chord[i],flat_tip,0);}
 
 //Validation:
 
