@@ -76,6 +76,8 @@ public:
     bool valMal_LE_check;
     bool valMau_LE_check;
     bool autopolars_check;
+    bool valPsil_check;
+    bool valPsiu_check;
 
     int qs3DSim;
     int phi_type;
@@ -118,6 +120,8 @@ public:
     double valMal_LE;
     double valMau_LE;
     double hblunt;
+    double valPsil;
+    double valPsiu;
         //Sara
 
     //Turbulence parameters - Alexandre MOD
