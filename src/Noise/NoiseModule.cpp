@@ -151,6 +151,9 @@ void NoiseModule::onHideDocks(bool hide) {
 
 //Sara
 void NoiseModule::onqs3dGraphs(bool){
+int index_qs3d=-1; //Sara
+int index = 0; //Sara
+
 ++index_qs3d;
 
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
@@ -234,7 +237,12 @@ void NoiseModule::onqs3dGraphRotorLoops(){
 //Sara
 
 void NoiseModule::setShownSimulation(NoiseSimulation *newSimulation, bool forceReload) {
-	if (forceReload || m_shownSimulation != newSimulation) {
+    if (forceReload || m_shownSimulation != newSimulation) {
+        onqs3dGraph2d();//Sara
+        QSettings settings("qblade.ini", QSettings::IniFormat); //Sara
+        setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>(settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));//Sara
+
+
 		m_shownSimulation = newSimulation;
 		m_dock->setShownObject(m_shownSimulation);
 		m_toolBar->setShownSimulation(m_shownSimulation);

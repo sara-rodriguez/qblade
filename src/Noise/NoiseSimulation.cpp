@@ -2060,6 +2060,26 @@ else {value=m_parameter.valMal_LE_check;}
 else {value=m_parameter.valMau_LE_check;}
         break;
 
+    case P::valPsil_check:
+        if(set) {m_parameter.valPsil_check = value.toBool();}
+else {value=m_parameter.valPsil_check;}
+        break;
+
+    case P::valPsiu_check:
+        if(set) {m_parameter.valPsiu_check = value.toBool();}
+else {value=m_parameter.valPsiu_check;}
+        break;
+
+    case P::valPsil:
+        if(set) {m_parameter.valPsil = value.toDouble();}
+else {value=m_parameter.valPsil;}
+        break;
+
+    case P::valPsiu:
+        if(set) {m_parameter.valPsiu = value.toDouble();}
+else {value=m_parameter.valPsiu;}
+        break;
+
     case P::autopolars_check:
         if(set) {m_parameter.autopolars_check = value.toBool();}
 else {value=m_parameter.autopolars_check;}

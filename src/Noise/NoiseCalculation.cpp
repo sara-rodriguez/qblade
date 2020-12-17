@@ -1021,9 +1021,9 @@ double NoiseCalculation::BluntG5Calc(double psi, double aux_rel, double freq, do
 
 void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d_star_avg, double psi, double h) {
     if (m_parameter->blunt_check!=0){
+
     double U=m_parameter->originalVelocity;
     double aux_rel=0;
-//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
     double G4=0;
     double aux_rel0=0;
     double G5_14=0;
@@ -1033,8 +1033,6 @@ void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d
     double freq=CENTRAL_BAND_FREQUENCY[posFreq];
     const double Mach = m_parameter->originalMach;
     double r = m_parameter->distanceObsever;
-
-    if(psi>14){psi=14;}
 
     aux_rel=h/d_star_avg;
 
@@ -1296,6 +1294,10 @@ ProgressBar(1);//Sara
                 double psi_blunt = m_Blade->getAngle_TE(panel);
 
             BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,psi_blunt, h_blunt);
+
+            //blunt validation
+            if(!m_parameter->valPsil_check & (psi_blunt<m_parameter->valPsil)){m_SPL_bluntdB[posOpPoint][posFreq]=-999999999999.;}
+            if(!m_parameter->valPsiu_check & (psi_blunt>m_parameter->valPsiu)){m_SPL_bluntdB[posOpPoint][posFreq]=-999999999999.;}
 
             double alpha_t=getAlphaT_2d();
 
@@ -3089,18 +3091,13 @@ return aux_SPL_LBLVS;
 
 double NoiseCalculation::calcBlunt(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h){
     if (m_parameter->blunt_check!=0){
-//    double U=m_parameter->originalVelocity;
     double aux_rel=0;
-//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
-//    double psi=m_parameter->directivityPhi;
     double G4=0;
     double aux_rel0=0;
     double G5_14=0;
     double G5_0=0;
     double G5=0;
     double G0=0;
-//    double r = m_parameter->distanceObsever;
-    if(psi>14){psi=14;}
 
     aux_rel=h/d_star_avg;
 
@@ -4276,6 +4273,7 @@ SPL_BluntdB[j]=-999999999999.;
 SPL_A[j]=-999999999999.;
 SPL_B[j]=-999999999999.;
 SPL_C[j]=-999999999999.;
+SPL_TipVortexdB[j]=-999999999999.;
 BPM_validation=false;
 }
 
@@ -4313,6 +4311,10 @@ SPL_LedBAW[j]=-999999999999.;
 SPL_LedBBW[j]=-999999999999.;
 SPL_LedBCW[j]=-999999999999.;
 }
+
+//blunt validation
+if(!m_parameter->valPsil_check & (psi_blunt<m_parameter->valPsil)){SPL_BluntdB[j]=-999999999999.; SPL_BluntdB_rotor[j]=-999999999999.;}
+if(!m_parameter->valPsiu_check & (psi_blunt>m_parameter->valPsiu)){SPL_BluntdB[j]=-999999999999.; SPL_BluntdB_rotor[j]=-999999999999.;}
 
 //validation no errors
 if(qIsNaN(SPL_alpha[j]) || qIsInf(SPL_alpha[j])){SPL_alpha[j]=-999999999999.;}

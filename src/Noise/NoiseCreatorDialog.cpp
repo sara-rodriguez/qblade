@@ -355,6 +355,33 @@ else{check_LE=false;}
                     pGrid->addEdit(P::valMau_LE, NumberEditType, m_valMau_LE_numberedit,"Upper Ma Value:",0.18);
                     m_valMau_LE_numberedit->setEnabled(check_LE);
 
+                    groupBox = new QGroupBox ("Blunt noise source validation range");
+                    vBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    pGrid->addRow("ψ Angle:","");
+
+                    m_valPsil_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valPsil_check, CheckBox, m_valPsil_check,"", false);
+                    m_valPsil_check->setEnabled(m_blunt_check->isChecked());
+                    m_valPsil_check->setToolTip("ψ is the angle of the surface slope at TE");
+
+                    m_valPsil_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valPsil, NumberEditType, m_valPsil_numberedit,"Lower ψ Value:",0);
+                    m_valPsil_numberedit->setEnabled(m_blunt_check->isChecked());
+
+                    m_valPsiu_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valPsiu_check, CheckBox, m_valPsiu_check,"", false);
+                    m_valPsiu_check->setEnabled(m_blunt_check->isChecked());
+                    m_valPsiu_check->setToolTip("ψ is the angle of the surface slope at TE");
+
+                    m_valPsiu_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valPsiu, NumberEditType, m_valPsiu_numberedit,"Upper ψ Value:",14);
+                    m_valPsiu_numberedit->setEnabled(m_blunt_check->isChecked());
+                    pGrid->addRow("","");pGrid->addRow("","");
+
                     groupBox = new QGroupBox ("TE noise source validation range");
                     hBox->addWidget(groupBox);
                     pGrid = new ParameterGrid<P>(this);
