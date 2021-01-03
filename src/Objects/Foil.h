@@ -63,6 +63,7 @@ public:
 	double GetTopSlope(double const &x);
 	double GetBotSlope(double const &x);
 	double NormalizeGeometry();
+    double GetThickness(double const &x);//Sara
 	bool CompMidLine(bool bParams);
 
 	bool ExportFoil(QTextStream &out);
@@ -102,8 +103,8 @@ public:
 	int nb;				// the number of points of the base foil
 	double  xb[IBX],  yb[IBX];	// the point coordinates of the base foil
 
-	double m_fCamber, m_fXCamber;	//foil camber and max camber position
-	double m_fThickness, m_fXThickness;// foil thickness and thickness position
+    double m_fCamber, m_fXCamber;	//foil max camber and max camber position
+    double m_fThickness, m_fXThickness;// foil max thickness and max thickness position
 
 	double m_Gap;			// trailing edge gap
 	CVector m_LE, m_TE;		// leading edge and trailing edge points

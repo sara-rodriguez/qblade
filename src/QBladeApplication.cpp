@@ -35,7 +35,8 @@ QBladeApplication::QBladeApplication(int &argc, char** argv) : QApplication(argc
 	QSplashScreen splashScreen (QPixmap(":/images/qblade600.png"), Qt::SplashScreen);
 	splashScreen.show();
 	
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	setApplicationStyle(settings.value("StartUp/styleName", style()->objectName()).toString());
     setApplicationName("QBlade");
     setApplicationVersion("v0.95");
@@ -71,7 +72,8 @@ QBladeApplication::~QBladeApplication() {
 		g_mainFrame->getCurrentModule()->onModuleChanged();
 	}
 	
-	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 	settings.setValue("StartUp/windowGeometry", g_mainFrame->saveGeometry());
 	settings.setValue("StartUp/windowState", g_mainFrame->saveState());
 	settings.setValue("StartUp/styleName", m_styleName);

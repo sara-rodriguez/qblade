@@ -54,12 +54,11 @@ private:
     QList< QList<double> > m_SimParameters;
     QList<QString> m_FileHeader;
 
-
     QLLTModule *m_module;
     QLLTSimulation *m_editedLLTSimulation;
     bool m_bisVawt;
 
-    QLabel *m_ShearLabel, *m_vortSizeLabel, *m_vortInductionLabel, *m_errorLabel, *m_SimFileLabel, *m_WindfieldLabel, *m_InflowLabel, *m_AeroDynLabel, *m_maxWakeAgeLabel, *m_fineWakeRevsLabel, *m_fullWakeRevsLabel;
+    QLabel *m_ShearLabel, *m_vortSizeLabel, *m_vortInductionLabel, *m_errorLabel, *m_SimFileLabel, *m_WindfieldLabel, *m_InflowLabel, *m_CsvFileLabel, *m_AeroDynLabel, *m_StarredDLabel, *m_maxWakeAgeLabel, *m_fineWakeRevsLabel, *m_fullWakeRevsLabel;
     QLineEdit *m_nameEdit;  // defines the simulations name
     QPushButton *m_OpenFile, *m_ViewFile;
     WindFieldComboBox *m_windFieldComboBox;

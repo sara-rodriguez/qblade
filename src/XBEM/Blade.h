@@ -55,7 +55,9 @@ public:
 	CBlade (QString name = "< no name >", StorableObject *parent = NULL);  // TODO remove the first default parameter asap!
 	void serialize ();  // override from StorableObject
     void restorePointers();
-
+    double getThickness_TE(double panel, double chord);//Sara
+    double getAngle_TE(double panel);//Sara
+    double getAirfoilArea(double panel);//Sara
 
 	// NM new public interface
 	double getRotorRadius ();

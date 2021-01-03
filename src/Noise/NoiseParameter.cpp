@@ -18,7 +18,7 @@ void NoiseParameter::serialize() {
 	g_serializer.readOrWriteStorableObjectVector(&analyzedOpPoints);
 	
 	g_serializer.readOrWriteDouble(&wettedLength);
-	g_serializer.readOrWriteDouble(&distanceObsever);
+    g_serializer.readOrWriteDouble(&distanceObsever);
 	g_serializer.readOrWriteDouble(&directivityGreek);
 	g_serializer.readOrWriteDouble(&directivityPhi);
 	g_serializer.readOrWriteBool(&highFreq);
@@ -33,6 +33,10 @@ void NoiseParameter::serialize() {
 	g_serializer.readOrWriteDouble(&originalMach);
 	g_serializer.readOrWriteDouble(&originalChordLength);
 	g_serializer.readOrWriteDouble(&originalVelocity);
+
+    //Alexandre MOD
+    g_serializer.readOrWriteDouble(&TurbulenceIntensity);
+    g_serializer.readOrWriteDouble(&IntegralLengthScale);
 	
 	g_serializer.readOrWriteDouble(&aoa);
 	g_serializer.readOrWriteDouble(&chordBasedReynolds);
@@ -52,7 +56,7 @@ QList<NoiseOpPoint*> NoiseParameter::prepareNoiseOpPointList() {
 			noiseOpPoints.append(new NoiseOpPoint(opPoint));
 		}
 	} else if (opPointSource == OriginalBpm) {
-		noiseOpPoints.append(new NoiseOpPoint(chordBasedReynolds, aoa));
+        noiseOpPoints.append(new NoiseOpPoint(chordBasedReynolds, originalMach, aoa, 0));//Sara
 	}
 	return noiseOpPoints;
 }

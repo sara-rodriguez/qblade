@@ -318,7 +318,7 @@ void TwoDWidget::paintEvent(QPaintEvent *event)
             QFont font (g_mainFrame->m_TextFont.family(), 0.06*height);
             painter.setFont(font);
             QPoint textPosition = QPoint (width/2-height*0.12, height/2+height/2.5);
-            painter.drawText(textPosition, "v0.96");
+            painter.drawText(textPosition, "v0.96 Beta");
 
             QFont font2(g_mainFrame->m_TextFont.family(), 0.03*height);
             textPosition = QPoint (width/2-height*0.52, height/2-height/2.5);

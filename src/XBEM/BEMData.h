@@ -72,6 +72,7 @@ private:
     int m_Width;
     QColor m_Color;
 
+    double temp;//Sara
     double rho;
     double elements;
     double epsilon;

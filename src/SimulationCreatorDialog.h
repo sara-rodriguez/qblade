@@ -10,6 +10,14 @@ class QGroupBox;
 template <class ParameterGroup>
 class SimulationCreatorDialog : public CreatorDialog, public ParameterViewer<ParameterGroup>
 {
+//Sara
+public:
+    double rho=1.225;
+    double temperature=288.15;
+    double relax_factor=0.35;
+    double viscosity=0.00001647;
+//Sara
+
 protected:
 	typedef ParameterGroup P;
 

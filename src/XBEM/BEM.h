@@ -75,6 +75,9 @@ public:
         QBEM(QWidget *parent = NULL);
 		
 		QStringList prepareMissingObjectMessage();
+
+        double PressAtm = 101325;//Sara
+        double PressVapor = 2500;//Sara
 		
 private slots:
         //methods
@@ -137,6 +140,7 @@ private slots:
         void OnSingleGraphs();
         void OnDecompose360Polar();
         void OnNew360Polar();
+        void OnNew360PolarAll();//Sara
         void Compute360Polar();
         void ComputePolar();
         void ComputeDecomposition();
@@ -402,7 +406,7 @@ public:
 		QLabel *m_pctrlWkLabel, *m_pctrlWALabel, *m_pctrlYield, *m_pctrlYieldLabel, *POwer;
 		QDoubleSpinBox *m_pctrlPMk, *m_pctrlPMA;// JW variable
 		QLabel *m_pctrlPMkLabel, *m_pctrlPMALabel;// JW variable
-        QPushButton *m_pctrlSave360, *m_pctrlNew360, *m_pctrlCancel360, *m_pctrlDelete360Polar, *m_pctrlDecompose360, *m_pctrlRename360Polar;
+        QPushButton *m_pctrlSave360, *m_pctrlNew360, *m_pctrlNew360All, *m_pctrlCancel360, *m_pctrlDelete360Polar, *m_pctrlDecompose360, *m_pctrlRename360Polar;//Sara
         QLabel *m_LabelA, *m_LabelB,*m_LabelAm, *m_LabelBm, *m_pctrlBEMLS, *m_pctrlBEMLE, *m_pctrlBEMLD, *m_pctrlCD90Label;
         QSlider *m_pctrlA, *m_pctrlB, *m_pctrlAm, *m_pctrlBm;
         QLineEdit *m_360Name;
@@ -507,7 +511,9 @@ public:
         double dlg_epsilon;
         int dlg_iterations;
         int dlg_elements;
+        double dlg_temp;//Sara
         double dlg_rho;
+        double dlg_kin_visc;//Sara
         bool dlg_tiploss;
         bool dlg_aspectratio;
         bool dlg_variable;

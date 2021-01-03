@@ -30,7 +30,7 @@ class NewGraph : public QObject
 public:
 	enum GraphType {None, FastSimulation, BladeGraph, QFEMSimulation, QLLTTimeGraph, QLLTBladeGraph, TurbineRotor,
 					TurbineBlade, TurbineAzimuthal, TurbineWeibull, TurbineLegend, MultiWindspeed, MultiRotational,
-					MultiPitch, Noise, RotorTipSpeed, RotorAllSimulations, RotorLegend};
+                    MultiPitch, Noise, RotorTipSpeed, RotorAllSimulations, RotorLegend};
 	enum ExportType {HumanReadable, CSV};
 	
 	struct GraphDefaults { GraphType graphType; QString xTitle, yTitle; bool xLogarithmic, yLogarithmic; };
@@ -61,7 +61,7 @@ public:
 	void setYTickSize (double tickSize) { m_yAxis.setTickSize(tickSize); }
 	void setNoAutoResize (bool autoResize) { m_noAutoResize = autoResize; }
 	
-	GraphType getGraphType () { return m_graphType; }
+    GraphType getGraphType () { return m_graphType; }
 	GraphType getGraphTypeMulti () { return m_graphTypeMulti; }
 	QStringList getAvailableVariables (bool xAxis);
 	QString getTitle () { return m_title; }

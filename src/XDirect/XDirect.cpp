@@ -35,6 +35,8 @@
 #include "../MainFrame.h"
 #include "../Misc/EditPlrDlg.h"
 #include "../Misc/ObjectPropsDlg.h"
+#include "../Noise/NoiseSimulation.h"//Sara
+#include "../Noise/NoiseCalculation.h"//Sara
 #include "XDirect.h"
 
 #include "../TwoDWidget.h"
@@ -153,7 +155,7 @@ QXDirect::QXDirect(QWidget *parent)
 
     m_Alpha      = -10.0;
     m_AlphaMax   = 20.0;
-	m_AlphaDelta = 0.5;
+    m_AlphaDelta = 0.5;
 	m_Cl         = 0.0;
 	m_ClMax      = 1.0;
 	m_ClDelta    = 0.1;
@@ -464,7 +466,7 @@ void QXDirect::AddOpData(OpPoint *pOpPoint)
 	pOpPoint->topShearEq.first = offset;
 	pOpPoint->topShearEq.second.resize(nside1-offset);
 	pOpPoint->topDStar.first = offset;
-	pOpPoint->topDStar.second.resize(nside1-offset);
+    pOpPoint->topDStar.second.resize(nside1-offset);
 	pOpPoint->topTheta.first = offset;
 	pOpPoint->topTheta.second.resize(nside1-offset);
 	pOpPoint->reThetaTop.first = offset;
@@ -819,6 +821,7 @@ void QXDirect::Connect()
 	connect(m_pctrlSpec2, SIGNAL(clicked()), this, SLOT(OnSpec()));
 	connect(m_pctrlSpec3, SIGNAL(clicked()), this, SLOT(OnSpec()));
 	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(OnAnalyze()));
+    connect(m_pctrlAnalyzeAll, SIGNAL(clicked()), this, SLOT(OnAnalyzeAll()));//Sara
     connect(m_pctrlNewPolar, SIGNAL(clicked()), this, SLOT(OnNewPolar()));
     connect(m_pctrlEditPolar, SIGNAL(clicked()), this, SLOT(OnEditPolar()));
     connect(m_pctrlDeletePolar, SIGNAL(clicked()), this, SLOT(OnDeletePolar()));
@@ -1665,7 +1668,7 @@ void QXDirect::LoadSettings(QSettings *pSettings)
 		m_iPlrView       = pSettings->value("PlrView").toInt();
 		m_Alpha          = pSettings->value("AlphaMin").toDouble();
 		m_AlphaMax       = pSettings->value("AlphaMax").toDouble();
-		m_AlphaDelta     = pSettings->value("AlphaDelta").toDouble();
+        m_AlphaDelta     = pSettings->value("AlphaDelta").toDouble();
 		m_Cl             = pSettings->value("ClMin").toDouble();
 		m_ClMax          = pSettings->value("ClMax").toDouble();
 		m_ClDelta        = pSettings->value("ClDelta").toDouble();
@@ -1917,10 +1920,8 @@ void QXDirect::OnInputChanged()
 	ReadParams();
 }
 
-
 void QXDirect::OnAnalyze()
-{
-
+{    
 	if(!g_pCurFoil || !m_pCurPolar) return;
 
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
@@ -2027,6 +2028,223 @@ void QXDirect::OnAnalyze()
 	UpdateView();
 }
 
+//Sara
+void QXDirect::OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec)
+{
+    int i,j;
+    CPolar *pPolar;
+    bool bFound;
+    if(!g_pCurFoil) return;
+
+    m_FoilPolarDlg.move(g_mainFrame->m_DlgPos);
+    m_FoilPolarDlg.m_NCrit     = NCrit;
+    m_FoilPolarDlg.m_XBotTr    = XBotTr;
+    m_FoilPolarDlg.m_XTopTr    = XTopTr;
+    m_FoilPolarDlg.m_Mach      = Mach;
+    m_FoilPolarDlg.m_Reynolds  = Reynolds;
+    m_FoilPolarDlg.m_PolarType = PolarType;
+    m_FoilPolarDlg.m_ASpec     = ASpec;
+
+    m_FoilPolarDlg.InitDialog();
+
+    g_mainFrame->m_DlgPos = m_FoilPolarDlg.pos();
+
+    bool repeated_name=false;
+    for (int i=0;i<g_polarStore.size();++i){
+    if(m_FoilPolarDlg.m_PlrName==g_polarStore.at(i)->getName()){repeated_name=true;  g_mainFrame->m_pctrlPolar->setCurrentIndex(i);}
+    }
+
+    if(!repeated_name){
+        pPolar = new CPolar();
+
+        pPolar->setSingleParent(g_pCurFoil);
+        pPolar->setName(m_FoilPolarDlg.m_PlrName);
+        pPolar->m_bIsVisible = true;
+        pPolar->m_PolarType = m_FoilPolarDlg.m_PolarType;
+
+        switch (pPolar->m_PolarType)
+        {
+            case FIXEDSPEEDPOLAR:
+                pPolar->m_MaType = 1;
+                pPolar->m_ReType = 1;
+                break;
+            case FIXEDLIFTPOLAR:
+                pPolar->m_MaType = 2;
+                pPolar->m_ReType = 2;
+                break;
+            case RUBBERCHORDPOLAR:
+                pPolar->m_MaType = 1;
+                pPolar->m_ReType = 3;
+                break;
+            case FIXEDAOAPOLAR:
+                pPolar->m_MaType = 1;
+                pPolar->m_ReType = 1;
+                break;
+            default:
+                pPolar->m_ReType = 1;
+                pPolar->m_MaType = 1;
+                break;
+        }
+
+        m_PolarType = m_FoilPolarDlg.m_PolarType;
+        m_NCrit     = m_FoilPolarDlg.m_NCrit;
+        m_XBotTr    = m_FoilPolarDlg.m_XBotTr;
+        m_XTopTr    = m_FoilPolarDlg.m_XTopTr;
+        m_Mach      = m_FoilPolarDlg.m_Mach;
+        m_Reynolds  = m_FoilPolarDlg.m_Reynolds;
+        m_ASpec     = m_FoilPolarDlg.m_ASpec;
+
+        pPolar->m_Reynolds = m_FoilPolarDlg.m_Reynolds;
+        pPolar->m_Mach     = m_FoilPolarDlg.m_Mach;
+        pPolar->m_ASpec    = m_FoilPolarDlg.m_ASpec;
+        pPolar->m_ACrit    = m_FoilPolarDlg.m_NCrit;
+        pPolar->m_XTop     = m_FoilPolarDlg.m_XTopTr;
+        pPolar->m_XBot     = m_FoilPolarDlg.m_XBotTr;
+        pPolar->m_Color = g_mainFrame->GetColor(1);
+
+        if(g_polarStore.add(pPolar)){
+
+            m_pCurPolar = pPolar;
+
+        for(i=0; i<12;i++)
+        {
+            bFound = false;
+            for (j=0; j<g_polarStore.size();j++)
+            {
+                if(g_polarStore.at(j)->m_Color == g_mainFrame->m_crColors[i]) bFound = true;
+            }
+            if(!bFound)
+            {
+                m_pCurPolar->m_Color = g_mainFrame->m_crColors[i];
+                break;
+            }
+        }
+
+        SetPolar(m_pCurPolar);
+        g_mainFrame->m_pctrlPolar->setCurrentObject(m_pCurPolar);
+        g_mainFrame->UpdatePolars();
+        SetBufferFoil();
+        UpdateView();
+        }
+    SetControls();
+}
+}
+
+void QXDirect::OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax, double delta)
+{
+OnNewPolarNoise(NCrit, XBotTr, XTopTr, Mach, Reynolds, PolarType, ASpec);
+
+m_pctrlAlphaMin->setValue(Alpha);
+m_pctrlAlphaMax->setValue(AlphaMax);
+m_pctrlAlphaDelta->setValue(delta);
+
+OnAnalyze();
+}
+
+void QXDirect::OnAnalyzeAll()//Sara
+{
+    int polar_size=g_polarStore.size();
+
+    for (int i=0;i<polar_size;++i){
+    g_mainFrame->m_pctrlPolar->setCurrentIndex(i);
+
+    if(!g_pCurFoil || !m_pCurPolar) return;
+
+    MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
+
+    m_pXFoil->lvisc = m_bViscous;
+
+    ReadParams();
+
+    bool bHigh = m_bHighlightOpp;
+    m_bHighlightOpp = false;
+
+
+    // added this to ensure that polars are always computed from the (absolute) smalles angles to the (absolute) largest angles for best XFoil convergence
+
+    if (m_Alpha > m_AlphaMax){
+        double alpha = m_Alpha;
+        m_Alpha = m_AlphaMax;
+        m_AlphaMax = alpha;
+    }
+
+    if (m_Alpha < 0 && m_AlphaMax > 0){
+        m_XFdlg.SetAlpha(0, m_Alpha, m_AlphaDelta);
+        m_XFdlg.SetCl(m_Cl, m_ClMax, m_ClDelta);
+        m_XFdlg.SetRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
+
+        m_XFdlg.m_bSequence = m_bSequence;
+        m_XFdlg.m_bAlpha = m_bAlpha;
+
+        m_XFdlg.m_FoilName = g_polarStore.at(i)->getName(); //g_pCurFoil->getName();
+        m_XFdlg.m_IterLim = m_IterLim;
+        m_XFdlg.m_pXFoil = m_pXFoil;
+        m_XFdlg.InitDialog();
+        m_XFdlg.show();
+        m_XFdlg.StartAnalysis();
+        m_XFdlg.hide();
+
+        m_XFdlg.SetAlpha(0, m_AlphaMax, m_AlphaDelta);
+        m_XFdlg.SetCl(m_Cl, m_ClMax, m_ClDelta);
+        m_XFdlg.SetRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
+
+        m_XFdlg.m_bSequence = m_bSequence;
+        m_XFdlg.m_bAlpha = m_bAlpha;
+
+        m_XFdlg.m_FoilName = g_polarStore.at(i)->getName(); //g_pCurFoil->getName();
+        m_XFdlg.m_IterLim = m_IterLim;
+        m_XFdlg.m_pXFoil = m_pXFoil;
+        m_XFdlg.InitDialog();
+        m_XFdlg.show();
+        m_XFdlg.StartAnalysis();
+        m_XFdlg.hide();
+        m_XFdlg.move(m_XFdlg.x(), m_XFdlg.y());
+    }
+    else{
+
+    if (m_Alpha < 0 && m_AlphaMax <= 0){
+        double alpha = m_Alpha;
+        m_Alpha = m_AlphaMax;
+        m_AlphaMax = alpha;
+    }
+
+
+
+    m_XFdlg.SetAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
+    m_XFdlg.SetCl(m_Cl, m_ClMax, m_ClDelta);
+    m_XFdlg.SetRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
+
+    m_XFdlg.m_bSequence = m_bSequence;
+    m_XFdlg.m_bAlpha = m_bAlpha;
+
+    m_XFdlg.m_FoilName = g_polarStore.at(i)->getName(); //g_pCurFoil->getName();
+    m_XFdlg.m_IterLim = m_IterLim;
+    m_XFdlg.m_pXFoil = m_pXFoil;
+    m_XFdlg.InitDialog();
+    m_XFdlg.show();
+    m_XFdlg.StartAnalysis();
+    m_XFdlg.hide();
+    m_XFdlg.move(m_XFdlg.x(), m_XFdlg.y());
+    }
+
+    m_bInitBL = !m_pXFoil->lblini;
+    m_pctrlInitBL->setChecked(m_bInitBL);;
+
+    m_pCurGraph = m_pCpGraph;
+
+    pMainFrame->UpdateOpps();
+
+    SetOpp();
+
+    m_bHighlightOpp = bHigh;
+
+    if(m_bPolar) CreatePolarCurves();
+
+    SetControls();
+    UpdateView();
+}
+}
+//Sara
 
 void QXDirect::OnBatchAnalysis()
 {
@@ -2565,8 +2783,6 @@ void QXDirect::OnNewPolar()
 	}
 	SetControls();
 }
-
-
 
 void QXDirect::OnDeleteCurFoil()
 {
@@ -3454,7 +3670,7 @@ void QXDirect::OnImportXFoilPolar()
 {
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
 	CPolar *pPolar = new CPolar;
-	double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom;
+    double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom;
 	QString FoilName, PathName, strong, str;
 
 	QByteArray textline;
@@ -3597,11 +3813,11 @@ void QXDirect::OnImportXFoilPolar()
 
 				if (res == 7)
 				{
-					pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);
-				}
-				else if(res == 9)
-				{
-					pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);
+                    pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);//Sara Ma
+                }
+                else if(res == 9)
+                {
+                    pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);//Sara ,Ma
 				}
 				else
 				{
@@ -5409,7 +5625,7 @@ void QXDirect::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("FullReport", m_pXFoil->m_bFullReport);
 		pSettings->setValue("NReynolds", m_NRe);
 
-		if(m_PolarType==FIXEDSPEEDPOLAR)      pSettings->setValue("Type", 1);
+        if(m_PolarType==FIXEDSPEEDPOLAR)      pSettings->setValue("Type", 1);
 		else if(m_PolarType==FIXEDSPEEDPOLAR) pSettings->setValue("Type", 2);
 		else if(m_PolarType==FIXEDAOAPOLAR)   pSettings->setValue("Type", 4);
 		else if(m_PolarType==STABILITYPOLAR)  pSettings->setValue("Type", 7);
@@ -5982,6 +6198,7 @@ void QXDirect::SetOpPointSequence()
 	m_pctrlSequence->setEnabled(m_pCurPolar);
 	m_pctrlAlphaMin->setEnabled(m_pCurPolar);
 	m_pctrlAnalyze->setEnabled(m_pCurPolar);
+    m_pctrlAnalyzeAll->setEnabled(m_pCurPolar);//Sara
 	m_pctrlViscous->setEnabled(m_pCurPolar);
 	m_pctrlInitBL->setEnabled(m_pCurPolar);
 
@@ -6098,7 +6315,7 @@ void QXDirect::SetGraphTitles(Graph* pGraph)
 			break;
 		case 14:
 			pGraph->SetXTitle(tr("XCp"));
-			break;
+            break;
 		default:
 			pGraph->SetXTitle(tr("Alpha"));
 			break;
@@ -6241,6 +6458,7 @@ void QXDirect::SetupLayout()
 //	AnalysisSettings->addWidget(m_pctrlInitBL);
 
 	m_pctrlAnalyze  = new QPushButton(tr("Analyze"));
+    m_pctrlAnalyzeAll  = new QPushButton(tr("Analyze All"));//Sara
     m_pctrlNewPolar = new QPushButton(tr("New Polar"));
     m_pctrlEditPolar = new QPushButton(tr("Edit Polar"));
     m_pctrlDeletePolar = new QPushButton(tr("Delete Polar"));
@@ -6259,6 +6477,7 @@ void QXDirect::SetupLayout()
 	AnalysisGroup->addStretch(1);
 	AnalysisGroup->addLayout(AnalysisSettings);
 	AnalysisGroup->addWidget(m_pctrlAnalyze);
+    AnalysisGroup->addWidget(m_pctrlAnalyzeAll);//Sara
 
 	QGroupBox *AnalysisBox = new QGroupBox(tr("Analysis settings"));
 	AnalysisBox->setLayout(AnalysisGroup);

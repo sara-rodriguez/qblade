@@ -38,6 +38,12 @@ TwoDGraphMenu::TwoDGraphMenu(QMainWindow *parent, TwoDModule *module)
     m_fourGraphsVerticalAction->setCheckable(true);
     connect(m_fourGraphsVerticalAction, SIGNAL(triggered()), this, SLOT(onGraphArrangementChanged()));
     addAction(m_fourGraphsVerticalAction);
+    //Sara
+    m_fiveGraphsAction = new QAction("Five Graphs", this);
+    m_fiveGraphsAction->setCheckable(true);
+    connect(m_fiveGraphsAction, SIGNAL(triggered()), this, SLOT(onGraphArrangementChanged()));
+    addAction(m_fiveGraphsAction);
+    //Sara
 }
 
 void TwoDGraphMenu::onAboutToShow() {
@@ -47,6 +53,8 @@ void TwoDGraphMenu::onAboutToShow() {
 	m_threeGraphsAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::Vertical3);
 	m_fourGraphsAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::Quad);
     m_fourGraphsVerticalAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::QuadVertical);
+    m_fiveGraphsAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::Quint);//Sara
+    m_eightGraphsAction->setChecked(m_module->getGraphArrangement() == TwoDWidgetInterface::Oct);//Sara
 }
 
 void TwoDGraphMenu::onGraphArrangementChanged() {
@@ -62,5 +70,9 @@ void TwoDGraphMenu::onGraphArrangementChanged() {
 		m_module->setGraphArrangement(TwoDWidgetInterface::Quad);
     } else if (QObject::sender() == m_fourGraphsVerticalAction) {
         m_module->setGraphArrangement(TwoDWidgetInterface::QuadVertical);
+    } else if (QObject::sender() == m_fiveGraphsAction) { //Sara
+        m_module->setGraphArrangement(TwoDWidgetInterface::Quint);
+    } else if (QObject::sender() == m_eightGraphsAction) { //Sara
+        m_module->setGraphArrangement(TwoDWidgetInterface::Oct);
     }
 }

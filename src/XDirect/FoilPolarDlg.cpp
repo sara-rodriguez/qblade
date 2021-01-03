@@ -42,7 +42,7 @@ FoilPolarDlg::FoilPolarDlg(void */*pParent*/)
 	m_bAutoName = true;
 	m_UnitType = 1;
 	m_Viscosity = 1.5e-5;
-	m_Density   = 1.225;
+    m_Density   = rho;//Sara
 	m_Chord = m_Span = m_Mass;
 	SetupLayout();
 }
@@ -112,7 +112,7 @@ void FoilPolarDlg::SetupLayout()
 		m_pctrlUnit2 = new QRadioButton(tr("Imperial"));
 		m_pctrlRho = new QLabel("r =");
 		m_pctrlDensity = new NumberEdit(NumberEdit::Standard, 3);
-		m_pctrlDensity->setValue(1.225);
+        m_pctrlDensity->setValue(rho);//Sara
 		m_pctrlDensityUnit = new QLabel("kg/m3");
 		m_pctrlNu = new QLabel("n =");
 		m_pctrlRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
@@ -165,7 +165,7 @@ void FoilPolarDlg::SetupLayout()
 	AeroGroup->setLayout(ReMachLayout);
 
 	QHBoxLayout *CommandButtons = new QHBoxLayout;
-	OKButton = new QPushButton(tr("OK"));
+    OKButton = new QPushButton(tr("OK"));
 	OKButton->setAutoDefault(false);
 	CancelButton = new QPushButton(tr("Cancel"));
 	CancelButton->setAutoDefault(false);

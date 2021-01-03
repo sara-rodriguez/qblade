@@ -35,7 +35,8 @@ MultiDmsModule::~MultiDmsModule() {
 		delete m_graph[2];
 		delete m_graph[3];
 		
-		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 		settings.setValue(QString("modules/MultiDmsModule/graphArrangement"), getGraphArrangement());	
 	}
 }
@@ -128,7 +129,8 @@ void MultiDmsModule::initView() {
 		m_graph[3] = new NewGraph ("MultiDmsGraphFour", this, {NewGraph::MultiPitch, "", "", false, false});
 		setGraphArrangement(TwoDWidgetInterface::Quad);
 		
-		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
 		setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
 							(settings.value("modules/MultiDmsModule/graphArrangement", TwoDWidgetInterface::Quad).toInt()));
 	}

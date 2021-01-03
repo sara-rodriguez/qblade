@@ -74,7 +74,7 @@ void OpPoint::writeData(QTextStream &stream, bool asCsv) {
 			   << topShear.second[i] << sep
 			   << topDStar.second[i] << sep
 			   << topTheta.second[i] << sep
-			   << topShearEq.second[i] << endl;
+               << topShearEq.second[i] << endl;
 	}
 	
 	stream << "Bottom Side" << endl
