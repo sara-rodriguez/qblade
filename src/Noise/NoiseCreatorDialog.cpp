@@ -50,7 +50,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
         setMinimumSize(1200,550);//Sara
         widget->setLayout(gridx);
             QGroupBox *groupBox = new QGroupBox ("Simulation Parameters");
-            gridx->addWidget(groupBox, 0,0,7,1, Qt::AlignJustify);
+            gridx->addWidget(groupBox, 0,0,6,1, Qt::AlignJustify);
                 ParameterGrid<P> *pGrid = new ParameterGrid<P>(this);
                 groupBox->setLayout(pGrid);
                     pGrid->addEdit(P::Name, LineEdit, new QLineEdit, "Name of Simulation:", "Noise Simulation");
@@ -82,6 +82,13 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                     pGrid->addEdit(P::EddyConvectionMach, NumberEditType, new NumberEdit(),
                                   "Eddy Convection Mach number []:", 0.8, PERCENT);
 
+                    groupBox = new QGroupBox ("Noise Propagation");
+                    gridx->addWidget(groupBox, 6,0);
+                    pGrid = new ParameterGrid<P>(this);
+                    groupBox->setLayout(pGrid);
+                    m_propagation_check = new QCheckBox("");
+pGrid->addEdit(P::propagation_check,CheckBox,m_propagation_check,"enable:",false);
+connect(m_propagation_check, &QCheckBox::toggled, [=]() {tabWidget->setTabEnabled(5, m_propagation_check->isChecked());});
 
                 QLabel *imageLabel = new QLabel;
                 imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
@@ -355,6 +362,33 @@ else{check_LE=false;}
                     pGrid->addEdit(P::valMau_LE, NumberEditType, m_valMau_LE_numberedit,"Upper Ma Value:",0.18);
                     m_valMau_LE_numberedit->setEnabled(check_LE);
 
+                    groupBox = new QGroupBox ("Blunt noise source validation range");
+                    vBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    pGrid->addRow("ψ Angle:","");
+
+                    m_valPsil_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valPsil_check, CheckBox, m_valPsil_check,"", false);
+                    m_valPsil_check->setEnabled(m_blunt_check->isChecked());
+                    m_valPsil_check->setToolTip("ψ is the angle of the surface slope at TE");
+
+                    m_valPsil_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valPsil, NumberEditType, m_valPsil_numberedit,"Lower ψ Value:",0);
+                    m_valPsil_numberedit->setEnabled(m_blunt_check->isChecked());
+
+                    m_valPsiu_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valPsiu_check, CheckBox, m_valPsiu_check,"", false);
+                    m_valPsiu_check->setEnabled(m_blunt_check->isChecked());
+                    m_valPsiu_check->setToolTip("ψ is the angle of the surface slope at TE");
+
+                    m_valPsiu_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valPsiu, NumberEditType, m_valPsiu_numberedit,"Upper ψ Value:",14);
+                    m_valPsiu_numberedit->setEnabled(m_blunt_check->isChecked());
+                    pGrid->addRow("","");pGrid->addRow("","");
+
                     groupBox = new QGroupBox ("TE noise source validation range");
                     hBox->addWidget(groupBox);
                     pGrid = new ParameterGrid<P>(this);
@@ -612,19 +646,32 @@ m_shear_check->setCheckable(true);
     pGrid->addEdit(P::shear_speed, NumberEditType, m_shear_speed_numberedit,"Mean Wind Speed []:", 13, SPEED);
     m_shear_speed_numberedit->setEnabled(m_shear_check->isChecked());
 
-//    hBox->addLayout(vBox);
-//    QLabel *imageLabelb = new QLabel;
-//    imageLabelb->setPixmap(QPixmap(":/images/noise_3d_position_rotor.png"));
-//    hBox->addWidget(imageLabelb, 0, Qt::AlignHCenter);
+    widget = new QWidget;
+    tabWidget->addTab(widget, "Propagation");
+    vBox = new QVBoxLayout;
+    hBox = new QHBoxLayout;
+    widget->setLayout(hBox);
+
+    groupBox = new QGroupBox ("Noise Propagation Simulation Parameters");
+    hBox->addWidget(groupBox);
+    pGrid = new ParameterGrid<P>(this);
+    groupBox->setLayout(pGrid);
+    vegetation_combobox = new QComboBox;
+    pGrid->addEdit(P::vegetation,ComboBox, vegetation_combobox,"Vegetation:","");
+    vegetation_combobox->insertItem(0,"Dense Foliage");
+    vegetation_combobox->insertItem(1,"Shrubbery or Tall Thick Grass");
+    vegetation_combobox->insertItem(2,"Forests");
 
     tabWidget->setTabEnabled(2, (qs3DSim_combobox->currentIndex()!=0));
     tabWidget->setTabEnabled(3, (qs3DSim_combobox->currentIndex()!=0));
     tabWidget->setTabEnabled(4, (qs3DSim_combobox->currentIndex()==2));
+    tabWidget->setTabEnabled(5, (m_propagation_check->isChecked()));
 
     //quasi 3d just for HAWT
     tabWidget->setTabVisible(2, (g_mainFrame->isHAWT));
     tabWidget->setTabVisible(3, (g_mainFrame->isHAWT));
     tabWidget->setTabVisible(4, (g_mainFrame->isHAWT));
+    tabWidget->setTabVisible(5, (g_mainFrame->isHAWT));
 //Sara
 
     setUnitContainingLabels();

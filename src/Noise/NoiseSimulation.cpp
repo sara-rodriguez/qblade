@@ -1980,6 +1980,10 @@ else {value=m_parameter.valRel_TE_check;}
 else {value=m_parameter.valReu_TE_check;}
         break;
 
+    case P::propagation_check:
+        if(set) m_parameter.propagation_check = value.toBool();
+        else value = m_parameter.propagation_check; break;
+
     case P::valRel_TE:
         if(set) {m_parameter.valRel_TE = value.toDouble();}
 else {value=m_parameter.valRel_TE;}
@@ -2058,6 +2062,26 @@ else {value=m_parameter.valMal_LE_check;}
     case P::valMau_LE_check:
         if(set) {m_parameter.valMau_LE_check = value.toBool();}
 else {value=m_parameter.valMau_LE_check;}
+        break;
+
+    case P::valPsil_check:
+        if(set) {m_parameter.valPsil_check = value.toBool();}
+else {value=m_parameter.valPsil_check;}
+        break;
+
+    case P::valPsiu_check:
+        if(set) {m_parameter.valPsiu_check = value.toBool();}
+else {value=m_parameter.valPsiu_check;}
+        break;
+
+    case P::valPsil:
+        if(set) {m_parameter.valPsil = value.toDouble();}
+else {value=m_parameter.valPsil;}
+        break;
+
+    case P::valPsiu:
+        if(set) {m_parameter.valPsiu = value.toDouble();}
+else {value=m_parameter.valPsiu;}
         break;
 
     case P::autopolars_check:
@@ -2139,6 +2163,11 @@ break;
     case P::shear_speed:
         if(set) m_parameter.shear_speed = value.toDouble();
         else {value=m_parameter.shear_speed;}
+break;
+
+    case P::vegetation:
+        if(set) m_parameter.vegetation = value.toInt();
+        else {value=m_parameter.vegetation;}
 break;
 
     case P::tower_height:

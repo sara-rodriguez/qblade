@@ -1021,9 +1021,9 @@ double NoiseCalculation::BluntG5Calc(double psi, double aux_rel, double freq, do
 
 void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d_star_avg, double psi, double h) {
     if (m_parameter->blunt_check!=0){
+
     double U=m_parameter->originalVelocity;
     double aux_rel=0;
-//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
     double G4=0;
     double aux_rel0=0;
     double G5_14=0;
@@ -1033,8 +1033,6 @@ void NoiseCalculation::BluntCalc(int posOpPoint,int posFreq, double Dh, double d
     double freq=CENTRAL_BAND_FREQUENCY[posFreq];
     const double Mach = m_parameter->originalMach;
     double r = m_parameter->distanceObsever;
-
-    if(psi>14){psi=14;}
 
     aux_rel=h/d_star_avg;
 
@@ -1104,6 +1102,113 @@ m_SPL_tipvortexdB[posOpPoint][posFreq]=aux1+aux2;
 }
 //Sara tip vortex end
 
+
+//Sara urgente
+double NoiseCalculation::propagation(double freq, double SPL, double dist_obs, double Q, double rel_humidity){
+double SPL_at=0;
+if(dist_obs<=500.){SPL_at=SPL;} else {
+double omega=4*M_PI; //next to the ground 2*pi, next to the ground and a wall pi
+
+//molar concentration of water vapor % calculation
+QBEM *pQBEM = (QBEM *) g_mainFrame->m_pBEM;
+double Patm = pQBEM->PressAtm;
+double temp = pQBEM->dlg_temp;
+double T0=293.15;
+double h=0; //molar concentration of water vapor %
+double P_part_H2O=0; //partial water pressure
+double P_vap_H2O=0; //vapour pressure of water
+double temp_C=temp-273.15;
+
+P_vap_H2O=0.61121*qExp((18.678-(temp_C/234.5))*(temp_C/(257.14+temp_C)))*1000/100; //Buck formula
+
+P_part_H2O=rel_humidity*P_vap_H2O/100;
+
+h=P_part_H2O/(Patm/100);
+
+//atmospheric absorption https://www.mne.psu.edu/lamancusa/me458/10_osp.pdf
+double A_abs=0;//atmospheric absorption
+double A_e=0;//excess attenuation absorption
+double alpha=0;
+double FrN=0;
+double FrO=0;
+
+FrO=24+4.04*pow(10,4)*h*(0.02+h)/(0.391+h);
+
+FrN=pow(temp/T0,1/2)*(9+280*h*qExp(-4.17*(pow(temp/T0,-1/3)-1)));
+
+alpha= 869*pow(freq,2)*(1.84*pow(10,-11)*pow((temp/T0),1/2)+(temp/pow(T0,-5/2))*(0.01275*qExp(-2239.1/temp)/(FrO+pow(freq,2)/FrO)+0.1068*qExp(-3352/temp)/(FrN+pow(freq,2)/FrN)));
+
+A_abs=alpha*dist_obs/100;
+
+//Vegetation - A_vegetation
+double A_vegetation=0;
+
+if(m_parameter->vegetation==0){
+    if((10.<=dist_obs) & (dist_obs<20)){
+        if (freq<250){A_vegetation=0;}
+        else if (freq<4000){A_vegetation=1;}
+        else if (freq<8000){A_vegetation=2;}
+        else if (freq>=8000){A_vegetation=3;}
+    }
+    else if((20.<=dist_obs) & (dist_obs<200)){
+        if (freq<125){A_vegetation=0;}
+        else if (freq<250){A_vegetation=0.03;}
+        else if (freq<500){A_vegetation=0.04;}
+        else if (freq<1000){A_vegetation=0.05;}
+        else if (freq<2000){A_vegetation=0.06;}
+        else if (freq<4000){A_vegetation=0.08;}
+        else if (freq<8000){A_vegetation=0.09;}
+        else if (freq>=8000){A_vegetation=0.12;}
+    }
+    else if(200.<=dist_obs){
+        if (freq<125){A_vegetation=0;}
+        else if (freq<250){A_vegetation=6;}
+        else if (freq<500){A_vegetation=8;}
+        else if (freq<1000){A_vegetation=10;}
+        else if (freq<2000){A_vegetation=12;}
+        else if (freq<4000){A_vegetation=16;}
+        else if (freq<8000){A_vegetation=18;}
+        else if (freq>=8000){A_vegetation=24;}
+    }
+}
+if(m_parameter->vegetation==1){A_vegetation=(0.18*log10(freq)-0.31)*dist_obs;}//shrubbery or tall thick grass
+if(m_parameter->vegetation==2){A_vegetation=0.01*pow(freq,1/3)*dist_obs;}//forests
+
+A_e=A_vegetation;
+
+//final
+SPL_at=SPL-20*log10(dist_obs)-A_e-A_abs;
+
+//%20 log10(alpha*r) alpha coeficiente de atenuação relacionado com humidade relativa
+//https://en.wikibooks.org/wiki/Engineering_Acoustics/Outdoor_Sound_Propagation
+
+//OASPL -A_combinado
+
+
+//SPW=SPL+qFabs(Q/(4*M_PI*pow(dist_obs,2)));
+
+//SPL_at=SPW-20*log10(dist_obs)+DI_theta-10*log10(omega/(4*M_PI))-A_combined-11;
+
+//if(m_parameter.Lowson_type!=0){
+//stream << "SPL_LE: " << m_calculation.SPLlogLE()[i] << " dB" << Qt::endl;
+//}
+//if(m_parameter.LBLVS!=0){
+//stream << "SPL_LBLVS: " << m_calculation.SPLlogLBLVS()[i] << " dB" << Qt::endl;
+//}
+//if(m_parameter.blunt_check!=0){
+//stream << "SPL_blunt: " << m_calculation.SPLlogblunt()[i] << " dB" << Qt::endl;
+//}
+//if(m_parameter.tipvortex_check!=0){
+//stream << "SPL_tipvortex: " << m_calculation.SPLlogtipvortex()[i] << " dB" << Qt::endl;
+//}
+//stream << "OASPL: " << m_calculation.OASPL()[i] << " dB" << Qt::endl;
+//stream << "OASPL (A): " << m_calculation.OASPLA()[i] << " dB(A)" << Qt::endl;
+//stream << "OASPL (B): " << m_calculation.OASPLB()[i] << " dB(B)" << Qt::endl;
+//stream << "OASPL (C): " << m_calculation.OASPLC()[i] << " dB(C)" << Qt::endl;
+
+return SPL_at;
+}}
+//Sara urgente
 
 //calculation for 2D noise
 void NoiseCalculation::calculate() {
@@ -1296,6 +1401,10 @@ ProgressBar(1);//Sara
                 double psi_blunt = m_Blade->getAngle_TE(panel);
 
             BluntCalc(posOpPoint,posFreq,getDH(),d_star_avg,psi_blunt, h_blunt);
+
+            //blunt validation
+            if(!m_parameter->valPsil_check & (psi_blunt<m_parameter->valPsil)){m_SPL_bluntdB[posOpPoint][posFreq]=-999999999999.;}
+            if(!m_parameter->valPsiu_check & (psi_blunt>m_parameter->valPsiu)){m_SPL_bluntdB[posOpPoint][posFreq]=-999999999999.;}
 
             double alpha_t=getAlphaT_2d();
 
@@ -3089,18 +3198,13 @@ return aux_SPL_LBLVS;
 
 double NoiseCalculation::calcBlunt(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h){
     if (m_parameter->blunt_check!=0){
-//    double U=m_parameter->originalVelocity;
     double aux_rel=0;
-//    double d_star_avg=(m_DStarFinalP+m_DStarFinalS)/2.;
-//    double psi=m_parameter->directivityPhi;
     double G4=0;
     double aux_rel0=0;
     double G5_14=0;
     double G5_0=0;
     double G5=0;
     double G0=0;
-//    double r = m_parameter->distanceObsever;
-    if(psi>14){psi=14;}
 
     aux_rel=h/d_star_avg;
 
@@ -4276,6 +4380,7 @@ SPL_BluntdB[j]=-999999999999.;
 SPL_A[j]=-999999999999.;
 SPL_B[j]=-999999999999.;
 SPL_C[j]=-999999999999.;
+SPL_TipVortexdB[j]=-999999999999.;
 BPM_validation=false;
 }
 
@@ -4313,6 +4418,10 @@ SPL_LedBAW[j]=-999999999999.;
 SPL_LedBBW[j]=-999999999999.;
 SPL_LedBCW[j]=-999999999999.;
 }
+
+//blunt validation
+if(!m_parameter->valPsil_check & (psi_blunt<m_parameter->valPsil)){SPL_BluntdB[j]=-999999999999.; SPL_BluntdB_rotor[j]=-999999999999.;}
+if(!m_parameter->valPsiu_check & (psi_blunt>m_parameter->valPsiu)){SPL_BluntdB[j]=-999999999999.; SPL_BluntdB_rotor[j]=-999999999999.;}
 
 //validation no errors
 if(qIsNaN(SPL_alpha[j]) || qIsInf(SPL_alpha[j])){SPL_alpha[j]=-999999999999.;}

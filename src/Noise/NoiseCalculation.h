@@ -427,6 +427,7 @@ private:
     double calcFirstTerm(double Mach, double L, double D, double D_starred, double dist_obs);
     double calcDh(double Mach, double theta_e, double phi_e,double EddyMach);
     double calcDl(double Mach, double theta_e, double phi_e);
+    double propagation(double freq,double SPL, double dist_obs, double Q, double rel_humidity);//urgente
     //Sara end
 
     NoiseParameter *m_parameter;

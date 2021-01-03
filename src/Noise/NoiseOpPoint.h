@@ -39,11 +39,11 @@ public:
     //Sara
 	
 private:
-    double m_reynolds, m_mach, m_alpha, m_ACrit, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos,  m_obs_x_pos_rotor, m_obs_y_pos_rotor, m_obs_z_pos_rotor, m_tower_to_hub_distance, m_initial_azimuth, m_time, m_shear_roughness, m_shear_height, m_shear_speed, m_yaw_angle, m_valRel_TE, m_valReu_TE, m_valMal_TE, m_valMau_TE, m_valAOAl_TE, m_valAOAu_TE, m_valRel_LE, m_valReu_LE, m_valMal_LE, m_valMau_LE; //Sara
+    double m_reynolds, m_mach, m_alpha, m_ACrit, x, m_rot_speed, m_u_wind_speed, m_TSRtd, m_obs_x_pos, m_obs_y_pos, m_obs_z_pos,  m_obs_x_pos_rotor, m_obs_y_pos_rotor, m_obs_z_pos_rotor, m_tower_to_hub_distance, m_initial_azimuth, m_time, m_shear_roughness, m_shear_height, m_shear_speed, m_yaw_angle, m_valRel_TE, m_valReu_TE, m_valMal_TE, m_valMau_TE, m_valAOAl_TE, m_valAOAu_TE, m_valRel_LE, m_valReu_LE, m_valMal_LE, m_valMau_LE, m_valPsil, m_valPsiu; //Sara
 	OpPoint *m_opPoint;
 //Sara
 bool m_rot_speed_check, m_u_wind_speed_check, m_TSR_check, m_shear_check, m_valRel_TE_check, m_valReu_TE_check, m_valMal_TE_check, m_valMau_TE_check, m_valAOAl_TE_check, m_valAOAu_TE_check, m_valRel_LE_check, m_valReu_LE_check, m_valMal_LE_check, m_valMau_LE_check, m_autopolars_check;//Sara
-int m_Lowson_type, m_number_loops, m_timesteps, m_qs3DSim;
+int m_Lowson_type, m_number_loops, m_timesteps, m_qs3DSim, *m_valPsil_check, *m_valPsiu_check, *m_vegetation;
 //Sara
 };
 

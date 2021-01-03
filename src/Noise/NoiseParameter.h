@@ -40,7 +40,8 @@ public:
     bool blunt_check;//blunt Sara
     bool hblunt_check;//blunt Sara
     bool tipvortex_check;//tip vortex Sara
-    bool flat_tip_check;//tir vortex Sara
+    bool flat_tip_check;//tip vortex Sara
+    bool propagation_check;
 
     //Sara
     //LE
@@ -76,6 +77,8 @@ public:
     bool valMal_LE_check;
     bool valMau_LE_check;
     bool autopolars_check;
+    bool valPsil_check;
+    bool valPsiu_check;
 
     int qs3DSim;
     int phi_type;
@@ -102,6 +105,7 @@ public:
     double shear_roughness;
     double shear_height;
     double shear_speed;
+    double vegetation;
     double time;
     double yaw_angle;
     double D_starred_index_user[40];
@@ -118,6 +122,8 @@ public:
     double valMal_LE;
     double valMau_LE;
     double hblunt;
+    double valPsil;
+    double valPsiu;
         //Sara
 
     //Turbulence parameters - Alexandre MOD

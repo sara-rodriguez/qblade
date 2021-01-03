@@ -75,6 +75,9 @@ public:
         QBEM(QWidget *parent = NULL);
 		
 		QStringList prepareMissingObjectMessage();
+
+        double PressAtm = 101325;//Sara
+        double PressVapor = 2500;//Sara
 		
 private slots:
         //methods

@@ -9677,11 +9677,11 @@ void QBEM::OnExportRotorToWT_Perf()
 					 QString("%1").arg((false?"True":"False"), -21) <<
 					 "Cavitation:                Run cavitation check? if cavitation, output sevens, check 12 oclock azimuth" << endl <<
 					 "-----  Cavitation Model  -------------------------------------------------------" << endl <<
-					 QString("%1").arg(101325, -21) <<
-					 "PressAtm:                  Air Atmospheric Pressure, Pa units, absolute" << endl <<
-					 QString("%1").arg(2500, -21) <<
+                     QString("%1").arg(PressAtm, -21) <<
+                     "PressAtm:                  Air Atmospheric Pressure, Pa units, absolute" << endl << //Sara
+                     QString("%1").arg(PressVapor, -21) <<
 					 "PressVapor:                Vapor Pressure of Water, Pa units, absolute" << endl <<
-					 QString("%1").arg(1.0, -21, 'f', 1) <<
+                     QString("%1").arg(1.0, -21, 'f', 1) << //Sara
 					 "CavSF:                     Cavitation safety factor" << endl <<
 					 QString("%1").arg(33.0, -21, 'f', 1) <<
 					 "WatDepth:                  Depth from water free surface to mudline (tower base)" << endl <<
