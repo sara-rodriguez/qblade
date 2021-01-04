@@ -86,11 +86,14 @@ QStringList NoiseModule::getAvailableGraphVariables(bool /*xAxis*/) {
     int index = 0;
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     int user_sel = pNoiseCalculation->user_sel;
-    if(user_sel<3){index = user_sel;}
+    bool qs3d_check = pNoiseCalculation->user_qs3d_check;
+    if(!qs3d_check){index = 0;}
+    else {index = user_sel+1;}
 
     if(index==0){return NoiseSimulation::getAvailableVariables();}
     else if(index==1){return NoiseSimulation::getAvailableVariables_blade();}
     else if(index==2){return NoiseSimulation::getAvailableVariables_rotor();}
+    else{return NoiseSimulation::getAvailableVariables();}
 }
 
 QPair<ShowAsGraphInterface *, int> NoiseModule::getHighlightDot(NewGraph::GraphType /*graphType*/) {
@@ -152,29 +155,22 @@ void NoiseModule::onHideDocks(bool hide) {
 //Sara
 void NoiseModule::onqs3dGraphs(bool){
 int index_qs3d=-1; //Sara
-int index = 0; //Sara
-
 ++index_qs3d;
+if(index_qs3d>=3){index_qs3d=0;}
 
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     int user_sel = pNoiseCalculation->user_sel;
+    bool qs3d_check = pNoiseCalculation->user_qs3d_check;
 
-if(user_sel<3){index = user_sel;}
-
-if (index==0){
+if (!qs3d_check){
 onqs3dGraph2d();
 }
-
-if (index==1){
-if(index_qs3d==2){index_qs3d=0;}
-
+else if (user_sel==0){
 if(index_qs3d==0){onqs3dGraph2d();}
 if(index_qs3d==1){onqs3dGraphBlade();}
+if(index_qs3d==2){onqs3dGraphRotorLoops();}
 }
-
-if (index==2){
-if(index_qs3d==3){index_qs3d=0;}
-
+else if (user_sel==1){
 if(index_qs3d==0){onqs3dGraph2d();}
 if(index_qs3d==1){onqs3dGraphBlade();}
 if(index_qs3d==2){onqs3dGraphRotorLoops();}

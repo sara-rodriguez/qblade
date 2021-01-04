@@ -89,6 +89,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                     m_propagation_check = new QCheckBox("");
 pGrid->addEdit(P::propagation_check,CheckBox,m_propagation_check,"enable:",false);
 connect(m_propagation_check, &QCheckBox::toggled, [=]() {tabWidget->setTabEnabled(5, m_propagation_check->isChecked());});
+m_propagation_check->setToolTip("Propagation applied in total and wheighted noise simulations.");
 
                 QLabel *imageLabel = new QLabel;
                 imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
@@ -104,58 +105,80 @@ connect(m_propagation_check, &QCheckBox::toggled, [=]() {tabWidget->setTabEnable
                 pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
                               "ψe [deg]:", 90);//Sara
 
-QGroupBox *groupBox_qs3d = new QGroupBox ("Quasi 3D Simulation");
-gridx->addWidget(groupBox_qs3d,6,1);
-pGrid = new ParameterGrid<P>(this);
-groupBox_qs3d->setLayout(pGrid);
-QComboBox *qs3DSim_combobox = new QComboBox;
-pGrid->addEdit(P::qs3DSim,ComboBox, qs3DSim_combobox,"Quasi 3D:","");
-qs3DSim_combobox->insertItem(0,"Disable");
-qs3DSim_combobox->insertItem(1,"Blade");
-qs3DSim_combobox->insertItem(2,"Rotor");
-
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-pNoiseCalculation->user_sel=qs3DSim_combobox->currentIndex();
+
+m_qs3d_check = new QGroupBox("Quasi 3D Simulation");
+pGrid = new ParameterGrid<P>(this);
+pGrid->addEdit(P::qs3d_check, CheckGroupBox, m_qs3d_check,"", false);
+
+m_qs3d_check->setCheckable(true);
+groupBox = new QGroupBox ();
+gridx->addWidget(m_qs3d_check,6,1);
+pGrid = new ParameterGrid<P>(this);
+m_qs3d_check->setLayout(pGrid);
+connect(m_qs3d_check, &QGroupBox::toggled, [=]() {
+    pNoiseCalculation->user_qs3d_check=m_qs3d_check->isChecked();
+    qs3DSim_combobox->setEnabled(m_qs3d_check->isChecked());
+    if (!m_qs3d_check->isChecked()){
+        op_points_qs3d=false;
+        tabWidget->setTabEnabled(2, false);
+        tabWidget->setTabEnabled(3, false);
+        tabWidget->setTabEnabled(4, false);
+
+        multi_polars_radiobutton->setEnabled(true);
+        BPM_radiobutton->setEnabled(true);
+        m_opPointScrollArea->setEnabled(true);
+    } else {
+            check_qs3D=true;
+            m_opPointScrollArea->setEnabled(true);
+            onSelectButtonsClicked(0);
+            one_polar_radiobutton->setChecked(true);
+            BPM_radiobutton->setEnabled(false);
+        }
+});
+
+qs3DSim_combobox = new QComboBox;
+pGrid->addEdit(P::qs3DSim,ComboBox, qs3DSim_combobox,"Quasi 3D:","");
+qs3DSim_combobox->insertItem(0,"Blade");
+qs3DSim_combobox->insertItem(1,"Rotor");
+connect(m_qs3d_check, &QGroupBox::toggled, [=]() {
+            if ((qs3DSim_combobox->currentIndex() == 0) & (m_qs3d_check->isChecked())){
+                op_points_qs3d=true;
+                tabWidget->setTabEnabled(2, true);
+                tabWidget->setTabEnabled(3, true);
+                tabWidget->setTabEnabled(4, false);
+            }
+            if ((qs3DSim_combobox->currentIndex() == 1) & (m_qs3d_check->isChecked())){
+                op_points_qs3d=true;
+                tabWidget->setTabEnabled(2, true);
+                tabWidget->setTabEnabled(3, true);
+                tabWidget->setTabEnabled(4, true);
+            }
+});
+
 connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     [=](int index){
-    pNoiseCalculation->user_sel=index;
+    pNoiseCalculation->user_sel=qs3DSim_combobox->currentIndex();
     user_sel=index;
 
 if (index == 0){
-    op_points_qs3d=false;
-    tabWidget->setTabEnabled(2, false);
-    tabWidget->setTabEnabled(3, false);
+    op_points_qs3d=true;
+    tabWidget->setTabEnabled(2, true);
+    tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, false);
-
-    multi_polars_radiobutton->setEnabled(true);
-    BPM_radiobutton->setEnabled(true);
-    m_opPointScrollArea->setEnabled(true);
 }
 if (index == 1){
     op_points_qs3d=true;
     tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
-    tabWidget->setTabEnabled(4, false);
-}
-if (index == 2){
-    op_points_qs3d=true;
-    tabWidget->setTabEnabled(2, true);
-    tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, true);
-}
-
-
-if(index!=0){
-    check_qs3D=true;
-    m_opPointScrollArea->setEnabled(true);
-    onSelectButtonsClicked(0);
-    one_polar_radiobutton->setChecked(true);
-    BPM_radiobutton->setEnabled(false);
 }
 });
 
+qs3DSim_combobox->setEnabled(m_qs3d_check->isChecked());
+
 //qs3d visible just for HAWT:
-groupBox_qs3d->setVisible(g_mainFrame->isHAWT);
+m_qs3d_check->setVisible(g_mainFrame->isHAWT);
 if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
 //Sara
 
@@ -198,30 +221,23 @@ m_hblunt_numberedit->setEnabled(m_hblunt_check->isChecked());
 pGrid->addEdit(P::hblunt, NumberEditType, m_hblunt_numberedit,"TE thickness [mm]:",2.4);
 m_hblunt_numberedit->setEnabled(m_hblunt_check->isChecked());
 
-groupBox = new QGroupBox ("LE noise source contribution");
-gridx->addWidget(groupBox,4,2);
+m_LE_check = new QGroupBox("LE noise source contribution");
 pGrid = new ParameterGrid<P>(this);
-groupBox->setLayout(pGrid);
-QComboBox *Lowson_type_combobox = new QComboBox;
+pGrid->addEdit(P::LE_check, CheckGroupBox, m_LE_check,"", false);
+
+m_LE_check->setCheckable(true);
+groupBox = new QGroupBox ();
+gridx->addWidget(m_LE_check,4,2);
+pGrid = new ParameterGrid<P>(this);
+m_LE_check->setLayout(pGrid);
+
+connect(m_LE_check,SIGNAL(toggled(bool)),this,SLOT(OnLECheck(bool)));
+
+Lowson_type_combobox = new QComboBox;
 pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","");
-Lowson_type_combobox->insertItem(0,"None");
-Lowson_type_combobox->insertItem(1,"Von Kármán");
-Lowson_type_combobox->insertItem(2,"Rapid Distortion");
-connect(Lowson_type_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-[=](int index){
-check_LE=false;
-if (index != 0){
-check_LE=true;
-}
-m_valRel_LE_check->setEnabled(check_LE);
-m_valReu_LE_check->setEnabled(check_LE);
-m_valMal_LE_check->setEnabled(check_LE);
-m_valMau_LE_check->setEnabled(check_LE);
-m_valRel_LE_numberedit->setEnabled(check_LE);
-m_valReu_LE_numberedit->setEnabled(check_LE);
-m_valMal_LE_numberedit->setEnabled(check_LE);
-m_valMau_LE_numberedit->setEnabled(check_LE);
-});
+Lowson_type_combobox->insertItem(0,"Von Kármán");
+Lowson_type_combobox->insertItem(1,"Rapid Distortion");
+Lowson_type_combobox->setEnabled(m_LE_check->isChecked());
 
 groupBox = new QGroupBox ("LBL-VS noise source contribution");
 gridx->addWidget(groupBox, 5,2);
@@ -321,9 +337,7 @@ tabWidget->addTab(widget, "Op. Points");
 //                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
                     groupBox->setLayout(pGrid);
 
-if(Lowson_type_combobox->currentIndex()!=0){
-    check_LE=true;}
-else{check_LE=false;}
+    check_LE=m_LE_check->isChecked();
 
                     pGrid->addRow("Reynolds Number:","");
 
@@ -650,17 +664,47 @@ m_shear_check->setCheckable(true);
     tabWidget->addTab(widget, "Propagation");
     vBox = new QVBoxLayout;
     hBox = new QHBoxLayout;
-    widget->setLayout(hBox);
+    widget->setLayout(vBox);
 
-    groupBox = new QGroupBox ("Noise Propagation Simulation Parameters");
-    hBox->addWidget(groupBox);
+    m_vegetation_check = new QGroupBox ("Attenuation by Vegetation");
     pGrid = new ParameterGrid<P>(this);
-    groupBox->setLayout(pGrid);
+    pGrid->addEdit(P::vegetation_check, CheckGroupBox, m_vegetation_check,"",true);
+    m_vegetation_check->setCheckable(true);
+    groupBox = new QGroupBox ();
+    vBox->addWidget(m_vegetation_check);
+    pGrid = new ParameterGrid<P>(this);
+    m_vegetation_check->setLayout(pGrid);
+
+    connect(m_vegetation_check,SIGNAL(toggled(bool)),this,SLOT(OnVegetationCheck(bool)));
+
     vegetation_combobox = new QComboBox;
     pGrid->addEdit(P::vegetation,ComboBox, vegetation_combobox,"Vegetation:","");
     vegetation_combobox->insertItem(0,"Dense Foliage");
     vegetation_combobox->insertItem(1,"Shrubbery or Tall Thick Grass");
     vegetation_combobox->insertItem(2,"Forests");
+    vegetation_combobox->setEnabled(m_vegetation_check->isChecked());
+
+//    groupBox = new QGroupBox ("Atmospheric Absorption");
+//    vBox->addWidget(groupBox);
+//    pGrid = new ParameterGrid<P>(this);
+//    groupBox->setLayout(pGrid);
+
+    m_atm_check = new QGroupBox ("Atmospheric Absorption");
+    pGrid = new ParameterGrid<P>(this);
+    pGrid->addEdit(P::atm_check, CheckGroupBox, m_atm_check,"",true);
+    m_atm_check->setCheckable(true);
+    groupBox = new QGroupBox ();
+    vBox->addWidget(m_atm_check);
+    pGrid = new ParameterGrid<P>(this);
+    m_atm_check->setLayout(pGrid);
+
+    connect(m_atm_check,SIGNAL(toggled(bool)),this,SLOT(OnAtmCheck(bool)));
+
+    m_rel_humidity_numberedit = new NumberEdit();
+    pGrid->addEdit(P::rel_humidity,NumberEditType, m_rel_humidity_numberedit,"Relative Humidity [%]:","50");
+    m_rel_humidity_numberedit->setMaximum(100);
+    m_rel_humidity_numberedit->setMinimum(0);
+
 
     tabWidget->setTabEnabled(2, (qs3DSim_combobox->currentIndex()!=0));
     tabWidget->setTabEnabled(3, (qs3DSim_combobox->currentIndex()!=0));
@@ -1128,5 +1172,25 @@ void NoiseCreatorDialog::OnTECheck(){
     m_valAOAu_TE_check->setEnabled(check_TE);
     m_valAOAl_TE_numberedit->setEnabled(check_TE);
     m_valAOAu_TE_numberedit->setEnabled(check_TE);
+}
+
+void NoiseCreatorDialog::OnLECheck(bool index){
+Lowson_type_combobox->setEnabled(index);
+m_valRel_LE_check->setEnabled(index);
+m_valReu_LE_check->setEnabled(index);
+m_valMal_LE_check->setEnabled(index);
+m_valMau_LE_check->setEnabled(index);
+m_valRel_LE_numberedit->setEnabled(index);
+m_valReu_LE_numberedit->setEnabled(index);
+m_valMal_LE_numberedit->setEnabled(index);
+m_valMau_LE_numberedit->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnVegetationCheck(bool index){
+    vegetation_combobox->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnAtmCheck(bool index){
+    m_rel_humidity_numberedit->setEnabled(index);
 }
 //Sara

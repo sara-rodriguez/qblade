@@ -98,9 +98,9 @@ private:
     //Sara begin
     QCheckBox *m_rot_speed_check, *m_TSR_check, *m_u_wind_speed_check, *m_valRel_TE_check, *m_valReu_TE_check, *m_valRel_LE_check, *m_valReu_LE_check, *m_TE_a_check, *m_TE_b_check, *m_TE_c_check, *m_valMal_TE_check, *m_valMau_TE_check, *m_valAOAl_TE_check, *m_valAOAu_TE_check, *m_valMal_LE_check, *m_valMau_LE_check, *m_LBLVS_check, *m_autopolars_check, *m_hblunt_check, *m_flat_tip_check, *m_valPsil_check, *m_valPsiu_check, *m_propagation_check;
 
-    QGroupBox *m_blunt_check, *m_shear_check, *m_tipvortex_check;
+    QGroupBox *m_blunt_check, *m_shear_check, *m_tipvortex_check, *m_vegetation_check, *m_atm_check, *m_LE_check, *m_qs3d_check;
 
-    QComboBox *dstar_combobox, *mode_combobox, *rotation_combobox, *qs3DSim_combobox, *w_TSR_combobox, *vegetation_combobox;
+    QComboBox *dstar_combobox, *mode_combobox, *rotation_combobox, *qs3DSim_combobox, *w_TSR_combobox, *vegetation_combobox, *Lowson_type_combobox;
 
     QPushButton *buttonle, *button_cancel, *all_op_points;
 
@@ -108,7 +108,7 @@ private:
 
     QRadioButton *one_polar_radiobutton, *multi_polars_radiobutton, *BPM_radiobutton;
 
-    NumberEdit *m_rot_speed_numberedit, *m_anglesteps_numberedit, *m_tower_height_numberedit, *m_u_wind_speed_numberedit, *m_tower_to_hub_distance_numberedit, *m_number_loops_numberedit, *m_time_numberedit, *m_timesteps_numberedit, *m_shear_roughness_numberedit, *m_shear_height_numberedit, *m_shear_speed_numberedit, *m_valRel_TE_numberedit, *m_valReu_TE_numberedit, *m_valMal_TE_numberedit, *m_valMau_TE_numberedit, *m_valAOAl_TE_numberedit, *m_valAOAu_TE_numberedit, *m_valRel_LE_numberedit, *m_valReu_LE_numberedit, *m_valMal_LE_numberedit, *m_valMau_LE_numberedit, *m_hblunt_numberedit, *m_valPsil_numberedit, *m_valPsiu_numberedit;
+    NumberEdit *m_rot_speed_numberedit, *m_anglesteps_numberedit, *m_tower_height_numberedit, *m_u_wind_speed_numberedit, *m_tower_to_hub_distance_numberedit, *m_number_loops_numberedit, *m_time_numberedit, *m_timesteps_numberedit, *m_shear_roughness_numberedit, *m_shear_height_numberedit, *m_shear_speed_numberedit, *m_valRel_TE_numberedit, *m_valReu_TE_numberedit, *m_valMal_TE_numberedit, *m_valMau_TE_numberedit, *m_valAOAl_TE_numberedit, *m_valAOAu_TE_numberedit, *m_valRel_LE_numberedit, *m_valReu_LE_numberedit, *m_valMal_LE_numberedit, *m_valMau_LE_numberedit, *m_hblunt_numberedit, *m_valPsil_numberedit, *m_valPsiu_numberedit, *m_rel_humidity_numberedit;
 
     int i=0;
     bool all_oppoints_checked;//Sara
@@ -151,6 +151,9 @@ private slots:
         void OnBluntCheck(bool index);
         void OnhBluntCheck(bool index);
         void OnTipVortexCheck(bool index);
+        void OnVegetationCheck(bool index);
+        void OnAtmCheck(bool index);
+        void OnLECheck(bool index);
         void OnTECheck();
         //Sara end
 };

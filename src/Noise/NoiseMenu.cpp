@@ -50,28 +50,29 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
 
 void NoiseMenu::onAboutToShow() {
     const bool simulationAvailable = (  m_module->getShownSimulation() != NULL);
+    qDebug() << "simulationAvailable: " << simulationAvailable;
 
     //Sara
     int index=0;
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     index = pNoiseCalculation->user_sel;
+    bool qs3d_check = pNoiseCalculation->user_qs3d_check;
 
-    if (index==0){
+    if (!qs3d_check){
         m_exportNoise->setEnabled(simulationAvailable);
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
-        m_loopsReMaalpha->setEnabled(false);
     }
 
-    else if (index==1){
+    else if (index==0){
         m_exportNoise->setEnabled(simulationAvailable);
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
     }
 
-    else if (index==2){
+    else if (index==1){
         m_exportNoise->setEnabled(simulationAvailable);
         m_exportqs3DNoiseLog->setEnabled(simulationAvailable);
         m_exportqs3DNoise_blade->setEnabled(simulationAvailable);
@@ -82,7 +83,6 @@ void NoiseMenu::onAboutToShow() {
         m_exportqs3DNoiseLog->setEnabled(false);
         m_exportqs3DNoise_blade->setEnabled(false);
         m_exportqs3DNoise_rotor_loops->setEnabled(false);
-        m_loopsReMaalpha->setEnabled(false);
     }
     //Sara
 }

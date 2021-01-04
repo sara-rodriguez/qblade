@@ -41,7 +41,9 @@ public:
     bool hblunt_check;//blunt Sara
     bool tipvortex_check;//tip vortex Sara
     bool flat_tip_check;//tip vortex Sara
-    bool propagation_check;
+    bool propagation_check;//Sara
+    bool qs3d_check;//Sara
+    bool LE_check;//Sara
 
     //Sara
     //LE
@@ -79,6 +81,8 @@ public:
     bool autopolars_check;
     bool valPsil_check;
     bool valPsiu_check;
+    bool vegetation_check;
+    bool atm_check;
 
     int qs3DSim;
     int phi_type;
@@ -105,6 +109,7 @@ public:
     double shear_roughness;
     double shear_height;
     double shear_speed;
+    double rel_humidity;
     double vegetation;
     double time;
     double yaw_angle;
