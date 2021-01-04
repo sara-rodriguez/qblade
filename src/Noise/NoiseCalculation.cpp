@@ -1534,7 +1534,7 @@ m_SPLlogtipvortex[posOpPoint] = 10*log10(m_SPLlogtipvortex[posOpPoint]);
 //		}
 //	}
 
-    if(m_parameter->qs3DSim==0){
+    if(!m_parameter->qs3d_check){
         NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
         pNoiseCreatorDialog->m_progress_dlg->setValue(progress_total);
     }
@@ -4920,7 +4920,7 @@ SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
     NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
     double progress_begin = 0;
     double progress_end = 0;
-    if(m_parameter->qs3DSim==2){
+    if(m_parameter->qs3d_check & (m_parameter->qs3DSim==1)){
     progress_begin = progress_total/4.*1.;
     progress_end = progress_total/4.*2.-1.;
     }else{
@@ -5124,13 +5124,13 @@ anglesteps=m_parameter->timesteps*60.*360./(m_parameter->rot_speed*1000.);
 
 int angles_num=360./anglesteps*number_of_rotations;
 
-if(m_parameter->qs3DSim==2){
+if(m_parameter->qs3d_check & (m_parameter->qs3DSim==1)){
 for (int blade=0;blade<blades_num;++blade){
 for (int E=0;E<angles_num;++E){
         calculateqs3d_graphics(blade,E,TSR);
 }}}
 
-if(m_parameter->qs3DSim==1){calculateqs3d_graphics(0,0,TSR);}
+if(m_parameter->qs3d_check & (m_parameter->qs3DSim==0)){calculateqs3d_graphics(0,0,TSR);}
 }
 
 //calculation for blade
@@ -5229,7 +5229,7 @@ void NoiseCalculation::calculateqs3d_blade() {
         NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
         double progress_begin = 0;
         double progress_end = 0;
-        if(m_parameter->qs3DSim==2){
+        if(m_parameter->qs3d_check & (m_parameter->qs3DSim==1)){
         progress_begin = progress_total/4.*2.;
         progress_end = progress_total/4.*3.-1.;
         }else{
@@ -5472,7 +5472,7 @@ while(j< FREQUENCY_TABLE_SIZE){
 
     }
 
-if(m_parameter->qs3DSim==1){
+if(m_parameter->qs3d_check & (m_parameter->qs3DSim==0)){
     NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
     pNoiseCreatorDialog->m_progress_dlg->setValue(progress_total);
 }
@@ -5858,7 +5858,7 @@ outer_radius=pbem->m_pBData->outer_radius;
 }
 
 //VAWT or HAWT
-if(g_mainFrame->isVAWT){m_parameter->qs3DSim=0;}
+if(g_mainFrame->isVAWT){m_parameter->qs3d_check=false;}
 
  //obs x pos
 double hub_radius;
@@ -5952,8 +5952,8 @@ void NoiseCalculation::ProgressBar(int index){
     NoiseCreatorDialog *pNoiseCreatorDialog = (NoiseCreatorDialog *) g_mainFrame->m_pBEM;
     pNoiseSimulation->progress_dlg_canceled=false;
         int w=0;
-        if (m_parameter->qs3DSim==2){progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/4;}
-        else if (m_parameter->qs3DSim==1){progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/3;}
+        if (m_parameter->qs3d_check & (m_parameter->qs3DSim==1)){progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/4;}
+        else if (m_parameter->qs3d_check & (m_parameter->qs3DSim==0)){progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end/3;}
         else {progress_end = progress_total; pNoiseCreatorDialog->m_progress_dlg->setRange(0,progress_end); w=progress_end;}
 
 if(pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){

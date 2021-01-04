@@ -154,26 +154,22 @@ void NoiseModule::onHideDocks(bool hide) {
 
 //Sara
 void NoiseModule::onqs3dGraphs(bool){
-int index_qs3d=-1; //Sara
 ++index_qs3d;
-if(index_qs3d>=3){index_qs3d=0;}
 
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     int user_sel = pNoiseCalculation->user_sel;
     bool qs3d_check = pNoiseCalculation->user_qs3d_check;
-
 if (!qs3d_check){
-onqs3dGraph2d();
+onqs3dGraph2d();  index_qs3d=-1;
 }
 else if (user_sel==0){
 if(index_qs3d==0){onqs3dGraph2d();}
-if(index_qs3d==1){onqs3dGraphBlade();}
-if(index_qs3d==2){onqs3dGraphRotorLoops();}
+if(index_qs3d==1){onqs3dGraphBlade(); index_qs3d=-1;}
 }
 else if (user_sel==1){
 if(index_qs3d==0){onqs3dGraph2d();}
 if(index_qs3d==1){onqs3dGraphBlade();}
-if(index_qs3d==2){onqs3dGraphRotorLoops();}
+if(index_qs3d==2){onqs3dGraphRotorLoops(); index_qs3d=-1;}
 }
 
 QSettings settings("qblade.ini", QSettings::IniFormat);

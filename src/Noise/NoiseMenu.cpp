@@ -50,12 +50,10 @@ NoiseMenu::NoiseMenu(QMainWindow *parent, NoiseModule *module)
 
 void NoiseMenu::onAboutToShow() {
     const bool simulationAvailable = (  m_module->getShownSimulation() != NULL);
-    qDebug() << "simulationAvailable: " << simulationAvailable;
 
     //Sara
-    int index=0;
     NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-    index = pNoiseCalculation->user_sel;
+    int index = pNoiseCalculation->user_sel;
     bool qs3d_check = pNoiseCalculation->user_qs3d_check;
 
     if (!qs3d_check){

@@ -85,7 +85,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
     QVector<double> xVector, yVector;  // because QVector is internally shared there should be no copying
     for (int i = 0; i < 2; ++i) {
 //Sara begin       
-        if (m_parameter.qs3DSim==0){//2d
+        if (!m_parameter.qs3d_check){//2d
             const int index = getAvailableVariables().indexOf(i == 0 ? xAxis : yAxis);
             QVector<double> *vector = (i == 0 ? &xVector : &yVector);
         switch (index) {
@@ -123,7 +123,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             }
         }
 
-        if (m_parameter.qs3DSim==1){//blade
+        if (m_parameter.qs3d_check & (m_parameter.qs3DSim==0)){//blade
             const int index = getAvailableVariables_blade().indexOf(i == 0 ? xAxis : yAxis);
             QVector<double> *vector = (i == 0 ? &xVector : &yVector);
             switch (index) {
@@ -172,7 +172,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             }
         }
 
-        if (m_parameter.qs3DSim==2){//rotor
+        if (m_parameter.qs3d_check & (m_parameter.qs3DSim==1)){//rotor
         const int index = getAvailableVariables_rotor().indexOf(i == 0 ? xAxis : yAxis);
         QVector<double> *vector = (i == 0 ? &xVector : &yVector);
         switch (index) {
@@ -308,7 +308,7 @@ void NoiseSimulation::pre_simulate() {
 
 //Sara
 //verify and generate new polars when quasi 3d multiple polars options are active
-if ((m_parameter.qs3DSim!=0) & (m_parameter.opPointSource == NoiseParameter::MultiplePolars)){
+if ((m_parameter.qs3d_check) & (m_parameter.opPointSource == NoiseParameter::MultiplePolars)){
     m_calculation.onVerifyDeltaandValFor3D();
     if(m_parameter.autopolars_check){loopsReMaalpha();}
 }
@@ -321,7 +321,7 @@ void NoiseSimulation::simulate() {
 
 //Sara
 //verify and generate new polars when quasi 3d multiple polars options are active
-if (m_parameter.qs3DSim!=0){
+if (m_parameter.qs3d_check){
     m_calculation.onVerifyDeltaandValFor3D();
     m_calculation.onVerifyDeltaandValFor3DAlerts();
 }
@@ -331,11 +331,11 @@ if(m_calculation.simulate_yes_no){
     m_calculation.setInitialValues();
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate();}
 
-if (m_parameter.qs3DSim!=0){
+if (m_parameter.qs3d_check){
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_graphics_loops();}
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_blade();}
     }
-if(m_parameter.qs3DSim==2){
+if(m_parameter.qs3d_check & (m_parameter.qs3DSim==1)){
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_rotor();}
     }
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){pNoiseCreatorDialog->m_progress_dlg->cancel();}
@@ -1800,7 +1800,7 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
              bool blade_values = m_calculation.qs3D_val_blade!=NULL;
              bool rotor_values = m_calculation.qs3D_val_rotor!=NULL;
 
-             if((m_parameter.qs3DSim!=0) & blade_values){
+             if((m_parameter.qs3d_check) & blade_values){
                  stream << Qt::endl;
                  stream << Qt::endl;
                  stream << "Quasi 3D Noise Validation Error Log for Blade Simulation" << Qt::endl;
@@ -1825,7 +1825,7 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
                  stream << Qt::endl;
          }
 
-             if((m_parameter.qs3DSim==2) & rotor_values){
+             if(m_parameter.qs3d_check & (m_parameter.qs3DSim==1) & rotor_values){
                  stream << Qt::endl;
                  stream << Qt::endl;
                  stream << "Quasi 3D Noise Validation Error Log for Rotor Simulation" << Qt::endl;
@@ -2301,7 +2301,7 @@ void NoiseSimulation::create360Polars(){
 }
 
 void NoiseSimulation::loopsReMaalpha(){
-if(m_parameter.qs3DSim!=0){
+if(m_parameter.qs3d_check){
 int size = m_calculation.Reynolds_error_value().size();
 
 if(size>0){
