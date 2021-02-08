@@ -6381,12 +6381,70 @@ void NoiseCalculation::onVerifyDeltaandValFor3DAlerts(){
     QString message ("");
 
     //validation urgente
-    if(alertLE() & alertTE()){
-        message.prepend("\n- Leading-edge and trailing-edge noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    if(alertLE() & alertTE() & alertLBL_VS() & alertTipvortex() & alertBlunt()){
+        message.prepend("\n- Leading-edge, trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+
+    else if(alertTE() & alertLBL_VS() & alertTipvortex() & alertBlunt()){
+        message.prepend("\n- Trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    if(alertLE() & alertLBL_VS() & alertTipvortex() & alertBlunt()){
+        message.prepend("\n- Leading-edge, Laminar-Boundary-Layer-Vortex-Shedding, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    if(alertLE() & alertTE() & alertTipvortex() & alertBlunt()){
+        message.prepend("\n- Leading-edge, trailing-edge, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    if(alertLE() & alertTE() & alertLBL_VS() & alertBlunt()){
+        message.prepend("\n- Leading-edge, trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    if(alertLE() & alertTE() & alertLBL_VS() & alertTipvortex()){
+        message.prepend("\n- Leading-edge, trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, and Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+
+        if(alertLE() & alertTE() & alertLBL_VS()){
+            message.prepend("\n- Leading-edge, trailing-edge, and Laminar-Boundary-Layer-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+            if(alertLE() & alertTE() & alertTipvortex()){
+                message.prepend("\n- Leading-edge, trailing-edge, and Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                if(alertLE() & alertTE() & alertBlunt()){
+                    message.prepend("\n- Leading-edge, trailing-edge, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                    if(alertLE() & alertLBL_VS() & alertTipvortex()){
+                        message.prepend("\n- Leading-edge, Laminar-Boundary-Layer-Vortex-Shedding, and Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLE() &  alertLBL_VS() & alertBlunt()){
+                            message.prepend("\n- Leading-edge, Laminar-Boundary-Layer-Vortex-Shedding, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLE() & alertTipvortex() & alertBlunt()){
+                            message.prepend("\n- Leading-edge, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertTE() & alertLBL_VS() & alertTipvortex()){
+                            message.prepend("\n- Trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, and Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertTE() & alertLBL_VS() & alertBlunt()){
+                            message.prepend("\n- Trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLBL_VS() & alertTipvortex() & alertBlunt()){
+                             message.prepend("\n- Laminar-Boundary-Layer-Vortex-Shedding, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+
+                        if(alertLE() & alertTE()){
+                                message.prepend("\n- Leading-edge and trailing-edge noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLE() & alertLBL_VS() ){
+                                message.prepend("\n- Leading-edge and Laminar-Boundary-Layer-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLE() & alertTipvortex()){
+                                message.prepend("\n- Leading-edge and Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLE() & alertBlunt()){
+                                message.prepend("\n- Leading-edge and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertTE() & alertLBL_VS()){
+                                message.prepend("\n- Trailing-edge and Laminar-Boundary-Layer-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertTE() & alertTipvortex()){
+                                message.prepend("\n- Trailing-edge and Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertTE() & alertBlunt()){
+                                message.prepend("\n- Trailing-edge and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLBL_VS() & alertTipvortex()){
+                                message.prepend("\n- Laminar-Boundary-Layer-Vortex-Shedding and Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertLBL_VS() & alertBlunt()){
+                                message.prepend("\n- Laminar-Boundary-Layer-Vortex-Shedding and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+                        if(alertTipvortex() & alertBlunt()){
+                                message.prepend("\n- Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+
     else if(alertTE()){
         message.prepend("\n- Trailing-edge noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
     else if(alertLE()){
         message.prepend("\n- Leading-edge noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    else if(alertLBL_VS()){
+        message.prepend("\n- Laminar-Boundary-Layer-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    else if(alertTipvortex()){
+        message.prepend("\n- Tip Vortex Formation noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
+    else if(alertBlunt()){
+        message.prepend("\n- Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter->prepareNoiseOpPointList();
 
