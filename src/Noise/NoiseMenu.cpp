@@ -165,12 +165,25 @@ void NoiseMenu::onExportqs3DNoise_rotor() {
 
 void NoiseMenu::onModelValidityHint() {
 //validation
-    const QString message ("Airfoil TE noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
-                           "1989.\n\nThe original model was developed and validated for turbulent (tripped) flow up to "
-                           "6 x 10⁵ Rec ≤ 1.5 × 10⁶, M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\n\nThe BPM directivity expression for High Frequency noise is not suitable for shallow angles (Θ → 180°). For details, see page 105 of (BPM, 1989).\n\nThe IAG Wind "
-                           "Current validation range for the RDT-Modified LE Noise simulation showed good agreement in the range of 0.05588 ≤ M ≤ 0.18 and 1.3 x 10⁵ ≤ Rec ≥ 6 x 10⁵, with respect to experimental data (Bampanis et al., 2019, Juknevicius and Chong, 2018), for grid-generated turbulence structures."
-                           "tunnel data (Herrig & Würz, 2008) showed good agreement with BPM prediction at Rec ~2.4 "
-                           "× 10⁶ and M = 0.204, for peak Strouhal number and higher frequencies.");
+    const QString message ("Airfoil TE noise model for Turbulent-Boundary-Layer-Trailing-Edge Noise and Separated Flow Noise from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
+                           "1989.\nThe original model was developed and validated for turbulent (tripped) flow up to "
+                           "6 x 10⁵ ≤ Rec ≤ 1.5 × 10⁶, 0 < M < 0.21 and AOA up to 19.8°, for NACA 0012 airfoil.\nThe BPM directivity expression for High Frequency noise is not suitable for shallow angles (Θ → 180°). For details, see page 105 of (BPM, 1989)."
+                           "\n\nCurrent validation range for the RDT-Modified LE Noise simulation showed good agreement in the range of 0.05588 ≤ M ≤ 0.18 and 1.3 x 10⁵ ≤ Rec ≤ 6 x 10⁵, with respect to experimental data (Bampanis et al., 2019, Juknevicius & Chong, 2018), for grid-generated turbulence structures."
+"\nThe IAG Wind tunnel data (Herrig & Würz, 2008) showed good agreement with BPM prediction at Rec ~2.4 "
+                           "× 10⁶ and M = 0.204, for peak Strouhal number and higher frequencies."
+
+"\n\nAirfoil Laminar-Boundary-Layer-Vortex-Shedding Noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
+                           "1989.\nThe original model was developed and validated for turbulent (tripped) flow up to "
+                           "4.5 x 10⁴ ≤ Rec ≤ 1.6 × 10⁶, 0.12 < M < 0.21 and AOA up to 14.4°, for NACA 0012 airfoil."
+
+"\n\nAirfoil Tip Vortex Formation Noise model from Brooks & Marcolini, Airfoil Tip Vortex Formation Noise, "
+                           "1986.\nThe original model was developed and validated for turbulent (tripped) flow up to "
+                           "1.2 x 10⁵ ≤ Rec ≤ 1.3 × 10⁶, 0.12 < M < 0.21 and AOA up to 14.4°, for NACA 0012 airfoil."
+
+"\n\nAirfoil Trailing-Edge-Bluntness-Vortex-Shedding Noise model from Brooks, Pope & Marcolini, Airfoil Self-Noise and Prediction, "
+                           "1989.\nThe original model was developed and validated for turbulent (tripped) flow up to "
+                           "1.1 x 10⁶ ≤ Rec ≤ 2.6 × 10⁶, 0.12 < M < 0.21 and AOA up to 6.1°, for NACA 0012 airfoil."
+                           );
     QMessageBox::information(g_mainFrame, "Model Validity Hint", message);
 }
 //Sara

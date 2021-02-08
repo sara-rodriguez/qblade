@@ -245,6 +245,7 @@ pGrid = new ParameterGrid<P>(this);
 groupBox->setLayout(pGrid);
 m_LBLVS_check = new QCheckBox("");
 pGrid->addEdit(P::LBLVS,CheckBox,m_LBLVS_check,"enable:",false);
+connect(m_LBLVS_check,SIGNAL(toggled(bool)),this,SLOT(OnLBLVSCheck(bool)));
 
 m_tipvortex_check = new QGroupBox("Tip vortex noise source contribution");
 pGrid = new ParameterGrid<P>(this);
@@ -442,7 +443,7 @@ tabWidget->addTab(widget, "Op. Points");
 
                     m_valMau_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valMau_TE, NumberEditType, m_valMau_TE_numberedit,"Upper Ma Value:",0.21);
-                    m_valMal_TE_numberedit->setEnabled(check_TE);
+                    m_valMau_TE_numberedit->setEnabled(check_TE);
                     pGrid->addRow("","");pGrid->addRow("","");
 
                     pGrid->addRow("AOA Number:","");
@@ -461,6 +462,190 @@ tabWidget->addTab(widget, "Op. Points");
                     m_valAOAu_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valAOAu_TE, NumberEditType, m_valAOAu_TE_numberedit,"Upper AOA Value [deg]:",19.8);
                     m_valAOAu_TE_numberedit->setEnabled(check_TE);
+
+
+                    groupBox = new QGroupBox ("LBL_VS noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    check_LBL_VS=m_LBLVS_check->isChecked();
+
+                    pGrid->addRow("Reynolds Number:","");
+                    m_valRel_LBL_VS_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_LBL_VS_check, CheckBox, m_valRel_LBL_VS_check,"", false);
+                    m_valRel_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valRel_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_LBL_VS, NumberEditType, m_valRel_LBL_VS_numberedit,"Lower Re Value:",4.5*pow(10,4));
+                    m_valRel_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    m_valReu_LBL_VS_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_LBL_VS_check, CheckBox, m_valReu_LBL_VS_check,"", true);
+                    m_valReu_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valReu_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_LBL_VS, NumberEditType, m_valReu_LBL_VS_numberedit,"Upper Re Value:",1.6*pow(10,6));
+                    m_valReu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("Mach Number:","");
+                    m_valMal_LBL_VS_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_LBL_VS_check, CheckBox, m_valMal_LBL_VS_check,"", false);
+                    m_valMal_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valMal_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_LBL_VS, NumberEditType, m_valMal_LBL_VS_numberedit,"Lower Ma Value:",0.09);
+                    m_valMal_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    m_valMau_LBL_VS_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_LBL_VS_check, CheckBox, m_valMau_LBL_VS_check,"", true);
+                    m_valMau_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valMau_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_LBL_VS, NumberEditType, m_valMau_LBL_VS_numberedit,"Upper Ma Value:",0.21);
+                    m_valMau_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("AOA Number:","");
+                    m_valAOAl_LBL_VS_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_LBL_VS_check, CheckBox, m_valAOAl_LBL_VS_check,"", false);
+                    m_valAOAl_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valAOAl_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_LBL_VS, NumberEditType, m_valAOAl_LBL_VS_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    m_valAOAu_LBL_VS_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_LBL_VS_check, CheckBox, m_valAOAu_LBL_VS_check,"", true);
+                    m_valAOAu_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valAOAu_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_LBL_VS, NumberEditType, m_valAOAu_LBL_VS_numberedit,"Upper AOA Value [deg]:",15.4);
+                    m_valAOAu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    groupBox = new QGroupBox ("tip vortex noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    check_tipvortex=m_tipvortex_check->isChecked();
+
+                    pGrid->addRow("Reynolds Number:","");
+                    m_valRel_tipvortex_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_tipvortex_check, CheckBox, m_valRel_tipvortex_check,"", false);
+                    m_valRel_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valRel_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_tipvortex, NumberEditType, m_valRel_tipvortex_numberedit,"Lower Re Value:",1.2*pow(10,5));
+                    m_valRel_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    m_valReu_tipvortex_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_tipvortex_check, CheckBox, m_valReu_tipvortex_check,"", true);
+                    m_valReu_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valReu_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_tipvortex, NumberEditType, m_valReu_tipvortex_numberedit,"Upper Re Value:",1.3*pow(10,6));
+                    m_valReu_tipvortex_numberedit->setEnabled(check_tipvortex);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("Mach Number:","");
+                    m_valMal_tipvortex_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_tipvortex_check, CheckBox, m_valMal_tipvortex_check,"", true);
+                    m_valMal_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valMal_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_tipvortex, NumberEditType, m_valMal_tipvortex_numberedit,"Lower Ma Value:",0.12);
+                    m_valMal_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    m_valMau_tipvortex_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_tipvortex_check, CheckBox, m_valMau_tipvortex_check,"", true);
+                    m_valMau_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valMau_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_tipvortex, NumberEditType, m_valMau_tipvortex_numberedit,"Upper Ma Value:",0.21);
+                    m_valMau_tipvortex_numberedit->setEnabled(check_tipvortex);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("AOA Number:","");
+                    m_valAOAl_tipvortex_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_tipvortex_check, CheckBox, m_valAOAl_tipvortex_check,"", false);
+                    m_valAOAl_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valAOAl_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_tipvortex, NumberEditType, m_valAOAl_tipvortex_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    m_valAOAu_tipvortex_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_tipvortex_check, CheckBox, m_valAOAu_tipvortex_check,"", true);
+                    m_valAOAu_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valAOAu_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_tipvortex, NumberEditType, m_valAOAu_tipvortex_numberedit,"Upper AOA Value [deg]:",14.4);
+                    m_valAOAu_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    groupBox = new QGroupBox ("Bluntness noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+                    //pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    check_blunt=m_blunt_check->isChecked();
+
+                    pGrid->addRow("Reynolds Number:","");
+                    m_valRel_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valRel_blunt_check,"", true);
+                    m_valRel_blunt_check->setEnabled(check_blunt);
+
+                    m_valRel_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_blunt, NumberEditType, m_valRel_blunt_numberedit,"Lower Re Value:",1.1*pow(10,6));
+                    m_valRel_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valReu_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_blunt_check, CheckBox, m_valReu_blunt_check,"", true);
+                    m_valReu_blunt_check->setEnabled(check_blunt);
+
+                    m_valReu_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_blunt, NumberEditType, m_valReu_blunt_numberedit,"Upper Re Value:",2.6*pow(10,6));
+                    m_valReu_blunt_numberedit->setEnabled(check_blunt);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("Mach Number:","");
+                    m_valMal_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valMal_blunt_check,"", true);
+                    m_valMal_blunt_check->setEnabled(check_blunt);
+
+                    m_valMal_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_blunt, NumberEditType, m_valMal_blunt_numberedit,"Lower Ma Value:",0.12);
+                    m_valMal_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valMau_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_blunt_check, CheckBox, m_valMau_blunt_check,"", true);
+                    m_valMau_blunt_check->setEnabled(check_blunt);
+
+                    m_valMau_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_blunt, NumberEditType, m_valMau_blunt_numberedit,"Upper Ma Value:",0.21);
+                    m_valMau_blunt_numberedit->setEnabled(check_blunt);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("AOA Number:","");
+                    m_valAOAl_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_blunt_check, CheckBox, m_valAOAl_blunt_check,"", false);
+                    m_valAOAl_blunt_check->setEnabled(check_blunt);
+
+                    m_valAOAl_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_blunt, NumberEditType, m_valAOAl_blunt_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valAOAu_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_blunt_check, CheckBox, m_valAOAu_blunt_check,"", true);
+                    m_valAOAu_blunt_check->setEnabled(check_blunt);
+
+                    m_valAOAu_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_blunt, NumberEditType, m_valAOAu_blunt_numberedit,"Upper AOA Value [deg]:",6.1);
+                    m_valAOAu_blunt_numberedit->setEnabled(check_blunt);
 
                             widget = new QWidget;
                             tabWidget->addTab(widget, "Quasi 3D Blade");
@@ -1111,6 +1296,19 @@ m_TSR_spinbox->setEnabled(index);
 void NoiseCreatorDialog::OnBluntCheck(bool index){
 blunt_in=index;
 m_hblunt_check->setEnabled(index);
+check_blunt=index;
+m_valRel_blunt_check->setEnabled(check_blunt);
+m_valReu_blunt_check->setEnabled(check_blunt);
+m_valMal_blunt_check->setEnabled(check_blunt);
+m_valMau_blunt_check->setEnabled(check_blunt);
+m_valRel_blunt_numberedit->setEnabled(check_blunt);
+m_valReu_blunt_numberedit->setEnabled(check_blunt);
+m_valMal_blunt_numberedit->setEnabled(check_blunt);
+m_valMau_blunt_numberedit->setEnabled(check_blunt);
+m_valAOAl_blunt_check->setEnabled(check_blunt);
+m_valAOAu_blunt_check->setEnabled(check_blunt);
+m_valAOAl_blunt_numberedit->setEnabled(check_blunt);
+m_valAOAu_blunt_numberedit->setEnabled(check_blunt);
 }
 
 void NoiseCreatorDialog::OnhBluntCheck(bool index){
@@ -1120,6 +1318,19 @@ m_hblunt_numberedit->setEnabled(index);
 void NoiseCreatorDialog::OnTipVortexCheck(bool index){
 tipvortex_in=index;
 m_flat_tip_check->setEnabled(index);
+check_tipvortex=index;
+m_valRel_tipvortex_check->setEnabled(check_tipvortex);
+m_valReu_tipvortex_check->setEnabled(check_tipvortex);
+m_valMal_tipvortex_check->setEnabled(check_tipvortex);
+m_valMau_tipvortex_check->setEnabled(check_tipvortex);
+m_valRel_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valReu_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valMal_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valMau_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valAOAl_tipvortex_check->setEnabled(check_tipvortex);
+m_valAOAu_tipvortex_check->setEnabled(check_tipvortex);
+m_valAOAl_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valAOAu_tipvortex_numberedit->setEnabled(check_tipvortex);
 }
 
 void NoiseCreatorDialog::OnShearLayerCheck(bool index){
@@ -1172,6 +1383,22 @@ void NoiseCreatorDialog::OnTECheck(){
     m_valAOAu_TE_check->setEnabled(check_TE);
     m_valAOAl_TE_numberedit->setEnabled(check_TE);
     m_valAOAu_TE_numberedit->setEnabled(check_TE);
+}
+
+void NoiseCreatorDialog::OnLBLVSCheck(bool index){
+    check_LBL_VS=index;
+    m_valRel_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valReu_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valMal_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valMau_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valRel_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valReu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valMal_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valMau_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valAOAl_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valAOAu_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valAOAl_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valAOAu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
 }
 
 void NoiseCreatorDialog::OnLECheck(bool index){

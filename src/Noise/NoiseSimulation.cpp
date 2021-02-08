@@ -2022,15 +2022,189 @@ else {value=m_parameter.valMal_TE_check;}
         else {value=m_parameter.valAOAu_TE_check;}
         break;
 
+    case P::valAOAu_TE:
+        if(set) {m_parameter.valAOAu_TE = value.toDouble();}
+        else {value=m_parameter.valAOAu_TE;}
+        break;
+
     case P::valAOAl_TE:
         if(set) {m_parameter.valAOAl_TE = value.toDouble();}
         else {value=m_parameter.valAOAl_TE;}
         break;
 
-    case P::valAOAu_TE:
-        if(set) {m_parameter.valAOAu_TE = value.toDouble();}
-        else {value=m_parameter.valAOAu_TE;}
-        break;
+    case P::valRel_LBL_VS_check:
+            if(set) {m_parameter.valRel_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valRel_LBL_VS_check;} break;
+
+    case P::valReu_LBL_VS_check:
+            if(set) {m_parameter.valReu_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valReu_LBL_VS_check;} break;
+
+    case P::valRel_LBL_VS:
+            if(set) {m_parameter.valRel_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valRel_LBL_VS;}
+            break;
+
+    case P::valReu_LBL_VS:
+            if(set) {m_parameter.valReu_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valReu_LBL_VS;}
+            break;
+
+    case P::valMal_LBL_VS_check:
+            if(set) {m_parameter.valMal_LBL_VS_check = value.toBool();}
+    else {value=m_parameter.valMal_LBL_VS_check;}
+            break;
+
+    case P::valMau_LBL_VS_check:
+            if(set) {m_parameter.valMau_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valMau_LBL_VS_check;}
+            break;
+
+    case P::valMal_LBL_VS:
+            if(set) {m_parameter.valMal_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valMal_LBL_VS;}
+            break;
+
+    case P::valMau_LBL_VS:
+            if(set) {m_parameter.valMau_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valMau_LBL_VS;}
+            break;
+
+    case P::valAOAl_LBL_VS_check:
+            if(set) {m_parameter.valAOAl_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valAOAl_LBL_VS_check;}
+            break;
+
+    case P::valAOAu_LBL_VS_check:
+            if(set) {m_parameter.valAOAu_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valAOAu_LBL_VS_check;}
+            break;
+
+    case P::valAOAl_LBL_VS:
+            if(set) {m_parameter.valAOAl_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valAOAl_LBL_VS;}
+            break;
+
+    case P::valAOAu_LBL_VS:
+            if(set) {m_parameter.valAOAu_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valAOAu_LBL_VS;}
+            break;
+
+    case P::valRel_tipvortex_check:
+                if(set) {m_parameter.valRel_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valRel_tipvortex_check;} break;
+
+    case P::valReu_tipvortex_check:
+                if(set) {m_parameter.valReu_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valReu_tipvortex_check;} break;
+
+    case P::valRel_tipvortex:
+                if(set) {m_parameter.valRel_tipvortex = value.toDouble();}
+                else {value=m_parameter.valRel_tipvortex;}
+                break;
+
+    case P::valReu_tipvortex:
+                if(set) {m_parameter.valReu_tipvortex = value.toDouble();}
+                else {value=m_parameter.valReu_tipvortex;}
+                break;
+
+    case P::valMal_tipvortex_check:
+                if(set) {m_parameter.valMal_tipvortex_check = value.toBool();}
+        else {value=m_parameter.valMal_tipvortex_check;}
+                break;
+
+    case P::valMau_tipvortex_check:
+                if(set) {m_parameter.valMau_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valMau_tipvortex_check;}
+                break;
+
+    case P::valMal_tipvortex:
+                if(set) {m_parameter.valMal_tipvortex = value.toDouble();}
+                else {value=m_parameter.valMal_tipvortex;}
+                break;
+
+    case P::valMau_tipvortex:
+                if(set) {m_parameter.valMau_tipvortex = value.toDouble();}
+                else {value=m_parameter.valMau_tipvortex;}
+                break;
+
+    case P::valAOAl_tipvortex_check:
+                if(set) {m_parameter.valAOAl_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valAOAl_tipvortex_check;}
+                break;
+
+    case P::valAOAu_tipvortex_check:
+                if(set) {m_parameter.valAOAu_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valAOAu_tipvortex_check;}
+                break;
+
+    case P::valAOAl_tipvortex:
+                if(set) {m_parameter.valAOAl_tipvortex = value.toDouble();}
+                else {value=m_parameter.valAOAl_tipvortex;}
+                break;
+
+    case P::valAOAu_tipvortex:
+                if(set) {m_parameter.valAOAu_tipvortex = value.toDouble();}
+                else {value=m_parameter.valAOAu_tipvortex;}
+                break;
+
+    case P::valRel_blunt_check:
+                    if(set) {m_parameter.valRel_blunt_check = value.toBool();}
+                    else {value=m_parameter.valRel_blunt_check;} break;
+
+    case P::valReu_blunt_check:
+                    if(set) {m_parameter.valReu_blunt_check = value.toBool();}
+                    else {value=m_parameter.valReu_blunt_check;} break;
+
+    case P::valRel_blunt:
+                    if(set) {m_parameter.valRel_blunt = value.toDouble();}
+                    else {value=m_parameter.valRel_blunt;}
+                    break;
+
+    case P::valReu_blunt:
+                    if(set) {m_parameter.valReu_blunt = value.toDouble();}
+                    else {value=m_parameter.valReu_blunt;}
+                    break;
+
+    case P::valMal_blunt_check:
+                    if(set) {m_parameter.valMal_blunt_check = value.toBool();}
+            else {value=m_parameter.valMal_blunt_check;}
+                    break;
+
+    case P::valMau_blunt_check:
+                    if(set) {m_parameter.valMau_blunt_check = value.toBool();}
+                    else {value=m_parameter.valMau_blunt_check;}
+                    break;
+
+    case P::valMal_blunt:
+                    if(set) {m_parameter.valMal_blunt = value.toDouble();}
+                    else {value=m_parameter.valMal_blunt;}
+                    break;
+
+    case P::valMau_blunt:
+                    if(set) {m_parameter.valMau_blunt = value.toDouble();}
+                    else {value=m_parameter.valMau_blunt;}
+                    break;
+
+    case P::valAOAl_blunt_check:
+                    if(set) {m_parameter.valAOAl_blunt_check = value.toBool();}
+                    else {value=m_parameter.valAOAl_blunt_check;}
+                    break;
+
+    case P::valAOAu_blunt_check:
+                    if(set) {m_parameter.valAOAu_blunt_check = value.toBool();}
+                    else {value=m_parameter.valAOAu_blunt_check;}
+                    break;
+
+    case P::valAOAl_blunt:
+                    if(set) {m_parameter.valAOAl_blunt = value.toDouble();}
+                    else {value=m_parameter.valAOAl_blunt;}
+                    break;
+
+    case P::valAOAu_blunt:
+                    if(set) {m_parameter.valAOAu_blunt = value.toDouble();}
+                    else {value=m_parameter.valAOAu_blunt;}
+                    break;
 
     case P::valRel_LE_check:
         if(set) {m_parameter.valRel_LE_check = value.toBool();}

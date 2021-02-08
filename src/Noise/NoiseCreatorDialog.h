@@ -57,8 +57,11 @@ public:
     bool blunt_in=false;
     bool tipvortex_in=false;
     bool check_TE;
+    bool check_LBL_VS;
+    bool check_tipvortex;
     bool check_LE;
     bool op_points_qs3d;
+    bool check_blunt;
 
     QVector<int> a_D_starred_index_user;
     QVector<double> a_D_starred_S_user;
@@ -96,9 +99,9 @@ private:
     QList<OpPointRecord> m_opPointRecords;  // store a sorted list of all OpPoints
 
     //Sara begin
-    QCheckBox *m_rot_speed_check, *m_TSR_check, *m_u_wind_speed_check, *m_valRel_TE_check, *m_valReu_TE_check, *m_valRel_LE_check, *m_valReu_LE_check, *m_TE_a_check, *m_TE_b_check, *m_TE_c_check, *m_valMal_TE_check, *m_valMau_TE_check, *m_valAOAl_TE_check, *m_valAOAu_TE_check, *m_valMal_LE_check, *m_valMau_LE_check, *m_LBLVS_check, *m_autopolars_check, *m_hblunt_check, *m_flat_tip_check, *m_valPsil_check, *m_valPsiu_check, *m_propagation_check;
+    QCheckBox *m_rot_speed_check, *m_TSR_check, *m_u_wind_speed_check, *m_valRel_TE_check, *m_valReu_TE_check, *m_valRel_LBL_VS_check, *m_valReu_LBL_VS_check, *m_valRel_tipvortex_check, *m_valReu_tipvortex_check, *m_valRel_LE_check, *m_valReu_LE_check, *m_TE_a_check, *m_TE_b_check, *m_TE_c_check, *m_valMal_TE_check, *m_valMau_TE_check, *m_valAOAl_TE_check, *m_valAOAu_TE_check, *m_valMal_LE_check, *m_valMal_LBL_VS_check, *m_valMau_LBL_VS_check, *m_valAOAl_LBL_VS_check, *m_valAOAu_LBL_VS_check, *m_valMal_tipvortex_check, *m_valMau_tipvortex_check, *m_valAOAl_tipvortex_check, *m_valAOAu_tipvortex_check, *m_valMau_LE_check, *m_LBLVS_check,*m_valRel_blunt_check, *m_valReu_blunt_check, *m_valMal_blunt_check, *m_valMau_blunt_check, *m_valAOAl_blunt_check, *m_valAOAu_blunt_check, *m_autopolars_check, *m_hblunt_check, *m_flat_tip_check, *m_valPsil_check, *m_valPsiu_check, *m_propagation_check;
 
-    QGroupBox *m_blunt_check, *m_shear_check, *m_tipvortex_check, *m_vegetation_check, *m_atm_check, *m_LE_check, *m_qs3d_check;
+    QGroupBox *m_blunt_check, *m_shear_check, *m_tipvortex_check, *m_vegetation_check, *m_atm_check, *m_LE_check, *m_LBL_VS_check, *m_qs3d_check;
 
     QComboBox *dstar_combobox, *mode_combobox, *rotation_combobox, *qs3DSim_combobox, *w_TSR_combobox, *vegetation_combobox, *Lowson_type_combobox;
 
@@ -108,7 +111,7 @@ private:
 
     QRadioButton *one_polar_radiobutton, *multi_polars_radiobutton, *BPM_radiobutton;
 
-    NumberEdit *m_rot_speed_numberedit, *m_anglesteps_numberedit, *m_tower_height_numberedit, *m_u_wind_speed_numberedit, *m_tower_to_hub_distance_numberedit, *m_number_loops_numberedit, *m_time_numberedit, *m_timesteps_numberedit, *m_shear_roughness_numberedit, *m_shear_height_numberedit, *m_shear_speed_numberedit, *m_valRel_TE_numberedit, *m_valReu_TE_numberedit, *m_valMal_TE_numberedit, *m_valMau_TE_numberedit, *m_valAOAl_TE_numberedit, *m_valAOAu_TE_numberedit, *m_valRel_LE_numberedit, *m_valReu_LE_numberedit, *m_valMal_LE_numberedit, *m_valMau_LE_numberedit, *m_hblunt_numberedit, *m_valPsil_numberedit, *m_valPsiu_numberedit, *m_rel_humidity_numberedit;
+    NumberEdit *m_rot_speed_numberedit, *m_anglesteps_numberedit, *m_tower_height_numberedit, *m_u_wind_speed_numberedit, *m_tower_to_hub_distance_numberedit, *m_number_loops_numberedit, *m_time_numberedit, *m_timesteps_numberedit, *m_shear_roughness_numberedit, *m_shear_height_numberedit, *m_shear_speed_numberedit, *m_valRel_TE_numberedit, *m_valReu_TE_numberedit, *m_valMal_TE_numberedit, *m_valMau_TE_numberedit, *m_valAOAl_TE_numberedit, *m_valAOAu_TE_numberedit, *m_valRel_LBL_VS_numberedit, *m_valReu_LBL_VS_numberedit, *m_valMal_LBL_VS_numberedit, *m_valMau_LBL_VS_numberedit, *m_valAOAl_LBL_VS_numberedit, *m_valAOAu_LBL_VS_numberedit,*m_valRel_blunt_numberedit, *m_valReu_blunt_numberedit, *m_valMal_blunt_numberedit, *m_valMau_blunt_numberedit, *m_valAOAl_blunt_numberedit, *m_valAOAu_blunt_numberedit, *m_valRel_tipvortex_numberedit, *m_valReu_tipvortex_numberedit, *m_valMal_tipvortex_numberedit, *m_valMau_tipvortex_numberedit, *m_valAOAl_tipvortex_numberedit, *m_valAOAu_tipvortex_numberedit,  *m_valRel_LE_numberedit, *m_valReu_LE_numberedit, *m_valMal_LE_numberedit, *m_valMau_LE_numberedit, *m_hblunt_numberedit, *m_valPsil_numberedit, *m_valPsiu_numberedit, *m_rel_humidity_numberedit;
 
     int i=0;
     bool all_oppoints_checked;//Sara
@@ -155,6 +158,7 @@ private slots:
         void OnAtmCheck(bool index);
         void OnLECheck(bool index);
         void OnTECheck();
+        void OnLBLVSCheck(bool index);
         //Sara end
 };
 

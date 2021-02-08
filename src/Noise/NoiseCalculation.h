@@ -53,8 +53,11 @@ public:
     void calculateqs3d_rotor();
     void ProgressBar(int index);
 
+    bool alertLBL_VS(){return LBL_VS_alert;};
     bool alertTE(){return TE_alert;};
     bool alertLE(){return LE_alert;};
+    bool alertTipvortex(){return Tipvortex_alert;};
+    bool alertBlunt(){return Blunt_alert;};
     bool simulate_yes_no=true;
 
     CBlade* GetCurrentBlade();//Sara
@@ -79,7 +82,7 @@ public:
 
     TwoDVector SPL_LBLVSdB() const { return m_SPL_LBLVSdB; } //Sara LBL VS
     TwoDVector SPL_bluntdB() const { return m_SPL_bluntdB; } //Sara blunt
-    TwoDVector SPL_tipvortexdB() const { return m_SPL_tipvortexdB; } //Sara blunt
+    TwoDVector SPL_tipvortexdB() const { return m_SPL_tipvortexdB; } //Sara tipvortex
 
 //Sara begin
     TwoDVector SPLadB3d() const { return m_SPLadB3d; }
@@ -246,7 +249,10 @@ public:
     int progress_end;
 
     bool TE_alert=false;
+    bool LBL_VS_alert=false;
     bool LE_alert=false;
+    bool Tipvortex_alert=false;
+    bool Blunt_alert=false;
     bool m_onePolar;
     bool isVAWT;
     bool isHAWT;
