@@ -1793,7 +1793,7 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
         m_calculation.qs3D_log(stream);
 
      stream << Qt::endl;
-     stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range. 3 - Reynolds outside of error margin defined. 4 - Mach outside of error margin defined. 5 - Alpha outside of error margin defined."<< Qt::endl;
+     stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range. 3 - Out of tip vortex validation range. 4 - Out of LBL_VS validation range. 5 - Out of blunt validation range. 6 - Reynolds outside of error margin defined. 7 - Mach outside of error margin defined. 8 - Alpha outside of error margin defined."<< Qt::endl;
 
              stream.setRealNumberNotation(QTextStream::FixedNotation);
              stream.setRealNumberPrecision(5);

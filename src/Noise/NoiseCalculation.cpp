@@ -4428,7 +4428,7 @@ void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
                     //BPM validation:
                     //p 66 C_Project_Log_Text_15_jan_16
 
-                    BPM_validation=true;
+                    BPM_validation=true;                   
 
                     bool Re_validation=true;
                     bool Ma_validation=true;
@@ -6154,11 +6154,40 @@ void NoiseCalculation::qs3D_log(QTextStream &stream){
                     if(Mach[i]<m_parameter->valMal_LE){LE_val=false;}
                     if(Mach[i]>m_parameter->valMau_LE){LE_val=false;}}
 
+                bool tipvortex_val=true;
+                bool check_tipvortex = (m_parameter->tipvortex_check);
+                if(check_tipvortex){
+                    if(Reynolds[i]<m_parameter->valRel_tipvortex){tipvortex_val=false;}
+                    if(Reynolds[i]>m_parameter->valReu_tipvortex){tipvortex_val=false;}
+                    if(Mach[i]<m_parameter->valMal_tipvortex){tipvortex_val=false;}
+                    if(Mach[i]>m_parameter->valMau_tipvortex){tipvortex_val=false;}}
+
+                bool LBL_VS_val=true;
+                bool check_LBL_VS = (m_parameter->LBL_VS_check);
+                if(check_LBL_VS){
+                    if(Reynolds[i]<m_parameter->valRel_LBL_VS){LBL_VS_val=false;}
+                    if(Reynolds[i]>m_parameter->valReu_LBL_VS){LBL_VS_val=false;}
+                    if(Mach[i]<m_parameter->valMal_LBL_VS){LBL_VS_val=false;}
+                    if(Mach[i]>m_parameter->valMau_LBL_VS){LBL_VS_val=false;}}
+
+                bool blunt_val=true;
+                bool check_blunt = (m_parameter->blunt_check);
+                if(check_blunt){
+                    if(Reynolds[i]<m_parameter->valRel_blunt){blunt_val=false;}
+                    if(Reynolds[i]>m_parameter->valReu_blunt){blunt_val=false;}
+                    if(Mach[i]<m_parameter->valMal_blunt){blunt_val=false;}
+                    if(Mach[i]>m_parameter->valMau_blunt){blunt_val=false;}}
+
                 if(!TE_val){if(observations_x!=""){observations_x.append(" ");} observations_x.append("1");}
                 if(!LE_val){if(observations_x!=""){observations_x.append(" ");} observations_x.append("2");}
-                if(Reynolds_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");}  observations_x.append("3");}
-                if(Mach_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");} observations_x.append("4");}
-                if(alpha_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");} observations_x.append("5");}
+                if(!tipvortex_val){if(observations_x!=""){observations_x.append(" ");} observations_x.append("3");}
+                if(!LBL_VS_val){if(observations_x!=""){observations_x.append(" ");} observations_x.append("4");}
+                if(!blunt_val){if(observations_x!=""){observations_x.append(" ");} observations_x.append("5");}
+
+                if(Reynolds_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");}  observations_x.append("6");}
+                if(Mach_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");} observations_x.append("7");}
+                if(alpha_er[i]>0.1){if(observations_x!=""){observations_x.append(" ");} observations_x.append("8");}
+
 
                 //uncomment to input data
                 stream << qSetFieldWidth(14)  <<
@@ -6380,7 +6409,7 @@ void NoiseCalculation::onVerifyDeltaandValFor3D(){
 void NoiseCalculation::onVerifyDeltaandValFor3DAlerts(){
     QString message ("");
 
-    //validation urgente
+    //validation
     if(alertLE() & alertTE() & alertLBL_VS() & alertTipvortex() & alertBlunt()){
         message.prepend("\n- Leading-edge, trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
 
