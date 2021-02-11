@@ -6409,6 +6409,11 @@ void NoiseCalculation::onVerifyDeltaandValFor3D(){
 void NoiseCalculation::onVerifyDeltaandValFor3DAlerts(){
     QString message ("");
 
+    //more than 13 segments
+    QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;
+    unsigned int number_of_segments = pBEM->m_pBData->m_pos.size();
+    if (number_of_segments<13){message.prepend("\n- The accuracy of the Noise Module is affected negatively by specifying less than 13 segments in the blade geometry. Insert more operational points on the ''XFOIL Direct Analysis'' Module.");}
+
     //validation
     if(alertLE() & alertTE() & alertLBL_VS() & alertTipvortex() & alertBlunt()){
         message.prepend("\n- Leading-edge, trailing-edge, Laminar-Boundary-Layer-Vortex-Shedding, Tip Vortex Formation, and Trailing-Edge-Bluntness-Vortex-Shedding noise data out of validation range, click on ''Export current Quasi 3D Noise Log'' in the noise simulation menu for details");}
