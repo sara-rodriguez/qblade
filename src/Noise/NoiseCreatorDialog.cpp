@@ -1100,9 +1100,8 @@ return;
     }
     size_points=m_opPointRecords.size();
     newSimulation->setAnalyzedOpPoints(analyzedOpPoints.toVector());
-
 try {
-if((multi_polars_radiobutton->isChecked())& (check_qs3D)){
+if((multi_polars_radiobutton->isChecked())& (m_qs3d_check->isChecked())){
     newSimulation->pre_simulate();
 
     prepareOpPointRecords(multi_polars_radiobutton->isChecked());
