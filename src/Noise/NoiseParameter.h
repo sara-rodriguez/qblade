@@ -41,7 +41,10 @@ public:
     bool hblunt_check;//blunt Sara
     bool tipvortex_check;//tip vortex Sara
     bool flat_tip_check;//tip vortex Sara
-    bool propagation_check;
+    bool propagation_check;//Sara
+    bool qs3d_check;//Sara
+    bool LE_check;//Sara
+    bool LBL_VS_check;//Sara
 
     //Sara
     //LE
@@ -72,6 +75,24 @@ public:
     bool valMau_TE_check;
     bool valAOAl_TE_check;
     bool valAOAu_TE_check;
+    bool valRel_LBL_VS_check;
+    bool valReu_LBL_VS_check;
+    bool valMal_LBL_VS_check;
+    bool valMau_LBL_VS_check;
+    bool valAOAl_LBL_VS_check;
+    bool valAOAu_LBL_VS_check;
+    bool valRel_blunt_check;
+    bool valReu_blunt_check;
+    bool valMal_blunt_check;
+    bool valMau_blunt_check;
+    bool valAOAl_blunt_check;
+    bool valAOAu_blunt_check;
+    bool valRel_tipvortex_check;
+    bool valReu_tipvortex_check;
+    bool valMal_tipvortex_check;
+    bool valMau_tipvortex_check;
+    bool valAOAl_tipvortex_check;
+    bool valAOAu_tipvortex_check;
     bool valRel_LE_check;
     bool valReu_LE_check;
     bool valMal_LE_check;
@@ -79,6 +100,8 @@ public:
     bool autopolars_check;
     bool valPsil_check;
     bool valPsiu_check;
+    bool vegetation_check;
+    bool atm_check;
 
     int qs3DSim;
     int phi_type;
@@ -105,6 +128,7 @@ public:
     double shear_roughness;
     double shear_height;
     double shear_speed;
+    double rel_humidity;
     double vegetation;
     double time;
     double yaw_angle;
@@ -117,6 +141,24 @@ public:
     double valMau_TE;
     double valAOAl_TE;
     double valAOAu_TE;
+    double valRel_LBL_VS;
+    double valReu_LBL_VS;
+    double valMal_LBL_VS;
+    double valMau_LBL_VS;
+    double valAOAl_LBL_VS;
+    double valAOAu_LBL_VS;
+    double valRel_blunt;
+    double valReu_blunt;
+    double valMal_blunt;
+    double valMau_blunt;
+    double valAOAl_blunt;
+    double valAOAu_blunt;
+    double valRel_tipvortex;
+    double valReu_tipvortex;
+    double valMal_tipvortex;
+    double valMau_tipvortex;
+    double valAOAl_tipvortex;
+    double valAOAu_tipvortex;
     double valRel_LE;
     double valReu_LE;
     double valMal_LE;

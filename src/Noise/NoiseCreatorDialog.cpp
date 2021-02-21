@@ -60,7 +60,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                     pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
                     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-                    if((g_bemdataStore.size()!=NULL)){
+                    if((g_bemdataStore.size()!=0)){
                     u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();}
 
                     pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
@@ -89,10 +89,11 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                     m_propagation_check = new QCheckBox("");
 pGrid->addEdit(P::propagation_check,CheckBox,m_propagation_check,"enable:",false);
 connect(m_propagation_check, &QCheckBox::toggled, [=]() {tabWidget->setTabEnabled(5, m_propagation_check->isChecked());});
+m_propagation_check->setToolTip("Propagation applied in total and wheighted noise simulations.");
 
                 QLabel *imageLabel = new QLabel;
                 imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
-                gridx->addWidget(imageLabel, 0,1,4,1, Qt::AlignVCenter);
+                gridx->addWidget(imageLabel, 0,1,4,1, Qt::AlignCenter);
 
 //Sara
                 groupBox = new QGroupBox ("Directivity Angles");
@@ -104,58 +105,80 @@ connect(m_propagation_check, &QCheckBox::toggled, [=]() {tabWidget->setTabEnable
                 pGrid->addEdit(P::DirectivityPhi, NumberEditType, new NumberEdit(),
                               "ψe [deg]:", 90);//Sara
 
-QGroupBox *groupBox_qs3d = new QGroupBox ("Quasi 3D Simulation");
-gridx->addWidget(groupBox_qs3d,6,1);
-pGrid = new ParameterGrid<P>(this);
-groupBox_qs3d->setLayout(pGrid);
-QComboBox *qs3DSim_combobox = new QComboBox;
-pGrid->addEdit(P::qs3DSim,ComboBox, qs3DSim_combobox,"Quasi 3D:","");
-qs3DSim_combobox->insertItem(0,"Disable");
-qs3DSim_combobox->insertItem(1,"Blade");
-qs3DSim_combobox->insertItem(2,"Rotor");
-
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
-pNoiseCalculation->user_sel=qs3DSim_combobox->currentIndex();
+
+m_qs3d_check = new QGroupBox("Quasi 3D Simulation");
+pGrid = new ParameterGrid<P>(this);
+pGrid->addEdit(P::qs3d_check, CheckGroupBox, m_qs3d_check,"", false);
+
+m_qs3d_check->setCheckable(true);
+groupBox = new QGroupBox ();
+gridx->addWidget(m_qs3d_check,6,1);
+pGrid = new ParameterGrid<P>(this);
+m_qs3d_check->setLayout(pGrid);
+connect(m_qs3d_check, &QGroupBox::toggled, [=]() {
+    pNoiseCalculation->user_qs3d_check=m_qs3d_check->isChecked();
+    qs3DSim_combobox->setEnabled(m_qs3d_check->isChecked());
+    if (!m_qs3d_check->isChecked()){
+        op_points_qs3d=false;
+        tabWidget->setTabEnabled(2, false);
+        tabWidget->setTabEnabled(3, false);
+        tabWidget->setTabEnabled(4, false);
+
+        multi_polars_radiobutton->setEnabled(true);
+        BPM_radiobutton->setEnabled(true);
+        m_opPointScrollArea->setEnabled(true);
+    } else {
+            check_qs3D=true;
+            m_opPointScrollArea->setEnabled(true);
+            onSelectButtonsClicked(0);
+            one_polar_radiobutton->setChecked(true);
+            BPM_radiobutton->setEnabled(false);
+        }
+});
+
+qs3DSim_combobox = new QComboBox;
+pGrid->addEdit(P::qs3DSim,ComboBox, qs3DSim_combobox,"Quasi 3D:","");
+qs3DSim_combobox->insertItem(0,"Blade");
+qs3DSim_combobox->insertItem(1,"Rotor");
+connect(m_qs3d_check, &QGroupBox::toggled, [=]() {
+            if ((qs3DSim_combobox->currentIndex() == 0) & (m_qs3d_check->isChecked())){
+                op_points_qs3d=true;
+                tabWidget->setTabEnabled(2, true);
+                tabWidget->setTabEnabled(3, true);
+                tabWidget->setTabEnabled(4, false);
+            }
+            if ((qs3DSim_combobox->currentIndex() == 1) & (m_qs3d_check->isChecked())){
+                op_points_qs3d=true;
+                tabWidget->setTabEnabled(2, true);
+                tabWidget->setTabEnabled(3, true);
+                tabWidget->setTabEnabled(4, true);
+            }
+});
+
 connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     [=](int index){
-    pNoiseCalculation->user_sel=index;
+    pNoiseCalculation->user_sel=qs3DSim_combobox->currentIndex();
     user_sel=index;
 
 if (index == 0){
-    op_points_qs3d=false;
-    tabWidget->setTabEnabled(2, false);
-    tabWidget->setTabEnabled(3, false);
+    op_points_qs3d=true;
+    tabWidget->setTabEnabled(2, true);
+    tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, false);
-
-    multi_polars_radiobutton->setEnabled(true);
-    BPM_radiobutton->setEnabled(true);
-    m_opPointScrollArea->setEnabled(true);
 }
 if (index == 1){
     op_points_qs3d=true;
     tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
-    tabWidget->setTabEnabled(4, false);
-}
-if (index == 2){
-    op_points_qs3d=true;
-    tabWidget->setTabEnabled(2, true);
-    tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, true);
-}
-
-
-if(index!=0){
-    check_qs3D=true;
-    m_opPointScrollArea->setEnabled(true);
-    onSelectButtonsClicked(0);
-    one_polar_radiobutton->setChecked(true);
-    BPM_radiobutton->setEnabled(false);
 }
 });
 
+qs3DSim_combobox->setEnabled(m_qs3d_check->isChecked());
+
 //qs3d visible just for HAWT:
-groupBox_qs3d->setVisible(g_mainFrame->isHAWT);
+m_qs3d_check->setVisible(g_mainFrame->isHAWT);
 if(g_mainFrame->isVAWT){qs3DSim_combobox->setCurrentIndex(0);}
 //Sara
 
@@ -198,30 +221,23 @@ m_hblunt_numberedit->setEnabled(m_hblunt_check->isChecked());
 pGrid->addEdit(P::hblunt, NumberEditType, m_hblunt_numberedit,"TE thickness [mm]:",2.4);
 m_hblunt_numberedit->setEnabled(m_hblunt_check->isChecked());
 
-groupBox = new QGroupBox ("LE noise source contribution");
-gridx->addWidget(groupBox,4,2);
+m_LE_check = new QGroupBox("LE noise source contribution");
 pGrid = new ParameterGrid<P>(this);
-groupBox->setLayout(pGrid);
-QComboBox *Lowson_type_combobox = new QComboBox;
+pGrid->addEdit(P::LE_check, CheckGroupBox, m_LE_check,"", false);
+
+m_LE_check->setCheckable(true);
+groupBox = new QGroupBox ();
+gridx->addWidget(m_LE_check,4,2);
+pGrid = new ParameterGrid<P>(this);
+m_LE_check->setLayout(pGrid);
+
+connect(m_LE_check,SIGNAL(toggled(bool)),this,SLOT(OnLECheck(bool)));
+
+Lowson_type_combobox = new QComboBox;
 pGrid->addEdit(P::Lowson_type,ComboBox, Lowson_type_combobox,"Lowson's Model:","");
-Lowson_type_combobox->insertItem(0,"None");
-Lowson_type_combobox->insertItem(1,"Von Kármán");
-Lowson_type_combobox->insertItem(2,"Rapid Distortion");
-connect(Lowson_type_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-[=](int index){
-check_LE=false;
-if (index != 0){
-check_LE=true;
-}
-m_valRel_LE_check->setEnabled(check_LE);
-m_valReu_LE_check->setEnabled(check_LE);
-m_valMal_LE_check->setEnabled(check_LE);
-m_valMau_LE_check->setEnabled(check_LE);
-m_valRel_LE_numberedit->setEnabled(check_LE);
-m_valReu_LE_numberedit->setEnabled(check_LE);
-m_valMal_LE_numberedit->setEnabled(check_LE);
-m_valMau_LE_numberedit->setEnabled(check_LE);
-});
+Lowson_type_combobox->insertItem(0,"Von Kármán");
+Lowson_type_combobox->insertItem(1,"Rapid Distortion");
+Lowson_type_combobox->setEnabled(m_LE_check->isChecked());
 
 groupBox = new QGroupBox ("LBL-VS noise source contribution");
 gridx->addWidget(groupBox, 5,2);
@@ -229,6 +245,7 @@ pGrid = new ParameterGrid<P>(this);
 groupBox->setLayout(pGrid);
 m_LBLVS_check = new QCheckBox("");
 pGrid->addEdit(P::LBLVS,CheckBox,m_LBLVS_check,"enable:",false);
+connect(m_LBLVS_check,SIGNAL(toggled(bool)),this,SLOT(OnLBLVSCheck(bool)));
 
 m_tipvortex_check = new QGroupBox("Tip vortex noise source contribution");
 pGrid = new ParameterGrid<P>(this);
@@ -321,9 +338,7 @@ tabWidget->addTab(widget, "Op. Points");
 //                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
                     groupBox->setLayout(pGrid);
 
-if(Lowson_type_combobox->currentIndex()!=0){
-    check_LE=true;}
-else{check_LE=false;}
+    check_LE=m_LE_check->isChecked();
 
                     pGrid->addRow("Reynolds Number:","");
 
@@ -362,7 +377,7 @@ else{check_LE=false;}
                     pGrid->addEdit(P::valMau_LE, NumberEditType, m_valMau_LE_numberedit,"Upper Ma Value:",0.18);
                     m_valMau_LE_numberedit->setEnabled(check_LE);
 
-                    groupBox = new QGroupBox ("Blunt noise source validation range");
+                    groupBox = new QGroupBox ("Bluntness noise source validation range");
                     vBox->addWidget(groupBox);
                     pGrid = new ParameterGrid<P>(this);
 //                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -388,6 +403,67 @@ else{check_LE=false;}
                     pGrid->addEdit(P::valPsiu, NumberEditType, m_valPsiu_numberedit,"Upper ψ Value:",14);
                     m_valPsiu_numberedit->setEnabled(m_blunt_check->isChecked());
                     pGrid->addRow("","");pGrid->addRow("","");
+
+                    groupBox = new QGroupBox ("Bluntness noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    check_blunt=m_blunt_check->isChecked();
+
+                    pGrid->addRow("Reynolds Number:","");
+                    m_valRel_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valRel_blunt_check,"", true);
+                    m_valRel_blunt_check->setEnabled(check_blunt);
+
+                    m_valRel_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_blunt, NumberEditType, m_valRel_blunt_numberedit,"Lower Re Value:",1.1*pow(10,6));
+                    m_valRel_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valReu_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_blunt_check, CheckBox, m_valReu_blunt_check,"", true);
+                    m_valReu_blunt_check->setEnabled(check_blunt);
+
+                    m_valReu_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_blunt, NumberEditType, m_valReu_blunt_numberedit,"Upper Re Value:",2.6*pow(10,6));
+                    m_valReu_blunt_numberedit->setEnabled(check_blunt);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("Mach Number:","");
+                    m_valMal_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valMal_blunt_check,"", true);
+                    m_valMal_blunt_check->setEnabled(check_blunt);
+
+                    m_valMal_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_blunt, NumberEditType, m_valMal_blunt_numberedit,"Lower Ma Value:",0.12);
+                    m_valMal_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valMau_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_blunt_check, CheckBox, m_valMau_blunt_check,"", true);
+                    m_valMau_blunt_check->setEnabled(check_blunt);
+
+                    m_valMau_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_blunt, NumberEditType, m_valMau_blunt_numberedit,"Upper Ma Value:",0.21);
+                    m_valMau_blunt_numberedit->setEnabled(check_blunt);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("AOA Number:","");
+                    m_valAOAl_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_blunt_check, CheckBox, m_valAOAl_blunt_check,"", false);
+                    m_valAOAl_blunt_check->setEnabled(check_blunt);
+
+                    m_valAOAl_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_blunt, NumberEditType, m_valAOAl_blunt_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valAOAu_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_blunt_check, CheckBox, m_valAOAu_blunt_check,"", true);
+                    m_valAOAu_blunt_check->setEnabled(check_blunt);
+
+                    m_valAOAu_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_blunt, NumberEditType, m_valAOAu_blunt_numberedit,"Upper AOA Value [deg]:",6.1);
+                    m_valAOAu_blunt_numberedit->setEnabled(check_blunt);
 
                     groupBox = new QGroupBox ("TE noise source validation range");
                     hBox->addWidget(groupBox);
@@ -428,7 +504,7 @@ else{check_LE=false;}
 
                     m_valMau_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valMau_TE, NumberEditType, m_valMau_TE_numberedit,"Upper Ma Value:",0.21);
-                    m_valMal_TE_numberedit->setEnabled(check_TE);
+                    m_valMau_TE_numberedit->setEnabled(check_TE);
                     pGrid->addRow("","");pGrid->addRow("","");
 
                     pGrid->addRow("AOA Number:","");
@@ -447,6 +523,129 @@ else{check_LE=false;}
                     m_valAOAu_TE_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valAOAu_TE, NumberEditType, m_valAOAu_TE_numberedit,"Upper AOA Value [deg]:",19.8);
                     m_valAOAu_TE_numberedit->setEnabled(check_TE);
+
+
+                    groupBox = new QGroupBox ("LBL_VS noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    check_LBL_VS=m_LBLVS_check->isChecked();
+
+                    pGrid->addRow("Reynolds Number:","");
+                    m_valRel_LBL_VS_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_LBL_VS_check, CheckBox, m_valRel_LBL_VS_check,"", false);
+                    m_valRel_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valRel_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_LBL_VS, NumberEditType, m_valRel_LBL_VS_numberedit,"Lower Re Value:",4.5*pow(10,4));
+                    m_valRel_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    m_valReu_LBL_VS_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_LBL_VS_check, CheckBox, m_valReu_LBL_VS_check,"", true);
+                    m_valReu_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valReu_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_LBL_VS, NumberEditType, m_valReu_LBL_VS_numberedit,"Upper Re Value:",1.6*pow(10,6));
+                    m_valReu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("Mach Number:","");
+                    m_valMal_LBL_VS_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_LBL_VS_check, CheckBox, m_valMal_LBL_VS_check,"", false);
+                    m_valMal_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valMal_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_LBL_VS, NumberEditType, m_valMal_LBL_VS_numberedit,"Lower Ma Value:",0.09);
+                    m_valMal_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    m_valMau_LBL_VS_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_LBL_VS_check, CheckBox, m_valMau_LBL_VS_check,"", true);
+                    m_valMau_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valMau_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_LBL_VS, NumberEditType, m_valMau_LBL_VS_numberedit,"Upper Ma Value:",0.21);
+                    m_valMau_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("AOA Number:","");
+                    m_valAOAl_LBL_VS_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_LBL_VS_check, CheckBox, m_valAOAl_LBL_VS_check,"", false);
+                    m_valAOAl_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valAOAl_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_LBL_VS, NumberEditType, m_valAOAl_LBL_VS_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    m_valAOAu_LBL_VS_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_LBL_VS_check, CheckBox, m_valAOAu_LBL_VS_check,"", true);
+                    m_valAOAu_LBL_VS_check->setEnabled(check_LBL_VS);
+
+                    m_valAOAu_LBL_VS_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_LBL_VS, NumberEditType, m_valAOAu_LBL_VS_numberedit,"Upper AOA Value [deg]:",15.4);
+                    m_valAOAu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+
+                    groupBox = new QGroupBox ("tip vortex noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    check_tipvortex=m_tipvortex_check->isChecked();
+
+                    pGrid->addRow("Reynolds Number:","");
+                    m_valRel_tipvortex_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_tipvortex_check, CheckBox, m_valRel_tipvortex_check,"", false);
+                    m_valRel_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valRel_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_tipvortex, NumberEditType, m_valRel_tipvortex_numberedit,"Lower Re Value:",1.2*pow(10,5));
+                    m_valRel_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    m_valReu_tipvortex_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_tipvortex_check, CheckBox, m_valReu_tipvortex_check,"", true);
+                    m_valReu_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valReu_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_tipvortex, NumberEditType, m_valReu_tipvortex_numberedit,"Upper Re Value:",1.3*pow(10,6));
+                    m_valReu_tipvortex_numberedit->setEnabled(check_tipvortex);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("Mach Number:","");
+                    m_valMal_tipvortex_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_tipvortex_check, CheckBox, m_valMal_tipvortex_check,"", true);
+                    m_valMal_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valMal_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_tipvortex, NumberEditType, m_valMal_tipvortex_numberedit,"Lower Ma Value:",0.12);
+                    m_valMal_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    m_valMau_tipvortex_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_tipvortex_check, CheckBox, m_valMau_tipvortex_check,"", true);
+                    m_valMau_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valMau_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_tipvortex, NumberEditType, m_valMau_tipvortex_numberedit,"Upper Ma Value:",0.21);
+                    m_valMau_tipvortex_numberedit->setEnabled(check_tipvortex);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("AOA Number:","");
+                    m_valAOAl_tipvortex_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_tipvortex_check, CheckBox, m_valAOAl_tipvortex_check,"", false);
+                    m_valAOAl_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valAOAl_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_tipvortex, NumberEditType, m_valAOAl_tipvortex_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    m_valAOAu_tipvortex_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_tipvortex_check, CheckBox, m_valAOAu_tipvortex_check,"", true);
+                    m_valAOAu_tipvortex_check->setEnabled(check_tipvortex);
+
+                    m_valAOAu_tipvortex_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_tipvortex, NumberEditType, m_valAOAu_tipvortex_numberedit,"Upper AOA Value [deg]:",14.4);
+                    m_valAOAu_tipvortex_numberedit->setEnabled(check_tipvortex);                  
 
                             widget = new QWidget;
                             tabWidget->addTab(widget, "Quasi 3D Blade");
@@ -527,7 +726,7 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                             pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
                             QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-                            if((g_bemdataStore.size()!=NULL)){
+                            if((g_bemdataStore.size()!=0)){
                             double hub_radius=pbem->m_pBlade->m_HubRadius;
                             outer_radius=pbem->m_pTData->OuterRadius;
                             blade_radius=(outer_radius-hub_radius);}
@@ -650,17 +849,47 @@ m_shear_check->setCheckable(true);
     tabWidget->addTab(widget, "Propagation");
     vBox = new QVBoxLayout;
     hBox = new QHBoxLayout;
-    widget->setLayout(hBox);
+    widget->setLayout(vBox);
 
-    groupBox = new QGroupBox ("Noise Propagation Simulation Parameters");
-    hBox->addWidget(groupBox);
+    m_vegetation_check = new QGroupBox ("Attenuation by Vegetation");
     pGrid = new ParameterGrid<P>(this);
-    groupBox->setLayout(pGrid);
+    pGrid->addEdit(P::vegetation_check, CheckGroupBox, m_vegetation_check,"",true);
+    m_vegetation_check->setCheckable(true);
+    groupBox = new QGroupBox ();
+    vBox->addWidget(m_vegetation_check);
+    pGrid = new ParameterGrid<P>(this);
+    m_vegetation_check->setLayout(pGrid);
+
+    connect(m_vegetation_check,SIGNAL(toggled(bool)),this,SLOT(OnVegetationCheck(bool)));
+
     vegetation_combobox = new QComboBox;
     pGrid->addEdit(P::vegetation,ComboBox, vegetation_combobox,"Vegetation:","");
     vegetation_combobox->insertItem(0,"Dense Foliage");
     vegetation_combobox->insertItem(1,"Shrubbery or Tall Thick Grass");
     vegetation_combobox->insertItem(2,"Forests");
+    vegetation_combobox->setEnabled(m_vegetation_check->isChecked());
+
+//    groupBox = new QGroupBox ("Atmospheric Absorption");
+//    vBox->addWidget(groupBox);
+//    pGrid = new ParameterGrid<P>(this);
+//    groupBox->setLayout(pGrid);
+
+    m_atm_check = new QGroupBox ("Atmospheric Absorption");
+    pGrid = new ParameterGrid<P>(this);
+    pGrid->addEdit(P::atm_check, CheckGroupBox, m_atm_check,"",true);
+    m_atm_check->setCheckable(true);
+    groupBox = new QGroupBox ();
+    vBox->addWidget(m_atm_check);
+    pGrid = new ParameterGrid<P>(this);
+    m_atm_check->setLayout(pGrid);
+
+    connect(m_atm_check,SIGNAL(toggled(bool)),this,SLOT(OnAtmCheck(bool)));
+
+    m_rel_humidity_numberedit = new NumberEdit();
+    pGrid->addEdit(P::rel_humidity,NumberEditType, m_rel_humidity_numberedit,"Relative Humidity [%]:","50");
+    m_rel_humidity_numberedit->setMaximum(100);
+    m_rel_humidity_numberedit->setMinimum(0);
+
 
     tabWidget->setTabEnabled(2, (qs3DSim_combobox->currentIndex()!=0));
     tabWidget->setTabEnabled(3, (qs3DSim_combobox->currentIndex()!=0));
@@ -871,9 +1100,8 @@ return;
     }
     size_points=m_opPointRecords.size();
     newSimulation->setAnalyzedOpPoints(analyzedOpPoints.toVector());
-
 try {
-if((multi_polars_radiobutton->isChecked())& (check_qs3D)){
+if((multi_polars_radiobutton->isChecked())& (m_qs3d_check->isChecked())){
     newSimulation->pre_simulate();
 
     prepareOpPointRecords(multi_polars_radiobutton->isChecked());
@@ -1067,6 +1295,23 @@ m_TSR_spinbox->setEnabled(index);
 void NoiseCreatorDialog::OnBluntCheck(bool index){
 blunt_in=index;
 m_hblunt_check->setEnabled(index);
+check_blunt=index;
+m_valRel_blunt_check->setEnabled(check_blunt);
+m_valReu_blunt_check->setEnabled(check_blunt);
+m_valMal_blunt_check->setEnabled(check_blunt);
+m_valMau_blunt_check->setEnabled(check_blunt);
+m_valRel_blunt_numberedit->setEnabled(check_blunt);
+m_valReu_blunt_numberedit->setEnabled(check_blunt);
+m_valMal_blunt_numberedit->setEnabled(check_blunt);
+m_valMau_blunt_numberedit->setEnabled(check_blunt);
+m_valAOAl_blunt_check->setEnabled(check_blunt);
+m_valAOAu_blunt_check->setEnabled(check_blunt);
+m_valAOAl_blunt_numberedit->setEnabled(check_blunt);
+m_valAOAu_blunt_numberedit->setEnabled(check_blunt);
+m_valPsiu_numberedit->setEnabled(check_blunt);
+m_valPsiu_check->setEnabled(check_blunt);
+m_valPsil_numberedit->setEnabled(check_blunt);
+m_valPsil_check->setEnabled(check_blunt);
 }
 
 void NoiseCreatorDialog::OnhBluntCheck(bool index){
@@ -1076,6 +1321,19 @@ m_hblunt_numberedit->setEnabled(index);
 void NoiseCreatorDialog::OnTipVortexCheck(bool index){
 tipvortex_in=index;
 m_flat_tip_check->setEnabled(index);
+check_tipvortex=index;
+m_valRel_tipvortex_check->setEnabled(check_tipvortex);
+m_valReu_tipvortex_check->setEnabled(check_tipvortex);
+m_valMal_tipvortex_check->setEnabled(check_tipvortex);
+m_valMau_tipvortex_check->setEnabled(check_tipvortex);
+m_valRel_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valReu_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valMal_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valMau_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valAOAl_tipvortex_check->setEnabled(check_tipvortex);
+m_valAOAu_tipvortex_check->setEnabled(check_tipvortex);
+m_valAOAl_tipvortex_numberedit->setEnabled(check_tipvortex);
+m_valAOAu_tipvortex_numberedit->setEnabled(check_tipvortex);
 }
 
 void NoiseCreatorDialog::OnShearLayerCheck(bool index){
@@ -1128,5 +1386,41 @@ void NoiseCreatorDialog::OnTECheck(){
     m_valAOAu_TE_check->setEnabled(check_TE);
     m_valAOAl_TE_numberedit->setEnabled(check_TE);
     m_valAOAu_TE_numberedit->setEnabled(check_TE);
+}
+
+void NoiseCreatorDialog::OnLBLVSCheck(bool index){
+    check_LBL_VS=index;
+    m_valRel_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valReu_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valMal_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valMau_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valRel_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valReu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valMal_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valMau_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valAOAl_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valAOAu_LBL_VS_check->setEnabled(check_LBL_VS);
+    m_valAOAl_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+    m_valAOAu_LBL_VS_numberedit->setEnabled(check_LBL_VS);
+}
+
+void NoiseCreatorDialog::OnLECheck(bool index){
+Lowson_type_combobox->setEnabled(index);
+m_valRel_LE_check->setEnabled(index);
+m_valReu_LE_check->setEnabled(index);
+m_valMal_LE_check->setEnabled(index);
+m_valMau_LE_check->setEnabled(index);
+m_valRel_LE_numberedit->setEnabled(index);
+m_valReu_LE_numberedit->setEnabled(index);
+m_valMal_LE_numberedit->setEnabled(index);
+m_valMau_LE_numberedit->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnVegetationCheck(bool index){
+    vegetation_combobox->setEnabled(index);
+}
+
+void NoiseCreatorDialog::OnAtmCheck(bool index){
+    m_rel_humidity_numberedit->setEnabled(index);
 }
 //Sara

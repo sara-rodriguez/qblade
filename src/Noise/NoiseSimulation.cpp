@@ -85,7 +85,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
     QVector<double> xVector, yVector;  // because QVector is internally shared there should be no copying
     for (int i = 0; i < 2; ++i) {
 //Sara begin       
-        if (m_parameter.qs3DSim==0){//2d
+        if (!m_parameter.qs3d_check){//2d
             const int index = getAvailableVariables().indexOf(i == 0 ? xAxis : yAxis);
             QVector<double> *vector = (i == 0 ? &xVector : &yVector);
         switch (index) {
@@ -123,7 +123,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             }
         }
 
-        if (m_parameter.qs3DSim==1){//blade
+        if (m_parameter.qs3d_check & (m_parameter.qs3DSim==0)){//blade
             const int index = getAvailableVariables_blade().indexOf(i == 0 ? xAxis : yAxis);
             QVector<double> *vector = (i == 0 ? &xVector : &yVector);
             switch (index) {
@@ -172,7 +172,7 @@ NewCurve *NoiseSimulation::newCurve(QString xAxis, QString yAxis, NewGraph::Grap
             }
         }
 
-        if (m_parameter.qs3DSim==2){//rotor
+        if (m_parameter.qs3d_check & (m_parameter.qs3DSim==1)){//rotor
         const int index = getAvailableVariables_rotor().indexOf(i == 0 ? xAxis : yAxis);
         QVector<double> *vector = (i == 0 ? &xVector : &yVector);
         switch (index) {
@@ -308,7 +308,7 @@ void NoiseSimulation::pre_simulate() {
 
 //Sara
 //verify and generate new polars when quasi 3d multiple polars options are active
-if ((m_parameter.qs3DSim!=0) & (m_parameter.opPointSource == NoiseParameter::MultiplePolars)){
+if ((m_parameter.qs3d_check) & (m_parameter.opPointSource == NoiseParameter::MultiplePolars)){
     m_calculation.onVerifyDeltaandValFor3D();
     if(m_parameter.autopolars_check){loopsReMaalpha();}
 }
@@ -321,7 +321,7 @@ void NoiseSimulation::simulate() {
 
 //Sara
 //verify and generate new polars when quasi 3d multiple polars options are active
-if (m_parameter.qs3DSim!=0){
+if (m_parameter.qs3d_check){
     m_calculation.onVerifyDeltaandValFor3D();
     m_calculation.onVerifyDeltaandValFor3DAlerts();
 }
@@ -331,11 +331,11 @@ if(m_calculation.simulate_yes_no){
     m_calculation.setInitialValues();
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculate();}
 
-if (m_parameter.qs3DSim!=0){
+if (m_parameter.qs3d_check){
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_graphics_loops();}
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_blade();}
     }
-if(m_parameter.qs3DSim==2){
+if(m_parameter.qs3d_check & (m_parameter.qs3DSim==1)){
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){m_calculation.calculateqs3d_rotor();}
     }
 if (!pNoiseCreatorDialog->m_progress_dlg->wasCanceled()){pNoiseCreatorDialog->m_progress_dlg->cancel();}
@@ -349,8 +349,8 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
 
     stream << "Noise prediction file export" << Qt::endl;
     stream << Qt::endl;
-    if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" << Qt::endl;}
-    if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" << Qt::endl;}//era m_calculation.m_
+    if(m_parameter.Lowson_type==0){stream << "leading edge model: Von Karman" << Qt::endl;}
+    if(m_parameter.Lowson_type==1){stream << "leading edge model: Rapid Distortion" << Qt::endl;}//era m_calculation.m_
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
     for (int i = 0; i < noiseOpPoints.size(); ++i) {
         stream << qSetFieldWidth(0);
@@ -359,7 +359,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
         stream << "SPL_a: " << m_calculation.SPLALOG()[i] << "" << Qt::endl;
         stream << "SPL_s: " << m_calculation.SPLSLOG()[i] << "" << Qt::endl;
         stream << "SPL_p: " << m_calculation.SPLPLOG()[i] << "" << Qt::endl;
-        if(m_parameter.Lowson_type!=0){
+        if(m_parameter.LE_check){
         stream << "SPL_LE: " << m_calculation.SPLlogLE()[i] << " dB" << Qt::endl;
         }
         if(m_parameter.LBLVS!=0){
@@ -376,7 +376,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
         stream << "OASPL (B): " << m_calculation.OASPLB()[i] << " dB(B)" << Qt::endl;
         stream << "OASPL (C): " << m_calculation.OASPLC()[i] << " dB(C)" << Qt::endl;
         stream << Qt::endl;
-               if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+               if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" <<
                   "SPLa" <<
@@ -392,7 +392,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
                   "SPL (dB(C))" <<
                   Qt::endl; //Alexandre MOD
                }
-               else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+               else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
                    stream << qSetFieldWidth(14) <<
                              "Freq [Hz]" <<
                              "SPLa" <<
@@ -408,7 +408,7 @@ void NoiseSimulation::exportCalculation(QTextStream &stream) {
                              Qt::endl; //Alexandre MOD
                           }
 
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
                    stream << qSetFieldWidth(14) <<
                              "Freq [Hz]" <<
                              "SPLa" <<
@@ -424,7 +424,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                              Qt::endl; //Alexandre MOD
                           }
 
-               else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+               else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -439,7 +439,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                                             Qt::endl; //Alexandre MOD
                                          }
 
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
                    stream << qSetFieldWidth(14) <<
                              "Freq [Hz]" <<
                              "SPLa" <<
@@ -455,7 +455,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                              Qt::endl; //Alexandre MOD
                           }
 
-               else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+               else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -470,7 +470,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             Qt::endl; //Alexandre MOD
                                          }
 
-               else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+               else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -485,7 +485,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             Qt::endl; //Alexandre MOD
                                          }
 
-               else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+               else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -499,7 +499,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             Qt::endl; //Alexandre MOD
                                          }
 
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -513,7 +513,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             "SPL (dB(C))" <<
                                             Qt::endl; //Alexandre MOD
                                          }
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -526,7 +526,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             "SPL (dB(C))" <<
                                             Qt::endl; //Alexandre MOD
                                          }
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -539,7 +539,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             "SPL (dB(C))" <<
                                             Qt::endl; //Alexandre MOD
                                          }
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -551,7 +551,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             "SPL (dB(C))" <<
                                             Qt::endl; //Alexandre MOD
                                          }
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -566,7 +566,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             "SPL (dB(C))" <<
                                             Qt::endl; //Alexandre MOD
                                          }
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -580,7 +580,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             "SPL (dB(C))" <<
                                             Qt::endl; //Alexandre MOD
                                          }
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -594,7 +594,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                             "SPL (dB(C))" <<
                                             Qt::endl; //Alexandre MOD
                                          }
-               else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+               else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
                                   stream << qSetFieldWidth(14) <<
                                             "Freq [Hz]" <<
                                             "SPLa" <<
@@ -610,7 +610,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
 
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
- if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
             stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
@@ -625,7 +625,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                       m_calculation.SPLdBCW()[i][j] <<
                       Qt::endl; //Alexandre MOD
         }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
             stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
@@ -639,7 +639,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                       m_calculation.SPLdBCW()[i][j] <<
                       Qt::endl; //Alexandre MOD
         }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
             stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
@@ -653,7 +653,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                       m_calculation.SPLdBCW()[i][j] <<
                       Qt::endl; //Alexandre MOD
         }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
             stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                       m_calculation.SPLadB()[i][j] <<
                       m_calculation.SPLsdB()[i][j] <<
@@ -666,7 +666,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                       m_calculation.SPLdBCW()[i][j] <<
                       Qt::endl; //Alexandre MOD
         }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -681,7 +681,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -695,7 +695,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -708,7 +708,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -720,7 +720,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -734,7 +734,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -747,7 +747,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -760,7 +760,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -772,7 +772,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -785,7 +785,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -797,7 +797,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -809,7 +809,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                        m_calculation.SPLdBCW()[i][j] <<
                        Qt::endl; //Alexandre MOD
          }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
              stream << QString::number(NoiseCalculation::CENTRAL_BAND_FREQUENCY[j], 'f', 0) << //Sara
                        m_calculation.SPLadB()[i][j] <<
                        m_calculation.SPLsdB()[i][j] <<
@@ -834,8 +834,8 @@ void NoiseSimulation::exportCalculationqs3DNoise_blade(QTextStream &stream) {
 
     stream << "Noise prediction file export quasi 3D for blade" << Qt::endl;
     stream << Qt::endl;
-    if(m_parameter.Lowson_type==1){stream << "leading edge model: Von Karman" << Qt::endl;}
-    if(m_parameter.Lowson_type==2){stream << "leading edge model: Rapid Distortion" << Qt::endl;}
+    if(m_parameter.Lowson_type==0){stream << "leading edge model: Von Karman" << Qt::endl;}
+    if(m_parameter.Lowson_type==1){stream << "leading edge model: Rapid Distortion" << Qt::endl;}
     stream << "Tip Speed Ratio: " << m_parameter.TSRtd << Qt::endl;
     QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
@@ -851,7 +851,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_blade(QTextStream &stream) {
     stream << "SPL alfa: " << m_calculation.Final_qs3d_alpha << Qt::endl;
     stream << "SPL S: " << m_calculation.Final_qs3d_S << Qt::endl;
     stream << "SPL P: " << m_calculation.Final_qs3d_P << Qt::endl;
-    if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
+    if (m_parameter.LE_check){stream << "SPL LE: " << m_calculation.Final_qs3d_LE;}
     if (m_parameter.LBLVS!=0){stream << "SPL LBL-VS: " << m_calculation.Final_qs3d_LBLVS;}
     if (m_parameter.blunt_check!=0){stream << "SPL blunt: " << m_calculation.Final_qs3d_blunt;}
     if (m_parameter.tipvortex_check!=0){stream << "SPL tip vortex: " << m_calculation.Final_qs3d_tipvortex;}
@@ -865,7 +865,7 @@ stream << qSetFieldWidth(0);
 //        stream << Qt::endl;
 stream << "Section: " << (i+1)<<"/"<<number_of_segments << Qt::endl;
         stream << Qt::endl;
-if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
                   "SPLa" << ";" <<
@@ -879,7 +879,7 @@ if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_ch
                   "SPL (dB(B))" << ";" <<
                   "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
                }
-else if ((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+else if ((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
     stream << qSetFieldWidth(14) <<
               "Freq [Hz]" << ";" <<
               "SPLa" << ";" <<
@@ -892,7 +892,7 @@ else if ((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.bl
               "SPL (dB(B))" << ";" <<
               "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
            }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
     stream << qSetFieldWidth(14) <<
               "Freq [Hz]" << ";" <<
               "SPLa" << ";" <<
@@ -905,7 +905,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
               "SPL (dB(B))" << ";" <<
               "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
            }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
     stream << qSetFieldWidth(14) <<
               "Freq [Hz]" << ";" <<
               "SPLa" << ";" <<
@@ -917,7 +917,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
               "SPL (dB(B))" << ";" <<
               "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
            }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
                   "SPLa" << ";" <<
@@ -930,7 +930,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                   "SPL (dB(B))" << ";" <<
                   "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
                }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
                   "SPLa" << ";" <<
@@ -942,7 +942,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                   "SPL (dB(B))" << ";" <<
                   "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
                }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
                   "SPLa" << ";" <<
@@ -954,7 +954,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                   "SPL (dB(B))" << ";" <<
                   "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
                }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
         stream << qSetFieldWidth(14) <<
                   "Freq [Hz]" << ";" <<
                   "SPLa" << ";" <<
@@ -968,7 +968,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blu
 //int i=0;
         for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
-            if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+            if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
                        stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                                  m_calculation.SPLadB3d()[i][j] << ";" <<
                                  m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -982,7 +982,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                  m_calculation.SPLdBCW3d()[i][j] << ";" <<
                                  Qt::endl; //Alexandre MOD
                    }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                           m_calculation.SPLadB3d()[i][j] << ";" <<
                           m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -995,7 +995,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
                           m_calculation.SPLdBCW3d()[i][j] << ";" <<
                           Qt::endl; //Alexandre MOD
             }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
                     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                               m_calculation.SPLadB3d()[i][j] << ";" <<
                               m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -1008,7 +1008,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                               m_calculation.SPLdBCW3d()[i][j] << ";" <<
                               Qt::endl; //Alexandre MOD
                 }
-            else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+            else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
                                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                                           m_calculation.SPLadB3d()[i][j] << ";" <<
                                           m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -1020,7 +1020,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                           m_calculation.SPLdBCW3d()[i][j] << ";" <<
                                           Qt::endl; //Alexandre MOD
                             }
-            else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+            else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
                                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                                           m_calculation.SPLadB3d()[i][j] << ";" <<
                                           m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -1033,7 +1033,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                           m_calculation.SPLdBCW3d()[i][j] << ";" <<
                                           Qt::endl; //Alexandre MOD
                             }
-            else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+            else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
                                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                                           m_calculation.SPLadB3d()[i][j] << ";" <<
                                           m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -1045,7 +1045,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                           m_calculation.SPLdBCW3d()[i][j] << ";" <<
                                           Qt::endl; //Alexandre MOD
                             }
-            else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+            else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
                                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                                           m_calculation.SPLadB3d()[i][j] << ";" <<
                                           m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -1057,7 +1057,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
                                           m_calculation.SPLdBCW3d()[i][j] << ";" <<
                                           Qt::endl; //Alexandre MOD
                             }
-            else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+            else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
                                 stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                                           m_calculation.SPLadB3d()[i][j] << ";" <<
                                           m_calculation.SPLsdB3d()[i][j] << ";" <<
@@ -1074,7 +1074,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
         stream << "SPL_a: " << m_calculation.SPLALOG3d()[i] << "" << Qt::endl;
         stream << "SPL_s: " << m_calculation.SPLSLOG3d()[i] << "" << Qt::endl;
         stream << "SPL_p: " << m_calculation.SPLPLOG3d()[i] << "" << Qt::endl;
-        if(m_parameter.Lowson_type!=0){
+        if(m_parameter.LE_check){
         stream << "SPL_LE: " << m_calculation.SPLlogLE3d()[i] << " dB" << Qt::endl;}
         if(m_parameter.LBLVS!=0){
         stream << "SPL_LBL_VS: " << m_calculation.SPLlogLBLVS3d()[i] << " dB" << Qt::endl;}
@@ -1089,7 +1089,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
 
 if(i==(number_of_segments-1)){
 stream << "********** FINAL **********" << Qt::endl;
-if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
 stream << qSetFieldWidth(14) <<
    "Freq [Hz]" << ";" <<
    "SPLa" << ";" <<
@@ -1103,7 +1103,7 @@ stream << qSetFieldWidth(14) <<
    "SPL (dB(B))" << ";" <<
    "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
     stream << qSetFieldWidth(14) <<
        "Freq [Hz]" << ";" <<
        "SPLa" << ";" <<
@@ -1116,7 +1116,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
        "SPL (dB(B))" << ";" <<
        "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
     }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
     stream << qSetFieldWidth(14) <<
        "Freq [Hz]" << ";" <<
        "SPLa" << ";" <<
@@ -1129,7 +1129,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
        "SPL (dB(B))" << ";" <<
        "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
     }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
     stream << qSetFieldWidth(14) <<
        "Freq [Hz]" << ";" <<
        "SPLa" << ";" <<
@@ -1141,7 +1141,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
        "SPL (dB(B))" << ";" <<
        "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
     }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
     stream << qSetFieldWidth(14) <<
        "Freq [Hz]" << ";" <<
        "SPLa" << ";" <<
@@ -1154,7 +1154,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
        "SPL (dB(B))" << ";" <<
        "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
     }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
     stream << qSetFieldWidth(14) <<
        "Freq [Hz]" << ";" <<
        "SPLa" << ";" <<
@@ -1166,7 +1166,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
        "SPL (dB(B))" << ";" <<
        "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
     }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
 stream << qSetFieldWidth(14) <<
    "Freq [Hz]" << ";" <<
    "SPLa" << ";" <<
@@ -1178,7 +1178,7 @@ stream << qSetFieldWidth(14) <<
    "SPL (dB(B))" << ";" <<
    "SPL (dB(C))" << ";" << Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
 stream << qSetFieldWidth(14) <<
    "Freq [Hz]" << ";" <<
    "SPLa" << ";" <<
@@ -1191,7 +1191,7 @@ stream << qSetFieldWidth(14) <<
 }
 for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
-if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
         stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                   m_calculation.SPLadB3d_final()[i][j] << ";" <<
                   m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1205,7 +1205,7 @@ if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_ch
                   m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
                   Qt::endl; //Alexandre MOD
     }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
               m_calculation.SPLadB3d_final()[i][j] << ";" <<
               m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1218,7 +1218,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
               m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
               Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
               m_calculation.SPLadB3d_final()[i][j] << ";" <<
               m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1231,7 +1231,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
               m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
               Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
               m_calculation.SPLadB3d_final()[i][j] << ";" <<
               m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1243,7 +1243,7 @@ else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blu
               m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
               Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0)){
     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
               m_calculation.SPLadB3d_final()[i][j] << ";" <<
               m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1256,7 +1256,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
               m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
               Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0)){
     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
               m_calculation.SPLadB3d_final()[i][j] << ";" <<
               m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1268,7 +1268,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blu
               m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
               Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0)){
     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
               m_calculation.SPLadB3d_final()[i][j] << ";" <<
               m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1280,7 +1280,7 @@ else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blu
               m_calculation.SPLdBCW3d_final()[i][j] << ";" <<
               Qt::endl; //Alexandre MOD
 }
-else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
+else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0)){
     stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
               m_calculation.SPLadB3d_final()[i][j] << ";" <<
               m_calculation.SPLsdB3d_final()[i][j] << ";" <<
@@ -1318,7 +1318,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
      stream << "SPL alfa: " << m_calculation.Final_qs3d_alpha_rotor_loops << Qt::endl;
      stream << "SPL S: " << m_calculation.Final_qs3d_S_rotor_loops << Qt::endl;
      stream << "SPL P: " << m_calculation.Final_qs3d_P_rotor_loops << Qt::endl;
-     if (m_parameter.Lowson_type!=0){stream << "SPL LE: " << m_calculation.Final_qs3d_LE_rotor_loops;}
+     if (m_parameter.LE_check){stream << "SPL LE: " << m_calculation.Final_qs3d_LE_rotor_loops;}
      if (m_parameter.LBLVS!=0){stream << "SPL LBL-VS: " << m_calculation.Final_qs3d_LBLVS_rotor_loops;}
      if (m_parameter.blunt_check!=0){stream << "SPL blunt: " << m_calculation.Final_qs3d_blunt_rotor_loops;}
      if (m_parameter.tipvortex_check!=0){stream << "SPL tip vortex: " << m_calculation.Final_qs3d_tipvortex_rotor_loops;}
@@ -1332,7 +1332,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
 
  if(i==(number_of_segments-1)){
 // stream << "********** FINAL **********" << Qt::endl;
- if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
  stream << qSetFieldWidth(14) <<
     "Freq [Hz]" << ";" <<
     "SPLa" << ";" <<
@@ -1347,7 +1347,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
     "SPL (dB(B))" << ";" <<
     "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
  }
- else  if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else  if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1361,7 +1361,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else  if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1375,7 +1375,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else  if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1388,21 +1388,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
-     stream << qSetFieldWidth(14) <<
-        "Freq [Hz]" << ";" <<
-        "SPLa" << ";" <<
-        "SPLs" << ";" <<
-        "SPLp" << ";" <<
-        "SPL_LE (dB)" << ";" <<
-        "SPL_blunt (dB)" << ";" <<
-        "SPL_tipvortex (dB)" << ";" <<
-        "SPL (dB)" << ";" <<
-        "SPL (dB(A))" << ";" <<
-        "SPL (dB(B))" << ";" <<
-        "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
-     }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1410,12 +1396,26 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPLp" << ";" <<
         "SPL_LE (dB)" << ";" <<
         "SPL_blunt (dB)" << ";" <<
+        "SPL_tipvortex (dB)" << ";" <<
         "SPL (dB)" << ";" <<
         "SPL (dB(A))" << ";" <<
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+     stream << qSetFieldWidth(14) <<
+        "Freq [Hz]" << ";" <<
+        "SPLa" << ";" <<
+        "SPLs" << ";" <<
+        "SPLp" << ";" <<
+        "SPL_LE (dB)" << ";" <<
+        "SPL_blunt (dB)" << ";" <<
+        "SPL (dB)" << ";" <<
+        "SPL (dB(A))" << ";" <<
+        "SPL (dB(B))" << ";" <<
+        "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
+     }
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1428,7 +1428,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1440,7 +1440,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1454,7 +1454,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1467,7 +1467,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1480,7 +1480,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1492,7 +1492,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1505,7 +1505,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1517,7 +1517,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1529,7 +1529,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
         "SPL (dB(B))" << ";" <<
         "SPL (dB(C))" << ";" <<Qt::endl; //Alexandre MOD
      }
- else  if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else  if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << qSetFieldWidth(14) <<
         "Freq [Hz]" << ";" <<
         "SPLa" << ";" <<
@@ -1542,7 +1542,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
      }
  for (int j = 0; j < NoiseCalculation::FREQUENCY_TABLE_SIZE; ++j) {
 
- if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
          stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                    m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1557,7 +1557,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                    m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                    Qt::endl; //Alexandre MOD
      }
- if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
          stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                    m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                    m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1571,7 +1571,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                    m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                    Qt::endl; //Alexandre MOD
      }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1586,7 +1586,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS!=0) &  (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS!=0) &  (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1600,7 +1600,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1614,7 +1614,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1627,7 +1627,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1640,7 +1640,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type!=0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1652,7 +1652,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1666,7 +1666,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1679,7 +1679,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1692,7 +1692,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS!=0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1704,7 +1704,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check!=0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1717,7 +1717,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check!=0) & (m_parameter.tipvortex_check==0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1729,7 +1729,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check!=0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1741,7 +1741,7 @@ void NoiseSimulation::exportCalculationqs3DNoise_rotor(QTextStream &stream) {
                m_calculation.SPLdBCW3d_final_rotor_loops()[i][j] << ";" <<
                Qt::endl; //Alexandre MOD
  }
- else if((m_parameter.Lowson_type==0) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
+ else if((!m_parameter.LE_check) & (m_parameter.LBLVS==0) & (m_parameter.blunt_check==0) & (m_parameter.tipvortex_check==0)){
      stream << NoiseCalculation::CENTRAL_BAND_FREQUENCY[j] << ";" <<
                m_calculation.SPLadB3d_final_rotor_loops()[i][j] << ";" <<
                m_calculation.SPLsdB3d_final_rotor_loops()[i][j] << ";" <<
@@ -1793,64 +1793,10 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
         m_calculation.qs3D_log(stream);
 
      stream << Qt::endl;
-     stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range. 3 - Reynolds outside of error margin defined. 4 - Mach outside of error margin defined. 5 - Alpha outside of error margin defined."<< Qt::endl;
+     stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range. 3 - Out of tip vortex validation range. 4 - Out of LBL_VS validation range. 5 - Out of blunt validation range. 6 - Reynolds outside of error margin defined. 7 - Mach outside of error margin defined. 8 - Alpha outside of error margin defined."<< Qt::endl;
 
              stream.setRealNumberNotation(QTextStream::FixedNotation);
              stream.setRealNumberPrecision(5);
-             bool blade_values = m_calculation.qs3D_val_blade!=NULL;
-             bool rotor_values = m_calculation.qs3D_val_rotor!=NULL;
-
-             if((m_parameter.qs3DSim!=0) & blade_values){
-                 stream << Qt::endl;
-                 stream << Qt::endl;
-                 stream << "Quasi 3D Noise Validation Error Log for Blade Simulation" << Qt::endl;
-                 stream << Qt::endl;
-                 stream << "Tip Speed Ratio: " << str << Qt::endl;
-                 stream << Qt::endl;
-
-                 stream << qSetFieldWidth(14)  <<
-                           "Section"  << ";" <<
-                           "Reynolds"  << ";" <<
-                           "Mach" << ";" <<
-                           "AOA" << ";" <<
-                           "Error number[1]" <<  ";" <<
-                           Qt::endl;
-
-                 stream << qSetFieldWidth(14)  <<
-                 m_calculation.qs3D_val_blade <<
-                 Qt::endl;
-
-                 stream << Qt::endl;
-                 stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range."<< Qt::endl;
-                 stream << Qt::endl;
-         }
-
-             if((m_parameter.qs3DSim==2) & rotor_values){
-                 stream << Qt::endl;
-                 stream << Qt::endl;
-                 stream << "Quasi 3D Noise Validation Error Log for Rotor Simulation" << Qt::endl;
-                 stream << Qt::endl;
-                 stream << "Tip Speed Ratio: " << str << Qt::endl;
-                 stream << Qt::endl;
-
-                 stream << qSetFieldWidth(14)  <<
-                           "Blade"  << ";" <<
-                           "Azimuthal Angle [deg]"  << ";" <<
-                           "Section"  << ";" <<
-                           "Reynolds"  << ";" <<
-                           "Mach" << ";" <<
-                           "AOA" << ";" <<
-                           "Error number[1]" <<  ";" <<
-                           Qt::endl;
-
-                 stream << qSetFieldWidth(14)  <<
-                 m_calculation.qs3D_val_rotor <<
-                           Qt::endl;
-
-                 stream << Qt::endl;
-                 stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range."<< Qt::endl;
-                 stream << Qt::endl;
-         }
 }
 //Sara
 
@@ -1952,46 +1898,44 @@ QVariant NoiseSimulation::accessParameter(Parameter::NoiseSimulation::Key key, Q
 
     case P::TSR_check:
         if(set) m_parameter.TSR_check = value.toBool();
-        else {value=m_parameter.TSR_check;}
-break;
+        else {value=m_parameter.TSR_check;} break;
 
     case P::shear_check:
         if(set) m_parameter.shear_check = value.toBool();
-        else {value=m_parameter.shear_check;}
-break;
+        else {value=m_parameter.shear_check;} break;
 
     case P::u_wind_speed_check:
         if(set) m_parameter.u_wind_speed_check = value.toBool();
-        else {value=m_parameter.u_wind_speed_check;}
-break;
+        else {value=m_parameter.u_wind_speed_check;}break;
 
     case P::rot_speed_check:
         if(set) {m_parameter.rot_speed_check = value.toBool();}
-else {value=m_parameter.rot_speed_check;}
-        break;
+        else {value=m_parameter.rot_speed_check;} break;
 
     case P::valRel_TE_check:
         if(set) {m_parameter.valRel_TE_check = value.toBool();}
-else {value=m_parameter.valRel_TE_check;}
-        break;
+        else {value=m_parameter.valRel_TE_check;} break;
 
     case P::valReu_TE_check:
         if(set) {m_parameter.valReu_TE_check = value.toBool();}
-else {value=m_parameter.valReu_TE_check;}
-        break;
+        else {value=m_parameter.valReu_TE_check;} break;
 
     case P::propagation_check:
         if(set) m_parameter.propagation_check = value.toBool();
         else value = m_parameter.propagation_check; break;
 
+    case P::qs3d_check:
+        if(set) m_parameter.qs3d_check = value.toBool();
+        else value = m_parameter.qs3d_check; break;
+
     case P::valRel_TE:
         if(set) {m_parameter.valRel_TE = value.toDouble();}
-else {value=m_parameter.valRel_TE;}
+        else {value=m_parameter.valRel_TE;}
         break;
 
     case P::valReu_TE:
         if(set) {m_parameter.valReu_TE = value.toDouble();}
-else {value=m_parameter.valReu_TE;}
+        else {value=m_parameter.valReu_TE;}
         break;
 
     case P::valMal_TE_check:
@@ -2001,52 +1945,226 @@ else {value=m_parameter.valMal_TE_check;}
 
     case P::valMau_TE_check:
         if(set) {m_parameter.valMau_TE_check = value.toBool();}
-else {value=m_parameter.valMau_TE_check;}
+        else {value=m_parameter.valMau_TE_check;}
         break;
 
     case P::valMal_TE:
         if(set) {m_parameter.valMal_TE = value.toDouble();}
-else {value=m_parameter.valMal_TE;}
+        else {value=m_parameter.valMal_TE;}
         break;
 
     case P::valMau_TE:
         if(set) {m_parameter.valMau_TE = value.toDouble();}
-else {value=m_parameter.valMau_TE;}
+        else {value=m_parameter.valMau_TE;}
         break;
 
     case P::valAOAl_TE_check:
         if(set) {m_parameter.valAOAl_TE_check = value.toBool();}
-else {value=m_parameter.valAOAl_TE_check;}
+        else {value=m_parameter.valAOAl_TE_check;}
         break;
 
     case P::valAOAu_TE_check:
         if(set) {m_parameter.valAOAu_TE_check = value.toBool();}
-else {value=m_parameter.valAOAu_TE_check;}
-        break;
-
-    case P::valAOAl_TE:
-        if(set) {m_parameter.valAOAl_TE = value.toDouble();}
-else {value=m_parameter.valAOAl_TE;}
+        else {value=m_parameter.valAOAu_TE_check;}
         break;
 
     case P::valAOAu_TE:
         if(set) {m_parameter.valAOAu_TE = value.toDouble();}
-else {value=m_parameter.valAOAu_TE;}
+        else {value=m_parameter.valAOAu_TE;}
         break;
+
+    case P::valAOAl_TE:
+        if(set) {m_parameter.valAOAl_TE = value.toDouble();}
+        else {value=m_parameter.valAOAl_TE;}
+        break;
+
+    case P::valRel_LBL_VS_check:
+            if(set) {m_parameter.valRel_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valRel_LBL_VS_check;} break;
+
+    case P::valReu_LBL_VS_check:
+            if(set) {m_parameter.valReu_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valReu_LBL_VS_check;} break;
+
+    case P::valRel_LBL_VS:
+            if(set) {m_parameter.valRel_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valRel_LBL_VS;}
+            break;
+
+    case P::valReu_LBL_VS:
+            if(set) {m_parameter.valReu_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valReu_LBL_VS;}
+            break;
+
+    case P::valMal_LBL_VS_check:
+            if(set) {m_parameter.valMal_LBL_VS_check = value.toBool();}
+    else {value=m_parameter.valMal_LBL_VS_check;}
+            break;
+
+    case P::valMau_LBL_VS_check:
+            if(set) {m_parameter.valMau_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valMau_LBL_VS_check;}
+            break;
+
+    case P::valMal_LBL_VS:
+            if(set) {m_parameter.valMal_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valMal_LBL_VS;}
+            break;
+
+    case P::valMau_LBL_VS:
+            if(set) {m_parameter.valMau_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valMau_LBL_VS;}
+            break;
+
+    case P::valAOAl_LBL_VS_check:
+            if(set) {m_parameter.valAOAl_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valAOAl_LBL_VS_check;}
+            break;
+
+    case P::valAOAu_LBL_VS_check:
+            if(set) {m_parameter.valAOAu_LBL_VS_check = value.toBool();}
+            else {value=m_parameter.valAOAu_LBL_VS_check;}
+            break;
+
+    case P::valAOAl_LBL_VS:
+            if(set) {m_parameter.valAOAl_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valAOAl_LBL_VS;}
+            break;
+
+    case P::valAOAu_LBL_VS:
+            if(set) {m_parameter.valAOAu_LBL_VS = value.toDouble();}
+            else {value=m_parameter.valAOAu_LBL_VS;}
+            break;
+
+    case P::valRel_tipvortex_check:
+                if(set) {m_parameter.valRel_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valRel_tipvortex_check;} break;
+
+    case P::valReu_tipvortex_check:
+                if(set) {m_parameter.valReu_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valReu_tipvortex_check;} break;
+
+    case P::valRel_tipvortex:
+                if(set) {m_parameter.valRel_tipvortex = value.toDouble();}
+                else {value=m_parameter.valRel_tipvortex;}
+                break;
+
+    case P::valReu_tipvortex:
+                if(set) {m_parameter.valReu_tipvortex = value.toDouble();}
+                else {value=m_parameter.valReu_tipvortex;}
+                break;
+
+    case P::valMal_tipvortex_check:
+                if(set) {m_parameter.valMal_tipvortex_check = value.toBool();}
+        else {value=m_parameter.valMal_tipvortex_check;}
+                break;
+
+    case P::valMau_tipvortex_check:
+                if(set) {m_parameter.valMau_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valMau_tipvortex_check;}
+                break;
+
+    case P::valMal_tipvortex:
+                if(set) {m_parameter.valMal_tipvortex = value.toDouble();}
+                else {value=m_parameter.valMal_tipvortex;}
+                break;
+
+    case P::valMau_tipvortex:
+                if(set) {m_parameter.valMau_tipvortex = value.toDouble();}
+                else {value=m_parameter.valMau_tipvortex;}
+                break;
+
+    case P::valAOAl_tipvortex_check:
+                if(set) {m_parameter.valAOAl_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valAOAl_tipvortex_check;}
+                break;
+
+    case P::valAOAu_tipvortex_check:
+                if(set) {m_parameter.valAOAu_tipvortex_check = value.toBool();}
+                else {value=m_parameter.valAOAu_tipvortex_check;}
+                break;
+
+    case P::valAOAl_tipvortex:
+                if(set) {m_parameter.valAOAl_tipvortex = value.toDouble();}
+                else {value=m_parameter.valAOAl_tipvortex;}
+                break;
+
+    case P::valAOAu_tipvortex:
+                if(set) {m_parameter.valAOAu_tipvortex = value.toDouble();}
+                else {value=m_parameter.valAOAu_tipvortex;}
+                break;
+
+    case P::valRel_blunt_check:
+                    if(set) {m_parameter.valRel_blunt_check = value.toBool();}
+                    else {value=m_parameter.valRel_blunt_check;} break;
+
+    case P::valReu_blunt_check:
+                    if(set) {m_parameter.valReu_blunt_check = value.toBool();}
+                    else {value=m_parameter.valReu_blunt_check;} break;
+
+    case P::valRel_blunt:
+                    if(set) {m_parameter.valRel_blunt = value.toDouble();}
+                    else {value=m_parameter.valRel_blunt;}
+                    break;
+
+    case P::valReu_blunt:
+                    if(set) {m_parameter.valReu_blunt = value.toDouble();}
+                    else {value=m_parameter.valReu_blunt;}
+                    break;
+
+    case P::valMal_blunt_check:
+                    if(set) {m_parameter.valMal_blunt_check = value.toBool();}
+            else {value=m_parameter.valMal_blunt_check;}
+                    break;
+
+    case P::valMau_blunt_check:
+                    if(set) {m_parameter.valMau_blunt_check = value.toBool();}
+                    else {value=m_parameter.valMau_blunt_check;}
+                    break;
+
+    case P::valMal_blunt:
+                    if(set) {m_parameter.valMal_blunt = value.toDouble();}
+                    else {value=m_parameter.valMal_blunt;}
+                    break;
+
+    case P::valMau_blunt:
+                    if(set) {m_parameter.valMau_blunt = value.toDouble();}
+                    else {value=m_parameter.valMau_blunt;}
+                    break;
+
+    case P::valAOAl_blunt_check:
+                    if(set) {m_parameter.valAOAl_blunt_check = value.toBool();}
+                    else {value=m_parameter.valAOAl_blunt_check;}
+                    break;
+
+    case P::valAOAu_blunt_check:
+                    if(set) {m_parameter.valAOAu_blunt_check = value.toBool();}
+                    else {value=m_parameter.valAOAu_blunt_check;}
+                    break;
+
+    case P::valAOAl_blunt:
+                    if(set) {m_parameter.valAOAl_blunt = value.toDouble();}
+                    else {value=m_parameter.valAOAl_blunt;}
+                    break;
+
+    case P::valAOAu_blunt:
+                    if(set) {m_parameter.valAOAu_blunt = value.toDouble();}
+                    else {value=m_parameter.valAOAu_blunt;}
+                    break;
 
     case P::valRel_LE_check:
         if(set) {m_parameter.valRel_LE_check = value.toBool();}
-else {value=m_parameter.valRel_LE_check;}
+        else {value=m_parameter.valRel_LE_check;}
         break;
 
     case P::valReu_LE_check:
         if(set) {m_parameter.valReu_LE_check = value.toBool();}
-else {value=m_parameter.valReu_LE_check;}
+        else {value=m_parameter.valReu_LE_check;}
         break;
 
     case P::valRel_LE:
         if(set) {m_parameter.valRel_LE = value.toDouble();}
-else {value=m_parameter.valRel_LE;}
+        else {value=m_parameter.valRel_LE;}
         break;
 
     case P::valReu_LE:
@@ -2170,6 +2288,21 @@ break;
         else {value=m_parameter.vegetation;}
 break;
 
+    case P::vegetation_check:
+        if(set) m_parameter.vegetation_check = value.toBool();
+        else {value=m_parameter.vegetation_check;}
+break;
+
+    case P::atm_check:
+        if(set) m_parameter.atm_check = value.toBool();
+        else {value=m_parameter.atm_check;}
+break;
+
+    case P::rel_humidity:
+        if(set) m_parameter.rel_humidity = value.toInt();
+        else {value=m_parameter.rel_humidity;}
+break;
+
     case P::tower_height:
         if(set) m_parameter.tower_height = value.toDouble();
         else {value = m_parameter.tower_height;}
@@ -2193,6 +2326,11 @@ break;
     case P::Lowson_type:
         if(set) {m_parameter.Lowson_type = value.toInt();}
 else {value=m_parameter.Lowson_type;}
+        break;
+
+    case P::LE_check:
+        if(set) {m_parameter.LE_check = value.toBool();}
+else {value=m_parameter.LE_check;}
         break;
 
     case P::qs3DSim:
@@ -2283,9 +2421,8 @@ void NoiseSimulation::create360Polars(){
 }
 
 void NoiseSimulation::loopsReMaalpha(){
-if(m_parameter.qs3DSim!=0){
+if(m_parameter.qs3d_check){
 int size = m_calculation.Reynolds_error_value().size();
-
 if(size>0){
 createPolars(size);}
 }}
