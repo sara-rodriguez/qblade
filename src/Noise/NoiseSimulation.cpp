@@ -2423,7 +2423,6 @@ void NoiseSimulation::create360Polars(){
 void NoiseSimulation::loopsReMaalpha(){
 if(m_parameter.qs3d_check){
 int size = m_calculation.Reynolds_error_value().size();
-qDebug() << "errors size: " << size;
 if(size>0){
 createPolars(size);}
 }}

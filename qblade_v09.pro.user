@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.14.0, 2021-02-14T22:38:52. -->
+<!-- Written by QtCreator 4.14.0, 2021-02-21T16:31:38. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -294,6 +294,7 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">qblade_v092</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:F:/Doutorado/qblade/qblade_v09.pro</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">F:/Doutorado/qblade/qblade_v09.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>

@@ -426,7 +426,7 @@ private:
     double BluntG5Calc(double psi, double aux_rel, double freq, double h, double U);
     double calcBlunt(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h_mm); //Sara blunt
     void TipVortexCalc(int posOpPoint, int posFreq, double alfa_t);
-    double calcTipVortex(int freq, double Mach, double dist_obs, double Dh, double alpha_t, double chord, bool flat_tip); //Sara tip vortex
+    double calcTipVortex(int freq, double Mach, double dist_obs, double Dh, double alpha_t, double chord, bool flat_tip, double temp); //Sara tip vortex
     double calcao(double Reynolds);
     double calcBR_b(double B_min, double B_max);
     double calcB_min(double b);
