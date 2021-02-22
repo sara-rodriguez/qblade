@@ -4737,12 +4737,6 @@ void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
                     else if ((!m_parameter->LE_check) & (m_parameter->LBLVS!=0) & (m_parameter->blunt_check==0) & (m_parameter->tipvortex_check==0) & (m_parameter->propagation_check)){SPL_dB[j]=10.*log10(pow(10.,(SPL_alpha[j]/10.))+pow(10.,(SPL_S[j]/10.))+pow(10.,(SPL_P[j]/10.))+pow(10.,(SPL_LblvsdB[j]/10.))+pow(10.,(SPL_PropagationdB[j]/10.)));
                         SPL_dB_rotor[j]=10.*log10(pow(10.,(SPL_alpha_rotor[j]/10.))+pow(10.,(SPL_S_rotor[j]/10.))+pow(10.,(SPL_P_rotor[j]/10.))+pow(10.,(SPL_LblvsdB_rotor[j]/10.))+pow(10.,(SPL_PropagationdB_rotor[j]/10.)));
                     }
-<<<<<<< HEAD
-=======
-
-                    SPL_dB[j]=10*log10(auxa_SPL);
-                    SPL_dB_rotor[j]=10*log10(auxa_SPL_rotor);
->>>>>>> parent of 1357ec5 (diretividade arrumada, tipvortex arrumado)
 
                     SPL_A[j]=SPL_dB[j]+AWeighting[j];
                     SPL_B[j]=SPL_dB[j]+BWeighting[j];
