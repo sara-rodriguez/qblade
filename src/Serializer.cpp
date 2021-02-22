@@ -248,12 +248,6 @@ void Serializer::readOrWriteDoubleVector3D (QVector<QVector<QVector<double> > > 
 	m_isReadMode ? (*m_stream >> *vector) : (*m_stream << *vector);
 }
 
-//Sara
-void Serializer::readOrWriteDoubleVector4D (QVector<QVector<QVector<QVector<double> > > > *vector) {
-    m_isReadMode ? (*m_stream >> *vector) : (*m_stream << *vector);
-}
-//Sara
-
 void Serializer::readOrWriteDoubleList1D (QList<double> *list) {
 	m_isReadMode ? (*m_stream >> *list) : (*m_stream << *list);
 }

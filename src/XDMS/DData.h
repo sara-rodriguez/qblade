@@ -47,7 +47,6 @@ public:
     double epsilon;
     double iterations;
     double relax;
-    double temp;//Sara
     double rho;
     double visc;
     bool bPowerLaw;

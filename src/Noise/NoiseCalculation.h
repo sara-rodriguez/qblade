@@ -2,10 +2,10 @@
 #define NOISECALCULATION_H
 
 #include <QVector>
-#include "../Graph/ShowAsGraphInterface.h" //Sara
 
 class NoiseParameter;
 class NoiseOpPoint;
+
 
 /* This class performes the calculations required by the noise simulation. Its purpose is to reduce the amount of
  * variables in the NoiseSimulation class and keep its namespace clean.
@@ -17,398 +17,52 @@ class NoiseOpPoint;
 class NoiseCalculation
 {
 public:
-    enum AirfoilSide {PressureSide, SuctionSide};
-
-    typedef QVector< QVector<double> > TwoDVector;
-
-    typedef QVector< QVector < QVector < QVector<double> > > > FourDVector;//sara
-
-    static constexpr double SWITCHING_ANGLE2 = 12.5;
-    static constexpr int FREQUENCY_TABLE_SIZE = 34; //Alexandre MOD
-    static const double AWeighting[FREQUENCY_TABLE_SIZE];  // 1/3 octave band frequency
-    static const double BWeighting[FREQUENCY_TABLE_SIZE];
-    static const double CWeighting[FREQUENCY_TABLE_SIZE];
-    static const QVector<double> CENTRAL_BAND_FREQUENCY;
-
-//Sara to calculate tip vortex
- static constexpr int ARCases = 6;
- static const double alpha_tip_over_alpha_t[ARCases];
- static const double aspect_ratio[ARCases];
-//Sara
-
-    NoiseCalculation();
-    void serialize ();
-
-    void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
-    void setInitialValues(); //Sara
-    void calculate();  // can throw NoiseException
-    void qs3D_log(QTextStream &stream); //Sara
-
-    //Sara begin
-    void onVerifyDeltaandValFor3D();
-    void onVerifyDeltaandValFor3DAlerts();
-    void calculateqs3d_graphics(int blade, int E, double TSR);
-    void calculateqs3d_graphics_loops();
-    void calculateqs3d_blade();
-    void calculateqs3d_rotor();
-    void ProgressBar(int index);
-
-    bool alertLBL_VS(){return LBL_VS_alert;};
-    bool alertTE(){return TE_alert;};
-    bool alertLE(){return LE_alert;};
-    bool alertTipvortex(){return Tipvortex_alert;};
-    bool alertBlunt(){return Blunt_alert;};
-    bool simulate_yes_no=true;
-
-    CBlade* GetCurrentBlade();//Sara
-    CBlade *m_Blade;// the  wing that is edited (a copy of the selected wing) //Sara
-
-    //Sara end
-
-    // NM the arrays containing the graph data
-    TwoDVector SPLadB() const { return m_SPLadB; }
-    TwoDVector SPLsdB() const { return m_SPLsdB; }
-    TwoDVector SPLpdB() const { return m_SPLpdB; }
-    TwoDVector SPLdB() const { return m_SPLdB; }
-    TwoDVector SPLdBAW() const { return m_SPLdBAW; }
-    TwoDVector SPLdBBW() const { return m_SPLdBBW; }
-    TwoDVector SPLdBCW() const { return m_SPLdBCW; }
-//Alexandre MOD
-    TwoDVector SPL_LEdB() const { return m_SPL_LEdB; }
-    TwoDVector SPL_LEdBAW() const { return m_SPL_LEdBAW; }
-    TwoDVector SPL_LEdBBW() const { return m_SPL_LEdBBW; }
-    TwoDVector SPL_LEdBCW() const { return m_SPL_LEdBCW; }
-    //Alexandre MOD
-
-    TwoDVector SPL_LBLVSdB() const { return m_SPL_LBLVSdB; } //Sara LBL VS
-    TwoDVector SPL_bluntdB() const { return m_SPL_bluntdB; } //Sara blunt
-    TwoDVector SPL_tipvortexdB() const { return m_SPL_tipvortexdB; } //Sara tipvortex
-
-//Sara begin
-    TwoDVector SPLadB3d() const { return m_SPLadB3d; }
-    TwoDVector SPLsdB3d() const { return m_SPLsdB3d; }
-    TwoDVector SPLpdB3d() const { return m_SPLpdB3d; }
-    TwoDVector SPLdB3d() const { return m_SPLdB3d; }
-    TwoDVector SPLdBAW3d() const { return m_SPLdBAW3d; }
-    TwoDVector SPLdBBW3d() const { return m_SPLdBBW3d; }
-    TwoDVector SPLdBCW3d() const { return m_SPLdBCW3d; }
-    TwoDVector SPL_LEdB3d() const { return m_SPL_LEdB3d; }
-    TwoDVector SPL_LEdBAW3d() const { return m_SPL_LEdBAW3d; }
-    TwoDVector SPL_LEdBBW3d() const { return m_SPL_LEdBBW3d; }
-    TwoDVector SPL_LEdBCW3d() const { return m_SPL_LEdBCW3d; }
-    TwoDVector SPL_LBLVSdB3d() const { return m_SPL_LBLVSdB3d; }
-    TwoDVector SPL_bluntdB3d() const { return m_SPL_bluntdB3d; }
-    TwoDVector SPL_propagationdB3d() const { return m_SPL_propagationdB3d; }
-    TwoDVector SPL_tipvortexdB3d() const { return m_SPL_tipvortexdB3d; }
-    TwoDVector SPLadB3d_final() const { return m_SPLadB3d_final; }
-    TwoDVector SPLsdB3d_final() const { return m_SPLsdB3d_final; }
-    TwoDVector SPLpdB3d_final() const { return m_SPLpdB3d_final; }
-    TwoDVector SPLdB3d_final() const { return m_SPLdB3d_final; }
-    TwoDVector SPLdBAW3d_final() const { return m_SPLdBAW3d_final; }
-    TwoDVector SPLdBBW3d_final() const { return m_SPLdBBW3d_final; }
-    TwoDVector SPLdBCW3d_final() const { return m_SPLdBCW3d_final; }
-    TwoDVector SPL_LEdB3d_final() const { return m_SPL_LEdB3d_final; }
-    TwoDVector SPL_LBLVSdB3d_final() const { return m_SPL_LBLVSdB3d_final; }
-    TwoDVector SPL_bluntdB3d_final() const { return m_SPL_bluntdB3d_final; }
-    TwoDVector SPL_propagationdB3d_final() const { return m_SPL_propagationdB3d_final; }
-    TwoDVector SPL_tipvortexdB3d_final() const { return m_SPL_tipvortexdB3d_final; }
-    TwoDVector SPL_LEdBAW3d_final() const { return m_SPL_LEdBAW3d_final; }
-    TwoDVector SPL_LEdBBW3d_final() const { return m_SPL_LEdBBW3d_final; }
-    TwoDVector SPL_LEdBCW3d_final() const { return m_SPL_LEdBCW3d_final; }
-
-    TwoDVector SPLadB3d_rotor() const { return m_SPLadB3d_rotor; }
-    TwoDVector SPLsdB3d_rotor() const { return m_SPLsdB3d_rotor; }
-    TwoDVector SPLpdB3d_rotor() const { return m_SPLpdB3d_rotor; }
-    TwoDVector SPLdB3d_rotor() const { return m_SPLdB3d_rotor; }
-    TwoDVector SPLdBAW3d_rotor() const { return m_SPLdBAW3d_rotor; }
-    TwoDVector SPLdBBW3d_rotor() const { return m_SPLdBBW3d_rotor; }
-    TwoDVector SPLdBCW3d_rotor() const { return m_SPLdBCW3d_rotor; }
-    TwoDVector SPL_LEdB3d_rotor() const { return m_SPL_LEdB3d_rotor; }
-    TwoDVector SPL_LBLVSdB3d_rotor() const { return m_SPL_LBLVSdB3d_rotor; }
-    TwoDVector SPL_bluntdB3d_rotor() const { return m_SPL_bluntdB3d_rotor; }
-    TwoDVector SPL_propagationdB3d_rotor() const { return m_SPL_propagationdB3d_rotor; }
-    TwoDVector SPL_tipvortexdB3d_rotor() const { return m_SPL_tipvortexdB3d_rotor; }
-    TwoDVector SPL_LEdBAW3d_rotor() const { return m_SPL_LEdBAW3d_rotor; }
-    TwoDVector SPL_LEdBBW3d_rotor() const { return m_SPL_LEdBBW3d_rotor; }
-    TwoDVector SPL_LEdBCW3d_rotor() const { return m_SPL_LEdBCW3d_rotor; }
-    TwoDVector SPLadB3d_final_rotor() const { return m_SPLadB3d_final_rotor; }
-    TwoDVector SPLsdB3d_final_rotor() const { return m_SPLsdB3d_final_rotor; }
-    TwoDVector SPLpdB3d_final_rotor() const { return m_SPLpdB3d_final_rotor; }
-    TwoDVector SPLdB3d_final_rotor() const { return m_SPLdB3d_final_rotor; }
-    TwoDVector SPLdBAW3d_final_rotor() const { return m_SPLdBAW3d_final_rotor; }
-    TwoDVector SPLdBBW3d_final_rotor() const { return m_SPLdBBW3d_final_rotor; }
-    TwoDVector SPLdBCW3d_final_rotor() const { return m_SPLdBCW3d_final_rotor; }
-    TwoDVector SPL_LEdB3d_final_rotor() const { return m_SPL_LEdB3d_final_rotor; }
-    TwoDVector SPL_LBLVSdB3d_final_rotor() const { return m_SPL_LBLVSdB3d_final_rotor; }
-    TwoDVector SPL_bluntdB3d_final_rotor() const { return m_SPL_bluntdB3d_final_rotor; }
-    TwoDVector SPL_propagationdB3d_final_rotor() const { return m_SPL_propagationdB3d_final_rotor; }
-    TwoDVector SPL_tipvortexdB3d_final_rotor() const { return m_SPL_tipvortexdB3d_final_rotor; }
-    TwoDVector SPL_LEdBAW3d_final_rotor() const { return m_SPL_LEdBAW3d_final_rotor; }
-    TwoDVector SPL_LEdBBW3d_final_rotor() const { return m_SPL_LEdBBW3d_final_rotor; }
-    TwoDVector SPL_LEdBCW3d_final_rotor() const { return m_SPL_LEdBCW3d_final_rotor; }
-
-    TwoDVector SPLadB3d_rotor_loops() const { return m_SPLadB3d_rotor_loops; }
-    TwoDVector SPLsdB3d_rotor_loops() const { return m_SPLsdB3d_rotor_loops; }
-    TwoDVector SPLpdB3d_rotor_loops() const { return m_SPLpdB3d_rotor_loops; }
-    TwoDVector SPLdB3d_rotor_loops() const { return m_SPLdB3d_rotor_loops; }
-    TwoDVector SPLdBAW3d_rotor_loops() const { return m_SPLdBAW3d_rotor_loops; }
-    TwoDVector SPLdBBW3d_rotor_loops() const { return m_SPLdBBW3d_rotor_loops; }
-    TwoDVector SPLdBCW3d_rotor_loops() const { return m_SPLdBCW3d_rotor_loops; }
-    TwoDVector SPL_LEdB3d_rotor_loops() const { return m_SPL_LEdB3d_rotor_loops; }
-    TwoDVector SPL_LEdBAW3d_rotor_loops() const { return m_SPL_LEdBAW3d_rotor_loops; }
-    TwoDVector SPL_LEdBBW3d_rotor_loops() const { return m_SPL_LEdBBW3d_rotor_loops; }
-    TwoDVector SPL_LEdBCW3d_rotor_loops() const { return m_SPL_LEdBCW3d_rotor_loops; }
-    TwoDVector SPL_LBLVSdB3d_rotor_loops() const { return m_SPL_LBLVSdB3d_rotor_loops; }
-    TwoDVector SPL_bluntdB3d_rotor_loops() const { return m_SPL_bluntdB3d_rotor_loops; }
-    TwoDVector SPL_propagationdB3d_rotor_loops() const { return m_SPL_propagationdB3d_rotor_loops; }
-    TwoDVector SPL_tipvortexdB3d_rotor_loops() const { return m_SPL_tipvortexdB3d_rotor_loops; }
-    TwoDVector SPLadB3d_final_rotor_loops() const { return m_SPLadB3d_final_rotor_loops; }
-    TwoDVector SPLsdB3d_final_rotor_loops() const { return m_SPLsdB3d_final_rotor_loops; }
-    TwoDVector SPLpdB3d_final_rotor_loops() const { return m_SPLpdB3d_final_rotor_loops; }
-    TwoDVector SPLdB3d_final_rotor_loops() const { return m_SPLdB3d_final_rotor_loops; }
-    TwoDVector SPLdBAW3d_final_rotor_loops() const { return m_SPLdBAW3d_final_rotor_loops; }
-    TwoDVector SPLdBBW3d_final_rotor_loops() const { return m_SPLdBBW3d_final_rotor_loops; }
-    TwoDVector SPLdBCW3d_final_rotor_loops() const { return m_SPLdBCW3d_final_rotor_loops; }
-    TwoDVector SPL_LEdB3d_final_rotor_loops() const { return m_SPL_LEdB3d_final_rotor_loops; }
-    TwoDVector SPL_LEdBAW3d_final_rotor_loops() const { return m_SPL_LEdBAW3d_final_rotor_loops; }
-    TwoDVector SPL_LEdBBW3d_final_rotor_loops() const { return m_SPL_LEdBBW3d_final_rotor_loops; }
-    TwoDVector SPL_LEdBCW3d_final_rotor_loops() const { return m_SPL_LEdBCW3d_final_rotor_loops; }
-    TwoDVector SPL_LBLVSdB3d_final_rotor_loops() const { return m_SPL_LBLVSdB3d_final_rotor_loops; }
-    TwoDVector SPL_bluntdB3d_final_rotor_loops() const { return m_SPL_bluntdB3d_final_rotor_loops; }
-    TwoDVector SPL_propagationdB3d_final_rotor_loops() const { return m_SPL_propagationdB3d_final_rotor_loops; }
-    TwoDVector SPL_tipvortexdB3d_final_rotor_loops() const { return m_SPL_tipvortexdB3d_final_rotor_loops; }
-
-    FourDVector SPLadB3d_4d_blade() const { return m_SPLadB3d_4d_blade; }
-    FourDVector SPLsdB3d_4d_blade() const { return m_SPLsdB3d_4d_blade; }
-    FourDVector SPLpdB3d_4d_blade() const { return m_SPLpdB3d_4d_blade; }
-    FourDVector SPLdB3d_4d_blade() const { return m_SPLdB3d_4d_blade; }
-    FourDVector SPLdBAW3d_4d_blade() const { return m_SPLdBAW3d_4d_blade; }
-    FourDVector SPLdBBW3d_4d_blade() const { return m_SPLdBBW3d_4d_blade; }
-    FourDVector SPLdBCW3d_4d_blade() const { return m_SPLdBCW3d_4d_blade; }
-    FourDVector SPL_LEdB3d_4d_blade() const { return m_SPL_LEdB3d_4d_blade; }
-    FourDVector SPL_LEdBAW3d_4d_blade() const { return m_SPL_LEdBAW3d_4d_blade; }
-    FourDVector SPL_LEdBBW3d_4d_blade() const { return m_SPL_LEdBBW3d_4d_blade; }
-    FourDVector SPL_LEdBCW3d_4d_blade() const { return m_SPL_LEdBCW3d_4d_blade; }
-    FourDVector SPL_LBLVSdB3d_4d_blade() const { return m_SPL_LBLVSdB3d_4d_blade; }
-    FourDVector SPL_bluntdB3d_4d_blade() const { return m_SPL_bluntdB3d_4d_blade; }
-    FourDVector SPL_propagationdB3d_4d_blade() const { return m_SPL_propagationdB3d_4d_blade; }
-    FourDVector SPL_tipvortexdB3d_4d_blade() const { return m_SPL_tipvortexdB3d_4d_blade; }
-
-    FourDVector SPLadB3d_4d() const { return m_SPLadB3d_4d; }
-    FourDVector SPLsdB3d_4d() const { return m_SPLsdB3d_4d; }
-    FourDVector SPLpdB3d_4d() const { return m_SPLpdB3d_4d; }
-    FourDVector SPLdB3d_4d() const { return m_SPLdB3d_4d; }
-    FourDVector SPLdBAW3d_4d() const { return m_SPLdBAW3d_4d; }
-    FourDVector SPLdBBW3d_4d() const { return m_SPLdBBW3d_4d; }
-    FourDVector SPLdBCW3d_4d() const { return m_SPLdBCW3d_4d; }
-    FourDVector SPL_LEdB3d_4d() const { return m_SPL_LEdB3d_4d; }
-    FourDVector SPL_LEdBAW3d_4d() const { return m_SPL_LEdBAW3d_4d; }
-    FourDVector SPL_LEdBBW3d_4d() const { return m_SPL_LEdBBW3d_4d; }
-    FourDVector SPL_LEdBCW3d_4d() const { return m_SPL_LEdBCW3d_4d; }
-    FourDVector SPL_LBLVSdB3d_4d() const { return m_SPL_LBLVSdB3d_4d; }
-    FourDVector SPL_bluntdB3d_4d() const { return m_SPL_bluntdB3d_4d; }
-    FourDVector SPL_propagationdB3d_4d() const { return m_SPL_propagationdB3d_4d; }
-    FourDVector SPL_tipvortexdB3d_4d() const { return m_SPL_tipvortexdB3d_4d; }
-
-    double Final_qs3d_alpha;
-    double Final_qs3d_S;
-    double Final_qs3d_P;
-    double Final_qs3d_LE;
-    double Final_qs3d_LBLVS;
-    double Final_qs3d_blunt;
-    double Final_qs3d_propagation;
-    double Final_qs3d_tipvortex;
-    double Final_qs3d;
-
-    double Final_qs3d_alpha_rotor;
-    double Final_qs3d_S_rotor;
-    double Final_qs3d_P_rotor;
-    double Final_qs3d_LE_rotor;
-    double Final_qs3d_LBLVS_rotor;
-    double Final_qs3d_blunt_rotor;
-    double Final_qs3d_propagation_rotor;
-    double Final_qs3d_tipvortex_rotor;
-    double Final_qs3d_rotor;
-
-    double Final_qs3d_alpha_rotor_loops;
-    double Final_qs3d_S_rotor_loops;
-    double Final_qs3d_P_rotor_loops;
-    double Final_qs3d_LE_rotor_loops;
-    double Final_qs3d_LBLVS_rotor_loops;
-    double Final_qs3d_blunt_rotor_loops;
-    double Final_qs3d_propagation_rotor_loops;
-    double Final_qs3d_tipvortex_rotor_loops;
-    double Final_qs3d_rotor_loops;
-    double qs3D_val_line = -1;
-    double progress_total = 100000;
-
-    int user_sel=0;//user selection qs3d blade or rotor
-    bool user_qs3d_check=false;//user set qs3d or not
-
-    int repeat_alert=0;
-    int progress_end;
-
-    bool TE_alert=false;
-    bool LBL_VS_alert=false;
-    bool LE_alert=false;
-    bool Tipvortex_alert=false;
-    bool Blunt_alert=false;
-    bool m_onePolar;
-    bool isVAWT;
-    bool isHAWT;
-
-    QString qs3D_val_blade = "";
-    QString qs3D_val_rotor = "";
-    QString qs3D_val_rotor_aux = "";
-//Sara end
-
-    // NM apparently needed for export as .txt only
-    QVector<double> OASPL() const { return m_OASPL; }
-    QVector<double> OASPLA() const { return m_OASPLA; }
-    QVector<double> OASPLB() const { return m_OASPLB; }
-    QVector<double> OASPLC() const { return m_OASPLC; }
-    QVector<double> SPLALOG() const { return m_SPLALOG; }
-    QVector<double> SPLSLOG() const { return m_SPLSLOG; }
-    QVector<double> SPLPLOG() const { return m_SPLPLOG; }
-//Alexandre MOD
-        QVector<double> SPLLEdBAW() const { return m_SPLLEdBAW; }
-        QVector<double> SPLLEdBBW() const { return m_SPLLEdBBW; }
-        QVector<double> SPLLEdBCW() const { return m_SPLLEdBCW; }
-        QVector<double> SPLlogLE() const { return m_SPLlogLE; }
-//Alexandre MOD
-
-
-        QVector<double> SPLlogLBLVS() const { return m_SPLlogLBLVS; }//Sara LBL VS
-        QVector<double> SPLlogblunt() const { return m_SPLlogblunt; }//Sara blunt
-        QVector<double> SPLlogpropagation() const { return m_SPLlogpropagation; }//Sara propagation
-        QVector<double> SPLlogtipvortex() const { return m_SPLlogtipvortex; }//Sara tip vortex
-
-        //Sara begin
-        QVector<double> OASPL3d() const { return m_OASPL3d; }
-        QVector<double> OASPLA3d() const { return m_OASPLA3d; }
-        QVector<double> OASPLB3d() const { return m_OASPLB3d; }
-        QVector<double> OASPLC3d() const { return m_OASPLC3d; }
-        QVector<double> SPLALOG3d() const { return m_SPLALOG3d; }
-        QVector<double> SPLSLOG3d() const { return m_SPLSLOG3d; }
-        QVector<double> SPLPLOG3d() const { return m_SPLPLOG3d; }
-        QVector<double> SPLLEdBAW3d() const { return m_SPLLEdBAW3d;}
-        QVector<double> SPLLEdBBW3d() const { return m_SPLLEdBBW3d;}
-        QVector<double> SPLLEdBCW3d() const { return m_SPLLEdBCW3d;}
-        QVector<double> SPLlogLE3d() const { return m_SPLlogLE3d; }
-        QVector<double> SPLlogLBLVS3d() const { return m_SPLlogLBLVS3d; }
-        QVector<double> SPLlogblunt3d() const { return m_SPLlogblunt3d; }
-        QVector<double> SPLlogpropagation3d() const { return m_SPLlogpropagation3d; }
-        QVector<double> SPLlogtipvortex3d() const { return m_SPLlogtipvortex3d; }
-
-        QVector<double> OASPL3d_rotor() const { return m_OASPL3d_rotor; }
-        QVector<double> OASPLA3d_rotor() const { return m_OASPLA3d_rotor; }
-        QVector<double> OASPLB3d_rotor() const { return m_OASPLB3d_rotor; }
-        QVector<double> OASPLC3d_rotor() const { return m_OASPLC3d_rotor; }
-        QVector<double> SPLALOG3d_rotor() const { return m_SPLALOG3d_rotor; }
-        QVector<double> SPLSLOG3d_rotor() const { return m_SPLSLOG3d_rotor; }
-        QVector<double> SPLPLOG3d_rotor() const { return m_SPLPLOG3d_rotor; }
-        QVector<double> SPLLEdBAW3d_rotor() const { return m_SPLLEdBAW3d_rotor;}
-        QVector<double> SPLLEdBBW3d_rotor() const { return m_SPLLEdBBW3d_rotor;}
-        QVector<double> SPLLEdBCW3d_rotor() const { return m_SPLLEdBCW3d_rotor;}
-        QVector<double> SPLlogLE3d_rotor() const { return m_SPLlogLE3d_rotor; }
-        QVector<double> SPLlogLBLVS3d_rotor() const { return m_SPLlogLBLVS3d_rotor; }
-        QVector<double> SPLlogbluntS3d_rotor() const { return m_SPLlogblunt3d_rotor; }
-        QVector<double> SPLlogpropagationS3d_rotor() const { return m_SPLlogpropagation3d_rotor; }
-        QVector<double> SPLlogtipvortexS3d_rotor() const { return m_SPLlogtipvortex3d_rotor; }
-
-        QVector<double> OASPL3d_rotor_loops() const { return m_OASPL3d_rotor_loops; }
-        QVector<double> OASPLA3d_rotor_loops() const { return m_OASPLA3d_rotor_loops; }
-        QVector<double> OASPLB3d_rotor_loops() const { return m_OASPLB3d_rotor_loops; }
-        QVector<double> OASPLC3d_rotor_loops() const { return m_OASPLC3d_rotor_loops; }
-        QVector<double> SPLALOG3d_rotor_loops() const { return m_SPLALOG3d_rotor_loops; }
-        QVector<double> SPLSLOG3d_rotor_loops() const { return m_SPLSLOG3d_rotor_loops; }
-        QVector<double> SPLPLOG3d_rotor_loops() const { return m_SPLPLOG3d_rotor_loops; }
-        QVector<double> SPLLEdBAW3d_rotor_loops() const { return m_SPLLEdBAW3d_rotor_loops;}
-        QVector<double> SPLLEdBBW3d_rotor_loops() const { return m_SPLLEdBBW3d_rotor_loops;}
-        QVector<double> SPLLEdBCW3d_rotor_loops() const { return m_SPLLEdBCW3d_rotor_loops;}
-        QVector<double> SPLlogLE3d_rotor_loops() const { return m_SPLlogLE3d_rotor_loops; }
-        QVector<double> SPLlogLBLVS3d_rotor_loops() const { return m_SPLlogLBLVS3d_rotor_loops; }
-        QVector<double> SPLlogblunt3d_rotor_loops() const { return m_SPLlogblunt3d_rotor_loops; }
-        QVector<double> SPLlogpropagation3d_rotor_loops() const { return m_SPLlogpropagation3d_rotor_loops; }
-        QVector<double> SPLlognipvortext3d_rotor_loops() const { return m_SPLlogtipvortex3d_rotor_loops; }
-
-        QVector<double> Reynolds_polar() const { return m_Reynolds_polar; }
-        QVector<double> Mach_polar() const { return m_Mach_polar; }
-        QVector<double> alpha_polar() const { return m_alpha_polar; }
-        QVector<double> Reynolds_error() const { return m_Reynolds_error; }
-        QVector<double> Mach_error() const { return m_Mach_error; }
-        QVector<double> alpha_error() const { return m_alpha_error; }
-        QVector<double> Reynolds_error_value() const { return m_Reynolds_error_value; }
-        QVector<double> Mach_error_value() const { return m_Mach_error_value; }
-        QVector<double> alpha_error_value() const { return m_alpha_error_value; }
-        QVector<double> alpha_error_value_max() const { return m_alpha_error_value_max; }
-        QVector<double> acrit_error() const { return m_acrit_error; }
-        QVector<double> xbot_error() const { return m_xbot_error; }
-        QVector<double> xtop_error() const { return m_xtop_error; }
-        QVector<double> aspec_error() const { return m_aspec_error; }
-        QVector<double> polar_type_error() const { return m_polar_type_error; }
-        QVector<double> TopTr() const { return m_TopTr; }
-        QVector<double> BotTr() const { return m_BotTr; }
-        QVector<double> position() const {return m_position;}
-
-        QVector<double> m_DStarInterpolatedS3d;
-        QVector<double> m_DStarInterpolatedP3d;
-        QVector<double> m_DStarInterpolatedS3d_max;
-        QVector<double> m_DStarInterpolatedP3d_max;
-        QVector<double> m_DStarInterpolatedS3d_min;
-        QVector<double> m_DStarInterpolatedP3d_min;
-
-        QVector<double> m_Reynolds_polar;
-        QVector<double> m_Mach_polar;
-        QVector<double> m_alpha_polar;
-        QVector<double> m_Reynolds_error;
-        QVector<double> m_Mach_error;
-        QVector<double> m_alpha_error;
-        QVector<double> m_Reynolds_error_value;
-        QVector<double> m_Mach_error_value;
-        QVector<double> m_alpha_error_value;
-        QVector<double> m_alpha_error_value_max;
-        QVector<double> m_acrit_error;
-        QVector<double> m_xbot_error;
-        QVector<double> m_xtop_error;
-        QVector<double> m_aspec_error;
-        QVector<double> m_polar_type_error;
-
-        QVector<double> m_TopTr;
-        QVector<double> m_BotTr;
-        QVector<double> m_position;
-
-        double Reynolds_max_error() const {return m_Reynolds_max_error; }
-        double Mach_max_error() const {return m_Mach_max_error; }
-        double alpha_max_error() const {return m_alpha_max_error; }
-
-        double m_Reynolds_max_error=0;
-        double m_Mach_max_error=0;
-        double m_alpha_max_error=0;
-        double c_const;
-        double d_const;
-        double XBotTr;
-        double XTopTr;
-        int m_Lowson_type;
-        int m_qs3DSim;
-    //Sara end
-
+	enum AirfoilSide {PressureSide, SuctionSide};
+	
+	typedef QVector< QVector<double> > TwoDVector;
+	
+	static constexpr double SWITCHING_ANGLE2 = 12.5;
+	static constexpr int FREQUENCY_TABLE_SIZE = 30;
+	static const double AWeighting[FREQUENCY_TABLE_SIZE];  // 1/3 octave band frequency
+	static const double BWeighting[FREQUENCY_TABLE_SIZE];
+	static const double CWeighting[FREQUENCY_TABLE_SIZE];
+	static const QVector<double> CENTRAL_BAND_FREQUENCY;
+	
+	NoiseCalculation();
+	void serialize ();
+	
+	void setNoiseParam (NoiseParameter *parameter) { m_parameter = parameter; }
+	void calculate();  // can throw NoiseException
+	
+	// NM the arrays containing the graph data
+	TwoDVector SPLadB() const { return m_SPLadB; }
+	TwoDVector SPLsdB() const { return m_SPLsdB; }
+	TwoDVector SPLpdB() const { return m_SPLpdB; }
+	TwoDVector SPLdB() const { return m_SPLdB; }
+	TwoDVector SPLdBAW() const { return m_SPLdBAW; }
+	TwoDVector SPLdBBW() const { return m_SPLdBBW; }
+	TwoDVector SPLdBCW() const { return m_SPLdBCW; }
+	
+	// NM apparently needed for export as .txt only
+	QVector<double> OASPL() const { return m_OASPL; }
+	QVector<double> OASPLA() const { return m_OASPLA; }
+	QVector<double> OASPLB() const { return m_OASPLB; }
+	QVector<double> OASPLC() const { return m_OASPLC; }
+	QVector<double> SPLALOG() const { return m_SPLALOG; }
+	QVector<double> SPLSLOG() const { return m_SPLSLOG; }
+	QVector<double> SPLPLOG() const { return m_SPLPLOG; }
+	
 private:
     void setupVectors();
-    void setupVectorsqs3d();//Sara
 
-    // calculation sub-functions
-    double getK1(NoiseOpPoint* nop);
+	// calculation sub-functions
+	double getK1(NoiseOpPoint* nop);
     double getDStarInterpolated(bool top, NoiseOpPoint *nop);  // can throw NoiseException
-    double getDStarInterpolated3d(bool top, double chord_station, NoiseOpPoint *nop);  // Sara
     double getDH();
     double getDL();
     double getSt1();
     double getSt2(NoiseOpPoint *nop);
     double getBPMThickness(NoiseOpPoint *nop, AirfoilSide as);
-    double getInputWindSpeed(int blade, int E, int section, double TSR);//Sara
-    double getInputMach(double windspeed, int section, double TSR);//Sara
-    double getInputReynolds(double windspeed, int section, double TSR);//Sara
     void preCalcA1(NoiseOpPoint* nop);
     void preCalcSPLa(NoiseOpPoint* nop);
     void preCalcSPLs(NoiseOpPoint* nop);
@@ -416,47 +70,9 @@ private:
     void calcSPLa(double alpha,int posOpPoint,int posFreq);
     void calcSPLs(int posOpPoint,int posFreq);
     void calcSPLp(int posOpPoint,int posFreq);
-    void LECalc(int posOpPoint, int posFreq, NoiseOpPoint* nop); //Alexandre MOD
-    //Sara begin
-    double getAlphaT_2d();
-    double getAlphaT(double AR, double alpha_tip);
-    void LBLVSCalc(int posOpPoint, int posFreq, NoiseOpPoint* nop);
-    double calcLBLVS(int freq, double Reynolds, double Mach, double alpha, double delta_p, double r); //Alexandre MOD
-    void BluntCalc(int posOpPoint, int posFreq, double Dh, double d_star_avg, double psi, double h_mm);
-    double BluntG5Calc(double psi, double aux_rel, double freq, double h, double U);
-    double calcBlunt(int freq, double Mach, double wetted_length, double U, double psi, double r, double d_star_avg, double dh, double h_mm); //Sara blunt
-    void TipVortexCalc(int posOpPoint, int posFreq, double alfa_t);
-    double calcTipVortex(int freq, double Mach, double dist_obs, double Dh, double alpha_t, double chord, bool flat_tip); //Sara tip vortex
-    double calcao(double Reynolds);
-    double calcBR_b(double B_min, double B_max);
-    double calcB_min(double b);
-    double calcB_max(double b);
-    double calcA_min(double a);
-    double calcA_max(double a);
-    double calcK1(double Reynolds);
-    double calcK2(double gamma0_gamma_min,double gamma0_gamma_plus, double K1, double beta, double gamma, double alpha, double gamma0, double beta0);
-    double calcb0(double Reynolds);
-    double calcSt2(double alpha, double St1);
-    double calcXRS(double a, double XB, double YB);
-    double calcYRS(double a, double XB, double YB);
-    double calcZRS(double ZB, double r_i);
-    double calcInt_a(double YRS, double c_i);
-    double calcXRT(double XRS);
-    double calcYRT(double b, double calc_int_a, double ZRS);
-    double calcZRT(double b, double calc_int_a, double ZRS);
-    double calcR_e(double XRT, double YRT, double ZRT);
-    double calcTheta_e(double YRT, double ZRT);
-    double calcPhi_e(double XRT, double ZRT);
-    double calcFirstTerm(double Mach, double L, double D, double D_starred, double dist_obs);
-    double calcDh(double Mach, double theta_e, double phi_e,double EddyMach);
-    double calcDl(double Mach, double theta_e, double phi_e);
-    double propagation(double freq, double dist_obs);
-    double calc_sound_speed();
-    double calc_P_vav_H2O();
-    //Sara end
-
-    NoiseParameter *m_parameter;
-
+		
+	NoiseParameter *m_parameter;
+	
     //For general
     double m_DStarInterpolatedS;
     double m_DStarInterpolatedP;
@@ -471,12 +87,6 @@ private:
     bool m_CalcSuctionSide;
     bool m_CalcPressureSide;
 
-    //Turbulent Inflow
-    double m_IntegralLengthScale; //Alexandre MOD
-    double m_TurbulenceIntensity; //Alexandre MOD
-
-    bool m_CalcLowson;    //Sara
-
     double m_A1Ar;
 
     QVector<double> m_OASPL;
@@ -486,103 +96,6 @@ private:
     QVector<double> m_SPLALOG;
     QVector<double> m_SPLSLOG;
     QVector<double> m_SPLPLOG;
-
-//Sara begin
-    QVector<double> m_SPLLEdB;
-    QVector<double> m_SPLLEdBAW;
-    QVector<double> m_SPLLEdBBW;
-    QVector<double> m_SPLLEdBCW;
-    QVector<double> m_SPLlogLE;
-
-    QVector<double> m_SPLLEdB_rotor;
-    QVector<double> m_SPLLEdBAW_rotor;
-    QVector<double> m_SPLLEdBBW_rotor;
-    QVector<double> m_SPLLEdBCW_rotor;
-    QVector<double> m_SPLlogLE_rotor;
-
-    QVector<double> m_SPLLBLVSdB;
-    QVector<double> m_SPLlogLBLVS;
-    QVector<double> m_SPLLBLVSdB_rotor;
-    QVector<double> m_SPLlogLBLVS_rotor;
-
-    QVector<double> m_SPLbluntdB;
-    QVector<double> m_SPLlogblunt;
-    QVector<double> m_SPLbluntdB_rotor;
-    QVector<double> m_SPLlogblunt_rotor;
-
-    QVector<double> m_SPLpropagationdB;
-    QVector<double> m_SPLlogpropagation;
-    QVector<double> m_SPLpropagationdB_rotor;
-    QVector<double> m_SPLlogpropagation_rotor;
-
-    QVector<double> m_SPLtipvortexdB;
-    QVector<double> m_SPLlogtipvortex;
-    QVector<double> m_SPLtipvortexdB_rotor;
-    QVector<double> m_SPLlogtipvortex_rotor;
-
-    QVector<double> m_OASPL3d;
-    QVector<double> m_OASPLA3d;
-    QVector<double> m_OASPLB3d;
-    QVector<double> m_OASPLC3d;
-    QVector<double> m_SPLALOG3d;
-    QVector<double> m_SPLSLOG3d;
-    QVector<double> m_SPLPLOG3d;
-    QVector<double> m_SPLLEdB3d;
-    QVector<double> m_SPLLBLVSdB3d;
-    QVector<double> m_SPLbluntdB3d;
-    QVector<double> m_SPLpropagationdB3d;
-    QVector<double> m_SPLtipvortexdB3d;
-    QVector<double> m_SPLLEdBAW3d;
-    QVector<double> m_SPLLEdBBW3d;
-    QVector<double> m_SPLLEdBCW3d;
-    QVector<double> m_SPLlogLE3d;
-    QVector<double> m_SPLlogLBLVS3d;
-    QVector<double> m_SPLlogblunt3d;
-    QVector<double> m_SPLlogpropagation3d;
-    QVector<double> m_SPLlogtipvortex3d;
-
-    QVector<double> m_OASPL3d_rotor;
-    QVector<double> m_OASPLA3d_rotor;
-    QVector<double> m_OASPLB3d_rotor;
-    QVector<double> m_OASPLC3d_rotor;
-    QVector<double> m_SPLALOG3d_rotor;
-    QVector<double> m_SPLSLOG3d_rotor;
-    QVector<double> m_SPLPLOG3d_rotor;
-    QVector<double> m_SPLLEdB3d_rotor;
-    QVector<double> m_SPLLBLVSdB3d_rotor;
-    QVector<double> m_SPLbluntdB3d_rotor;
-    QVector<double> m_SPLpropagationdB3d_rotor;
-    QVector<double> m_SPLtipvortexdB3d_rotor;
-    QVector<double> m_SPLLEdBAW3d_rotor;
-    QVector<double> m_SPLLEdBBW3d_rotor;
-    QVector<double> m_SPLLEdBCW3d_rotor;
-    QVector<double> m_SPLlogLE3d_rotor;
-    QVector<double> m_SPLlogLBLVS3d_rotor;
-    QVector<double> m_SPLlogblunt3d_rotor;
-    QVector<double> m_SPLlogpropagation3d_rotor;
-    QVector<double> m_SPLlogtipvortex3d_rotor;
-
-    QVector<double> m_OASPL3d_rotor_loops;
-    QVector<double> m_OASPLA3d_rotor_loops;
-    QVector<double> m_OASPLB3d_rotor_loops;
-    QVector<double> m_OASPLC3d_rotor_loops;
-    QVector<double> m_SPLALOG3d_rotor_loops;
-    QVector<double> m_SPLSLOG3d_rotor_loops;
-    QVector<double> m_SPLPLOG3d_rotor_loops;
-    QVector<double> m_SPLLEdB3d_rotor_loops;
-    QVector<double> m_SPLLBLVSdB3d_rotor_loops;
-    QVector<double> m_SPLbluntdB3d_rotor_loops;
-    QVector<double> m_SPLpropagationdB3d_rotor_loops;
-    QVector<double> m_SPLtipvortexdB3d_rotor_loops;
-    QVector<double> m_SPLLEdBAW3d_rotor_loops;
-    QVector<double> m_SPLLEdBBW3d_rotor_loops;
-    QVector<double> m_SPLLEdBCW3d_rotor_loops;
-    QVector<double> m_SPLlogLE3d_rotor_loops;
-    QVector<double> m_SPLlogLBLVS3d_rotor_loops;
-    QVector<double> m_SPLlogblunt3d_rotor_loops;
-    QVector<double> m_SPLlogpropagation3d_rotor_loops;
-    QVector<double> m_SPLlogtipvortex3d_rotor_loops;
-    //Sara end
 
     //For SPLa
     TwoDVector m_SPLadB; //Store db of SPL alpha
@@ -606,10 +119,6 @@ private:
     double m_SplaAMin;
     double m_SplaAo;
     double m_ChordBasedReynolds;
-
-    //Sara begin
-    double x;
-    //Sara end
 
     //For SPLs
     TwoDVector m_SPLsdB; //Store db of SPLs
@@ -640,197 +149,6 @@ private:
     TwoDVector m_SPLdBAW; //Store db of SPL + A-Weighting
     TwoDVector m_SPLdBBW; //Store db of SPL + B-Weighting
     TwoDVector m_SPLdBCW; //Store db of SPL + C-Weighting
-
-    //For LE - Alexandre MOD
-    TwoDVector m_SPL_LEdB; //Store db of SPL_LE
-    TwoDVector m_SPL_LEdBAW; //Store db of SPL_LE + A-Weighting
-    TwoDVector m_SPL_LEdBBW; //Store db of SPL_LE + B-Weighting
-    TwoDVector m_SPL_LEdBCW; //Store db of SPL_LE + C-Weighting
-    double m_originalVelocity;
-    double m_originalChordLength;
-    double m_distanceObserver;
-    double m_originalMach;
-    double m_wettedLength;
-
-    TwoDVector m_SPL_LBLVSdB;//For LBL VS Sara
-    TwoDVector m_SPL_bluntdB;//For blunt Sara
-    TwoDVector m_SPL_propagationdB;//For propagation Sara
-    TwoDVector m_SPL_tipvortexdB;//Fortip vortex Sara
-
-    //Sara begin
-    TwoDVector m_SPLadB3d;
-    TwoDVector m_SPLadBAW3d;
-    TwoDVector m_SPLadBBW3d;
-    TwoDVector m_SPLadBCW3d;
-    TwoDVector m_SPLpdB3d;
-    TwoDVector m_SPLpdBAW3d;
-    TwoDVector m_SPLpdBBW3d;
-    TwoDVector m_SPLpdBCW3d;
-    TwoDVector m_SPLdB3d;
-    TwoDVector m_SPLdBAW3d;
-    TwoDVector m_SPLdBBW3d;
-    TwoDVector m_SPLdBCW3d;
-    TwoDVector m_SPL_LEdB3d;
-    TwoDVector m_SPL_LEdBAW3d;
-    TwoDVector m_SPL_LEdBBW3d;
-    TwoDVector m_SPL_LEdBCW3d;
-    TwoDVector m_SPL_LBLVSdB3d;
-    TwoDVector m_SPL_bluntdB3d;
-    TwoDVector m_SPL_propagationdB3d;
-    TwoDVector m_SPL_tipvortexdB3d;
-    TwoDVector m_SPLsdB3d;
-    TwoDVector m_SPLsdBAW3d;
-    TwoDVector m_SPLsdBBW3d;
-    TwoDVector m_SPLsdBCW3d;
-
-    TwoDVector m_SPLadB3d_rotor;
-    TwoDVector m_SPLadBAW3d_rotor;
-    TwoDVector m_SPLadBBW3d_rotor;
-    TwoDVector m_SPLadBCW3d_rotor;
-    TwoDVector m_SPLpdB3d_rotor;
-    TwoDVector m_SPLpdBAW3d_rotor;
-    TwoDVector m_SPLpdBBW3d_rotor;
-    TwoDVector m_SPLpdBCW3d_rotor;
-    TwoDVector m_SPLdB3d_rotor;
-    TwoDVector m_SPLdBAW3d_rotor;
-    TwoDVector m_SPLdBBW3d_rotor;
-    TwoDVector m_SPLdBCW3d_rotor;
-    TwoDVector m_SPL_LEdB3d_rotor;
-    TwoDVector m_SPL_LEdBAW3d_rotor;
-    TwoDVector m_SPL_LEdBBW3d_rotor;
-    TwoDVector m_SPL_LEdBCW3d_rotor;
-    TwoDVector m_SPLsdB3d_rotor;
-    TwoDVector m_SPLsdBAW3d_rotor;
-    TwoDVector m_SPLsdBBW3d_rotor;
-    TwoDVector m_SPLsdBCW3d_rotor;
-    TwoDVector m_SPL_LBLVSdB3d_rotor;
-    TwoDVector m_SPL_bluntdB3d_rotor;
-    TwoDVector m_SPL_propagationdB3d_rotor;
-    TwoDVector m_SPL_tipvortexdB3d_rotor;
-
-    TwoDVector m_SPLadB3d_rotor_loops;
-    TwoDVector m_SPLadBAW3d_rotor_loops;
-    TwoDVector m_SPLadBBW3d_rotor_loops;
-    TwoDVector m_SPLadBCW3d_rotor_loops;
-    TwoDVector m_SPLpdB3d_rotor_loops;
-    TwoDVector m_SPLpdBAW3d_rotor_loops;
-    TwoDVector m_SPLpdBBW3d_rotor_loops;
-    TwoDVector m_SPLpdBCW3d_rotor_loops;
-    TwoDVector m_SPLdB3d_rotor_loops;
-    TwoDVector m_SPLdBAW3d_rotor_loops;
-    TwoDVector m_SPLdBBW3d_rotor_loops;
-    TwoDVector m_SPLdBCW3d_rotor_loops;
-    TwoDVector m_SPL_LEdB3d_rotor_loops;
-    TwoDVector m_SPL_LEdBAW3d_rotor_loops;
-    TwoDVector m_SPL_LEdBBW3d_rotor_loops;
-    TwoDVector m_SPL_LEdBCW3d_rotor_loops;
-    TwoDVector m_SPLsdB3d_rotor_loops;
-    TwoDVector m_SPLsdBAW3d_rotor_loops;
-    TwoDVector m_SPLsdBBW3d_rotor_loops;
-    TwoDVector m_SPLsdBCW3d_rotor_loops;
-    TwoDVector m_SPL_LBLVSdB3d_rotor_loops;
-    TwoDVector m_SPL_bluntdB3d_rotor_loops;
-    TwoDVector m_SPL_propagationdB3d_rotor_loops;
-    TwoDVector m_SPL_tipvortexdB3d_rotor_loops;
-
-    FourDVector m_SPLadB3d_4d_blade;
-    FourDVector m_SPLadBAW3d_4d_blade;
-    FourDVector m_SPLadBBW3d_4d_blade;
-    FourDVector m_SPLadBCW3d_4d_blade;
-    FourDVector m_SPLpdB3d_4d_blade;
-    FourDVector m_SPLpdBAW3d_4d_blade;
-    FourDVector m_SPLpdBBW3d_4d_blade;
-    FourDVector m_SPLpdBCW3d_4d_blade;
-    FourDVector m_SPLdB3d_4d_blade;
-    FourDVector m_SPLdBAW3d_4d_blade;
-    FourDVector m_SPLdBBW3d_4d_blade;
-    FourDVector m_SPLdBCW3d_4d_blade;
-    FourDVector m_SPL_LEdB3d_4d_blade;
-    FourDVector m_SPL_LEdBAW3d_4d_blade;
-    FourDVector m_SPL_LEdBBW3d_4d_blade;
-    FourDVector m_SPL_LEdBCW3d_4d_blade;
-    FourDVector m_SPLsdB3d_4d_blade;
-    FourDVector m_SPLsdBAW3d_4d_blade;
-    FourDVector m_SPLsdBBW3d_4d_blade;
-    FourDVector m_SPLsdBCW3d_4d_blade;
-    FourDVector m_SPL_LBLVSdB3d_4d_blade;
-    FourDVector m_SPL_bluntdB3d_4d_blade;
-    FourDVector m_SPL_propagationdB3d_4d_blade;
-    FourDVector m_SPL_tipvortexdB3d_4d_blade;
-
-    FourDVector m_SPLadB3d_4d;
-    FourDVector m_SPLadBAW3d_4d;
-    FourDVector m_SPLadBBW3d_4d;
-    FourDVector m_SPLadBCW3d_4d;
-    FourDVector m_SPLpdB3d_4d;
-    FourDVector m_SPLpdBAW3d_4d;
-    FourDVector m_SPLpdBBW3d_4d;
-    FourDVector m_SPLpdBCW3d_4d;
-    FourDVector m_SPLdB3d_4d;
-    FourDVector m_SPLdBAW3d_4d;
-    FourDVector m_SPLdBBW3d_4d;
-    FourDVector m_SPLdBCW3d_4d;
-    FourDVector m_SPL_LEdB3d_4d;
-    FourDVector m_SPL_LEdBAW3d_4d;
-    FourDVector m_SPL_LEdBBW3d_4d;
-    FourDVector m_SPL_LEdBCW3d_4d;
-    FourDVector m_SPLsdB3d_4d;
-    FourDVector m_SPLsdBAW3d_4d;
-    FourDVector m_SPLsdBBW3d_4d;
-    FourDVector m_SPLsdBCW3d_4d;
-    FourDVector m_SPL_LBLVSdB3d_4d;
-    FourDVector m_SPL_bluntdB3d_4d;
-    FourDVector m_SPL_propagationdB3d_4d;
-    FourDVector m_SPL_tipvortexdB3d_4d;
-
-    TwoDVector m_SPLadB3d_final;
-    TwoDVector m_SPLpdB3d_final;
-    TwoDVector m_SPLdB3d_final;
-    TwoDVector m_SPLdBAW3d_final;
-    TwoDVector m_SPLdBBW3d_final;
-    TwoDVector m_SPLdBCW3d_final;
-    TwoDVector m_SPL_LEdB3d_final;
-    TwoDVector m_SPL_LEdBAW3d_final;
-    TwoDVector m_SPL_LEdBBW3d_final;
-    TwoDVector m_SPL_LEdBCW3d_final;
-    TwoDVector m_SPLsdB3d_final;
-    TwoDVector m_SPL_LBLVSdB3d_final;
-    TwoDVector m_SPL_bluntdB3d_final;
-    TwoDVector m_SPL_propagationdB3d_final;
-    TwoDVector m_SPL_tipvortexdB3d_final;
-
-    TwoDVector m_SPLadB3d_final_rotor;
-    TwoDVector m_SPLpdB3d_final_rotor;
-    TwoDVector m_SPLdB3d_final_rotor;
-    TwoDVector m_SPLdBAW3d_final_rotor;
-    TwoDVector m_SPLdBBW3d_final_rotor;
-    TwoDVector m_SPLdBCW3d_final_rotor;
-    TwoDVector m_SPL_LEdB3d_final_rotor;
-    TwoDVector m_SPL_LEdBAW3d_final_rotor;
-    TwoDVector m_SPL_LEdBBW3d_final_rotor;
-    TwoDVector m_SPL_LEdBCW3d_final_rotor;
-    TwoDVector m_SPLsdB3d_final_rotor;
-    TwoDVector m_SPL_LBLVSdB3d_final_rotor;
-    TwoDVector m_SPL_bluntdB3d_final_rotor;
-    TwoDVector m_SPL_propagationdB3d_final_rotor;
-    TwoDVector m_SPL_tipvortexdB3d_final_rotor;
-
-    TwoDVector m_SPLadB3d_final_rotor_loops;
-    TwoDVector m_SPLpdB3d_final_rotor_loops;
-    TwoDVector m_SPLdB3d_final_rotor_loops;
-    TwoDVector m_SPLdBAW3d_final_rotor_loops;
-    TwoDVector m_SPLdBBW3d_final_rotor_loops;
-    TwoDVector m_SPLdBCW3d_final_rotor_loops;
-    TwoDVector m_SPL_LEdB3d_final_rotor_loops;
-    TwoDVector m_SPL_LEdBAW3d_final_rotor_loops;
-    TwoDVector m_SPL_LEdBBW3d_final_rotor_loops;
-    TwoDVector m_SPL_LEdBCW3d_final_rotor_loops;
-    TwoDVector m_SPLsdB3d_final_rotor_loops;
-    TwoDVector m_SPL_LBLVSdB3d_final_rotor_loops;
-    TwoDVector m_SPL_bluntdB3d_final_rotor_loops;
-    TwoDVector m_SPL_propagationdB3d_final_rotor_loops;
-    TwoDVector m_SPL_tipvortexdB3d_final_rotor_loops;
-    //Sara end
 };
 
 #endif // NOISECALCULATION_H

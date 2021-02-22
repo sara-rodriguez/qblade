@@ -47,7 +47,7 @@ SimuWidgetDMS::SimuWidgetDMS(QWidget */*parent*/)
 void SimuWidgetDMS::SetupLayout()
 {
 
-    setFixedWidth(250);//Sara
+//	setFixedWidth(250);
     /////////top Layout//////////
     m_pctrlRho = new QLabel(tr("Rho"));
     m_pctrlVisc = new QLabel(tr("Viscosity"));

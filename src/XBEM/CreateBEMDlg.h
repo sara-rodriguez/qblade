@@ -44,8 +44,8 @@ public:
     void SetupLayout();
     void Connect();
 
-    NumberEdit *IterationsEdit, *EpsilonEdit, *ElementsEdit, *RhoEdit, *RelaxEdit, *ViscEdit, *TempEdit;//Sara
-    QLabel *IterationsLabel, *ElementsLabel, *EpsilonLabel, *RhoEditLabel, *RelaxEditLabel, *ViscEditLabel, *TempEditLabel;//Sara RempEditLabel
+    NumberEdit *IterationsEdit, *EpsilonEdit, *ElementsEdit, *RhoEdit, *RelaxEdit, *ViscEdit;
+    QLabel *IterationsLabel, *ElementsLabel, *EpsilonLabel, *RhoEditLabel, *RelaxEditLabel, *ViscEditLabel;
     QCheckBox *TipLossBox, *RootLossBox, *ThreeDBox, *InterpolationBox, *NewTipLossBox, *NewRootLossBox, *ReynoldsBox;
     QPushButton *OkButton;
     QLineEdit *SimName;

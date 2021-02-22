@@ -53,8 +53,7 @@ void RotDmsSimulationCreatorDialog::initView() {
 void RotDmsSimulationCreatorDialog::loadValuesFromSettings() {
 	SimulationCreatorDialog::loadValuesFromSettings();
 
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
 
 	get<NumberEdit>(P::TipSpeedFrom)->setValue(settings.value("tipSpeedFrom", 1).toDouble());
@@ -68,8 +67,7 @@ void RotDmsSimulationCreatorDialog::loadValuesFromSettings() {
 void RotDmsSimulationCreatorDialog::saveValuesToSettings() {
 	SimulationCreatorDialog::saveValuesToSettings();
 
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
 
 	settings.setValue("tipSpeedFrom", get<NumberEdit>(P::TipSpeedFrom)->getValue());

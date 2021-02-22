@@ -17,7 +17,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include "../XBEM/360Polar.h"
-#include "../XBEM/BEM.h"//Sara
+
 
 FASTSimulationCreatorDialog::FASTSimulationCreatorDialog(FASTSimulation *presetSimulation, FASTModule *module) {
 	m_editedFASTSimulation = presetSimulation;
@@ -390,7 +390,6 @@ void FASTSimulationCreatorDialog::initView() {
 		}	
 
 	} else {  // set default parameters
-        QBEM *pBEM = (QBEM *) g_mainFrame->m_pBEM;//Sara
         m_hubHeightEdit->setValue(m_windFieldComboBox->currentObject()->getHubheight());
         m_WindfieldPathString = "";
         m_windfieldLocationGroup->button(0)->setChecked(true);
@@ -403,7 +402,7 @@ void FASTSimulationCreatorDialog::initView() {
         m_rotorSpeedEdit->setValue(12);
 		m_gravityEdit->setValue(9.81);
 		m_kinViscEdit->setValue(1.4661e-5);
-        m_airDensEdit->setValue(pBEM->dlg_rho);//Sara
+		m_airDensEdit->setValue(1.225);
 		m_flapDof1CheckBox->setChecked(true);
 		m_flapDof2CheckBox->setChecked(true);
 		m_edgeDofCheckBox->setChecked(true);
@@ -559,9 +558,9 @@ void FASTSimulationCreatorDialog::onCreateButtonClicked() {
                                 m_WindfieldPathString,
                                 m_windfieldLocationGroup->button(0)->isChecked(),
                                 m_hubHeightEdit->getValue());
-    if (g_FASTSimulationStore.add(simulation)) {
-        m_module->setShownFASTSimulation(simulation);
-        accept();  // leave dialog only if adding was successful
+	if (g_FASTSimulationStore.add(simulation)) {
+		m_module->setShownFASTSimulation(simulation);
+		accept();  // leave dialog only if adding was successful
 	}
 }
 

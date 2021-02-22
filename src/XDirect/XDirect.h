@@ -81,21 +81,13 @@ class QXDirect : public QWidget
 
 public:
 	QXDirect(QWidget *parent = NULL);
-    ~QXDirect();
-
-     double Mach_noise, Reynolds_noise, alpha_noise;
-
-     void OnNoiseLoop(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec, double Alpha, double AlphaMax, double delta);
-//Sara
+	~QXDirect();
 
 public slots:
 	void UpdateView();
 
-private slots:
-    //Sara
-    void OnNewPolarNoise(double NCrit, double XBotTr, double XTopTr, double Mach, double Reynolds, enumPolarType PolarType, double ASpec);
-    //Sara
 
+private slots:
 	void OnXFoilAdvanced();
     void OnEditPolar();
 
@@ -108,7 +100,6 @@ private slots:
 	void OnPolarFilter();
 	void OnInputChanged();
 	void OnAnalyze();
-    void OnAnalyzeAll();//Sara
 
 	void OnBatchAnalysis();
 	void OnMultiThreadedBatchAnalysis();
@@ -155,6 +146,7 @@ private slots:
 	void OnViscous();
 	void OnXDirectStyle();
 	void OnGraphSettings();
+
 	void OnShowPolarOpps();
 	void OnHidePolarOpps();
 	void OnDeletePolarOpps();
@@ -194,6 +186,7 @@ private slots:
 	void OnOpPointProps();
 	void OnPolarProps();
 	void OnRenameFoil();
+
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
@@ -292,11 +285,11 @@ private:
 	QCheckBox *m_pctrlSequence;
 	NumberEdit *m_pctrlAlphaMin  ;
 	NumberEdit *m_pctrlAlphaMax ;
-    NumberEdit *m_pctrlAlphaDelta;
+	NumberEdit *m_pctrlAlphaDelta;
 
 	QCheckBox *m_pctrlViscous ;
 	QCheckBox *m_pctrlInitBL;
-    QPushButton *m_pctrlAnalyze, *m_pctrlNewPolar, *m_pctrlDeletePolar, *m_pctrlEditPolar, *m_pctrlAnalyzeAll; //Sara
+    QPushButton *m_pctrlAnalyze, *m_pctrlNewPolar, *m_pctrlDeletePolar, *m_pctrlEditPolar;
 
 	QCheckBox *m_pctrlShowBL, *m_pctrlShowPressure;
 
@@ -351,7 +344,7 @@ private:
 	double m_NCritList[30];	// for batch analysis
 	int m_NRe;				// number of Re values in the ReList
 
-    double m_Alpha, m_AlphaMax, m_AlphaDelta;
+	double m_Alpha, m_AlphaMax, m_AlphaDelta;
 	double m_Cl, m_ClMax, m_ClDelta;
 	double m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta;
 	double m_Mach;

@@ -117,7 +117,7 @@ public:
 	double sspec[IBX+1],xspoc[IBX+1],yspoc[IBX+1], qgamm[IBX+1];
 	double qspec[IPX+1][IBX+1],qspecp[IPX+1][IBX+1];
 	double alqsp[IPX+1],clqsp[IPX+1],cmqsp[IPX+1];
-    double qf0[IQX+1],qf1[IQX+1],qf2[IQX+1],qf3[IQX+1];
+	double qf0[IQX+1],qf1[IQX+1],qf2[IQX+1],qf3[IQX+1];
 
 	double qdof0,qdof1,qdof2,qdof3,clspec,ffilt;
 
@@ -418,7 +418,7 @@ private:
 	double dis[IVX][ISX],ctq[IVX][ISX],tau[IVX][ISX],vti[IVX][ISX];
 
 	double xssitr[ISX],uinv_a[IVX][ISX];
-    double gam[IQX],gam_a[IQX],gamu[IQX][ISX],sig[IZX];
+	double gam[IQX],gam_a[IQX],gamu[IQX][ISX],sig[IZX];
 	double apanel[IZX],sst,sst_go,sst_gp,gamte,sigte;
 //	double sigte_a,gamte_a;
 	double dste,aste;

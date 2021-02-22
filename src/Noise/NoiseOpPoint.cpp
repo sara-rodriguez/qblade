@@ -7,20 +7,15 @@
 
 NoiseOpPoint::NoiseOpPoint(OpPoint *opPoint)
 	: m_reynolds(-1), 
-      m_mach(-1),//Sara
-      m_alpha(-1),
-      m_ACrit(-1),//Sara
-      m_opPoint(opPoint)
-
+	  m_alpha(-1),
+	  m_opPoint(opPoint)
 {
 }
 
-NoiseOpPoint::NoiseOpPoint(double reynolds, double mach, double alpha, double ACrit) //Sara
+NoiseOpPoint::NoiseOpPoint(double reynolds, double alpha) 
 	: m_reynolds(reynolds),
-      m_mach(mach),//Sara
-      m_alpha(alpha),
-      m_ACrit(ACrit),//Sara
-      m_opPoint(NULL)
+	  m_alpha(alpha),
+	  m_opPoint(NULL)
 {
 }
 
@@ -31,16 +26,6 @@ double NoiseOpPoint::getReynolds() {
 double NoiseOpPoint::getAlphaDegree() {
 	return (m_opPoint ? m_opPoint->Alpha : m_alpha);
 }
-
-//Sara
-double NoiseOpPoint::getMach() {
-    return (m_opPoint ? m_opPoint->Mach : m_mach);
-}
-
-double NoiseOpPoint::getACrit() {
-    return (m_opPoint ? m_opPoint->ACrit : m_ACrit);
-}
-//Sara
 
 double NoiseOpPoint::getAlphaDegreeAbsolute() {
 	return fabs(getAlphaDegree());
@@ -60,8 +45,4 @@ double NoiseOpPoint::getXValue(int index, int topOrBot) {
 
 double NoiseOpPoint::getDstrAt(int index,int topOrBot) {
 	return (topOrBot == 1 ? m_opPoint->topDStar.second[index] : m_opPoint->botDStar.second[index]);	
-}
-
-QString NoiseOpPoint::getPolarName(){
-    return m_opPoint->m_strPlrName;
 }

@@ -21,7 +21,7 @@
 
 TwoDWidgetInterface::TwoDWidgetInterface() {
 	m_twoDWidget = g_mainFrame->getTwoDWidget();
-    m_graphArrangement = Quad;
+	m_graphArrangement = Quad;
 	m_xKeyPressed = false;
 	m_yKeyPressed = false;
 
@@ -29,7 +29,7 @@ TwoDWidgetInterface::TwoDWidgetInterface() {
 	 * initializing values would be passed along the whole hierarchy. The graph arrangement can't be moved because
 	 * it requires the graphs to be created.
 	 * */
-    for (int i = 0; i < 8; ++i) {//Sara
+	for (int i = 0; i < 4; ++i) {
 		m_graph[i] = NULL;
 	}
 }
@@ -45,7 +45,7 @@ void TwoDWidgetInterface::reloadForGraphType(NewGraph::GraphType type) {
 		type = m_graph[m_currentGraphIndex]->getGraphType();
 	}
 	
-    for (int i = 0; i < 8; ++i) {//Sara
+	for (int i = 0; i < 4; ++i) {
 		if (m_graph[i]) {  // TODO move all graph constructions into the module constructors and remove this if
 			if (m_graph[i]->getGraphType() == type) {
 				m_graph[i]->reloadCurves();
@@ -61,10 +61,6 @@ void TwoDWidgetInterface::reloadAllGraphCurves() {
 		m_graph[1]->reloadCurves();
 		m_graph[2]->reloadCurves();
 		m_graph[3]->reloadCurves();
-        m_graph[4]->reloadCurves();//Sara
-        m_graph[5]->reloadCurves();//Sara
-        m_graph[6]->reloadCurves();//Sara
-        m_graph[7]->reloadCurves();//Sara
 		update();		
 	}	
 }
@@ -74,15 +70,9 @@ void TwoDWidgetInterface::onPaintEvent(QPaintEvent */*event*/) {
 	painter.fillRect(m_twoDWidget->rect(), g_mainFrame->getBackgroundColor());
 
 	switch (m_graphArrangement) {  // missing break intended
-    case Oct://Sara
-        m_graph[7]->drawGraph(painter);
-        m_graph[6]->drawGraph(painter);
-        m_graph[5]->drawGraph(painter);
-    case Quint://Sara
-        m_graph[4]->drawGraph(painter);
     case QuadVertical:
 	case Quad:
-        m_graph[3]->drawGraph(painter);
+		m_graph[3]->drawGraph(painter);
 	case Vertical3:
 		m_graph[2]->drawGraph(painter);
 	case Vertical:
@@ -141,29 +131,6 @@ void TwoDWidgetInterface::onResizeEvent() {
         m_graph[2]->setDrawingArea(QRect(max.x()+border, max.y()+border+2*(h+gap), w, h));
         m_graph[3]->setDrawingArea(QRect(max.x()+border, max.y()+border+3*(h+gap), w, h+max.height()%4));
         break;
-        //Sara
-    case Quint:
-        w = (max.width()-2*border-gap) / 2;
-        h = (max.height()-2*border-2*gap) / 3;
-        m_graph[0]->setDrawingArea(QRect(max.x()+border, max.y()+border, w, h));
-        m_graph[1]->setDrawingArea(QRect(max.x()+border+w+gap, max.y()+border, w+max.width()%2, h));
-        m_graph[2]->setDrawingArea(QRect(max.x()+border, max.y()+border+h+gap, w, h));
-        m_graph[3]->setDrawingArea(QRect(max.x()+border+w+gap, max.y()+border+h+gap, w+max.width()%2, h));
-        m_graph[4]->setDrawingArea(QRect(max.x()+border+(w+gap)/2, max.y()+border+2*(h+gap), w, h+max.height()%3));
-       break;
-    case Oct: //Sara
-        w = (max.width()-2*border-3*gap) / 4;
-        h = (max.height()-2*border-gap) / 2;
-        m_graph[0]->setDrawingArea(QRect(max.x()+border, max.y()+border, w, h));
-        m_graph[1]->setDrawingArea(QRect(max.x()+border+w+gap, max.y()+border, w, h));
-        m_graph[2]->setDrawingArea(QRect(max.x()+border+2*(w+gap), max.y()+border, w, h));
-        m_graph[3]->setDrawingArea(QRect(max.x()+border+3*(w+gap), max.y()+border, w+max.width()%4, h));
-        m_graph[4]->setDrawingArea(QRect(max.x()+border, max.y()+border+h+gap, w, h));
-        m_graph[5]->setDrawingArea(QRect(max.x()+border+w+gap, max.y()+border+h+gap, w, h));
-        m_graph[6]->setDrawingArea(QRect(max.x()+border+2*(w+gap), max.y()+border+h+gap, w, h));
-        m_graph[7]->setDrawingArea(QRect(max.x()+border+3*(w+gap), max.y()+border+h+gap, w+max.width()%4, h+max.height()%2));
-        break;
-        //Sara
 	}
 }
 
@@ -266,7 +233,7 @@ void TwoDWidgetInterface::setGraphArrangement(TwoDWidgetInterface::GraphArrangem
 }
 
 int TwoDWidgetInterface::findCursorPositionIndex(QPoint position) {
-    for (int i = 0; i < 8; ++i) {//Sara
+	for (int i = 0; i < 4; ++i) {
 		if (m_graph[i]->contains(position)) {
 			return i;
 		}
@@ -284,7 +251,7 @@ void TwoDWidgetInterface::resetScaleForGraphType(bool force, NewGraph::GraphType
 		type = m_graph[m_currentGraphIndex]->getGraphType();
 	}
 	
-    for (int i = 0; i < 8; ++i) {//Sara
+	for (int i = 0; i < 4; ++i) {
 		if (m_graph[i]) {  // TODO if there was a general initialization phase (after constructors) this if could be deleted
 			if (m_graph[i]->getGraphType() == type) {
 				m_graph[i]->setOptimalLimits(force);

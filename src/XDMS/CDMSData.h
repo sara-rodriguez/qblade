@@ -76,7 +76,6 @@ public:
     QColor m_Color;
 
 	//simulation parameters//
-    double temp;//Sara
 	double rho;
 	double elements;
 	double epsilon;

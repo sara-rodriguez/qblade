@@ -20,7 +20,7 @@ class TwoDWidget;
 class TwoDWidgetInterface
 {
 public:
-    enum GraphArrangement {Single, Vertical, Vertical3, Horizontal, Quad, QuadVertical, Quint, Oct}; //Sara
+    enum GraphArrangement {Single, Vertical, Vertical3, Horizontal, Quad, QuadVertical};
 	
 	TwoDWidgetInterface();
 	void setContextMenu (TwoDContextMenu *contextMenu) { m_contextMenu = contextMenu; }
@@ -48,7 +48,7 @@ public:
 	virtual void onMouseMoveEvent (QMouseEvent *event);
 	virtual void onWheelEvent (QWheelEvent *event );
 	virtual void onContextMenuEvent (QContextMenuEvent *event);
-    NewGraph *m_graph[8];  // it's up to the module to allocate the graphs //Sara
+    NewGraph *m_graph[4];  // it's up to the module to allocate the graphs
 	
 protected:
 	TwoDWidget *m_twoDWidget;  // pointer to the TwoDWidget of QBlade

@@ -3044,7 +3044,6 @@ void QDMS::InitBladeSimulationParams(DMSData *data)
 
     if(data)
     {
-
 	pSimuWidgetDMS->m_pctrlRhoVal->setText(strong.number(data->rho,'f',4));
 	pSimuWidgetDMS->m_pctrlElementsVal->setText(strong.number(data->elements,'f',0));
 	pSimuWidgetDMS->m_pctrlIterationVal->setText(strong.number(data->iterations,'f',0));
@@ -3894,7 +3893,6 @@ void QDMS::LoadSettings(QSettings *pSettings)
     dlg_epsilon     =       pSettings->value("Epsilon").toDouble();
 	dlg_iterations  =       pSettings->value("Interations").toInt();
     dlg_elements    =       pSettings->value("Elements").toInt();
-    dlg_temp         =       pSettings->value("Temperature").toDouble();//Sara
     dlg_rho         =       pSettings->value("Rho").toDouble();
     dlg_relax       =       pSettings->value("Relax").toDouble();
     dlg_tiploss     =       pSettings->value("TipLoss").toBool();
@@ -5143,8 +5141,7 @@ void QDMS::OnCreateRotorSimulation()
 
 
 		//// set selected values as default values for next simulation
-        dlg_temp = pDMSData->temp;//Sara
-        dlg_rho = pDMSData->rho;
+		dlg_rho = pDMSData->rho;
 		dlg_visc = pDMSData->visc;
 		dlg_relax = pDMSData->relax;
 		dlg_iterations = pDMSData->iterations;
@@ -5295,7 +5292,6 @@ void QDMS::OnCreateCharacteristicSimulation()
  m_pCDMSData = pCDMSData;
 
  //////set the selected values as standart values for next definition of a simulation///
- dlg_temp = pCDMSData->temp;//Sara
  dlg_rho = pCDMSData->rho;
  dlg_relax = pCDMSData->relax;
  dlg_iterations = pCDMSData->iterations;
@@ -5529,7 +5525,6 @@ void QDMS::OnCreateTurbineSimulation()
 
     selected_windspeed = -1;
 
-    dlg_temp = pTDMSData->temp;//Sara
     dlg_rho = pTDMSData->rho;
     dlg_visc = pTDMSData->visc;
     dlg_relax = pTDMSData->relax;
@@ -6059,7 +6054,6 @@ void QDMS::SaveSettings(QSettings *pSettings)
             pSettings->setValue("Epsilon", dlg_epsilon);
             pSettings->setValue("Interations", dlg_iterations);
             pSettings->setValue("Elements", dlg_elements);
-            pSettings->setValue("Temperature", dlg_temp);//Sara
             pSettings->setValue("Rho", dlg_rho);
             pSettings->setValue("Relax", dlg_relax);
             pSettings->setValue("TipLoss", dlg_tiploss);

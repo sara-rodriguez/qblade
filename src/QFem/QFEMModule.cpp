@@ -168,8 +168,7 @@ QFEMModule::~QFEMModule() {
 		delete m_graph[2];
 		delete m_graph[3];
 		
-        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 		settings.setValue(QString("modules/QFEMModule/graphArrangement"), getGraphArrangement());	
 	}
 }
@@ -347,8 +346,7 @@ void QFEMModule::initView() {
         OnCenterScene();
         OnGLView();
 		
-        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 		setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
 							(settings.value("modules/QFEMModule/graphArrangement", TwoDWidgetInterface::Quad).toInt()));
     }

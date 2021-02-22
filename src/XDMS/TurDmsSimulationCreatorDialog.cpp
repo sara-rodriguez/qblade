@@ -52,8 +52,7 @@ void TurDmsSimulationCreatorDialog::initView() {
 void TurDmsSimulationCreatorDialog::loadValuesFromSettings() {
 	SimulationCreatorDialog::loadValuesFromSettings();
 	
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
 	
 	get<NumberEdit>(P::WindspeedFrom)->setValue(settings.value("windspeedFrom", 1).toDouble() * getUnitFactor(SPEED));
@@ -66,8 +65,7 @@ void TurDmsSimulationCreatorDialog::loadValuesFromSettings() {
 void TurDmsSimulationCreatorDialog::saveValuesToSettings() {
 	SimulationCreatorDialog::saveValuesToSettings();
 	
-    //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+	QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
 	settings.beginGroup("defaultValues/DmsSimulationCreatorDialog");
 
 	settings.setValue("windspeedFrom", get<NumberEdit>(P::WindspeedFrom)->getValue() / getUnitFactor(SPEED));

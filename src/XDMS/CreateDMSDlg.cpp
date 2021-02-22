@@ -51,8 +51,6 @@ RelaxEdit = new NumberEdit;
 
 SimName = new QLineEdit;
 
-TempEdit->setValue(pDMS->dlg_temp);//Sara
-TempEdit->setAutomaticPrecision(2);//Sara
 RhoEdit->setValue(pDMS->dlg_rho);
 RhoEdit->setAutomaticPrecision(4);
 ViscEdit->setValue(pDMS->dlg_visc);
@@ -79,8 +77,6 @@ RhoUnitLabel = new QLabel;
 ViscUnitLabel = new QLabel;
 RhoUnitLabel->setText("kg/m^3");
 ViscUnitLabel->setText("kg/ms");
-TempUnitLabel->setText("K");//Sara
-
 VarLayout->addWidget(RhoEditLabel,1,1);
 VarLayout->addWidget(RhoEdit,1,2);
 VarLayout->addWidget(RhoUnitLabel,1,3);
@@ -95,7 +91,6 @@ VarLayout->addWidget(EpsilonLabel,5,1);
 VarLayout->addWidget(EpsilonEdit,5,2);
 VarLayout->addWidget(RelaxEditLabel,6,1);
 VarLayout->addWidget(RelaxEdit,6,2);
-VarLayout->addWidget(TempEditLabel,7,1);//Sara
 
 QGroupBox *NameGroup = new QGroupBox(tr("Simulation Name"));
 QHBoxLayout *NameLayout = new QHBoxLayout;

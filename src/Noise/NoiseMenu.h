@@ -2,7 +2,6 @@
 #define NOISEMENU_H
 
 #include <QMenu>
-
 class QMainWindow;
 
 class NoiseModule;
@@ -17,16 +16,11 @@ public:
 	
 private:
 	NoiseModule *m_module;
-    QAction *m_exportNoise, *m_modelValidityHint, *m_exportqs3DNoiseLog, *m_exportqs3DNoise_blade, *m_exportqs3DNoise_rotor, *m_exportqs3DNoise_rotor_loops, *m_loopsReMaalpha; //Sara
+    QAction *m_exportNoise, *m_modelValidityHint;
 	
 private slots:
 	void onAboutToShow ();
 	void onExportNoise ();
-    //Sara
-    void onExportqs3DNoise_blade ();
-    void onExportqs3DNoise_rotor ();
-    void onExportqs3DNoiseLog  ();
-    //Sara
 	void onModelValidityHint ();
 };
 

@@ -42,8 +42,7 @@ TurDmsModule::~TurDmsModule() {
 		delete m_graph[2];
 		delete m_graph[3];
 		
-        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 		settings.setValue(QString("modules/TurDmsModule/graphArrangement"), getGraphArrangement());	
 	}
 }
@@ -115,8 +114,7 @@ void TurDmsModule::initView() {
 		m_graph[3] = new NewGraph ("TurDmsGraphFour", this, {NewGraph::TurbineAzimuthal, "", "", false, false});
 		setGraphArrangement(TwoDWidgetInterface::Quad);
 		
-        //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
+		QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
 		setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
 							(settings.value("modules/TurDmsModule/graphArrangement", TwoDWidgetInterface::Quad).toInt()));
 	}

@@ -51,7 +51,6 @@
 #define CONSTANT    1
 #define SIMFILE     2
 #define AERODYN     3
-#define CSVFILE      4//Sara
 
 #define REVOLUTIONS    1
 #define TIMESTEPS      2
