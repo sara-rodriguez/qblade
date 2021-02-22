@@ -60,7 +60,7 @@ FoilPolarDlg *pFoilPolarDlg = (FoilPolarDlg *) g_mainFrame->m_pBEM;
                     pGrid->addEdit(P::DistanceObsever, NumberEditType, new NumberEdit(),
                                   "Distance from observer to TE (re) []:", 1.22, LENGTH);
                     SimuWidget *pSimuWidget = (SimuWidget *) g_mainFrame->m_pSimuWidget;
-                    if((g_bemdataStore.size()!=0)){
+                    if((g_bemdataStore.size()!=NULL)){
                     u_wind_speed=pSimuWidget->m_pctrlWindspeed->getValue();}
 
                     pGrid->addEdit(P::OriginalVelocity, NumberEditType, new NumberEdit(),
@@ -93,7 +93,7 @@ m_propagation_check->setToolTip("Propagation applied in total and wheighted nois
 
                 QLabel *imageLabel = new QLabel;
                 imageLabel->setPixmap(QPixmap(":/images/noise_3d_plate.png"));
-                gridx->addWidget(imageLabel, 0,1,4,1, Qt::AlignCenter);
+                gridx->addWidget(imageLabel, 0,1,4,1, Qt::AlignVCenter);
 
 //Sara
                 groupBox = new QGroupBox ("Directivity Angles");
@@ -377,7 +377,7 @@ tabWidget->addTab(widget, "Op. Points");
                     pGrid->addEdit(P::valMau_LE, NumberEditType, m_valMau_LE_numberedit,"Upper Ma Value:",0.18);
                     m_valMau_LE_numberedit->setEnabled(check_LE);
 
-                    groupBox = new QGroupBox ("Bluntness noise source validation range");
+                    groupBox = new QGroupBox ("Blunt noise source validation range");
                     vBox->addWidget(groupBox);
                     pGrid = new ParameterGrid<P>(this);
 //                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -403,67 +403,6 @@ tabWidget->addTab(widget, "Op. Points");
                     pGrid->addEdit(P::valPsiu, NumberEditType, m_valPsiu_numberedit,"Upper ψ Value:",14);
                     m_valPsiu_numberedit->setEnabled(m_blunt_check->isChecked());
                     pGrid->addRow("","");pGrid->addRow("","");
-
-                    groupBox = new QGroupBox ("Bluntness noise source validation range");
-                    hBox->addWidget(groupBox);
-                    pGrid = new ParameterGrid<P>(this);
-//                    pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-                    groupBox->setLayout(pGrid);
-
-                    check_blunt=m_blunt_check->isChecked();
-
-                    pGrid->addRow("Reynolds Number:","");
-                    m_valRel_blunt_check = new QCheckBox("calculate below:");
-                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valRel_blunt_check,"", true);
-                    m_valRel_blunt_check->setEnabled(check_blunt);
-
-                    m_valRel_blunt_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::valRel_blunt, NumberEditType, m_valRel_blunt_numberedit,"Lower Re Value:",1.1*pow(10,6));
-                    m_valRel_blunt_numberedit->setEnabled(check_blunt);
-
-                    m_valReu_blunt_check = new QCheckBox("calculate above:");
-                    pGrid->addEdit(P::valReu_blunt_check, CheckBox, m_valReu_blunt_check,"", true);
-                    m_valReu_blunt_check->setEnabled(check_blunt);
-
-                    m_valReu_blunt_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::valReu_blunt, NumberEditType, m_valReu_blunt_numberedit,"Upper Re Value:",2.6*pow(10,6));
-                    m_valReu_blunt_numberedit->setEnabled(check_blunt);
-                    pGrid->addRow("","");pGrid->addRow("","");
-
-                    pGrid->addRow("Mach Number:","");
-                    m_valMal_blunt_check = new QCheckBox("calculate below:");
-                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valMal_blunt_check,"", true);
-                    m_valMal_blunt_check->setEnabled(check_blunt);
-
-                    m_valMal_blunt_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::valMal_blunt, NumberEditType, m_valMal_blunt_numberedit,"Lower Ma Value:",0.12);
-                    m_valMal_blunt_numberedit->setEnabled(check_blunt);
-
-                    m_valMau_blunt_check = new QCheckBox("calculate above:");
-                    pGrid->addEdit(P::valMau_blunt_check, CheckBox, m_valMau_blunt_check,"", true);
-                    m_valMau_blunt_check->setEnabled(check_blunt);
-
-                    m_valMau_blunt_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::valMau_blunt, NumberEditType, m_valMau_blunt_numberedit,"Upper Ma Value:",0.21);
-                    m_valMau_blunt_numberedit->setEnabled(check_blunt);
-                    pGrid->addRow("","");pGrid->addRow("","");
-
-                    pGrid->addRow("AOA Number:","");
-                    m_valAOAl_blunt_check = new QCheckBox("calculate below:");
-                    pGrid->addEdit(P::valAOAl_blunt_check, CheckBox, m_valAOAl_blunt_check,"", false);
-                    m_valAOAl_blunt_check->setEnabled(check_blunt);
-
-                    m_valAOAl_blunt_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::valAOAl_blunt, NumberEditType, m_valAOAl_blunt_numberedit,"Lower AOA Value [deg]:",0);
-                    m_valAOAl_blunt_numberedit->setEnabled(check_blunt);
-
-                    m_valAOAu_blunt_check = new QCheckBox("calculate above:");
-                    pGrid->addEdit(P::valAOAu_blunt_check, CheckBox, m_valAOAu_blunt_check,"", true);
-                    m_valAOAu_blunt_check->setEnabled(check_blunt);
-
-                    m_valAOAu_blunt_numberedit = new NumberEdit ();
-                    pGrid->addEdit(P::valAOAu_blunt, NumberEditType, m_valAOAu_blunt_numberedit,"Upper AOA Value [deg]:",6.1);
-                    m_valAOAu_blunt_numberedit->setEnabled(check_blunt);
 
                     groupBox = new QGroupBox ("TE noise source validation range");
                     hBox->addWidget(groupBox);
@@ -645,7 +584,68 @@ tabWidget->addTab(widget, "Op. Points");
 
                     m_valAOAu_tipvortex_numberedit = new NumberEdit ();
                     pGrid->addEdit(P::valAOAu_tipvortex, NumberEditType, m_valAOAu_tipvortex_numberedit,"Upper AOA Value [deg]:",14.4);
-                    m_valAOAu_tipvortex_numberedit->setEnabled(check_tipvortex);                  
+                    m_valAOAu_tipvortex_numberedit->setEnabled(check_tipvortex);
+
+                    groupBox = new QGroupBox ("Bluntness noise source validation range");
+                    hBox->addWidget(groupBox);
+                    pGrid = new ParameterGrid<P>(this);
+                    //pGrid->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                    groupBox->setLayout(pGrid);
+
+                    check_blunt=m_blunt_check->isChecked();
+
+                    pGrid->addRow("Reynolds Number:","");
+                    m_valRel_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valRel_blunt_check,"", true);
+                    m_valRel_blunt_check->setEnabled(check_blunt);
+
+                    m_valRel_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valRel_blunt, NumberEditType, m_valRel_blunt_numberedit,"Lower Re Value:",1.1*pow(10,6));
+                    m_valRel_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valReu_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valReu_blunt_check, CheckBox, m_valReu_blunt_check,"", true);
+                    m_valReu_blunt_check->setEnabled(check_blunt);
+
+                    m_valReu_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valReu_blunt, NumberEditType, m_valReu_blunt_numberedit,"Upper Re Value:",2.6*pow(10,6));
+                    m_valReu_blunt_numberedit->setEnabled(check_blunt);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("Mach Number:","");
+                    m_valMal_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valRel_blunt_check, CheckBox, m_valMal_blunt_check,"", true);
+                    m_valMal_blunt_check->setEnabled(check_blunt);
+
+                    m_valMal_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMal_blunt, NumberEditType, m_valMal_blunt_numberedit,"Lower Ma Value:",0.12);
+                    m_valMal_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valMau_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valMau_blunt_check, CheckBox, m_valMau_blunt_check,"", true);
+                    m_valMau_blunt_check->setEnabled(check_blunt);
+
+                    m_valMau_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valMau_blunt, NumberEditType, m_valMau_blunt_numberedit,"Upper Ma Value:",0.21);
+                    m_valMau_blunt_numberedit->setEnabled(check_blunt);
+                    pGrid->addRow("","");pGrid->addRow("","");
+
+                    pGrid->addRow("AOA Number:","");
+                    m_valAOAl_blunt_check = new QCheckBox("calculate below:");
+                    pGrid->addEdit(P::valAOAl_blunt_check, CheckBox, m_valAOAl_blunt_check,"", false);
+                    m_valAOAl_blunt_check->setEnabled(check_blunt);
+
+                    m_valAOAl_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAl_blunt, NumberEditType, m_valAOAl_blunt_numberedit,"Lower AOA Value [deg]:",0);
+                    m_valAOAl_blunt_numberedit->setEnabled(check_blunt);
+
+                    m_valAOAu_blunt_check = new QCheckBox("calculate above:");
+                    pGrid->addEdit(P::valAOAu_blunt_check, CheckBox, m_valAOAu_blunt_check,"", true);
+                    m_valAOAu_blunt_check->setEnabled(check_blunt);
+
+                    m_valAOAu_blunt_numberedit = new NumberEdit ();
+                    pGrid->addEdit(P::valAOAu_blunt, NumberEditType, m_valAOAu_blunt_numberedit,"Upper AOA Value [deg]:",6.1);
+                    m_valAOAu_blunt_numberedit->setEnabled(check_blunt);
 
                             widget = new QWidget;
                             tabWidget->addTab(widget, "Quasi 3D Blade");
@@ -726,7 +726,7 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                             pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
 
                             QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
-                            if((g_bemdataStore.size()!=0)){
+                            if((g_bemdataStore.size()!=NULL)){
                             double hub_radius=pbem->m_pBlade->m_HubRadius;
                             outer_radius=pbem->m_pTData->OuterRadius;
                             blade_radius=(outer_radius-hub_radius);}
@@ -1308,10 +1308,6 @@ m_valAOAl_blunt_check->setEnabled(check_blunt);
 m_valAOAu_blunt_check->setEnabled(check_blunt);
 m_valAOAl_blunt_numberedit->setEnabled(check_blunt);
 m_valAOAu_blunt_numberedit->setEnabled(check_blunt);
-m_valPsiu_numberedit->setEnabled(check_blunt);
-m_valPsiu_check->setEnabled(check_blunt);
-m_valPsil_numberedit->setEnabled(check_blunt);
-m_valPsil_check->setEnabled(check_blunt);
 }
 
 void NoiseCreatorDialog::OnhBluntCheck(bool index){
