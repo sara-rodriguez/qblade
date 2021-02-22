@@ -2477,11 +2477,7 @@ void NoiseSimulation::create360Polars(){
 void NoiseSimulation::loopsReMaalpha(){
 if(m_parameter.qs3d_check){
 int size = m_calculation.Reynolds_error_value().size();
-<<<<<<< HEAD
 
-=======
-qDebug() << "errors size: " << size;
->>>>>>> parent of 1357ec5 (diretividade arrumada, tipvortex arrumado)
 if(size>0){
 createPolars(size);}
 }}
