@@ -1797,6 +1797,60 @@ QList<NoiseOpPoint*> noiseOpPoints = m_parameter.prepareNoiseOpPointList();
 
              stream.setRealNumberNotation(QTextStream::FixedNotation);
              stream.setRealNumberPrecision(5);
+             bool blade_values = m_calculation.qs3D_val_blade!=NULL;
+             bool rotor_values = m_calculation.qs3D_val_rotor!=NULL;
+
+             if((m_parameter.qs3d_check) & blade_values){
+                 stream << Qt::endl;
+                 stream << Qt::endl;
+                 stream << "Quasi 3D Noise Validation Error Log for Blade Simulation" << Qt::endl;
+                 stream << Qt::endl;
+                 stream << "Tip Speed Ratio: " << str << Qt::endl;
+                 stream << Qt::endl;
+
+                 stream << qSetFieldWidth(14)  <<
+                           "Section"  << ";" <<
+                           "Reynolds"  << ";" <<
+                           "Mach" << ";" <<
+                           "AOA" << ";" <<
+                           "Error number[1]" <<  ";" <<
+                           Qt::endl;
+
+                 stream << qSetFieldWidth(14)  <<
+                 m_calculation.qs3D_val_blade <<
+                 Qt::endl;
+
+                 stream << Qt::endl;
+                 stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range."<< Qt::endl;
+                 stream << Qt::endl;
+         }
+
+             if(m_parameter.qs3d_check & (m_parameter.qs3DSim==1) & rotor_values){
+                 stream << Qt::endl;
+                 stream << Qt::endl;
+                 stream << "Quasi 3D Noise Validation Error Log for Rotor Simulation" << Qt::endl;
+                 stream << Qt::endl;
+                 stream << "Tip Speed Ratio: " << str << Qt::endl;
+                 stream << Qt::endl;
+
+                 stream << qSetFieldWidth(14)  <<
+                           "Blade"  << ";" <<
+                           "Azimuthal Angle [deg]"  << ";" <<
+                           "Section"  << ";" <<
+                           "Reynolds"  << ";" <<
+                           "Mach" << ";" <<
+                           "AOA" << ";" <<
+                           "Error number[1]" <<  ";" <<
+                           Qt::endl;
+
+                 stream << qSetFieldWidth(14)  <<
+                 m_calculation.qs3D_val_rotor <<
+                           Qt::endl;
+
+                 stream << Qt::endl;
+                 stream << "[1]1 - Out of TE validation range. 2 - Out of LE validation range."<< Qt::endl;
+                 stream << Qt::endl;
+         }
 }
 //Sara
 
@@ -2423,7 +2477,7 @@ void NoiseSimulation::create360Polars(){
 void NoiseSimulation::loopsReMaalpha(){
 if(m_parameter.qs3d_check){
 int size = m_calculation.Reynolds_error_value().size();
-qDebug() << "errors size: " << size;
+
 if(size>0){
 createPolars(size);}
 }}
