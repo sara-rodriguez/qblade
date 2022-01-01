@@ -1175,17 +1175,19 @@ double NoiseCalculation::propagation(double freq, double dist_obs){
                 else if (freq>=8000){A_vegetation=3;}
             }
             else if((20.<=dist_obs) & (dist_obs<200)){
-                if (freq<125){A_vegetation=0;}
-                else if (freq<250){A_vegetation=0.03;}
-                else if (freq<500){A_vegetation=0.04;}
-                else if (freq<1000){A_vegetation=0.05;}
-                else if (freq<2000){A_vegetation=0.06;}
-                else if (freq<4000){A_vegetation=0.08;}
-                else if (freq<8000){A_vegetation=0.09;}
-                else if (freq>=8000){A_vegetation=0.12;}
+                if (freq<63){A_vegetation=0*dist_obs;}
+                if (freq<125){A_vegetation=0.02*dist_obs;}
+                else if (freq<250){A_vegetation=0.03*dist_obs;}
+                else if (freq<500){A_vegetation=0.04*dist_obs;}
+                else if (freq<1000){A_vegetation=0.05*dist_obs;}
+                else if (freq<2000){A_vegetation=0.06*dist_obs;}
+                else if (freq<4000){A_vegetation=0.08*dist_obs;}
+                else if (freq<8000){A_vegetation=0.09*dist_obs;}
+                else if (freq>=8000){A_vegetation=0.12*dist_obs;}
             }
             else if(200.<=dist_obs){
-                if (freq<125){A_vegetation=0;}
+                if (freq<63){A_vegetation=0;}
+                else if (freq<125){A_vegetation=4;}
                 else if (freq<250){A_vegetation=6;}
                 else if (freq<500){A_vegetation=8;}
                 else if (freq<1000){A_vegetation=10;}
