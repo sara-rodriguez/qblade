@@ -1113,7 +1113,10 @@ double NoiseCalculation::calc_P_vav_H2O(){
     double temp = pQBEM->dlg_temp;
     double temp_C=temp-273.15;
 
-    P_vap_H2O=0.61121*qExp((18.678-(temp_C/234.5))*(temp_C/(257.14+temp_C)))*1000./100.; //Buck formula
+    //Buck formula
+    if(temp_C>0){
+    P_vap_H2O=6.1121*qExp((18.678-(temp_C/234.5))*(temp_C/(257.14+temp_C)));}else {P_vap_H2O=6.1115*qExp((23.036-(temp_C/333.7))*(temp_C/(279.82+temp_C)));}
+
     return P_vap_H2O;
 }
 
