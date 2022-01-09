@@ -62,6 +62,7 @@ public:
     bool check_LE;
     bool op_points_qs3d;
     bool check_blunt;
+    bool qs3drotor=false;
 
     QVector<int> a_D_starred_index_user;
     QVector<double> a_D_starred_S_user;

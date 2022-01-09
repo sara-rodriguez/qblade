@@ -4437,8 +4437,6 @@ void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
                     SPL_TipVortexdB[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach[i],dist_obs[i],Dh[i],alpha_t,chord[i],flat_tip,temp);
                     SPL_TipVortexdB_rotor[j]=calcTipVortex(CENTRAL_BAND_FREQUENCY[j],Mach_rotor[i],dist_obs_rotor[i],Dh_rotor[i],alpha_t,chord[i],flat_tip,temp);
 
-                    qDebug() << "i" << i << "Drh_rotor:" << Dh_rotor[i];
-
                     if(m_parameter->propagation_check){
                         SPL_PropagationdB[j]= propagation(CENTRAL_BAND_FREQUENCY[j],dist_obs[i]);
                         SPL_PropagationdB_rotor[j]= propagation(CENTRAL_BAND_FREQUENCY[j],dist_obs_rotor[i]);

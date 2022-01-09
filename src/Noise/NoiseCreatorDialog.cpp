@@ -119,6 +119,7 @@ m_qs3d_check->setLayout(pGrid);
 connect(m_qs3d_check, &QGroupBox::toggled, [=]() {
     pNoiseCalculation->user_qs3d_check=m_qs3d_check->isChecked();
     qs3DSim_combobox->setEnabled(m_qs3d_check->isChecked());
+
     if (!m_qs3d_check->isChecked()){
         op_points_qs3d=false;
         tabWidget->setTabEnabled(2, false);
@@ -128,8 +129,10 @@ connect(m_qs3d_check, &QGroupBox::toggled, [=]() {
         multi_polars_radiobutton->setEnabled(true);
         BPM_radiobutton->setEnabled(true);
         m_opPointScrollArea->setEnabled(true);
+        qs3drotor=false;
     } else {
             check_qs3D=true;
+            qs3drotor=true;
             m_opPointScrollArea->setEnabled(true);
             onSelectButtonsClicked(0);
             one_polar_radiobutton->setChecked(true);
@@ -154,7 +157,8 @@ connect(m_qs3d_check, &QGroupBox::toggled, [=]() {
                 tabWidget->setTabEnabled(3, true);
                 tabWidget->setTabEnabled(4, true);
             }
-});
+}
+);
 
 connect(qs3DSim_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged),
     [=](int index){
@@ -166,12 +170,14 @@ if (index == 0){
     tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, false);
+    multi_polars_radiobutton->setChecked(qs3drotor);
 }
 if (index == 1){
     op_points_qs3d=true;
     tabWidget->setTabEnabled(2, true);
     tabWidget->setTabEnabled(3, true);
     tabWidget->setTabEnabled(4, true);
+    multi_polars_radiobutton->setChecked(qs3drotor);
 }
 });
 
@@ -297,6 +303,7 @@ tabWidget->addTab(widget, "Op. Points");
                     connect(m_polarComboBox, SIGNAL(valueChanged(int)), this, SLOT(onPolarBoxChange()));
                     grid->addWidget(m_polarComboBox, 0, 3, 1, 1);
                     multi_polars_radiobutton = new QRadioButton ("all polars");
+                    multi_polars_radiobutton->setChecked(qs3drotor);//Sara
                     m_selectFromButtons->addButton(multi_polars_radiobutton, NoiseParameter::MultiplePolars);
                     grid->addWidget(multi_polars_radiobutton, 1, 1, 1, 3);
                     BPM_radiobutton = new QRadioButton ("original BPM δ* correlations");

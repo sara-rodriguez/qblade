@@ -163,13 +163,13 @@ if (!qs3d_check){
 onqs3dGraph2d();  index_qs3d=-1;
 }
 else if (user_sel==0){
-if(index_qs3d==0){onqs3dGraph2d();}
-if(index_qs3d==1){onqs3dGraphBlade(); index_qs3d=-1;}
+if(index_qs3d==0){onqs3dGraphBlade();}
+if(index_qs3d==1){onqs3dGraph2d(); index_qs3d=-1;}
 }
 else if (user_sel==1){
-if(index_qs3d==0){onqs3dGraph2d();}
+if(index_qs3d==0){onqs3dGraphRotorLoops();}
 if(index_qs3d==1){onqs3dGraphBlade();}
-if(index_qs3d==2){onqs3dGraphRotorLoops(); index_qs3d=-1;}
+if(index_qs3d==2){onqs3dGraph2d(); index_qs3d=-1;}
 }
 
 QSettings settings("qblade.ini", QSettings::IniFormat);
