@@ -729,8 +729,8 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                             pGrid = new ParameterGrid<P>(this);
                             groupBox->setLayout(pGrid);
 
-                            pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB:", 10);
-                            pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB:", 10);
+                            pGrid->addEdit(P::obs_x_pos, NumberEditType, new NumberEdit(),"XB []:", 10,LENGTH);
+                            pGrid->addEdit(P::obs_y_pos, NumberEditType, new NumberEdit(),"YB []:", 10,LENGTH);
 
                             QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
                             if((g_bemdataStore.size()!=0)){
@@ -739,7 +739,7 @@ buttonle->setMinimumWidth(QFontMetrics(QFont()).width("δ* User Input") * 1.8);
                             blade_radius=(outer_radius-hub_radius);}
                             double z_pos=blade_radius/2.;
 
-                            pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB:", z_pos);
+                            pGrid->addEdit(P::obs_z_pos, NumberEditType, new NumberEdit(),"ZB []:", z_pos,LENGTH);
 
                                 widget = new QWidget;
                                 tabWidget->addTab(widget, "Quasi 3D Rotor");
@@ -819,9 +819,9 @@ pGrid->addEdit(P::tower_height, NumberEditType, m_tower_height_numberedit,"Tower
                                 pGrid = new ParameterGrid<P>(this);
                                 groupBox->setLayout(pGrid);
                                 double distx = 1.5*outer_radius;
-                                pGrid->addEdit(P::obs_x_pos_rotor, NumberEditType, new NumberEdit(),"XF:", distx);
-                                pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YF:", 0);
-                                pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZF:", 0);
+                                pGrid->addEdit(P::obs_x_pos_rotor, NumberEditType, new NumberEdit(),"XF []:", distx, LENGTH);
+                                pGrid->addEdit(P::obs_y_pos_rotor, NumberEditType, new NumberEdit(),"YF []:", 0, LENGTH);
+                                pGrid->addEdit(P::obs_z_pos_rotor, NumberEditType, new NumberEdit(),"ZF []:", 0, LENGTH);
 
 m_shear_check = new QGroupBox("Shear layer effect");
 pGrid = new ParameterGrid<P>(this);

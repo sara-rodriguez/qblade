@@ -323,7 +323,7 @@ void NoiseSimulation::simulate() {
 //verify and generate new polars when quasi 3d multiple polars options are active
 if (m_parameter.qs3d_check){
     m_calculation.onVerifyDeltaandValFor3D();
-    m_calculation.onVerifyDeltaandValFor3DAlerts(); //comment for directivity validation
+//    m_calculation.onVerifyDeltaandValFor3DAlerts(); //comment for directivity validation
 }
 
 if(m_calculation.simulate_yes_no){
