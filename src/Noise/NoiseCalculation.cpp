@@ -5753,8 +5753,8 @@ void NoiseCalculation::calculateqs3d_rotor() {
     Final_qs3d_rotor_loops = 10.*log10(Final_qs3d_aux_4d);
 
     //validation directivity
-    qDebug() << "coordinates: " << m_parameter->obs_x_pos_rotor << m_parameter->obs_y_pos_rotor << m_parameter->obs_z_pos_rotor;
-    qDebug() <<"OASPL: " << Final_qs3d_rotor_loops;
+//    qDebug() << "coordinates: " << m_parameter->obs_x_pos_rotor << m_parameter->obs_y_pos_rotor << m_parameter->obs_z_pos_rotor;
+//    qDebug() <<"OASPL: " << Final_qs3d_rotor_loops;
 //    qDebug() <<"SPL alpha: " << Final_qs3d_alpha_rotor_loops;
 //    qDebug() <<"SPL S: " << Final_qs3d_S_rotor_loops;
 //    qDebug() <<"SPL P: " << Final_qs3d_P_rotor_loops;
