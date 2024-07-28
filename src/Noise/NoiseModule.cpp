@@ -21,11 +21,12 @@ NoiseModule::NoiseModule(QMainWindow *mainWindow, QToolBar *toolbar)
 
 //Sara
     onqs3dGraphs(false);//Sara
-	
+
+// Sara urgente
     //QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
-    setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
-                        (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));
+ //    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara urgente
+ //    setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+ //                        (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));
 //Sara
 
 	m_menu = new NoiseMenu (mainWindow, this);
@@ -51,8 +52,8 @@ NoiseModule::~NoiseModule() {
     delete m_graph[7];//Sara
 
     //QSettings settings(QSettings::NativeFormat, QSettings::UserScope,"QBLADE");
-    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara
-	settings.setValue(QString("modules/NoiseModule/graphArrangement"), getGraphArrangement());
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara urgente
+    settings.setValue(QString("modules/NoiseModule/graphArrangement"), getGraphArrangement());
 }
 
 void NoiseModule::addMainMenuEntries() {
@@ -159,6 +160,7 @@ void NoiseModule::onqs3dGraphs(bool){
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     int user_sel = pNoiseCalculation->user_sel;
     bool qs3d_check = pNoiseCalculation->user_qs3d_check;
+
 if (!qs3d_check){
 onqs3dGraph2d();  index_qs3d=-1;
 }
@@ -171,10 +173,21 @@ if(index_qs3d==0){onqs3dGraphRotorLoops();}
 if(index_qs3d==1){onqs3dGraphBlade();}
 if(index_qs3d==2){onqs3dGraph2d(); index_qs3d=-1;}
 }
+else{
+    // Sara urgente
+    m_graph[0] = new NewGraph ("NoiseGraphOne",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_alpha", true, false});
+    m_graph[1] = new NewGraph ("NoiseGraphTwo", this, {NewGraph::Noise, "Freq [Hz]", "SPL_S", true, false});
+    m_graph[2] = new NewGraph ("NoiseGraphThree",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_P", true, false});
+    m_graph[3] = new NewGraph ("NoiseGraphFour",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_LE (dB)", true, false});//Alexandre MOD
+    m_graph[4] = new NewGraph ("NoiseGraphFive",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_LBL_VS (dB)", true, false});//Sara
+    m_graph[5] = new NewGraph ("NoiseGraphSix",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_blunt (dB)", true, false});//Sara
+    m_graph[6] = new NewGraph ("NoiseGraphSeven",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_tipvortex (dB)", true, false});//Sara
+    m_graph[7] = new NewGraph ("NoiseGraphEight",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
 
-QSettings settings("qblade.ini", QSettings::IniFormat);
-
-setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>(settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));//Sara
+    QSettings settings("qblade.ini", QSettings::IniFormat);//Sara urgente
+    setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+                        (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));
+}
 //Sara
 
 m_contextMenu = new NoiseContextMenu (m_twoDWidget, this);  // NM TODO move this up to TwoDInterface?
@@ -192,6 +205,10 @@ void NoiseModule::onqs3dGraph2d(){
         m_graph[5] = new NewGraph ("NoiseGraphSix",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_blunt (dB)", true, false});//Sara
         m_graph[6] = new NewGraph ("NoiseGraphSeven",  this, {NewGraph::Noise, "Freq [Hz]", "SPL_tipvortex (dB)", true, false});//Sara
         m_graph[7] = new NewGraph ("NoiseGraphEight",   this, {NewGraph::Noise, "Freq [Hz]", "SPL (dB)", true, false});
+
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara urgente
+        setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+                            (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));
 }
 
 void NoiseModule::onqs3dGraphBlade(){
@@ -203,6 +220,10 @@ void NoiseModule::onqs3dGraphBlade(){
         m_graph[5] = new NewGraph ("NoiseGraphSix",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_blunt_blade[qs3D] (dB)", true, false});//Sara
         m_graph[6] = new NewGraph ("NoiseGraphSeven",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_tipvortex_blade[qs3D] (dB)", true, false});//Sara
         m_graph[7] = new NewGraph ("NoiseGraphEight",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_blade[qs3D] (dB)", true, false});
+
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara urgente
+        setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+                            (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));
 }
 
 void NoiseModule::onqs3dGraphRotor(){
@@ -214,6 +235,10 @@ void NoiseModule::onqs3dGraphRotor(){
         m_graph[5] = new NewGraph ("NoiseGraphSix",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_blunt_rotor[qs3D] (dB)", true, false});//Sara
         m_graph[6] = new NewGraph ("NoiseGraphSeven",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_tipvortex_rotor[qs3D] (dB)", true, false});//Sara
         m_graph[7] = new NewGraph ("NoiseGraphEight",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_rotor[qs3D] (dB)", true, false});
+
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara urgente
+        setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+                            (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));
 }
 
 void NoiseModule::onqs3dGraphRotorLoops(){
@@ -225,15 +250,16 @@ void NoiseModule::onqs3dGraphRotorLoops(){
         m_graph[5] = new NewGraph ("NoiseGraphSix",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_blunt_rotor[qs3D] (dB)", true, false});//Sar
         m_graph[6] = new NewGraph ("NoiseGraphSeven",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_tipvortex_rotor[qs3D] (dB)", true, false});//Sara
         m_graph[7] = new NewGraph ("NoiseGraphEight",   this, {NewGraph::Noise, "Freq [Hz]", "SPL_rotor[qs3D] (dB)", true, false});
+
+        QSettings settings("qblade.ini", QSettings::IniFormat);//Sara urgente
+        setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>
+                            (settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));
 }
 //Sara
 
 void NoiseModule::setShownSimulation(NoiseSimulation *newSimulation, bool forceReload) {
     if (forceReload || m_shownSimulation != newSimulation) {
         onqs3dGraph2d();//Sara
-        QSettings settings("qblade.ini", QSettings::IniFormat); //Sara
-        setGraphArrangement(static_cast<TwoDWidgetInterface::GraphArrangement>(settings.value("modules/NoiseModule/graphArrangement", TwoDWidgetInterface::Oct).toInt()));//Sara
-
 
 		m_shownSimulation = newSimulation;
 		m_dock->setShownObject(m_shownSimulation);

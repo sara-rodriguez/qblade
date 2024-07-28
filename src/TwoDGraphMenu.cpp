@@ -43,6 +43,10 @@ TwoDGraphMenu::TwoDGraphMenu(QMainWindow *parent, TwoDModule *module)
     m_fiveGraphsAction->setCheckable(true);
     connect(m_fiveGraphsAction, SIGNAL(triggered()), this, SLOT(onGraphArrangementChanged()));
     addAction(m_fiveGraphsAction);
+    m_eightGraphsAction = new QAction("Eight Graphs", this);
+    m_eightGraphsAction->setCheckable(true);
+    connect(m_eightGraphsAction, SIGNAL(triggered()), this, SLOT(onGraphArrangementChanged()));
+    addAction(m_eightGraphsAction);
     //Sara
 }
 
