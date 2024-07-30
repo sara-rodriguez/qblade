@@ -3021,7 +3021,9 @@ double NoiseCalculation::getAlphaT_2d(){
     double z=lstart;
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-        if (z==TSR){
+
+        if ((z<=TSR) & (z+ldelta>TSR)){
+            m_parameter->TSRtd=z;
             int number_of_segments = pbem->m_pBData->m_pos.size();
             alpha_tip=bdata->m_alpha.value(number_of_segments-1);
             aspect_ratio = pbem->m_AR;
@@ -3070,7 +3072,9 @@ double NoiseCalculation::getInputWindSpeed(int blade, int E, int section, double
     double hub_radius;
     hub_radius=pbem->m_pBlade->m_HubRadius;
     foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-        if (z==TSR){
+
+        if ((z<=TSR) & (z+ldelta>TSR)){
+            m_parameter->TSRtd=z;
             if(m_parameter->state_ss_us==0){
                 //steady
                 if(m_parameter->shear_check){
@@ -3168,7 +3172,9 @@ double NoiseCalculation::getInputMach(double windspeed, int section, double TSR)
 
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-        if (z==TSR){
+
+        if ((z<=TSR) & (z+ldelta>TSR)){
+            m_parameter->TSRtd=z;
             if(m_parameter->state_ss_us==0){
                 //steady
 
@@ -3201,7 +3207,9 @@ double NoiseCalculation::getInputReynolds(double windspeed, int section, double 
 
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
-        if (z==TSR){
+
+        if ((z<=TSR) & (z+ldelta>TSR)){
+            m_parameter->TSRtd=z;
             if(m_parameter->state_ss_us==0){
                 //steady
 
@@ -3358,7 +3366,9 @@ void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
     QBEM *pbem = (QBEM *) g_mainFrame->m_pBEM;
     foreach(BData * bdata, pbem->m_pBEMData->GetBData()){
 
-        if (z==TSR){
+
+        if ((z<=TSR) & (z+ldelta>TSR)){
+            m_parameter->TSRtd=z;
 
             int number_of_segments = pbem->m_pBData->m_pos.size();
             double approaxing_wind_speed = m_parameter->u_wind_speed;
@@ -4971,7 +4981,9 @@ void NoiseCalculation::calculateqs3d_graphics_loops(){
     double progress_step = (progress_end-progress_begin)/number_of_segments;
 
     foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-        if (z==TSR){
+
+        if ((z<=TSR) & (z+ldelta>TSR)){
+            m_parameter->TSRtd=z;
             for (int i = 0; i < number_of_segments; ++i) {
                 pNoiseCreatorDialog->m_progress_dlg->setValue(progress_begin+progress_step*i);
                 alpha[i] = bdata->m_alpha.value(i);
@@ -5116,6 +5128,8 @@ void NoiseCalculation::calculateqs3d_graphics_loops(){
 
                 m_BotTr[i]= g_polarStore.at(pos_polar)->m_XBot;
                 m_TopTr[i]= g_polarStore.at(pos_polar)->m_XTop;
+
+                qDebug() << "erros: " << Reynolds_error()[i] << Mach_error()[i] << alpha_error()[i];
 
                 if((Reynolds_error()[i]>0.1) || (Mach_error()[i]>0.1) || (alpha_error()[i]>0.1)){
                     m_Reynolds_error_value.resize(w+1);
@@ -6191,7 +6205,8 @@ void NoiseCalculation::onVerifyDeltaandValFor3D(){
     double TSR = m_parameter->TSRtd;
     int w=0;
     foreach(BData * bdata, pBEM->m_pBEMData->GetBData()){
-        if (z==TSR){
+        if ((z<=TSR) & (z+ldelta>TSR)){
+            m_parameter->TSRtd=z;
             for (int i = 0; i < number_of_segments; ++i) {
                 alpha[i] = bdata->m_alpha.value(i);
                 Reynolds[i] = bdata->m_Reynolds.value(i);

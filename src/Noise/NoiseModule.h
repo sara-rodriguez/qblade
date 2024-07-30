@@ -24,7 +24,7 @@ public:
 	QPair<ShowAsGraphInterface*,int> getHighlightDot(NewGraph::GraphType graphType);
 	int getHighlightIndex(NewGraph::GraphType graphTypeMulti);
 	QStringList prepareMissingObjectMessage();
-	bool isColorByOpPoint();
+    bool isColorByOpPoint();
 	
 private:
 	void showAll();
@@ -37,7 +37,7 @@ private:
 	NoiseMenu *m_menu;	
 
     int index_qs3d=-1;//Sara
-	
+
 public slots:
 	virtual void onActivationActionTriggered();  // override from ModuleBase
 	virtual void onModuleChanged();  // override from ModuleBase
