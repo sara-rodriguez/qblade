@@ -3432,6 +3432,7 @@ void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
             double alpha_polar[number_of_segments];
             double alpha_error[number_of_segments];
             double theta_BEM[number_of_segments];
+            double phi_BEM[number_of_segments];
             double r_R[number_of_segments];
             double c_Rx[number_of_segments];
             double D_starred_C_HT[number_of_segments];
@@ -3756,6 +3757,7 @@ void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
                     alpha_BEM[i] = bdata->m_alpha.value(i);
                     alpha[i]=alpha_BEM[i];
                     theta_BEM[i] = bdata->m_theta.value(i);
+                    phi_BEM[i] = bdata->m_phi.value(i); //urgente
                     r_R[i] = bdata->m_pos.value(i)/finalradius;
 
                     D_starred_N_S[i]=0;
@@ -4011,7 +4013,9 @@ void NoiseCalculation::calculateqs3d_graphics(int blade, int E, double TSR) {
                     b[i]=qRadiansToDegrees(qAtan((c_1[i]-c_0[i])/(r_1[i]-r_0[i])));}
 
                     //    the angle a is the total angle between the YB ZB blade reference system plane and the local midsection chord line p 75 handout
-                    a[i]=local_twist[i]+blade_pitch;
+                    a[i]=phi_BEM[i]-local_twist[i]+blade_pitch;
+                    while (a[i] < -180 ) a[i]+=360;
+                    while (a[i] > 180 ) a[i]-=360;
 
                     XRS[i]=calcXRS(a[i],XB,YB);
                     YRS[i]=calcYRS(a[i],XB,YB);
@@ -5128,8 +5132,6 @@ void NoiseCalculation::calculateqs3d_graphics_loops(){
 
                 m_BotTr[i]= g_polarStore.at(pos_polar)->m_XBot;
                 m_TopTr[i]= g_polarStore.at(pos_polar)->m_XTop;
-
-                qDebug() << "erros: " << Reynolds_error()[i] << Mach_error()[i] << alpha_error()[i];
 
                 if((Reynolds_error()[i]>0.1) || (Mach_error()[i]>0.1) || (alpha_error()[i]>0.1)){
                     m_Reynolds_error_value.resize(w+1);

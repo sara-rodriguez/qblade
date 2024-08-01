@@ -193,7 +193,7 @@ for (i=0;i<m_pos.size();i++)
         phi = atan( (1-a_a)/(1+a_t) / m_lambda_local.at(i) )/2/PI*360;
 
         //alpha is computed
-        alpha=phi-m_theta.at(i)+pitch;
+        alpha=phi-m_theta.at(i)+pitch;//urgente
 
         while (alpha < -180 ) alpha+=360;
         while (alpha > 180 ) alpha-=360;

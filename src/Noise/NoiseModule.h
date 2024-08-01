@@ -25,6 +25,8 @@ public:
 	int getHighlightIndex(NewGraph::GraphType graphTypeMulti);
 	QStringList prepareMissingObjectMessage();
     bool isColorByOpPoint();
+
+    int index_qs3d=-1;//Sara
 	
 private:
 	void showAll();
@@ -35,8 +37,6 @@ private:
 	NoiseSimulation *m_shownSimulation;
 	NoiseContextMenu *m_contextMenu;
 	NoiseMenu *m_menu;	
-
-    int index_qs3d=-1;//Sara
 
 public slots:
 	virtual void onActivationActionTriggered();  // override from ModuleBase

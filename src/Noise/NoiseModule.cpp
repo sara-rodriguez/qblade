@@ -155,7 +155,6 @@ void NoiseModule::onqs3dGraphs(bool){
 NoiseCalculation *pNoiseCalculation = (NoiseCalculation *) g_mainFrame->m_pBEM;
     int user_sel = pNoiseCalculation->user_sel;
     bool qs3d_check = pNoiseCalculation->user_qs3d_check;
-
 if (!qs3d_check){
 onqs3dGraph2d();  index_qs3d=-1;
 }
